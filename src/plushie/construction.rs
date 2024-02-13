@@ -123,20 +123,25 @@ mod tests {
     fn test_from_pattern_increase_decrese() {
         let plushie = Plushie::from_pattern(Pattern::tmp_diamond_3());
         assert_eq!(plushie.fixed_num, 2);
-        // assert_eq!(plushie.points.len(), 10);
+        assert_eq!(plushie.points.len(), 15);
         assert_eq!(
             plushie.edges,
             vec![
                 /* 0 -> */ vec![2, 3, 4, 5],
-                /* 1 -> */ vec![],
-                /* 2 -> */ vec![3],
-                /* 3 -> */ vec![4, 5],
-                /* 4 -> */ vec![5],
-                /* 5 -> */ vec![6],
-                /* 6 -> */ vec![7],
-                /* 7 -> */ vec![8],
-                /* 8 -> */ vec![9],
-                /* 9 -> */ vec![],
+                /* 1 -> */ vec![11, 12, 13, 14],
+                /* 2 -> */ vec![3, 6],
+                /* 3 -> */ vec![4, 7, 8],
+                /* 4 -> */ vec![5, 9],
+                /* 5 -> */ vec![6, 10],
+                /* 6 -> */ vec![7, 11],
+                /* 7 -> */ vec![8, 12],
+                /* 8 -> */ vec![9, 12],
+                /* 9 -> */ vec![10, 13],
+                /* 10 -> */ vec![11, 14],
+                /* 11 -> */ vec![12],
+                /* 12 -> */ vec![13],
+                /* 13 -> */ vec![14],
+                /* 14 -> */ vec![],
             ]
         );
     }
