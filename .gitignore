@@ -1,0 +1,6 @@
+.*
+!.gitignore
+
+vault
+
+/target
