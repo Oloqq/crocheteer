@@ -1,5 +1,6 @@
 use super::common::*;
 
+mod construction;
 mod conversions;
 
 pub struct Plushie {
@@ -59,5 +60,6 @@ fn repel_from_center(this: Point) -> V {
     let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
     let center_dist = level_origin_displacement.magnitude();
 
-    level_origin_displacement.normalize() / (center_dist + 0.2)
+    const INCREASE_IF_GOES_THROUGH_PILLAR: f32 = 3.0;
+    level_origin_displacement.normalize() * INCREASE_IF_GOES_THROUGH_PILLAR / (center_dist + 0.2)
 }
