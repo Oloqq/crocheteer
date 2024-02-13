@@ -1,7 +1,7 @@
 pub enum Stitch {
     Single,
-    _Increase,
-    _Decrease,
+    Increase,
+    Decrease,
 }
 
 pub struct Pattern {
@@ -30,6 +30,19 @@ impl Pattern {
             rounds: vec![
                 vec![Single, Single, Single, Single],
                 vec![Single, Single, Single, Single],
+            ],
+        }
+    }
+
+    #[allow(unused)]
+    pub fn tmp_diamond_3() -> Self {
+        use Stitch::*;
+        Self {
+            starting_circle: 4,
+            ending_circle: 4,
+            rounds: vec![
+                vec![Single, Increase, Single, Single],
+                vec![Single, Decrease, Single, Single],
             ],
         }
     }

@@ -29,7 +29,7 @@ impl Plushie {
         let mut current = FIXED_NUM + pattern.starting_circle;
         for round in pattern.rounds {
             height += 1.0;
-            let mut stitch_num = 0;
+            let current_at_round_start = current;
             for stitch in round {
                 match stitch {
                     Stitch::Single => {
@@ -37,13 +37,25 @@ impl Plushie {
                         edges.push(vec![current + 1]);
                         anchor += 1;
                         current += 1;
-                        stitch_num += 1;
                     }
-                    Stitch::_Increase => todo!(),
-                    Stitch::_Decrease => todo!(),
+                    Stitch::Increase => {
+                        edges[anchor].push(current);
+                        edges[anchor].push(current + 1);
+                        edges.push(vec![current + 1]);
+                        edges.push(vec![current + 2]);
+                        current += 2;
+                        anchor += 1;
+                    }
+                    Stitch::Decrease => {
+                        edges[anchor].push(current);
+                        edges[anchor + 1].push(current);
+                        edges.push(vec![current + 1]);
+                        current += 1;
+                        anchor += 2;
+                    }
                 }
             }
-            points.append(&mut ring(stitch_num, height));
+            points.append(&mut ring(current - current_at_round_start, height));
         }
 
         *edges.last_mut().unwrap() = vec![];
@@ -73,6 +85,7 @@ pub fn ring(nodes: usize, y: f32) -> Vec<Point> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_from_pattern() {
@@ -102,6 +115,28 @@ mod tests {
                 vec![9],
                 // 9 ->
                 vec![],
+            ]
+        );
+    }
+
+    #[test]
+    fn test_from_pattern_increase_decrese() {
+        let plushie = Plushie::from_pattern(Pattern::tmp_diamond_3());
+        assert_eq!(plushie.fixed_num, 2);
+        // assert_eq!(plushie.points.len(), 10);
+        assert_eq!(
+            plushie.edges,
+            vec![
+                /* 0 -> */ vec![2, 3, 4, 5],
+                /* 1 -> */ vec![],
+                /* 2 -> */ vec![3],
+                /* 3 -> */ vec![4, 5],
+                /* 4 -> */ vec![5],
+                /* 5 -> */ vec![6],
+                /* 6 -> */ vec![7],
+                /* 7 -> */ vec![8],
+                /* 8 -> */ vec![9],
+                /* 9 -> */ vec![],
             ]
         );
     }

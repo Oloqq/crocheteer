@@ -14,7 +14,7 @@ use plushie::Plushie;
 
 fn main() {
     // let mut plushie = diamond_plushie_direct();
-    let mut plushie = Plushie::from_pattern(Pattern::tmp_diamond_2());
+    let mut plushie = Plushie::from_pattern(Pattern::tmp_diamond_3());
 
     save(
         "generated/from_pattern/before_stuffing.stl",
