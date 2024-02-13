@@ -1,9 +1,39 @@
+#![allow(unused)]
+
 use std::f32::consts::PI;
 
+use std::fs::OpenOptions;
+use std::{thread, time};
 use stl_io::{IndexedMesh, IndexedTriangle, Normal, Triangle, Vector, Vertex};
 
-type Mesh = Vec<Triangle>;
+use crate::common::Mesh;
+
 const TWOPI: f32 = PI * 2.0;
+
+pub fn check_hot_reload() {
+    for i in 3..10 {
+        let mesh = ring(i);
+
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open("generated/test.stl")
+            .unwrap();
+        stl_io::write_stl(&mut file, mesh.iter()).unwrap();
+
+        let period = time::Duration::from_millis(500);
+        thread::sleep(period);
+    }
+}
+
+pub fn save(mesh: Mesh) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open("generated/test.stl")
+        .unwrap();
+    stl_io::write_stl(&mut file, mesh.iter()).unwrap();
+}
 
 pub fn ring(stitches: usize) -> Mesh {
     assert!(stitches >= 3);
@@ -26,26 +56,6 @@ pub fn ring(stitches: usize) -> Mesh {
         prev = point;
     }
     result
-}
-
-#[allow(unused)]
-pub fn check_hot_reload() {
-    use std::fs::OpenOptions;
-    use std::{thread, time};
-
-    for i in 3..10 {
-        let mesh = ring(i);
-
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create(true)
-            .open("generated/test.stl")
-            .unwrap();
-        stl_io::write_stl(&mut file, mesh.iter()).unwrap();
-
-        let period = time::Duration::from_millis(500);
-        thread::sleep(period);
-    }
 }
 
 #[allow(unused)]
@@ -74,7 +84,7 @@ pub fn two_triangles() -> Vec<Triangle> {
 pub fn square() -> Vec<Triangle> {
     vec![
         stl_io::Triangle {
-            normal: Normal::new([0.0, 1.0, 0.0]),
+            normal: Normal::new([0.0, 0.0, 0.0]),
             vertices: [
                 Vertex::new([0.0, 0.0, 0.0]),
                 Vertex::new([1.0, 0.0, 0.0]),
@@ -82,7 +92,7 @@ pub fn square() -> Vec<Triangle> {
             ],
         },
         stl_io::Triangle {
-            normal: Normal::new([0.0, 1.0, 0.0]),
+            normal: Normal::new([0.0, 0.0, 0.0]),
             vertices: [
                 Vertex::new([1.0, 0.0, 0.0]),
                 Vertex::new([1.0, 0.0, 1.0]),

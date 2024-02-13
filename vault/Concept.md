@@ -28,17 +28,16 @@ At the beginning may work with any trash represantation of a pattern.
 - a packed / sparse region may affect the whole object
 - stuffing will push the walls out
 
-## Force graphs
+## [Force graphs](./Visualization.md)
 - each stitch
   - is a vertex
   - is connected
      - to the previous stitch in a row
-     - $[0, ∞]$ (theoreticaly) stitches from the previous
+     - $[1, ∞]$ (theoreticaly) stitches from the previous (chains with no connection to the previous round are not supported -- important for visualization)
   - it's connections are edges
 - the origin of the starting circle has to be grounded (unmovable)
 - "stuffing force" should be applied radialy, coming from a pillar standing in the center of the starting circle
   - assumption: no wall is allowed to cross the pillar
-
 
 - hot reload in a viewer [[1]] [[2]] should allow easy monitoring of the process
   - 3D Viewer for vscode seems fine for that
