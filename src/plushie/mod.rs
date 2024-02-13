@@ -31,7 +31,6 @@ impl Plushie {
             for neibi in &self.edges[i] {
                 let neib = self.points[*neibi];
                 let diff: V = attract(this, neib) * time;
-                println!("{}", diff.x);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
