@@ -12,20 +12,20 @@ use plushie::Plushie;
 
 fn main() {
     #[rustfmt::skip]
-    let animated = vec![
-        ORIGIN,
+    let points = vec![
+        Point::origin(),
 
-        V::new(-1.0, 1.0, -1.0),
-        V::new(1.0, 1.0, -1.0),
-        V::new(1.0, 1.0, 1.0),
-        V::new(-1.0, 1.0, 1.0),
+        Point::new(-1.0, 1.0, -1.0),
+        Point::new(1.0, 1.0, -1.0),
+        Point::new(1.0, 1.0, 1.0),
+        Point::new(-1.0, 1.0, 1.0),
 
-        V::new(-1.0, 2.0, -1.0),
-        V::new(1.0, 2.0, -1.0),
-        V::new(1.0, 2.0, 1.0),
-        V::new(-1.0, 2.0, 1.0),
+        Point::new(-1.0, 2.0, -1.0),
+        Point::new(1.0, 2.0, -1.0),
+        Point::new(1.0, 2.0, 1.0),
+        Point::new(-1.0, 2.0, 1.0),
 
-        V::new(0.0, 3.0, 0.0),
+        Point::new(0.0, 3.0, 0.0),
     ];
 
     #[rustfmt::skip]
@@ -52,7 +52,7 @@ fn main() {
         vec![],
     ];
 
-    let p = Plushie::new(1, animated, edges);
+    let p = Plushie::new(1, points, edges);
     save(p.to_mesh());
 
     // check_hot_reload()

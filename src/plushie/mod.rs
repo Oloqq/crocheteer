@@ -1,15 +1,13 @@
-use stl_io::Triangle;
-
 use super::common::*;
 
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
-    points: Vec<V>,
+    points: Vec<Point>,
     edges: Vec<Vec<usize>>,
 }
 
 impl Plushie {
-    pub fn new(fixed_num: usize, points: Vec<V>, edges: Vec<Vec<usize>>) -> Self {
+    pub fn new(fixed_num: usize, points: Vec<Point>, edges: Vec<Vec<usize>>) -> Self {
         assert!(
             fixed_num > 0,
             "Plushies with no fixed points are not supported"
