@@ -30,7 +30,7 @@ impl Plushie {
             for neibi in &self.edges[i] {
                 let neib = self.points[*neibi];
                 let diff: V = attract(this, neib) * time;
-                println!("{}", diff);
+                println!("{}", diff.x);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
@@ -42,8 +42,8 @@ impl Plushie {
     }
 
     pub fn stuff(&mut self) {
-        for _ in 0..20 {
-            self.step(1.0);
+        for _ in 0..100 {
+            self.step(0.2);
         }
     }
 }
@@ -51,12 +51,13 @@ impl Plushie {
 fn attract(this: Point, other: Point) -> V {
     let diff = this - other;
     // println!("{}", diff);
-    -diff.normalize() / 10.0 * diff.magnitude().sqrt()
+    let a = diff.normalize() / 10.0 * diff.magnitude();
+    -a * 0.2
 }
 
 fn repel_from_center(this: Point) -> V {
     let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
     let center_dist = level_origin_displacement.magnitude();
 
-    level_origin_displacement.normalize() / center_dist
+    level_origin_displacement.normalize() / (center_dist + 0.2)
 }
