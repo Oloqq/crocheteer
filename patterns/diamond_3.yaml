@@ -1,0 +1,11 @@
+starting_circle: 4
+ending_circle: 4
+rounds:
+- - Single
+  - Increase
+  - Single
+  - Single
+- - Single
+  - Decrease
+  - Single
+  - Single

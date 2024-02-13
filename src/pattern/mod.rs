@@ -1,9 +1,13 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub enum Stitch {
     Single,
     Increase,
     Decrease,
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Pattern {
     pub starting_circle: usize,
     pub ending_circle: usize,
@@ -45,5 +49,19 @@ impl Pattern {
                 vec![Single, Decrease, Single, Single],
             ],
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_serialize_deserialize() {
+        let p1 = Pattern::tmp_diamond_3();
+        let s = serde_yaml::to_string(&p1).unwrap();
+        println!("{s}");
+        let p2: Pattern = serde_yaml::from_str(&s).unwrap();
+        assert_eq!(p1, p2);
     }
 }
