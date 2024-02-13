@@ -1,4 +1,6 @@
-Code name for the visualized entity is `Plushie`
+# Requirements
+
+Code name for the visualized entity is `Plushie`.
 
 Plushie must support
 - writing to STL
@@ -10,3 +12,8 @@ Plushie must support
 NOT supported
 - shapes that require walls intersecting the vertical axis (source of pressure)
 - importing from STL
+
+# Implementation
+
+Location of vertices is calculated with a [force-directed graph](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)
+

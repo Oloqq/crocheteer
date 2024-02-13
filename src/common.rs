@@ -1,4 +1,4 @@
-// pub type V = na::Vector3<f32>;
+pub type V = na::Vector3<f32>;
 pub type Point = na::Point3<f32>;
 
 use stl_io::{Normal, Triangle, Vertex};

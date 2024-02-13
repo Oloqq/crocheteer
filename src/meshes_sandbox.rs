@@ -26,11 +26,11 @@ pub fn check_hot_reload() {
     }
 }
 
-pub fn save(mesh: Mesh) {
+pub fn save(name: &str, mesh: Mesh) {
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
-        .open("generated/test.stl")
+        .open(name)
         .unwrap();
     stl_io::write_stl(&mut file, mesh.iter()).unwrap();
 }

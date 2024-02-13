@@ -1,5 +1,7 @@
 use super::common::*;
 
+mod conversions;
+
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
     points: Vec<Point>,
@@ -19,31 +21,42 @@ impl Plushie {
         }
     }
 
-    pub fn to_mesh(&self) -> Mesh {
-        let mut result: Mesh = vec![];
+    fn step(&mut self, time: f32) {
+        let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
 
-        for (i, neibs) in self.edges.iter().enumerate() {
-            if neibs.len() < 2 {
-                break;
-            }
-            for j in 0..neibs.len() - 1 {
-                result.push(make_triangle(
-                    self.points[i],
-                    self.points[neibs[j]],
-                    self.points[neibs[j + 1]],
-                ))
-            }
-            if neibs.len() > 2 {
-                result.push(make_triangle(
-                    self.points[i],
-                    self.points[neibs[0]],
-                    self.points[neibs[neibs.len() - 1]],
-                ))
+        for i in 0..self.points.len() {
+            let this = self.points[i];
+            displacement[i] += repel_from_center(this) * time;
+            for neibi in &self.edges[i] {
+                let neib = self.points[*neibi];
+                let diff: V = attract(this, neib) * time;
+                println!("{}", diff);
+                displacement[i] += diff;
+                displacement[*neibi] -= diff;
             }
         }
 
-        result
+        for i in self.fixed_num..self.points.len() {
+            self.points[i] += displacement[i];
+        }
     }
 
-    pub fn update(&mut self) {}
+    pub fn stuff(&mut self) {
+        for _ in 0..20 {
+            self.step(1.0);
+        }
+    }
+}
+
+fn attract(this: Point, other: Point) -> V {
+    let diff = this - other;
+    // println!("{}", diff);
+    -diff.normalize() / 10.0 * diff.magnitude().sqrt()
+}
+
+fn repel_from_center(this: Point) -> V {
+    let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
+    let center_dist = level_origin_displacement.magnitude();
+
+    level_origin_displacement.normalize() / center_dist
 }
