@@ -5,12 +5,35 @@ extern crate nalgebra as na;
 
 mod common;
 mod meshes_sandbox;
+mod pattern;
 mod plushie;
 
 use common::*;
+use pattern::Pattern;
 use plushie::Plushie;
 
 fn main() {
+    // let mut plushie = diamond_plushie_direct();
+    let mut plushie = Plushie::from_pattern(Pattern::tmp_diamond());
+
+    save(
+        "generated/from_pattern/before_stuffing.stl",
+        plushie.to_mesh(),
+    );
+    plushie.stuff();
+    save(
+        "generated/from_pattern/after_stuffing.stl",
+        plushie.to_mesh(),
+    );
+    plushie.stuff();
+    save(
+        "generated/from_pattern/after_stuffing_again.stl",
+        plushie.to_mesh(),
+    );
+}
+
+#[allow(unused)]
+fn diamond_plushie_direct() -> Plushie {
     #[rustfmt::skip]
     let points = vec![
         Point::origin(),
@@ -53,14 +76,5 @@ fn main() {
 
     ];
 
-    let mut plushie = Plushie::new(2, points, edges);
-    save("generated/before_stuffing.stl", plushie.to_mesh());
-    plushie.stuff();
-    save("generated/after_stuffing.stl", plushie.to_mesh());
-    plushie.stuff();
-    save("generated/after_stuffing_again.stl", plushie.to_mesh());
-    // save("generated/stuff3.stl", plushie.to_mesh());
-
-    // check_hot_reload()
-    // save(square())
+    Plushie::new(2, points, edges)
 }
