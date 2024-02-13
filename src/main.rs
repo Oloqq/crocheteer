@@ -1,80 +1,69 @@
+use crate::common::*;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
+use crate::pattern::Stitch;
 
 extern crate nalgebra as na;
 
+mod args;
 mod common;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
 
-use common::*;
+use args::*;
 use pattern::Pattern;
 use plushie::Plushie;
 
 fn main() {
-    // let mut plushie = diamond_plushie_direct();
-    let mut plushie = Plushie::from_pattern(Pattern::tmp_diamond_3());
+    let args = Args::from_args();
+    if let Some(num) = args.dev {
+        exec_dev_action(num);
+        return;
+    }
 
-    save(
+    if let Some(pattern_path) = args.show {
+        let pattern = Pattern::from_file(pattern_path);
+        let mut plushie = Plushie::from_pattern(pattern);
+        plushie.stuff();
+        save_mesh(args.output.to_str().unwrap(), plushie.to_mesh());
+    }
+
+    // let mut plushie = diamond_plushie_direct();
+}
+
+fn exec_dev_action(num: usize) {
+    println!("dev action {num}");
+    match num {
+        1 => save_and_stuff_diamnond(),
+        _ => println!("no such action"),
+    }
+}
+
+fn save_and_stuff_diamnond() {
+    use Stitch::*;
+    let p = Pattern {
+        starting_circle: 4,
+        ending_circle: 4,
+        rounds: vec![
+            vec![Single, Increase, Single, Single],
+            vec![Single, Decrease, Single, Single],
+        ],
+    };
+    let mut plushie = Plushie::from_pattern(p);
+
+    save_mesh(
         "generated/from_pattern/before_stuffing.stl",
         plushie.to_mesh(),
     );
     plushie.stuff();
-    save(
+    save_mesh(
         "generated/from_pattern/after_stuffing.stl",
         plushie.to_mesh(),
     );
     plushie.stuff();
-    save(
+    save_mesh(
         "generated/from_pattern/after_stuffing_again.stl",
         plushie.to_mesh(),
     );
-}
-
-#[allow(unused)]
-fn diamond_plushie_direct() -> Plushie {
-    #[rustfmt::skip]
-    let points = vec![
-        Point::origin(),
-        Point::new(0.0, 3.0, 0.0),
-
-        Point::new(-1.0, 1.0, -1.0),
-        Point::new(1.0, 1.0, -1.0),
-        Point::new(1.0, 1.0, 1.0),
-        Point::new(-2.0, 1.0, 0.5),
-
-        Point::new(-1.0, 2.0, -1.0),
-        Point::new(1.0, 2.0, -1.0),
-        Point::new(1.0, 2.0, 1.0),
-        Point::new(-2.0, 2.0, 0.5),
-
-    ];
-
-    #[rustfmt::skip]
-    let edges = vec![
-        // 0 ->
-        vec![2, 3, 4, 5],
-        // 1 ->
-        vec![6, 7, 8, 9],
-        // 2 ->
-        vec![3, 6],
-        // 3 ->
-        vec![4, 7],
-        // 4 ->
-        vec![5, 8],
-        // 5 ->
-        vec![6, 9],
-        // 6 ->
-        vec![7],
-        // 7 ->
-        vec![8],
-        // 8 ->
-        vec![9],
-        // 9 ->
-        vec![],
-
-    ];
-
-    Plushie::new(2, points, edges)
 }

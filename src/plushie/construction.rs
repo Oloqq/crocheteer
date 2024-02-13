@@ -89,7 +89,13 @@ mod tests {
 
     #[test]
     fn test_from_pattern() {
-        let plushie = Plushie::from_pattern(Pattern::tmp_diamond());
+        use Stitch::Single;
+        let p = Pattern {
+            starting_circle: 4,
+            ending_circle: 4,
+            rounds: vec![vec![Single, Single, Single, Single]],
+        };
+        let plushie = Plushie::from_pattern(p);
         assert_eq!(plushie.fixed_num, 2);
         assert_eq!(plushie.points.len(), 10);
         assert_eq!(
@@ -121,7 +127,16 @@ mod tests {
 
     #[test]
     fn test_from_pattern_increase_decrese() {
-        let plushie = Plushie::from_pattern(Pattern::tmp_diamond_3());
+        use Stitch::*;
+        let p = Pattern {
+            starting_circle: 4,
+            ending_circle: 4,
+            rounds: vec![
+                vec![Single, Increase, Single, Single],
+                vec![Single, Decrease, Single, Single],
+            ],
+        };
+        let plushie = Plushie::from_pattern(p);
         assert_eq!(plushie.fixed_num, 2);
         assert_eq!(plushie.points.len(), 15);
         assert_eq!(

@@ -6,7 +6,7 @@ use std::fs::OpenOptions;
 use std::{thread, time};
 use stl_io::{IndexedMesh, IndexedTriangle, Normal, Triangle, Vector, Vertex};
 
-use crate::common::Mesh;
+use crate::common::*;
 
 const TWOPI: f32 = PI * 2.0;
 
@@ -24,15 +24,6 @@ pub fn check_hot_reload() {
         let period = time::Duration::from_millis(500);
         thread::sleep(period);
     }
-}
-
-pub fn save(name: &str, mesh: Mesh) {
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open(name)
-        .unwrap();
-    stl_io::write_stl(&mut file, mesh.iter()).unwrap();
 }
 
 pub fn ring(stitches: usize) -> Mesh {
