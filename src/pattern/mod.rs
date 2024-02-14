@@ -1,4 +1,4 @@
-mod construction;
+pub mod construction;
 
 use serde::{Deserialize, Serialize};
 

@@ -12,7 +12,7 @@ mod pattern;
 mod plushie;
 
 use args::*;
-use pattern::Pattern;
+use pattern::{construction::PatternBuilder, Pattern};
 use plushie::Plushie;
 
 fn main() {
@@ -42,8 +42,26 @@ fn exec_dev_action(num: usize) {
     println!("dev action {num}");
     match num {
         1 => save_and_stuff_diamnond(),
+        2 => make_pillar(),
+        3 => make_ball(),
         _ => println!("no such action"),
     }
+}
+
+fn make_pillar() {
+    let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
+    println!("{pattern:?}");
+    let mut plushie = Plushie::from_pattern(pattern);
+    plushie.stuff();
+    save_mesh("generated/pillar.stl", plushie.to_mesh());
+}
+
+fn make_ball() {
+    let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
+    println!("{pattern:?}");
+    let mut plushie = Plushie::from_pattern(pattern);
+    plushie.stuff();
+    save_mesh("generated/pillar.stl", plushie.to_mesh());
 }
 
 fn save_and_stuff_diamnond() {

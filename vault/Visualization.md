@@ -13,10 +13,12 @@ NOT supported
 - shapes that require walls intersecting the vertical axis (source of pressure)
 - importing from STL
 
-# Implementation
+# Implementation (draft)
 
 Location of vertices is calculated with a [force-directed graph](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)
 
 
-attration x=distance d=desired distance
+attraction x=distance d=desired distance
 $f\left(x\right)=\frac{\left(x-d\right)^{3}}{\left(\frac{x}{2}+d\right)^{3}}\left\{x\ge0\right\}$
+
+![](2024-02-14-07-22-51.png)
