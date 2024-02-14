@@ -6,3 +6,15 @@ pub enum Stitch {
     Inc,
     Dec,
 }
+
+pub fn count_anchors(round: &Vec<Stitch>) -> usize {
+    let mut result = 0;
+    for stitch in round {
+        use Stitch::*;
+        result += match stitch {
+            Inc => 2,
+            Sc | Dec => 1,
+        }
+    }
+    result
+}

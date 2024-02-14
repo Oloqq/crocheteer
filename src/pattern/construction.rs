@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use super::{Pattern, Stitch};
+use super::{stitches::count_anchors, Pattern, Stitch};
 
 impl Pattern {
     pub fn from_file(path: PathBuf) -> Self {
@@ -23,6 +23,7 @@ pub struct PatternBuilder {
     starting_ring: usize,
     rounds: Vec<Vec<Stitch>>,
     has_error: Option<(usize, String)>,
+    last_round_anchors: usize,
     pub warnings: Vec<(usize, String)>,
 }
 
@@ -33,13 +34,7 @@ impl PatternBuilder {
             rounds: vec![],
             has_error: None,
             warnings: vec![],
-        }
-    }
-
-    fn stitches_to_fill(&self) -> usize {
-        match self.rounds.last() {
-            Some(round) => round.len(),
-            None => self.starting_ring,
+            last_round_anchors: starting_ring,
         }
     }
 
@@ -54,17 +49,22 @@ impl PatternBuilder {
     }
 
     pub fn round_like(mut self, repeat_this: &Vec<Stitch>) -> Self {
-        let stitches = self.stitches_to_fill();
+        let stitches = self.last_round_anchors;
         let repeats = stitches / repeat_this.len();
         let leftover = stitches % repeat_this.len();
         if leftover != 0 {
             self.warn(format!("Pattern won't be fully repeated in the row. Length of previous round: {}, length of the pattern: {}", stitches, repeat_this.len()))
         }
+
         let full_reps = repeat_this.iter().cycle().take(repeat_this.len() * repeats);
         let partial_rep = repeat_this.iter().take(leftover);
 
         self.rounds
-            .push(full_reps.chain(partial_rep).cloned().collect());
+            .push(full_reps.chain(partial_rep.clone()).cloned().collect());
+
+        let pattern_anchors = count_anchors(repeat_this);
+        let leftover_pattern: Vec<Stitch> = partial_rep.cloned().collect();
+        self.last_round_anchors = pattern_anchors * repeats + count_anchors(&leftover_pattern);
 
         self
     }
@@ -72,7 +72,7 @@ impl PatternBuilder {
     pub fn full_rounds(mut self, num: usize) -> Self {
         for _ in 0..num {
             self.rounds
-                .push((0..self.stitches_to_fill()).map(|_| Stitch::Sc).collect());
+                .push((0..self.last_round_anchors).map(|_| Stitch::Sc).collect());
         }
         self
     }
@@ -142,6 +142,19 @@ mod tests {
         assert_eq!(p.rounds[0], vec![Sc, Sc, Sc]);
         assert_eq!(p.warnings.len(), 1);
         assert!(p.warnings[0].0 == 1)
+    }
+
+    #[test]
+    fn test_round_like_with_increase() {
+        let mut p = PatternBuilder::new(3);
+
+        p = p.round_like(&vec![Inc, Inc, Inc]);
+        assert_eq!(p.rounds.len(), 1);
+        assert_eq!(p.rounds[0], vec![Inc, Inc, Inc]);
+
+        p = p.full_rounds(1);
+        assert_eq!(p.rounds.len(), 2);
+        assert_eq!(p.rounds[1], vec![Sc, Sc, Sc, Sc, Sc, Sc]);
     }
 
     #[test]
