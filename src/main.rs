@@ -50,22 +50,24 @@ fn exec_dev_action(num: usize) {
 
 fn make_pillar() {
     let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
-    println!("{pattern:?}");
+    // println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
     plushie.stuff();
     save_mesh("generated/pillar.stl", plushie.to_mesh());
 }
 
 fn make_ball() {
+    use Stitch::*;
     let pattern = PatternBuilder::new(6)
-        .full_rounds(4)
-        .round_like(&vec![])
+        .round_like(&vec![Inc])
+        .full_rounds(1)
+        .round_like(&vec![Dec])
         .build()
         .unwrap();
-    println!("{pattern:?}");
+    // println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
     plushie.stuff();
-    save_mesh("generated/pillar.stl", plushie.to_mesh());
+    save_mesh("generated/ball.stl", plushie.to_mesh());
 }
 
 fn save_and_stuff_diamnond() {
