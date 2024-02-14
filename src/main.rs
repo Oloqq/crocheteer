@@ -57,7 +57,11 @@ fn make_pillar() {
 }
 
 fn make_ball() {
-    let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
+    let pattern = PatternBuilder::new(6)
+        .full_rounds(4)
+        .round_like(&vec![])
+        .build()
+        .unwrap();
     println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
     plushie.stuff();
