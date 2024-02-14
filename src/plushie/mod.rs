@@ -29,23 +29,32 @@ impl Plushie {
 
         for i in 0..self.points.len() {
             let this = self.points[i];
-            // displacement[i] += repel_from_center(this) * time;
+            // displacement[i] += repel_from_center(this);
             for neibi in &self.edges[i] {
                 let neib = self.points[*neibi];
-                let diff: V = attract(this, neib, self.desired_stitch_distance) * time;
+                let diff: V = attract(this, neib, self.desired_stitch_distance);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
         }
 
+        let mut _total = 0.0;
         for i in self.fixed_num..self.points.len() {
-            self.points[i] += displacement[i];
+            _total += displacement[i].magnitude();
+            self.points[i] += displacement[i] * time;
         }
+        // println!("Total displacement: {_total}");
+
+        // let height = 5.0;
+        // let d = attract(self.points[1], Point::new(0.0, 0.0, 0.0), height);
+        // println!("d: {d}");
+        // self.points[1] += d * time;
+        self.points[1] += displacement[1] * time;
     }
 
     pub fn stuff(&mut self) {
-        for _ in 0..100 {
-            self.step(0.2);
+        for _ in 0..1000 {
+            self.step(1.0);
         }
     }
 }
@@ -59,10 +68,10 @@ fn attract(this: Point, other: Point, desired_distance: f32) -> V {
     -diff.normalize() * fx
 }
 
-fn repel_from_center(this: Point) -> V {
-    let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
-    let center_dist = level_origin_displacement.magnitude();
+// fn repel_from_center(this: Point) -> V {
+//     let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
+//     let center_dist = level_origin_displacement.magnitude();
 
-    const INCREASE_IF_GOES_THROUGH_PILLAR: f32 = 3.0;
-    level_origin_displacement.normalize() * INCREASE_IF_GOES_THROUGH_PILLAR / (center_dist + 0.2)
-}
+//     const INCREASE_IF_GOES_THROUGH_PILLAR: f32 = 3.0;
+//     level_origin_displacement.normalize() * INCREASE_IF_GOES_THROUGH_PILLAR / (center_dist + 0.2)
+// }

@@ -25,7 +25,13 @@ fn main() {
     if let Some(pattern_path) = args.show {
         let pattern = Pattern::from_file(pattern_path);
         let mut plushie = Plushie::from_pattern(pattern);
+        if args.verbose {
+            save_mesh("generated/before_stuffing.stl", plushie.to_mesh());
+        }
         plushie.stuff();
+        if args.verbose {
+            save_mesh("generated/after_stuffing.stl", plushie.to_mesh());
+        }
         save_mesh(args.output.to_str().unwrap(), plushie.to_mesh());
     }
 

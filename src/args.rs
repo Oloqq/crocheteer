@@ -11,4 +11,7 @@ pub struct Args {
 
     #[structopt(short, long, parse(from_os_str), default_value = "crochet_output.stl")]
     pub output: PathBuf,
+
+    #[structopt(short, long)]
+    pub verbose: bool,
 }

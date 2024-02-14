@@ -12,11 +12,11 @@ impl Plushie {
         const END_EDGE: usize = 1;
 
         let start = Point::origin();
-        let end = Point::new(0.0, pattern.rounds.len() as f32 + 2.0, 0.0);
+        let end = Point::new(0.0, pattern.rounds.len() as f32, 0.0);
 
         let mut points = vec![start, end];
         let mut edges: Vec<Vec<usize>> = vec![vec![], vec![]];
-        let mut height: f32 = 1.0;
+        let mut height: f32 = 0.0;
 
         points.append(&mut ring(pattern.starting_circle, height));
 
