@@ -1,7 +1,10 @@
 use std::fs;
 use std::path::PathBuf;
 
-use super::{stitches::count_anchors, Pattern, Stitch};
+use super::{
+    stitches::{count_anchors_consumed, count_anchors_produced},
+    Pattern, Stitch,
+};
 
 impl Pattern {
     pub fn from_file(path: PathBuf) -> Self {
@@ -38,8 +41,9 @@ impl PatternBuilder {
         }
     }
 
-    fn _error(&mut self, msg: String) {
+    fn error(&mut self, msg: String) {
         if self.has_error.is_none() {
+            self.warn(format!("ERROR: {msg}"));
             self.has_error = Some((self.rounds.len() + 1, msg));
         }
     }
@@ -49,11 +53,15 @@ impl PatternBuilder {
     }
 
     pub fn round_like(mut self, repeat_this: &Vec<Stitch>) -> Self {
-        let stitches = self.last_round_anchors;
-        let repeats = stitches / repeat_this.len();
-        let leftover = stitches % repeat_this.len();
+        let consumed = count_anchors_consumed(repeat_this);
+
+        let repeats = self.last_round_anchors / consumed;
+        let leftover = self.last_round_anchors % consumed;
         if leftover != 0 {
-            self.warn(format!("Pattern won't be fully repeated in the row. Length of previous round: {}, length of the pattern: {}", stitches, repeat_this.len()))
+            self.warn(format!("Pattern won't be fully repeated in the row. Length of previous round: {}, consumed by the pattern: {}", self.last_round_anchors, consumed));
+            if repeat_this.contains(&Stitch::Dec) {
+                self.error(format!("Pattern would overflow with a Dec. This is currently undefined behavior (to be fixed)"))
+            }
         }
 
         let full_reps = repeat_this.iter().cycle().take(repeat_this.len() * repeats);
@@ -62,9 +70,10 @@ impl PatternBuilder {
         self.rounds
             .push(full_reps.chain(partial_rep.clone()).cloned().collect());
 
-        let pattern_anchors = count_anchors(repeat_this);
+        let pattern_anchors = count_anchors_produced(repeat_this);
         let leftover_pattern: Vec<Stitch> = partial_rep.cloned().collect();
-        self.last_round_anchors = pattern_anchors * repeats + count_anchors(&leftover_pattern);
+        self.last_round_anchors =
+            pattern_anchors * repeats + count_anchors_produced(&leftover_pattern);
 
         self
     }
@@ -158,7 +167,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_round_like_with_decrease() {
         let mut p = PatternBuilder::new(3);
         p = p.round_like(&vec![Sc, Dec]);
@@ -168,8 +176,13 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_decrease_overflowing_the_round() {
-        todo!()
+        let mut p = PatternBuilder::new(3);
+        p = p.round_like(&vec![Sc, Sc, Dec]);
+        assert_eq!(p.rounds.len(), 1);
+        assert_eq!(p.rounds[0], vec![Sc, Sc, Dec]);
+        assert_eq!(p.warnings.len(), 2);
+        println!("{:?}", p.warnings);
+        assert!(p.has_error.is_some());
     }
 }
