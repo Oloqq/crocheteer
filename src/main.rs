@@ -44,6 +44,7 @@ fn exec_dev_action(num: usize) {
         1 => save_and_stuff_diamnond(),
         2 => make_pillar(),
         3 => make_ball(),
+        4 => make_big_ball(),
         _ => println!("no such action"),
     }
 }
@@ -68,6 +69,22 @@ fn make_ball() {
     let mut plushie = Plushie::from_pattern(pattern);
     plushie.stuff();
     save_mesh("generated/ball.stl", plushie.to_mesh());
+}
+
+fn make_big_ball() {
+    use Stitch::*;
+    let pattern = PatternBuilder::new(6)
+        .round_like(&vec![Inc])
+        .round_like(&vec![Sc, Inc])
+        .full_rounds(1)
+        .round_like(&vec![Sc, Dec])
+        .round_like(&vec![Dec])
+        .build()
+        .unwrap();
+    // println!("{pattern:?}");
+    let mut plushie = Plushie::from_pattern(pattern);
+    plushie.stuff();
+    save_mesh("generated/bigball.stl", plushie.to_mesh());
 }
 
 fn save_and_stuff_diamnond() {
