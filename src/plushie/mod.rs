@@ -7,6 +7,7 @@ pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
     points: Vec<Point>,
     edges: Vec<Vec<usize>>,
+    desired_stitch_distance: f32,
 }
 
 impl Plushie {
@@ -19,6 +20,7 @@ impl Plushie {
             fixed_num,
             points,
             edges,
+            desired_stitch_distance: 1.0,
         }
     }
 
@@ -27,10 +29,10 @@ impl Plushie {
 
         for i in 0..self.points.len() {
             let this = self.points[i];
-            displacement[i] += repel_from_center(this) * time;
+            // displacement[i] += repel_from_center(this) * time;
             for neibi in &self.edges[i] {
                 let neib = self.points[*neibi];
-                let diff: V = attract(this, neib) * time;
+                let diff: V = attract(this, neib, self.desired_stitch_distance) * time;
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
@@ -48,11 +50,13 @@ impl Plushie {
     }
 }
 
-fn attract(this: Point, other: Point) -> V {
+fn attract(this: Point, other: Point, desired_distance: f32) -> V {
     let diff = this - other;
-    // println!("{}", diff);
-    let a = diff.normalize() / 10.0 * diff.magnitude();
-    -a * 0.2
+    let x = diff.magnitude();
+    let d = desired_distance;
+
+    let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
+    -diff.normalize() * fx
 }
 
 fn repel_from_center(this: Point) -> V {

@@ -17,3 +17,6 @@ NOT supported
 
 Location of vertices is calculated with a [force-directed graph](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)
 
+
+attration x=distance d=desired distance
+$f\left(x\right)=\frac{\left(x-d\right)^{3}}{\left(\frac{x}{2}+d\right)^{3}}\left\{x\ge0\right\}$
