@@ -71,11 +71,8 @@ impl PatternBuilder {
 
     pub fn full_rounds(mut self, num: usize) -> Self {
         for _ in 0..num {
-            self.rounds.push(
-                (0..self.stitches_to_fill())
-                    .map(|_| Stitch::Single)
-                    .collect(),
-            );
+            self.rounds
+                .push((0..self.stitches_to_fill()).map(|_| Stitch::Sc).collect());
         }
         self
     }
@@ -123,29 +120,26 @@ mod tests {
     #[test]
     fn test_round_like() {
         let mut p = PatternBuilder::new(6);
-        let single_6 = vec![Single, Single, Single, Single, Single, Single];
+        let single_6 = vec![Sc, Sc, Sc, Sc, Sc, Sc];
         p = p.round_like(&single_6);
         assert_eq!(p.rounds.len(), 1);
         assert_eq!(p.rounds[0], single_6);
 
-        p = p.round_like(&vec![Single, Single, Single]);
+        p = p.round_like(&vec![Sc, Sc, Sc]);
         assert_eq!(p.rounds.len(), 2);
         assert_eq!(p.rounds[1], single_6);
 
-        p = p.round_like(&vec![Single, Single, Increase]);
+        p = p.round_like(&vec![Sc, Sc, Inc]);
         assert_eq!(p.rounds.len(), 3);
-        assert_eq!(
-            p.rounds[2],
-            vec![Single, Single, Increase, Single, Single, Increase]
-        );
+        assert_eq!(p.rounds[2], vec![Sc, Sc, Inc, Sc, Sc, Inc]);
     }
 
     #[test]
     fn test_round_like_with_leftovers() {
         let mut p = PatternBuilder::new(3);
-        p = p.round_like(&vec![Single, Single]);
+        p = p.round_like(&vec![Sc, Sc]);
         assert_eq!(p.rounds.len(), 1);
-        assert_eq!(p.rounds[0], vec![Single, Single, Single]);
+        assert_eq!(p.rounds[0], vec![Sc, Sc, Sc]);
         assert_eq!(p.warnings.len(), 1);
         assert!(p.warnings[0].0 == 1)
     }
@@ -154,9 +148,9 @@ mod tests {
     #[ignore]
     fn test_round_like_with_decrease() {
         let mut p = PatternBuilder::new(3);
-        p = p.round_like(&vec![Single, Decrease]);
+        p = p.round_like(&vec![Sc, Dec]);
         assert_eq!(p.rounds.len(), 1);
-        assert_eq!(p.rounds[0], vec![Single, Decrease]);
+        assert_eq!(p.rounds[0], vec![Sc, Dec]);
         assert_eq!(p.warnings.len(), 0);
     }
 

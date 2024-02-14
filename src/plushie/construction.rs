@@ -32,13 +32,13 @@ impl Plushie {
             let current_at_round_start = current;
             for stitch in round {
                 match stitch {
-                    Stitch::Single => {
+                    Stitch::Sc => {
                         edges[anchor].push(current);
                         edges.push(vec![current + 1]);
                         anchor += 1;
                         current += 1;
                     }
-                    Stitch::Increase => {
+                    Stitch::Inc => {
                         edges[anchor].push(current);
                         edges[anchor].push(current + 1);
                         edges.push(vec![current + 1]);
@@ -46,7 +46,7 @@ impl Plushie {
                         current += 2;
                         anchor += 1;
                     }
-                    Stitch::Decrease => {
+                    Stitch::Dec => {
                         edges[anchor].push(current);
                         edges[anchor + 1].push(current);
                         edges.push(vec![current + 1]);
@@ -89,11 +89,11 @@ mod tests {
 
     #[test]
     fn test_from_pattern() {
-        use Stitch::Single;
+        use Stitch::Sc;
         let p = Pattern {
             starting_circle: 4,
             ending_circle: 4,
-            rounds: vec![vec![Single, Single, Single, Single]],
+            rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
         assert_eq!(plushie.fixed_num, 2);
@@ -131,10 +131,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 4,
             ending_circle: 4,
-            rounds: vec![
-                vec![Single, Increase, Single, Single],
-                vec![Single, Decrease, Single, Single],
-            ],
+            rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
         assert_eq!(plushie.fixed_num, 2);

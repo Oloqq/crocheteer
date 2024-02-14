@@ -1,13 +1,9 @@
 pub mod construction;
+pub mod stitches;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
-pub enum Stitch {
-    Single,
-    Increase,
-    Decrease,
-}
+pub use self::stitches::Stitch;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Pattern {
@@ -26,10 +22,7 @@ mod tests {
         let p1 = Pattern {
             starting_circle: 4,
             ending_circle: 4,
-            rounds: vec![
-                vec![Single, Increase, Single, Single],
-                vec![Single, Decrease, Single, Single],
-            ],
+            rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
         let s = serde_yaml::to_string(&p1).unwrap();
         println!("{s}");

@@ -73,10 +73,7 @@ fn save_and_stuff_diamnond() {
     let p = Pattern {
         starting_circle: 4,
         ending_circle: 4,
-        rounds: vec![
-            vec![Single, Increase, Single, Single],
-            vec![Single, Decrease, Single, Single],
-        ],
+        rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
     };
     let mut plushie = Plushie::from_pattern(p);
 
