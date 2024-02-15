@@ -68,6 +68,8 @@ fn attract(this: Point, other: Point, desired_distance: f32) -> V {
     -diff.normalize() * fx
 }
 
+// calculate center of the round first
+// keep "round markers" in the Plushie, that is indexed where a new round starts
 // fn repel_from_center(this: Point) -> V {
 //     let level_origin_displacement = this - Point::new(0.0, this.y, 0.0);
 //     let center_dist = level_origin_displacement.magnitude();
