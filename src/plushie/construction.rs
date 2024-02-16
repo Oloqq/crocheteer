@@ -1,6 +1,7 @@
 use std::f32::consts::PI;
 
 use crate::common::*;
+use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
 use crate::plushie::Stuffing;
 
@@ -29,8 +30,10 @@ impl Plushie {
         let mut anchor = FIXED_NUM;
         let mut current = FIXED_NUM + pattern.starting_circle;
         let mut round_starts: Vec<usize> = vec![];
+        let mut round_counts: Vec<usize> = vec![];
         for round in pattern.rounds {
             round_starts.push(points.len());
+            round_counts.push(count_anchors_produced(&round));
             height += 1.0;
             let current_at_round_start = current;
             for stitch in round {
@@ -69,7 +72,7 @@ impl Plushie {
             points,
             edges,
             desired_stitch_distance: 1.0,
-            stuffing: Stuffing::PerRound(round_starts)
+            stuffing: Stuffing::PerRound(round_starts, round_counts),
         }
     }
 }
