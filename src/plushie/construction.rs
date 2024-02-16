@@ -73,6 +73,8 @@ impl Plushie {
             edges,
             desired_stitch_distance: 1.0,
             stuffing: Stuffing::PerRound(round_starts, round_counts),
+            // gravity: 0.0000001,
+            _gravity: 0.0,
         }
     }
 }

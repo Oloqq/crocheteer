@@ -17,6 +17,7 @@ pub struct Plushie {
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
     desired_stitch_distance: f32,
+    _gravity: f32,
 }
 
 impl Plushie {
@@ -31,6 +32,7 @@ impl Plushie {
             edges,
             desired_stitch_distance: 1.0,
             stuffing: Stuffing::None,
+            _gravity: 0.0,
         }
     }
 
@@ -61,9 +63,11 @@ impl Plushie {
         for i in self.fixed_num..self.points.len() {
             total += displacement[i];
             self.points[i] += displacement[i] * time;
+            // self.points[i].y = (self.points[i].y - self.gravity * time).max(0.0);
         }
+        // println!("{}", displacement.last().unwrap());
 
-        self.points[1].y += displacement[1].y * time + 1.2;
+        self.points[1].y += displacement[1].y * time;
     }
 
     pub fn animate(&mut self) {
