@@ -39,6 +39,69 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let selectedObject = null; // To keep track of the selected sphere
+
+function onMouseDown(event) {
+  // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the picking ray with the camera and mouse position
+  raycaster.setFromCamera(mouse, camera);
+
+  // Calculate objects intersecting the picking ray
+  const intersects = raycaster.intersectObjects(scene.children);
+
+  for (let i = 0; i < intersects.length; i++) {
+    if (intersects[i].object.geometry.type === 'SphereGeometry') {
+      selectedObject = intersects[i].object;
+      console.log(selectedObject);
+      break; // Assuming you want to select the first sphere intersected
+    }
+  }
+
+  if (selectedObject) {
+    updateDragPlane(); // Update the plane for dragging
+    controls.enabled = false;
+  }
+}
+window.addEventListener('mousedown', onMouseDown);
+
+const dragPlane = new THREE.Plane();
+const planeNormal = new THREE.Vector3(); // The plane's normal
+
+function updateDragPlane() {
+  planeNormal.copy(camera.position).normalize();
+  dragPlane.setFromNormalAndCoplanarPoint(planeNormal, selectedObject.position);
+}
+
+function onMouseMove(event) {
+  if (!selectedObject) return;
+
+  // Update mouse position
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the raycaster
+  raycaster.setFromCamera(mouse, camera);
+
+  // Find intersection with the plane
+  const intersection = new THREE.Vector3();
+  if (raycaster.ray.intersectPlane(dragPlane, intersection)) {
+    selectedObject.position.copy(intersection);
+  }
+}
+window.addEventListener('mousemove', onMouseMove);
+
+function onMouseUp(event) {
+  selectedObject = null; // Clear the selection
+  controls.enabled = true;
+}
+window.addEventListener('mouseup', onMouseUp);
+
+
 function main() {
   init();
 
