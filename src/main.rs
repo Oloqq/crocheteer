@@ -28,7 +28,7 @@ fn main() {
         if args.verbose {
             save_mesh("generated/before_stuffing.stl", plushie.to_mesh());
         }
-        plushie.stuff();
+        plushie.animate();
         if args.verbose {
             save_mesh("generated/after_stuffing.stl", plushie.to_mesh());
         }
@@ -53,7 +53,7 @@ fn make_pillar() {
     let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
     // println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
-    plushie.stuff();
+    plushie.animate();
     save_mesh("generated/pillar.stl", plushie.to_mesh());
 }
 
@@ -67,7 +67,7 @@ fn make_ball() {
         .unwrap();
     // println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
-    plushie.stuff();
+    plushie.animate();
     save_mesh("generated/ball.stl", plushie.to_mesh());
 }
 
@@ -83,7 +83,7 @@ fn make_big_ball() {
         .unwrap();
     // println!("{pattern:?}");
     let mut plushie = Plushie::from_pattern(pattern);
-    plushie.stuff();
+    plushie.animate();
     save_mesh("generated/bigball.stl", plushie.to_mesh());
 }
 
@@ -100,12 +100,12 @@ fn save_and_stuff_diamnond() {
         "generated/from_pattern/before_stuffing.stl",
         plushie.to_mesh(),
     );
-    plushie.stuff();
+    plushie.animate();
     save_mesh(
         "generated/from_pattern/after_stuffing.stl",
         plushie.to_mesh(),
     );
-    plushie.stuff();
+    plushie.animate();
     save_mesh(
         "generated/from_pattern/after_stuffing_again.stl",
         plushie.to_mesh(),
