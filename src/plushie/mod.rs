@@ -86,18 +86,21 @@ fn calculate_round_centers(round_starts: &Vec<usize>, points: &Vec<Point>) -> Ve
     let mut rounds = round_starts.iter().chain(pointslen);
     let first_round_start = rounds.next().unwrap();
     let mut next_round_start: usize = *rounds.next().expect("Expected at least one round");
-    let mut centers = vec![V::zeros()];
+    let mut centers = vec![];
     let mut current = V::zeros();
+    let mut cnt = 0;
     for (i, point) in points.iter().enumerate().skip(*first_round_start) {
         if i == next_round_start {
-            centers.push(current);
+            centers.push(current / cnt as f32);
             next_round_start = *rounds.next().unwrap();
             assert!(next_round_start > i);
             current = V::zeros();
+            cnt = 0;
         }
         current += point.coords;
+        cnt += 1;
     }
-    centers.push(current);
+    centers.push(current / cnt as f32);
     centers
 }
 
@@ -168,5 +171,35 @@ mod tests {
         assert!(res.x > 0.0);
         assert_eq!(res.y, 0.0);
         assert!(res.z > 0.0);
+    }
+
+    #[test]
+    fn test_calculate_round_centers_on_origin() {
+        let points = vec![
+            Point::new(-1.0, 0.0, -1.0),
+            Point::new(-1.0, 0.0, 1.0),
+            Point::new(1.0, 0.0, 1.0),
+            Point::new(1.0, 0.0, -1.0),
+            Point::new(-1.0, 0.0, -1.0),
+            Point::new(-1.0, 0.0, 1.0),
+            Point::new(1.0, 0.0, 1.0),
+            Point::new(1.0, 0.0, -1.0),
+        ];
+        let round_starts = vec![0, 4];
+        let res = calculate_round_centers(&round_starts, &points);
+        assert_eq!(res, vec![V::new(0.0, 0.0, 0.0), V::new(0.0, 0.0, 0.0)]);
+    }
+
+    #[test]
+    fn test_calculate_round_centers() {
+        let points = vec![
+            Point::new(-2.0, 0.0, -1.0),
+            Point::new(-2.0, 0.0, 2.0),
+            Point::new(2.0, 0.0, 2.0),
+            Point::new(2.0, 0.0, -1.0),
+        ];
+        let round_starts = vec![0];
+        let res = calculate_round_centers(&round_starts, &points);
+        assert_eq!(res, vec![V::new(0.0, 0.0, 0.5)]);
     }
 }
