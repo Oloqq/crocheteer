@@ -14,7 +14,7 @@ impl Plushie {
         const END_EDGE: usize = 1;
 
         let start = Point::origin();
-        let end = Point::new(0.0, pattern.rounds.len() as f32, 0.0);
+        let end = Point::new(0.0, pattern.rounds.len() as f32 + 1.0, 0.0);
 
         let mut points = vec![start, end];
         let mut edges: Vec<Vec<usize>> = vec![vec![], vec![]];

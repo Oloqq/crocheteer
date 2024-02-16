@@ -57,16 +57,17 @@ impl Plushie {
             ),
         }
 
-        let mut _total = 0.0;
+        let mut total = V::zeros();
         for i in self.fixed_num..self.points.len() {
-            _total += displacement[i].magnitude();
+            total += displacement[i];
             self.points[i] += displacement[i] * time;
         }
-        self.points[1] += displacement[1] * time;
+
+        self.points[1].y += displacement[1].y * time + 1.2;
     }
 
     pub fn animate(&mut self) {
-        for _ in 0..100 {
+        for _ in 0..1000 {
             self.step(1.0);
         }
     }
@@ -107,35 +108,35 @@ fn calculate_round_centers(round_starts: &Vec<usize>, points: &Vec<Point>) -> Ve
 fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
     let diff = point.coords - center;
     let diff_len = diff.magnitude();
-    println!("radius: {radius} diff_len {diff_len}");
+    // println!("radius: {radius} diff_len {diff_len}");
 
     if diff_len >= radius {
         V::zeros()
     } else {
-        println!("yeee");
-        diff.normalize() * 4.0
+        // println!("yeee");
+        diff.normalize()
     }
 }
 
-fn per_round_stuffing(
+fn push_rounds_offcenter(
+    centers: Vec<V>,
     round_starts: &Vec<usize>,
     round_counts: &Vec<usize>,
     points: &Vec<Point>,
     desired_stitch_distance: f32,
     displacement: &mut Vec<V>,
 ) {
-    let centers = calculate_round_centers(round_starts, points);
-    let mut centers = centers.iter();
-
+    let mut centers = centers.iter().peekable();
     let first_round_start = round_starts.first().expect("Expected at least one round");
     let pointslen = &[points.len()];
     let mut rounds = round_starts.iter().chain(pointslen);
     let mut round_counts = round_counts.iter();
     let mut next_round_start: usize = *rounds.next().unwrap();
     let mut current_round_count: usize = *round_counts.next().expect("Expected at least one round");
-    let mut current = centers.next().unwrap();
-    println!("{:?}", current_round_count);
+    let mut current = *centers.peek().unwrap();
+    // println!("{:?}", current_round_count);
     for (i, point) in points.iter().enumerate().skip(*first_round_start) {
+        // println!("i {i}");
         if i == next_round_start {
             next_round_start = *rounds.next().unwrap();
             current_round_count = *round_counts.next().unwrap_or(&points.len());
@@ -148,11 +149,34 @@ fn per_round_stuffing(
         // and link distance means unstressed distance between stitches
         // points should be pushed out until they reach radius of that circle
         // does pulling in make sense?
-        let circumference = current_round_count as f32 * desired_stitch_distance;
-        let radius = circumference / (2.0 * PI);
+
+        let radius = ideal_radius(current_round_count, desired_stitch_distance);
         let tmp = push_offcenter(point, current, radius);
         displacement[i] += tmp;
     }
+}
+
+fn ideal_radius(stitch_count: usize, desired_stitch_distance: f32) -> f32 {
+    let circumference = stitch_count as f32 * desired_stitch_distance;
+    circumference / (2.0 * PI)
+}
+
+fn per_round_stuffing(
+    round_starts: &Vec<usize>,
+    round_counts: &Vec<usize>,
+    points: &Vec<Point>,
+    desired_stitch_distance: f32,
+    displacement: &mut Vec<V>,
+) {
+    let centers = calculate_round_centers(round_starts, points);
+    push_rounds_offcenter(
+        centers,
+        round_starts,
+        round_counts,
+        points,
+        desired_stitch_distance,
+        displacement,
+    )
 }
 
 #[cfg(test)]
@@ -201,5 +225,35 @@ mod tests {
         let round_starts = vec![0];
         let res = calculate_round_centers(&round_starts, &points);
         assert_eq!(res, vec![V::new(0.0, 0.0, 0.5)]);
+    }
+
+    #[test]
+    fn test_ideal_radius() {
+        assert_eq!(ideal_radius(4, 1.0), 4.0 / (2.0 * PI));
+    }
+
+    #[test]
+    fn test_per_round_stuffing() {
+        let points = vec![
+            Point::new(-2.0, 0.0, -1.0),
+            Point::new(-2.0, 0.0, 2.0),
+            Point::new(2.0, 0.0, 2.0),
+            Point::new(2.0, 0.0, -1.0),
+        ];
+        let centers = vec![V::new(0.0, 0.0, 0.5)];
+        let mut displacement = vec![V::new(0.0, 0.0, 0.0); 4];
+        let round_starts: Vec<usize> = vec![0];
+        let round_counts: Vec<usize> = vec![4];
+        push_rounds_offcenter(
+            centers,
+            &round_starts,
+            &round_counts,
+            &points,
+            4.0,
+            &mut displacement,
+        );
+        for d in displacement {
+            assert!(d.magnitude() > 0.0);
+        }
     }
 }
