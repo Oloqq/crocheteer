@@ -7,6 +7,7 @@ export default class Plushie {
     this.stitchSpheres = [];
     this.stitchPositions = [];
     this.links = [];
+    this.dragged = null;
     for (let point of points_tmp) {
       let sph = create.sphere(point, 0.1);
       this.stitchPositions.push(sph.position);
@@ -26,6 +27,7 @@ export default class Plushie {
 
   drag(obj) {
     let id = this.getId(obj);
+    this.dragged = obj;
     simulation.send(`pos ${id} ${obj.position.x} ${obj.position.y} ${obj.position.z}`);
   }
 
@@ -37,17 +39,7 @@ export default class Plushie {
     this.drag(obj);
   }
 
-  parse(data) {
-    if (data.length != this.stitchSpheres.length) {
-      throw "WHYYYYY";
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      this.stitchPositions[i].x = data[i][0]
-      this.stitchPositions[i].y = data[i][1]
-      this.stitchPositions[i].z = data[i][2]
-    }
-
+  updateLinks() {
     for (let link of this.links) {
       if (link.geometry) link.geometry.dispose();
       if (link.material) link.material.dispose();
@@ -61,6 +53,37 @@ export default class Plushie {
         this.links.push(link);
       }
     }
+  }
+
+  parse(data) {
+    if (data.length != this.stitchSpheres.length) {
+      throw "WHYYYYY";
+    }
+
+    let id = undefined;
+    let save = undefined;
+    if (this.dragged) {
+      id = this.getId(this.dragged);
+      save = {};
+      save.x = this.dragged.position.x;
+      save.y = this.dragged.position.y;
+      save.z = this.dragged.position.z;
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      this.stitchPositions[i].x = data[i][0]
+      this.stitchPositions[i].y = data[i][1]
+      this.stitchPositions[i].z = data[i][2]
+    }
+
+    if (this.dragged) {
+      this.dragged.position.x = save.x;
+      this.dragged.position.y = save.y;
+      this.dragged.position.z = save.z;
+      this.dragged = null;
+    }
+
+    this.updateLinks();
   }
 }
 
