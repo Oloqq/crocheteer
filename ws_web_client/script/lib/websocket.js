@@ -8,7 +8,7 @@ export function controlViaWebsocket(address, world) {
   };
 
   ws.onmessage = function (event) {
-    console.log("Position data received: ", event.data);
+    // console.log("Position data received: ", event.data);
     world.parse(JSON.parse(event.data));
   };
 
@@ -21,14 +21,6 @@ export function send(text) {
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(text);
   } else {
-    console.error('WebSocket is not open.');
+    // console.error('WebSocket is not open.');
   }
 }
-
-// export function send(ws, text) {
-//   if (ws && ws.readyState === WebSocket.OPEN) {
-//     ws.send(text);
-//   } else {
-//     console.error('WebSocket is not open.');
-//   }
-// }

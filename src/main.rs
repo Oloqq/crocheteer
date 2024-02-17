@@ -15,7 +15,6 @@ mod ws_sim;
 use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
 use plushie::Plushie;
-use ws_sim::ball_sim::BallSimulation;
 use ws_sim::plushie_sim::PlushieSimulation;
 
 fn main() {

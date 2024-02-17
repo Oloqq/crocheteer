@@ -24,7 +24,10 @@ pub async fn serve_websocket(sim: impl Simulation) {
     }
 }
 
-fn handle_incoming(msg: Option<Result<Message, Error>>, simulation: &mut impl Simulation) {
+fn handle_incoming(
+    msg: Option<Result<Message, Error>>,
+    simulation: &mut impl Simulation,
+) -> Result<(), ()> {
     if let Some(msg_res) = msg {
         if let Ok(message) = msg_res {
             println!("Received a message: {:?}", message);
@@ -32,8 +35,9 @@ fn handle_incoming(msg: Option<Result<Message, Error>>, simulation: &mut impl Si
         } else {
             println!("Received not Ok message: {:?}, wtf?", msg_res);
         }
+        Ok(())
     } else {
-        println!("Received None, wtf?");
+        Err(())
     }
 }
 
@@ -53,7 +57,10 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
         let sleep_future = tokio::time::sleep_until(last_tick + interval_duration).fuse();
         pin_mut!(sleep_future);
         select! {
-            msg = incoming_msg => handle_incoming(msg, &mut simulation),
+            msg = incoming_msg => if handle_incoming(msg, &mut simulation).is_err() {
+                println!("Received None, quitting");
+                break;
+            },
             _ = sleep_future => {
                 let dt = 1.0;
                 if let Some(data) = simulation.step(dt) {

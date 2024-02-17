@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use super::sim::{Data, Simulation};
 
 #[derive(Clone)]

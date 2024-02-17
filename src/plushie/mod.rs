@@ -1,21 +1,23 @@
 use std::f32::consts::PI;
 
+use serde_derive::Serialize;
+
 use super::common::*;
 
 mod construction;
 mod conversions;
 
 #[allow(unused)]
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub enum Stuffing {
     None,
     PerRound(Vec<usize>, Vec<usize>),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
-    points: Vec<Point>,
+    pub points: Vec<Point>,
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
     desired_stitch_distance: f32,
@@ -38,7 +40,7 @@ impl Plushie {
         }
     }
 
-    fn step(&mut self, time: f32) {
+    pub fn step(&mut self, time: f32) {
         let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
 
         for i in 0..self.points.len() {

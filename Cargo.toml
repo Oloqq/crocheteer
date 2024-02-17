@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nalgebra = "0.32.3"
+nalgebra = { version = "0.32.3", features = ["serde-serialize"] }
 pretty_assertions = "1.4.0"
 serde = { version = "1.0.196", features = ["derive"] }
 serde_derive = "1.0.196"

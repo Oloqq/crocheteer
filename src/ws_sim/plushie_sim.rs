@@ -1,15 +1,19 @@
-use crate::plushie::Plushie;
+use crate::{common::Point, plushie::Plushie};
 
 use super::sim::{Data, Simulation};
 
 #[derive(Clone)]
 pub struct PlushieControls {
     paused: bool,
+    advance: usize,
 }
 
 impl PlushieControls {
     fn new() -> Self {
-        Self { paused: false }
+        Self {
+            paused: true,
+            advance: 1,
+        }
     }
 }
 
@@ -27,24 +31,25 @@ impl PlushieSimulation {
         }
     }
 
-    fn update(&mut self, dt: f32) {
-        // self.plushie
-    }
-
-    fn get_data(&self) -> [f32; 3] {
-        // self.ball_pos
-        todo!();
+    fn get_data(&self) -> &Vec<Point> {
+        &self.plushie.points
     }
 }
 
 impl Simulation for PlushieSimulation {
     fn step(&mut self, dt: f32) -> Option<Data> {
-        if self.controls.paused {
+        if self.controls.paused && self.controls.advance == 0 {
             None
         } else {
-            self.update(dt);
+            if self.controls.advance > 0 {
+                self.controls.advance -= 1;
+            }
 
-            Some(serde_json::json!(self.get_data()).to_string())
+            self.plushie.step(dt);
+
+            let serialized = serde_json::json!(self.get_data()).to_string();
+            // println!("serialized: {serialized}");
+            Some(serialized)
         }
     }
 
@@ -53,6 +58,7 @@ impl Simulation for PlushieSimulation {
         match msg {
             "pause" => controls.paused = true,
             "resume" => controls.paused = false,
+            "advance" => controls.advance += 1,
             _ => println!("Unexpected msg: {msg}"),
         }
     }
