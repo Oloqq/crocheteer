@@ -15,6 +15,7 @@ mod ws_sim;
 use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
 use plushie::Plushie;
+use ws_sim::ball_sim::BallSimulation;
 
 fn main() {
     let args = Args::from_args();
@@ -32,7 +33,8 @@ fn main() {
         }
         save_mesh(args.output.to_str().unwrap(), plushie.to_mesh());
     } else if args.ws {
-        serve_websocket();
+        let sim = BallSimulation::new();
+        serve_websocket(sim);
     }
 }
 

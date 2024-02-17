@@ -1,4 +1,5 @@
-mod ball_sim;
+pub mod ball_sim;
+pub mod plushie_sim;
 mod sim;
 
 use futures_util::FutureExt;
@@ -10,17 +11,16 @@ use tokio_tungstenite::accept_async;
 use tokio_tungstenite::tungstenite::protocol::Message;
 use tokio_tungstenite::tungstenite::Error;
 
-use self::ball_sim::{BallControls, BallSimulation};
 use self::sim::*;
 
 #[tokio::main]
-pub async fn serve_websocket() {
+pub async fn serve_websocket(sim: impl Simulation) {
     let try_socket = TcpListener::bind("127.0.0.1:8080").await;
     let listener = try_socket.expect("Failed to bind");
     println!("Listening on: ws://127.0.0.1:8080");
 
     while let Ok((stream, _)) = listener.accept().await {
-        tokio::spawn(handle_connection::<BallSimulation>(stream));
+        tokio::spawn(handle_connection(stream, sim.clone()));
     }
 }
 
@@ -37,15 +37,14 @@ fn handle_incoming(msg: Option<Result<Message, Error>>, simulation: &mut impl Si
     }
 }
 
-async fn handle_connection<S: Simulation>(stream: tokio::net::TcpStream) {
+async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simulation) {
     let ws_stream = accept_async(stream)
         .await
         .expect("Error during the websocket handshake occurred");
     println!("New WebSocket connection");
 
     let (mut write, mut read) = ws_stream.split();
-
-    let mut simulation = S::new();
+    let mut simulation = simulation;
     let mut interval_duration = Duration::from_millis(17);
     let mut last_tick = Instant::now();
 

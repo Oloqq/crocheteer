@@ -1,47 +1,43 @@
+use crate::plushie::Plushie;
+
 use super::sim::{Data, Simulation};
 
 #[derive(Clone)]
-pub struct BallControls {
+pub struct PlushieControls {
     paused: bool,
 }
 
-impl BallControls {
+impl PlushieControls {
     fn new() -> Self {
         Self { paused: false }
     }
 }
 
 #[derive(Clone)]
-pub struct BallSimulation {
-    controls: BallControls,
-    ball_pos: [f32; 3],
-    dy: f32,
+pub struct PlushieSimulation {
+    controls: PlushieControls,
+    plushie: Plushie,
 }
 
-impl BallSimulation {
-    pub fn new() -> Self {
+impl PlushieSimulation {
+    fn new() -> Self {
         Self {
-            ball_pos: [1.0, 0.5, 0.0],
-            dy: 1.0,
-            controls: BallControls::new(),
+            controls: PlushieControls::new(),
+            plushie: todo!(),
         }
     }
 
     fn update(&mut self, dt: f32) {
-        self.ball_pos[1] += 0.1 * self.dy * dt;
-        if self.ball_pos[1] > 5.0 {
-            self.dy = -1.0;
-        } else if self.ball_pos[1] < 0.0 {
-            self.dy = 1.0;
-        }
+        // self.plushie
     }
 
     fn get_data(&self) -> [f32; 3] {
-        self.ball_pos
+        // self.ball_pos
+        todo!();
     }
 }
 
-impl Simulation for BallSimulation {
+impl Simulation for PlushieSimulation {
     fn step(&mut self, dt: f32) -> Option<Data> {
         if self.controls.paused {
             None

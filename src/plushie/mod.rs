@@ -6,11 +6,13 @@ mod construction;
 mod conversions;
 
 #[allow(unused)]
+#[derive(Clone)]
 pub enum Stuffing {
     None,
     PerRound(Vec<usize>, Vec<usize>),
 }
 
+#[derive(Clone)]
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
     points: Vec<Point>,
