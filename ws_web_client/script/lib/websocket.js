@@ -8,8 +8,8 @@ export function controlViaWebsocket(address, world) {
   };
 
   ws.onmessage = function (event) {
-    // console.log("Position data received: ", event.data);
-    world.parse(JSON.parse(event.data));
+    let dict = JSON.parse(event.data);
+    world.parseMessage(dict["key"], dict["dat"]);
   };
 
   ws.onerror = function (error) {

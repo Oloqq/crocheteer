@@ -1,7 +1,4 @@
-use crate::{
-    common::{Point, V},
-    plushie::Plushie,
-};
+use crate::{common::Point, plushie::Plushie};
 
 use super::sim::{Data, Simulation};
 
@@ -9,6 +6,7 @@ use super::sim::{Data, Simulation};
 pub struct PlushieControls {
     paused: bool,
     advance: usize,
+    need_init: bool,
 }
 
 impl PlushieControls {
@@ -16,6 +14,7 @@ impl PlushieControls {
         Self {
             paused: true,
             advance: 1,
+            need_init: true,
         }
     }
 }
@@ -34,13 +33,28 @@ impl PlushieSimulation {
         }
     }
 
-    fn get_data(&self) -> &Vec<Point> {
-        &self.plushie.points
+    fn get_update_data(&self) -> serde_json::Value {
+        serde_json::json!({
+            "key": "upd",
+            "dat": serde_json::json!(&self.plushie.points)
+        })
+    }
+
+    fn get_init_data(&self) -> serde_json::Value {
+        serde_json::json!({
+            "key": "ini",
+            "dat": serde_json::json!(self.plushie)
+        })
     }
 }
 
 impl Simulation for PlushieSimulation {
     fn step(&mut self, dt: f32) -> Option<Data> {
+        if self.controls.need_init {
+            self.controls.need_init = false;
+            return Some(self.get_init_data().to_string());
+        }
+
         if self.controls.paused && self.controls.advance == 0 {
             None
         } else {
@@ -50,7 +64,7 @@ impl Simulation for PlushieSimulation {
 
             self.plushie.step(dt);
 
-            let serialized = serde_json::json!(self.get_data()).to_string();
+            let serialized = self.get_update_data().to_string();
             // println!("serialized: {serialized}");
             Some(serialized)
         }
