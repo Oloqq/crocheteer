@@ -27,7 +27,7 @@ function onMouseDown(event) {
   if (selectedObject) {
     updateDragPlane(); // Update the plane for dragging
     app.controls.enabled = false;
-    // send("pause");
+    send("pause");
   }
 }
 window.addEventListener('mousedown', onMouseDown);
@@ -61,6 +61,6 @@ window.addEventListener('mousemove', onMouseMove);
 function onMouseUp(event) {
   selectedObject = null; // Clear the selection
   app.controls.enabled = true;
-  // send("resume");
+  send("resume");
 }
 window.addEventListener('mouseup', onMouseUp);

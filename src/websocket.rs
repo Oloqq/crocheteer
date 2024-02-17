@@ -19,7 +19,7 @@ pub async fn websocket_stuff() {
 }
 
 fn calc_data(state: &mut ([f32; 3], f32)) -> [f32; 3] {
-    state.0[1] += 0.3 * state.1;
+    state.0[1] += 0.1 * state.1;
     if state.0[1] > 5.0 {
         state.1 = -1.0;
     } else if state.0[1] < 0.0 {
