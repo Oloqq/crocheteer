@@ -16,24 +16,31 @@ use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
 use plushie::Plushie;
 use ws_sim::ball_sim::BallSimulation;
+use ws_sim::plushie_sim::PlushieSimulation;
 
 fn main() {
     let args = Args::from_args();
     if let Some(num) = args.dev {
         exec_dev_action(num);
-    } else if let Some(pattern_path) = args.show {
+        return;
+    }
+
+    if let Some(pattern_path) = args.pattern {
         let pattern = Pattern::from_file(pattern_path);
         let mut plushie = Plushie::from_pattern(pattern);
-        if args.verbose {
-            save_mesh("generated/before_stuffing.stl", plushie.to_mesh());
+
+        if let Some(stl_path) = args.stl {
+            plushie.animate();
+            save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
+        } else if args.ws {
+            unimplemented!();
+            // let sim = PlushieSimulation::from(plushie);
+            // serve_websocket(sim);
         }
-        plushie.animate();
-        if args.verbose {
-            save_mesh("generated/after_stuffing.stl", plushie.to_mesh());
-        }
-        save_mesh(args.output.to_str().unwrap(), plushie.to_mesh());
     } else if args.ws {
-        let sim = BallSimulation::new();
+        let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
+        let plushie = Plushie::from_pattern(pattern);
+        let sim = PlushieSimulation::from(plushie);
         serve_websocket(sim);
     }
 }

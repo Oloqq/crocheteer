@@ -20,10 +20,10 @@ pub struct PlushieSimulation {
 }
 
 impl PlushieSimulation {
-    fn new() -> Self {
+    pub fn from(plushie: Plushie) -> Self {
         Self {
             controls: PlushieControls::new(),
-            plushie: todo!(),
+            plushie,
         }
     }
 

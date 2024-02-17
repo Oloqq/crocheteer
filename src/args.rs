@@ -7,10 +7,10 @@ pub struct Args {
     pub dev: Option<usize>,
 
     #[structopt(short, long, parse(from_os_str))]
-    pub show: Option<PathBuf>,
+    pub pattern: Option<PathBuf>,
 
-    #[structopt(short, long, parse(from_os_str), default_value = "crochet_output.stl")]
-    pub output: PathBuf,
+    #[structopt(short, long, parse(from_os_str))]
+    pub stl: Option<PathBuf>,
 
     #[structopt(short, long)]
     /// Run a websocket server for visualization
