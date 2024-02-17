@@ -1,4 +1,4 @@
-import * as create from "./create";
+import * as create from "./lib/create";
 
 export default class Plushie {
   constructor() {

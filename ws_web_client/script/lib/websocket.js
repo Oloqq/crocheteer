@@ -1,6 +1,6 @@
 let ws = undefined;
 
-export function controlViaWebsocket(address, plushie) {
+export function controlViaWebsocket(address, world) {
   ws = new WebSocket(address);
 
   ws.onopen = function (event) {
@@ -9,10 +9,7 @@ export function controlViaWebsocket(address, plushie) {
 
   ws.onmessage = function (event) {
     console.log("Position data received: ", event.data);
-    const s1pos = JSON.parse(event.data);
-    plushie.s1.position.x = s1pos[0];
-    plushie.s1.position.y = s1pos[1];
-    plushie.s1.position.z = s1pos[2];
+    world.parse(JSON.parse(event.data));
   };
 
   ws.onerror = function (error) {
