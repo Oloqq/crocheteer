@@ -6,6 +6,7 @@ use super::common::*;
 
 mod construction;
 mod conversions;
+pub mod examples;
 
 #[allow(unused)]
 #[derive(Clone, Serialize)]
@@ -165,7 +166,7 @@ fn push_rounds_offcenter(
 
         let radius = ideal_radius(current_round_count, desired_stitch_distance);
         let tmp = push_offcenter(point, current, radius);
-        println!("{tmp:?} {current_round_count:?} {point:?} {current:?} {radius:?}");
+        // println!("{tmp:?} {current_round_count:?} {point:?} {current:?} {radius:?}");
         displacement[i] += tmp;
     }
 }
@@ -183,8 +184,8 @@ fn per_round_stuffing(
     displacement: &mut Vec<V>,
 ) {
     let centers = calculate_round_centers(round_starts, points);
-    println!("{round_counts:?}");
-    println!("{centers:?}");
+    // println!("{round_counts:?}");
+    // println!("{centers:?}");
     push_rounds_offcenter(
         centers,
         round_starts,

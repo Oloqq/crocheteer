@@ -14,6 +14,7 @@ mod ws_sim;
 
 use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
+use plushie::examples;
 use plushie::Plushie;
 use ws_sim::plushie_sim::PlushieSimulation;
 
@@ -37,16 +38,7 @@ fn main() {
             // serve_websocket(sim);
         }
     } else if args.ws {
-        use Stitch::*;
-        let pattern = PatternBuilder::new(6)
-            .round_like(&vec![Inc])
-            .full_rounds(1)
-            .round_like(&vec![Dec])
-            .build()
-            .unwrap();
-        let plushie = Plushie::from_pattern(pattern);
-        // save_mesh("generated/before_stuffing.stl", plushie.to_mesh());
-
+        let plushie = examples::pillar();
         let sim = PlushieSimulation::from(plushie);
         serve_websocket(sim);
     }
@@ -64,39 +56,19 @@ fn exec_dev_action(num: usize) {
 }
 
 fn make_pillar() {
-    let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
-    // println!("{pattern:?}");
-    let mut plushie = Plushie::from_pattern(pattern);
+    let mut plushie = examples::pillar();
     plushie.animate();
     save_mesh("generated/pillar.stl", plushie.to_mesh());
 }
 
 fn make_ball() {
-    use Stitch::*;
-    let pattern = PatternBuilder::new(6)
-        .round_like(&vec![Inc])
-        .full_rounds(1)
-        .round_like(&vec![Dec])
-        .build()
-        .unwrap();
-    // println!("{pattern:?}");
-    let mut plushie = Plushie::from_pattern(pattern);
+    let mut plushie = examples::ball();
     plushie.animate();
     save_mesh("generated/ball.stl", plushie.to_mesh());
 }
 
 fn make_big_ball() {
-    use Stitch::*;
-    let pattern = PatternBuilder::new(6)
-        .round_like(&vec![Inc])
-        .round_like(&vec![Sc, Inc])
-        .full_rounds(1)
-        .round_like(&vec![Sc, Dec])
-        .round_like(&vec![Dec])
-        .build()
-        .unwrap();
-    // println!("{pattern:?}");
-    let mut plushie = Plushie::from_pattern(pattern);
+    let mut plushie = examples::bigball();
     plushie.animate();
     save_mesh("generated/bigball.stl", plushie.to_mesh());
 }
