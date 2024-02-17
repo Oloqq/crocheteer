@@ -1,5 +1,7 @@
+let ws = undefined;
+
 export function controlViaWebsocket(address, plushie) {
-  const ws = new WebSocket(address);
+  ws = new WebSocket(address);
 
   ws.onopen = function (event) {
     console.log("Connected to WebSocket server");
@@ -17,3 +19,19 @@ export function controlViaWebsocket(address, plushie) {
     console.log("WebSocket error: ", error);
   };
 }
+
+export function send(text) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(text);
+  } else {
+    console.error('WebSocket is not open.');
+  }
+}
+
+// export function send(ws, text) {
+//   if (ws && ws.readyState === WebSocket.OPEN) {
+//     ws.send(text);
+//   } else {
+//     console.error('WebSocket is not open.');
+//   }
+// }

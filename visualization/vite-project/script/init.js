@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { send } from './websocket';
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -48,6 +49,7 @@ function initScene() {
 
 function initGui() {
   const guiControls = {
+    paused: false,
     showXYGrid: true,
     showYZGrid: false,
     showXZGrid: false,
@@ -57,12 +59,15 @@ function initGui() {
     app.controls.reset();
   }
 
-  function togglePause() {
-  }
-
   const gui = app.gui;
 
-  gui.add({ togglePause }, 'togglePause').name('Pause/resume');
+  gui.add(guiControls, 'paused').name('Pause/resume').onChange((value) => {
+    if (value) {
+      send("pause");
+    } else {
+      send("resume");
+    }
+  });
   gui.add({ resetCamera }, 'resetCamera').name('Reset camera');
   gui.add(guiControls, 'showXYGrid').name('Show XY Grid').onChange((value) => {
     gridHelperXY.visible = value; // Toggle visibility based on the GUI control

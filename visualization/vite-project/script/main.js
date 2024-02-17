@@ -1,7 +1,7 @@
-import * as THREE from 'three';
 import { app } from "./init";
 import Plushie from './plushie';
 import { controlViaWebsocket } from './websocket';
+import "./interaction";
 
 function animate() {
   requestAnimationFrame(animate);

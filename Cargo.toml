@@ -17,3 +17,4 @@ structopt = "0.3.26"
 tokio = { version = "1", features = ["full"] }
 tokio-tungstenite = "0.21.0"
 futures-util = "0.3"
+pin-utils = "0.1.0"

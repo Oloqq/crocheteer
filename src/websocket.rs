@@ -1,5 +1,7 @@
+use futures_util::FutureExt;
 // use futures_util::{SinkExt, StreamExt};
-use futures_util::{SinkExt, StreamExt, TryStreamExt};
+use futures_util::{select, sink::SinkExt, stream::StreamExt};
+use pin_utils::pin_mut;
 use tokio::net::TcpListener;
 use tokio::time::{sleep_until, Duration, Instant};
 use tokio_tungstenite::accept_async;
@@ -36,36 +38,39 @@ async fn handle_connection(stream: tokio::net::TcpStream) {
 
     let mut state = ([1.0, 0.5, 0.0], 1.0);
     let mut paused = false;
+    let mut interval_duration = Duration::from_millis(17);
+    let mut last_tick = Instant::now();
 
     loop {
-        let start = Instant::now();
-
-        if let Ok(Some(message)) = read.try_next().await {
-            match message {
-                Message::Text(txt) => {
-                    if txt == "pause" {
-                        paused = true;
-                    } else if txt == "resume" {
-                        paused = false;
+        let mut incoming_msg = read.next().fuse();
+        let sleep_future = tokio::time::sleep_until(last_tick + interval_duration).fuse();
+        pin_mut!(sleep_future); // Pin the sleep future
+        select! {
+            msg = incoming_msg => {
+                if let Some(Ok(message)) = msg {
+                    match message.to_string().as_str() {
+                        "pause" => paused = true,
+                        "resume" => paused = false,
+                        _ => ()
                     }
-                    // Process any other messages here
+                    // Handle incoming message
+                    println!("Received a message: {:?}", message);
                 }
-                _ => {}
+            },
+            _ = sleep_future => {
+                if !paused {
+                    let pos_data = serde_json::json!(calc_data(&mut state)).to_string();
+                    println!("{pos_data}");
+
+                    if write.send(Message::Text(pos_data)).await.is_err() {
+                        println!("Connection done");
+                        break;
+                    }
+                }
+                let computation_time = last_tick.elapsed();
+                last_tick = Instant::now();
+                interval_duration = Duration::from_millis(17).saturating_sub(computation_time);
             }
-        }
-
-        if !paused {
-            let pos_data = serde_json::json!(calc_data(&mut state)).to_string();
-
-            if write.send(Message::Text(pos_data)).await.is_err() {
-                println!("Connection done");
-                break;
-            }
-        }
-
-        let elapsed = start.elapsed();
-        if let Some(remaining_sleep_duration) = Duration::from_millis(17).checked_sub(elapsed) {
-            sleep_until(start + remaining_sleep_duration).await;
         }
     }
 }

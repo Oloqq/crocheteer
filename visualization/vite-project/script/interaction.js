@@ -1,3 +1,6 @@
+import { app } from "./init";
+import * as THREE from 'three';
+import { send } from "./websocket";
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let selectedObject = null; // To keep track of the selected sphere
@@ -23,7 +26,8 @@ function onMouseDown(event) {
 
   if (selectedObject) {
     updateDragPlane(); // Update the plane for dragging
-    controls.enabled = false;
+    app.controls.enabled = false;
+    // send("pause");
   }
 }
 window.addEventListener('mousedown', onMouseDown);
@@ -32,7 +36,7 @@ const dragPlane = new THREE.Plane();
 const planeNormal = new THREE.Vector3(); // The plane's normal
 
 function updateDragPlane() {
-  planeNormal.copy(camera.position).normalize();
+  planeNormal.copy(app.camera.position).normalize();
   dragPlane.setFromNormalAndCoplanarPoint(planeNormal, selectedObject.position);
 }
 
@@ -44,7 +48,7 @@ function onMouseMove(event) {
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   // Update the raycaster
-  raycaster.setFromCamera(mouse, camera);
+  raycaster.setFromCamera(mouse, app.camera);
 
   // Find intersection with the plane
   const intersection = new THREE.Vector3();
@@ -57,5 +61,6 @@ window.addEventListener('mousemove', onMouseMove);
 function onMouseUp(event) {
   selectedObject = null; // Clear the selection
   app.controls.enabled = true;
+  // send("resume");
 }
 window.addEventListener('mouseup', onMouseUp);
