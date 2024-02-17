@@ -1,9 +1,7 @@
 let ws = undefined;
-let tmpworld = undefined;
 
 export function controlViaWebsocket(address, world) {
   ws = new WebSocket(address);
-  tmpworld = world;
 
   ws.onopen = function (event) {
     console.log("Connected to WebSocket server");
@@ -17,11 +15,6 @@ export function controlViaWebsocket(address, world) {
   ws.onerror = function (error) {
     console.log("WebSocket error: ", error);
   };
-}
-
-export function bruh(obj) {
-  let id = tmpworld.getId(obj);
-  send(`pos ${id} ${obj.position.x} ${obj.position.y} ${obj.position.z}`);
 }
 
 export function send(text) {

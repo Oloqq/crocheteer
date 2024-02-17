@@ -1,4 +1,5 @@
 import * as create from "./lib/create";
+import * as simulation from "./lib/simulation";
 
 export default class Plushie {
   constructor() {
@@ -21,6 +22,19 @@ export default class Plushie {
 
   getId(obj) {
     return this.stitchSpheres.findIndex((o) => o == obj);
+  }
+
+  drag(obj) {
+    let id = this.getId(obj);
+    simulation.send(`pos ${id} ${obj.position.x} ${obj.position.y} ${obj.position.z}`);
+  }
+
+  mouseMove(obj) {
+    this.drag(obj);
+  }
+
+  mouseUp(obj) {
+    this.drag(obj);
   }
 
   parse(data) {
