@@ -1,7 +1,7 @@
-use crate::common::*;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::pattern::Stitch;
+use crate::{common::*, websocket::websocket_stuff};
 
 extern crate nalgebra as na;
 
@@ -10,6 +10,7 @@ mod common;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
+mod websocket;
 
 use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
@@ -45,6 +46,7 @@ fn exec_dev_action(num: usize) {
         2 => make_pillar(),
         3 => make_ball(),
         4 => make_big_ball(),
+        5 => websocket_stuff(),
         _ => println!("no such action"),
     }
 }
