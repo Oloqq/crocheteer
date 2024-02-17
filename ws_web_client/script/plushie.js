@@ -19,6 +19,10 @@ export default class Plushie {
     }
   }
 
+  getId(obj) {
+    return this.stitchSpheres.findIndex((o) => o == obj);
+  }
+
   parse(data) {
     if (data.length != this.stitchSpheres.length) {
       throw "WHYYYYY";

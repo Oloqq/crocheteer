@@ -1,6 +1,6 @@
 import { app } from "./init";
 import * as THREE from 'three';
-import { send } from "./websocket";
+import { send, bruh } from "./websocket";
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let selectedObject = null; // To keep track of the selected sphere
@@ -27,7 +27,7 @@ function onMouseDown(event) {
   if (selectedObject) {
     updateDragPlane(); // Update the plane for dragging
     app.controls.enabled = false;
-    send("pause");
+    // send("pause");
   }
 }
 window.addEventListener('mousedown', onMouseDown);
@@ -54,6 +54,7 @@ function onMouseMove(event) {
   const intersection = new THREE.Vector3();
   if (raycaster.ray.intersectPlane(dragPlane, intersection)) {
     selectedObject.position.copy(intersection);
+    bruh(selectedObject);
   }
 }
 window.addEventListener('mousemove', onMouseMove);

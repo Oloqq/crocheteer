@@ -1,4 +1,7 @@
-use crate::{common::Point, plushie::Plushie};
+use crate::{
+    common::{Point, V},
+    plushie::Plushie,
+};
 
 use super::sim::{Data, Simulation};
 
@@ -55,11 +58,21 @@ impl Simulation for PlushieSimulation {
 
     fn react(&mut self, msg: &str) {
         let controls = &mut self.controls;
-        match msg {
-            "pause" => controls.paused = true,
-            "resume" => controls.paused = false,
-            "advance" => controls.advance += 1,
-            _ => println!("Unexpected msg: {msg}"),
+        if msg.starts_with("pos") {
+            let tokens: Vec<&str> = msg.split(" ").collect();
+            assert!(tokens.len() == 5);
+            let id: usize = tokens[1].parse().unwrap();
+            let x: f32 = tokens[2].parse().unwrap();
+            let y: f32 = tokens[3].parse().unwrap();
+            let z: f32 = tokens[4].parse().unwrap();
+            self.plushie.points[id] = Point::new(x, y, z);
+        } else {
+            match msg {
+                "pause" => controls.paused = true,
+                "resume" => controls.paused = false,
+                "advance" => controls.advance += 1,
+                _ => println!("Unexpected msg: {msg}"),
+            }
         }
     }
 }

@@ -52,16 +52,16 @@ impl Plushie {
                 displacement[*neibi] -= diff;
             }
         }
-        match &self.stuffing {
-            Stuffing::None => (),
-            Stuffing::PerRound(round_starts, round_counts) => per_round_stuffing(
-                &round_starts,
-                &round_counts,
-                &self.points,
-                self.desired_stitch_distance,
-                &mut displacement,
-            ),
-        }
+        // match &self.stuffing {
+        //     Stuffing::None => (),
+        //     Stuffing::PerRound(round_starts, round_counts) => per_round_stuffing(
+        //         &round_starts,
+        //         &round_counts,
+        //         &self.points,
+        //         self.desired_stitch_distance,
+        //         &mut displacement,
+        //     ),
+        // }
 
         let mut total = V::zeros();
         for i in self.fixed_num..self.points.len() {
