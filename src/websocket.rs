@@ -1,4 +1,5 @@
-use futures_util::SinkExt;
+// use futures_util::{SinkExt, StreamExt};
+use futures_util::{SinkExt, StreamExt, TryStreamExt};
 use tokio::net::TcpListener;
 use tokio::time::{sleep_until, Duration, Instant};
 use tokio_tungstenite::accept_async;
@@ -16,7 +17,7 @@ pub async fn websocket_stuff() {
 }
 
 fn calc_data(state: &mut ([f32; 3], f32)) -> [f32; 3] {
-    state.0[1] += 1.0 * state.1;
+    state.0[1] += 0.3 * state.1;
     if state.0[1] > 5.0 {
         state.1 = -1.0;
     } else if state.0[1] < 0.0 {
@@ -31,20 +32,35 @@ async fn handle_connection(stream: tokio::net::TcpStream) {
         .expect("Error during the websocket handshake occurred");
     println!("New WebSocket connection");
 
-    let mut ws_stream = ws_stream;
+    let (mut write, mut read) = ws_stream.split();
 
-    // Example position data to be sent
     let mut state = ([1.0, 0.5, 0.0], 1.0);
+    let mut paused = false;
 
-    // Send position data to the client
     loop {
         let start = Instant::now();
 
-        let pos_data = serde_json::json!(calc_data(&mut state)).to_string();
+        if let Ok(Some(message)) = read.try_next().await {
+            match message {
+                Message::Text(txt) => {
+                    if txt == "pause" {
+                        paused = true;
+                    } else if txt == "resume" {
+                        paused = false;
+                    }
+                    // Process any other messages here
+                }
+                _ => {}
+            }
+        }
 
-        if ws_stream.send(Message::Text(pos_data)).await.is_err() {
-            println!("Connection done");
-            break;
+        if !paused {
+            let pos_data = serde_json::json!(calc_data(&mut state)).to_string();
+
+            if write.send(Message::Text(pos_data)).await.is_err() {
+                println!("Connection done");
+                break;
+            }
         }
 
         let elapsed = start.elapsed();
