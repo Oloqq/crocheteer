@@ -6,8 +6,8 @@ import * as simulator from "./lib/simulation";
 
 function main() {
   simulator.init();
-  const ball = new Ball();
-  simulator.connect("ws://127.0.0.1:8080", ball);
+  const simulationWorld = new Ball();
+  simulator.connect("ws://127.0.0.1:8080", simulationWorld);
 }
 
 main();
