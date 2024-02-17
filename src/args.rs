@@ -13,5 +13,9 @@ pub struct Args {
     pub output: PathBuf,
 
     #[structopt(short, long)]
+    /// Run a websocket server for visualization
+    pub ws: bool,
+
+    #[structopt(short, long)]
     pub verbose: bool,
 }

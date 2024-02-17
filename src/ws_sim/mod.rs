@@ -8,10 +8,8 @@ use tokio_tungstenite::accept_async;
 use tokio_tungstenite::tungstenite::protocol::Message;
 use tokio_tungstenite::tungstenite::Error;
 
-use crate::plushie::Plushie;
-
 #[tokio::main]
-pub async fn websocket_stuff() {
+pub async fn serve_websocket() {
     let try_socket = TcpListener::bind("127.0.0.1:8080").await;
     let listener = try_socket.expect("Failed to bind");
     println!("Listening on: ws://127.0.0.1:8080");

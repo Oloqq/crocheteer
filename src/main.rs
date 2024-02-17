@@ -1,7 +1,7 @@
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::pattern::Stitch;
-use crate::{common::*, ws_sim::websocket_stuff};
+use crate::{common::*, ws_sim::serve_websocket};
 
 extern crate nalgebra as na;
 
@@ -20,10 +20,7 @@ fn main() {
     let args = Args::from_args();
     if let Some(num) = args.dev {
         exec_dev_action(num);
-        return;
-    }
-
-    if let Some(pattern_path) = args.show {
+    } else if let Some(pattern_path) = args.show {
         let pattern = Pattern::from_file(pattern_path);
         let mut plushie = Plushie::from_pattern(pattern);
         if args.verbose {
@@ -34,9 +31,9 @@ fn main() {
             save_mesh("generated/after_stuffing.stl", plushie.to_mesh());
         }
         save_mesh(args.output.to_str().unwrap(), plushie.to_mesh());
+    } else if args.ws {
+        serve_websocket();
     }
-
-    // let mut plushie = diamond_plushie_direct();
 }
 
 fn exec_dev_action(num: usize) {
@@ -46,7 +43,6 @@ fn exec_dev_action(num: usize) {
         2 => make_pillar(),
         3 => make_ball(),
         4 => make_big_ball(),
-        5 => websocket_stuff(),
         _ => println!("no such action"),
     }
 }
