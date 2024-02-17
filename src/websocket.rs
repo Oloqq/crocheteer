@@ -3,9 +3,10 @@ use futures_util::FutureExt;
 use futures_util::{select, sink::SinkExt, stream::StreamExt};
 use pin_utils::pin_mut;
 use tokio::net::TcpListener;
-use tokio::time::{sleep_until, Duration, Instant};
+use tokio::time::{Duration, Instant};
 use tokio_tungstenite::accept_async;
 use tokio_tungstenite::tungstenite::protocol::Message;
+use tokio_tungstenite::tungstenite::Error;
 
 #[tokio::main]
 pub async fn websocket_stuff() {
@@ -28,6 +29,22 @@ fn calc_data(state: &mut ([f32; 3], f32)) -> [f32; 3] {
     state.0
 }
 
+struct State {
+    paused: bool,
+}
+
+fn handle_incoming(msg: Option<Result<Message, Error>>, state: &mut State) {
+    if let Some(Ok(message)) = msg {
+        match message.to_string().as_str() {
+            "pause" => state.paused = true,
+            "resume" => state.paused = false,
+            _ => (),
+        }
+        // Handle incoming message
+        println!("Received a message: {:?}", message);
+    }
+}
+
 async fn handle_connection(stream: tokio::net::TcpStream) {
     let ws_stream = accept_async(stream)
         .await
@@ -37,7 +54,7 @@ async fn handle_connection(stream: tokio::net::TcpStream) {
     let (mut write, mut read) = ws_stream.split();
 
     let mut state = ([1.0, 0.5, 0.0], 1.0);
-    let mut paused = false;
+    let mut control = State { paused: false };
     let mut interval_duration = Duration::from_millis(17);
     let mut last_tick = Instant::now();
 
@@ -46,19 +63,9 @@ async fn handle_connection(stream: tokio::net::TcpStream) {
         let sleep_future = tokio::time::sleep_until(last_tick + interval_duration).fuse();
         pin_mut!(sleep_future); // Pin the sleep future
         select! {
-            msg = incoming_msg => {
-                if let Some(Ok(message)) = msg {
-                    match message.to_string().as_str() {
-                        "pause" => paused = true,
-                        "resume" => paused = false,
-                        _ => ()
-                    }
-                    // Handle incoming message
-                    println!("Received a message: {:?}", message);
-                }
-            },
+            msg = incoming_msg => handle_incoming(msg, &mut control),
             _ = sleep_future => {
-                if !paused {
+                if !control.paused {
                     let pos_data = serde_json::json!(calc_data(&mut state)).to_string();
                     println!("{pos_data}");
 
