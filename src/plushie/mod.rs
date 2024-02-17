@@ -1,6 +1,6 @@
 use serde_derive::Serialize;
 
-use self::stuffing::per_round_stuffing;
+use self::stuffing::{per_round_stuffing, Rounds};
 
 use super::common::*;
 
@@ -19,9 +19,7 @@ pub enum Stuffing {
 #[derive(Clone, Serialize)]
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
-    round_starts: Vec<usize>,
-    round_counts: Vec<usize>,
-    round_centers: Vec<V>,
+    rounds: Rounds,
     pub points: Vec<Point>,
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
@@ -30,9 +28,7 @@ pub struct Plushie {
 }
 
 impl Plushie {
-    pub fn step(&mut self, time: f32) {
-        let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
-
+    fn add_link_forces(&self, displacement: &mut Vec<V>) {
         for i in 0..self.points.len() {
             let this = self.points[i];
             for neibi in &self.edges[i] {
@@ -42,17 +38,21 @@ impl Plushie {
                 displacement[*neibi] -= diff;
             }
         }
+    }
+
+    fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         match &self.stuffing {
             Stuffing::None => (),
             Stuffing::PerRound => per_round_stuffing(
-                &self.round_starts,
-                &self.round_counts,
+                &mut self.rounds,
                 &self.points,
                 self.desired_stitch_distance,
-                &mut displacement,
+                displacement,
             ),
         }
+    }
 
+    fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) {
         let mut total = V::zeros();
         for i in self.fixed_num..self.points.len() {
             total += displacement[i];
@@ -60,6 +60,15 @@ impl Plushie {
             // self.points[i].y = (self.points[i].y - self.gravity * time).max(0.0);
         }
         self.points[1].y += displacement[1].y * time;
+    }
+
+    pub fn step(&mut self, time: f32) {
+        let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
+
+        self.add_link_forces(&mut displacement);
+        self.add_stuffing_force(&mut displacement);
+
+        self.apply_forces(&displacement, time);
     }
 
     pub fn animate(&mut self) {

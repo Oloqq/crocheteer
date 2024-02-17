@@ -3,6 +3,7 @@ use std::f32::consts::PI;
 use crate::common::*;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
+use crate::plushie::stuffing::Rounds;
 use crate::plushie::Stuffing;
 
 use super::Plushie;
@@ -73,9 +74,7 @@ impl Plushie {
             edges,
             desired_stitch_distance: 1.0,
             stuffing: Stuffing::PerRound,
-            round_starts,
-            round_counts,
-            round_centers: vec![],
+            rounds: Rounds::new(round_starts, round_counts),
             // gravity: 0.0000001,
             _gravity: 0.0,
         }

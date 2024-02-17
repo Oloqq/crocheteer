@@ -1,5 +1,33 @@
 use crate::common::*;
+use serde_derive::Serialize;
 use std::f32::consts::PI;
+
+#[derive(Clone, Serialize)]
+pub struct Rounds {
+    start: Vec<usize>,
+    count: Vec<usize>,
+    center: Vec<V>,
+}
+
+impl Rounds {
+    pub fn new(round_starts: Vec<usize>, round_counts: Vec<usize>) -> Self {
+        Rounds {
+            center: vec![V::new(0.0, 0.0, 0.0); round_counts.len()],
+            start: round_starts,
+            count: round_counts,
+        }
+    }
+
+    pub fn ideal_radius(&self, i: usize, desired_stitch_distance: f32) -> f32 {
+        let circumference = self.count[i] as f32 * desired_stitch_distance;
+        circumference / (2.0 * PI)
+    }
+}
+
+pub fn ideal_radius(stitch_count: usize, desired_stitch_distance: f32) -> f32 {
+    let circumference = stitch_count as f32 * desired_stitch_distance;
+    circumference / (2.0 * PI)
+}
 
 pub fn calculate_round_centers(round_starts: &Vec<usize>, points: &Vec<Point>) -> Vec<V> {
     let pointslen = &[points.len()];
@@ -81,25 +109,19 @@ pub fn push_rounds_offcenter(
     }
 }
 
-pub fn ideal_radius(stitch_count: usize, desired_stitch_distance: f32) -> f32 {
-    let circumference = stitch_count as f32 * desired_stitch_distance;
-    circumference / (2.0 * PI)
-}
-
 pub fn per_round_stuffing(
-    round_starts: &Vec<usize>,
-    round_counts: &Vec<usize>,
+    rounds: &mut Rounds,
     points: &Vec<Point>,
     desired_stitch_distance: f32,
     displacement: &mut Vec<V>,
 ) {
-    let centers = calculate_round_centers(round_starts, points);
+    let centers = calculate_round_centers(&rounds.start, points);
     // println!("{round_counts:?}");
     // println!("{centers:?}");
     push_rounds_offcenter(
         centers,
-        round_starts,
-        round_counts,
+        &rounds.start,
+        &rounds.count,
         points,
         desired_stitch_distance,
         displacement,
