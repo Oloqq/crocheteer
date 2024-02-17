@@ -20,7 +20,7 @@ impl Rounds {
 
     fn ideal_radius(&self, i: usize, desired_stitch_distance: f32) -> f32 {
         let circumference = self.anchors[i] as f32 * desired_stitch_distance;
-        circumference / (2.0 * PI)
+        0.7 * circumference / (2.0 * PI)
     }
 
     fn next_start(&self, current: usize, points: &Vec<Point>) -> usize {

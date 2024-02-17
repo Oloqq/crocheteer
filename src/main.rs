@@ -13,7 +13,7 @@ mod plushie;
 mod ws_sim;
 
 use args::*;
-use pattern::{construction::PatternBuilder, Pattern};
+use pattern::Pattern;
 use plushie::examples;
 use plushie::Plushie;
 use ws_sim::plushie_sim::PlushieSimulation;
@@ -38,7 +38,7 @@ fn main() {
             // serve_websocket(sim);
         }
     } else if args.ws {
-        let plushie = examples::pillar();
+        let plushie = examples::bigball();
         let sim = PlushieSimulation::from(plushie);
         serve_websocket(sim);
     }

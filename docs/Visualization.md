@@ -42,5 +42,8 @@ Center of a round is calculated as the average of positions of points.
 #### Desired distance
 - Let $R$ be a round with $N$ stitches, and let $d$ be the desired distance between stitches.
 - With realistic stuffing and no other rounds acting on $R$, it's points should be approximating a circle of circumference $Nd$
-- Therefore, we can take the radius $r$ of that circle as the desired distance between points and round center, that is $r=\frac{Nd}{2\pi}$
+- Therefore, we can take the radius $r=\frac{Nd}{2\pi}$ of that circle as the desired distance between points and round center, possibly scaled by a constant
 - If the distance is less then desired, the node is pushed by a unit vector along the axis between center and itself
+
+![](2024-02-17-23-50-01.png)
+*ball generated with attraction + per-round stuffing*
