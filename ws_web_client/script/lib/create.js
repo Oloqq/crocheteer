@@ -1,10 +1,7 @@
 import * as THREE from 'three';
-import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
-import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { app } from "./init";
 
-const scene = app.scene;
+export const scene = app.scene;
 
 export function sphere(coords, r) {
   const geometry = new THREE.SphereGeometry(r);
@@ -17,20 +14,14 @@ export function sphere(coords, r) {
   return result;
 }
 
-export function createLink(start, end, width, color) {
-  const points = [start, end];
-  const geometry = new LineSegmentsGeometry().setPositions(points.flat());
+export function link(point1, point2, width, color) {
+  let curve = new THREE.CatmullRomCurve3([point1, point2]);
+  let tubeGeometry = new THREE.TubeGeometry(curve, 20, width, 8, false);
 
-  const material = new LineMaterial({
-    color: color,
-    linewidth: width, // This width is in pixels.
-    worldUnits: false, // Set to true if you want the width to be in world units (meters).
-  });
-  material.resolution.set(window.innerWidth, window.innerHeight);
+  // Step 4: Create a Material and Mesh
+  let material = new THREE.MeshBasicMaterial({ color: color });
+  let mesh = new THREE.Mesh(tubeGeometry, material);
+  scene.add(mesh);
 
-
-  const line = new LineSegments2(geometry, material);
-  line.computeLineDistances();
-
-  scene.add(line);
+  return mesh;
 }

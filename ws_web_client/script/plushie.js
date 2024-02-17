@@ -3,21 +3,45 @@ import * as create from "./lib/create";
 export default class Plushie {
   constructor() {
     this.edges = edges_tmp;
-    this.points = [];
+    this.stitchSpheres = [];
+    this.stitchPositions = [];
+    this.links = [];
     for (let point of points_tmp) {
-      this.points.push(create.sphere(point, 0.1))
+      let sph = create.sphere(point, 0.1);
+      this.stitchPositions.push(sph.position);
+      this.stitchSpheres.push(sph);
+    }
+    for (let from = 0; from < this.edges.length; from++) {
+      for (let to of this.edges[from]) {
+        let link = create.link(this.stitchPositions[from], this.stitchPositions[to], 0.02, "red")
+        this.links.push(link);
+      }
     }
   }
 
   parse(data) {
-    if (data.length != this.points.length) {
+    if (data.length != this.stitchSpheres.length) {
       throw "WHYYYYY";
     }
 
     for (let i = 0; i < data.length; i++) {
-      this.points[i].position.x = data[i][0]
-      this.points[i].position.y = data[i][1]
-      this.points[i].position.z = data[i][2]
+      this.stitchPositions[i].x = data[i][0]
+      this.stitchPositions[i].y = data[i][1]
+      this.stitchPositions[i].z = data[i][2]
+    }
+
+    for (let link of this.links) {
+      if (link.geometry) link.geometry.dispose();
+      if (link.material) link.material.dispose();
+      create.scene.remove(link);
+    }
+    this.links = [];
+
+    for (let from = 0; from < this.edges.length; from++) {
+      for (let to of this.edges[from]) {
+        let link = create.link(this.stitchPositions[from], this.stitchPositions[to], 0.02, "red")
+        this.links.push(link);
+      }
     }
   }
 }

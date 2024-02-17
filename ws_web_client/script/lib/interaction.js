@@ -59,8 +59,10 @@ function onMouseMove(event) {
 window.addEventListener('mousemove', onMouseMove);
 
 function onMouseUp(event) {
-  selectedObject = null; // Clear the selection
-  app.controls.enabled = true;
-  send("resume");
+  if (selectedObject) {
+    selectedObject = null; // Clear the selection
+    app.controls.enabled = true;
+    send("resume");
+  }
 }
 window.addEventListener('mouseup', onMouseUp);
