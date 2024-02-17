@@ -139,11 +139,16 @@ fn push_rounds_offcenter(
     let pointslen = &[points.len()];
     let mut rounds = round_starts.iter().chain(pointslen);
     let mut round_counts = round_counts.iter();
-    let mut next_round_start: usize = *rounds.next().unwrap();
-    let mut current_round_count: usize = *round_counts.next().expect("Expected at least one round");
+    let mut next_round_start: usize = 0;
+    let mut current_round_count: usize = 0;
     let mut current = *centers.peek().unwrap();
-    // println!("{:?}", current_round_count);
-    for (i, point) in points.iter().enumerate().skip(*first_round_start) {
+    let last_round_start = *round_starts.last().unwrap();
+    for (i, point) in points
+        .iter()
+        .enumerate()
+        .take(last_round_start)
+        .skip(*first_round_start)
+    {
         // println!("i {i}");
         if i == next_round_start {
             next_round_start = *rounds.next().unwrap();
@@ -160,6 +165,7 @@ fn push_rounds_offcenter(
 
         let radius = ideal_radius(current_round_count, desired_stitch_distance);
         let tmp = push_offcenter(point, current, radius);
+        println!("{tmp:?} {current_round_count:?} {point:?} {current:?} {radius:?}");
         displacement[i] += tmp;
     }
 }
@@ -177,6 +183,8 @@ fn per_round_stuffing(
     displacement: &mut Vec<V>,
 ) {
     let centers = calculate_round_centers(round_starts, points);
+    println!("{round_counts:?}");
+    println!("{centers:?}");
     push_rounds_offcenter(
         centers,
         round_starts,

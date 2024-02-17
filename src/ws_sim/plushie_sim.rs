@@ -13,7 +13,7 @@ impl PlushieControls {
     fn new() -> Self {
         Self {
             paused: true,
-            advance: 1,
+            advance: 0,
             need_init: true,
         }
     }

@@ -37,8 +37,16 @@ fn main() {
             // serve_websocket(sim);
         }
     } else if args.ws {
-        let pattern = PatternBuilder::new(6).full_rounds(4).build().unwrap();
+        use Stitch::*;
+        let pattern = PatternBuilder::new(6)
+            .round_like(&vec![Inc])
+            .full_rounds(1)
+            .round_like(&vec![Dec])
+            .build()
+            .unwrap();
         let plushie = Plushie::from_pattern(pattern);
+        // save_mesh("generated/before_stuffing.stl", plushie.to_mesh());
+
         let sim = PlushieSimulation::from(plushie);
         serve_websocket(sim);
     }
