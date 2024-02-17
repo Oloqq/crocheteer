@@ -140,7 +140,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "crochet"
+name = "crocheteer"
 version = "0.1.0"
 dependencies = [
  "futures-util",
