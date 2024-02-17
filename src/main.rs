@@ -1,7 +1,7 @@
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::pattern::Stitch;
-use crate::{common::*, websocket::websocket_stuff};
+use crate::{common::*, ws_sim::websocket_stuff};
 
 extern crate nalgebra as na;
 
@@ -10,7 +10,7 @@ mod common;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
-mod websocket;
+mod ws_sim;
 
 use args::*;
 use pattern::{construction::PatternBuilder, Pattern};
