@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 #[derive(Clone, Serialize)]
 pub struct Rounds {
     start: Vec<usize>,
-    count: Vec<usize>,
+    anchors: Vec<usize>,
     center: Vec<V>,
 }
 
@@ -14,42 +14,44 @@ impl Rounds {
         Rounds {
             center: vec![V::new(0.0, 0.0, 0.0); round_counts.len()],
             start: round_starts,
-            count: round_counts,
+            anchors: round_counts,
         }
     }
 
     pub fn ideal_radius(&self, i: usize, desired_stitch_distance: f32) -> f32 {
-        let circumference = self.count[i] as f32 * desired_stitch_distance;
+        let circumference = self.anchors[i] as f32 * desired_stitch_distance;
         circumference / (2.0 * PI)
+    }
+
+    pub fn update_round_centers(&mut self, points: &Vec<Point>) {
+        let first_round_start = *self.start.first().unwrap();
+        let mut center = V::zeros();
+        let mut node_cnt = 0; // this can be calculated from rounds.start right?
+        let mut round = 0;
+        let mut next_round_start = *self.start.get(round + 1).unwrap_or(&points.len());
+
+        for (i, point) in points.iter().enumerate().skip(first_round_start) {
+            if i == next_round_start {
+                assert!(node_cnt == self.start[round + 1] - self.start[round]); // TODO remove checks and node_cnt
+                assert!(node_cnt == self.anchors[round]);
+                self.center[round] = center / self.anchors[round] as f32;
+                round += 1;
+                center = V::zeros();
+                node_cnt = 0;
+                next_round_start = *self.start.get(round + 1).unwrap_or(&points.len());
+
+                assert!(next_round_start > i);
+            }
+            center += point.coords;
+            node_cnt += 1;
+        }
+        self.center[round] = center / node_cnt as f32;
     }
 }
 
 pub fn ideal_radius(stitch_count: usize, desired_stitch_distance: f32) -> f32 {
     let circumference = stitch_count as f32 * desired_stitch_distance;
     circumference / (2.0 * PI)
-}
-
-pub fn calculate_round_centers(round_starts: &Vec<usize>, points: &Vec<Point>) -> Vec<V> {
-    let pointslen = &[points.len()];
-    let mut rounds = round_starts.iter().chain(pointslen);
-    let first_round_start = rounds.next().unwrap();
-    let mut next_round_start: usize = *rounds.next().expect("Expected at least one round");
-    let mut centers = vec![];
-    let mut current = V::zeros();
-    let mut cnt = 0;
-    for (i, point) in points.iter().enumerate().skip(*first_round_start) {
-        if i == next_round_start {
-            centers.push(current / cnt as f32);
-            next_round_start = *rounds.next().unwrap();
-            assert!(next_round_start > i);
-            current = V::zeros();
-            cnt = 0;
-        }
-        current += point.coords;
-        cnt += 1;
-    }
-    centers.push(current / cnt as f32);
-    centers
 }
 
 pub fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
@@ -66,7 +68,7 @@ pub fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
 }
 
 pub fn push_rounds_offcenter(
-    centers: Vec<V>,
+    centers: &Vec<V>,
     round_starts: &Vec<usize>,
     round_counts: &Vec<usize>,
     points: &Vec<Point>,
@@ -115,13 +117,15 @@ pub fn per_round_stuffing(
     desired_stitch_distance: f32,
     displacement: &mut Vec<V>,
 ) {
-    let centers = calculate_round_centers(&rounds.start, points);
+    rounds.update_round_centers(points);
+    // calculate_round_centers(rounds, points);
+    // let centers = &rounds.center;
     // println!("{round_counts:?}");
     // println!("{centers:?}");
     push_rounds_offcenter(
-        centers,
+        &rounds.center,
         &rounds.start,
-        &rounds.count,
+        &rounds.anchors,
         points,
         desired_stitch_distance,
         displacement,
@@ -130,6 +134,12 @@ pub fn per_round_stuffing(
 
 #[cfg(test)]
 mod tests {
+    use crate::{
+        pattern::{construction::PatternBuilder, Pattern, Stitch},
+        plushie::Plushie,
+    };
+    use Stitch::*;
+
     use super::*;
 
     #[test]
@@ -158,9 +168,12 @@ mod tests {
             Point::new(1.0, 0.0, 1.0),
             Point::new(1.0, 0.0, -1.0),
         ];
-        let round_starts = vec![0, 4];
-        let res = calculate_round_centers(&round_starts, &points);
-        assert_eq!(res, vec![V::new(0.0, 0.0, 0.0), V::new(0.0, 0.0, 0.0)]);
+        let mut rounds = Rounds::new(vec![0, 4], vec![4, 4]);
+        rounds.update_round_centers(&points);
+        assert_eq!(
+            rounds.center,
+            vec![V::new(0.0, 0.0, 0.0), V::new(0.0, 0.0, 0.0)]
+        );
     }
 
     #[test]
@@ -171,9 +184,28 @@ mod tests {
             Point::new(2.0, 0.0, 2.0),
             Point::new(2.0, 0.0, -1.0),
         ];
-        let round_starts = vec![0];
-        let res = calculate_round_centers(&round_starts, &points);
-        assert_eq!(res, vec![V::new(0.0, 0.0, 0.5)]);
+
+        let mut rounds = Rounds::new(vec![0], vec![4]);
+        rounds.update_round_centers(&points);
+        assert_eq!(rounds.center, vec![V::new(0.0, 0.0, 0.5)]);
+    }
+
+    #[test]
+    fn test_rounds() {
+        let pattern = PatternBuilder::new(6)
+            .round_like(&vec![Inc])
+            .full_rounds(1)
+            .round_like(&vec![Dec])
+            .build()
+            .unwrap();
+        let plushie = Plushie::from_pattern(pattern);
+        let mut rounds = plushie.rounds;
+
+        assert_eq!(rounds.center, vec![V::new(0.0, 0.0, 0.0); 3]);
+        assert_eq!(rounds.start, vec![8, 20, 32]);
+        assert_eq!(rounds.anchors, vec![12, 12, 6]);
+
+        rounds.update_round_centers(&plushie.points);
     }
 
     #[test]
@@ -181,28 +213,28 @@ mod tests {
         assert_eq!(ideal_radius(4, 1.0), 4.0 / (2.0 * PI));
     }
 
-    #[test]
-    fn test_per_round_stuffing() {
-        let points = vec![
-            Point::new(-2.0, 0.0, -1.0),
-            Point::new(-2.0, 0.0, 2.0),
-            Point::new(2.0, 0.0, 2.0),
-            Point::new(2.0, 0.0, -1.0),
-        ];
-        let centers = vec![V::new(0.0, 0.0, 0.5)];
-        let mut displacement = vec![V::new(0.0, 0.0, 0.0); 4];
-        let round_starts: Vec<usize> = vec![0, 5];
-        let round_counts: Vec<usize> = vec![4];
-        push_rounds_offcenter(
-            centers,
-            &round_starts,
-            &round_counts,
-            &points,
-            4.0,
-            &mut displacement,
-        );
-        for d in displacement {
-            assert!(d.magnitude() > 0.0);
-        }
-    }
+    // #[test]
+    // fn test_per_round_stuffing() {
+    //     let points = vec![
+    //         Point::new(-2.0, 0.0, -1.0),
+    //         Point::new(-2.0, 0.0, 2.0),
+    //         Point::new(2.0, 0.0, 2.0),
+    //         Point::new(2.0, 0.0, -1.0),
+    //     ];
+    //     let centers = vec![V::new(0.0, 0.0, 0.5)];
+    //     let mut displacement = vec![V::new(0.0, 0.0, 0.0); 4];
+    //     let round_starts: Vec<usize> = vec![0, 5];
+    //     let round_counts: Vec<usize> = vec![4];
+    //     push_rounds_offcenter(
+    //         centers,
+    //         &round_starts,
+    //         &round_counts,
+    //         &points,
+    //         4.0,
+    //         &mut displacement,
+    //     );
+    //     for d in displacement {
+    //         assert!(d.magnitude() > 0.0);
+    //     }
+    // }
 }

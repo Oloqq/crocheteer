@@ -20,7 +20,7 @@ pub enum Stuffing {
 pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
     rounds: Rounds,
-    pub points: Vec<Point>,
+    pub points: Vec<Point>, // TODO need this pub?
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
     desired_stitch_distance: f32,
