@@ -44,17 +44,17 @@ impl Pattern {
     }
 
     #[allow(unused)]
-    pub fn from_human_readable(text: &str) -> Result<Self, ParseError> {
+    pub fn from_human_readable(text: &str) -> Result<Self, String> {
         let lines: Vec<&str> = text.split("\n").collect();
-        let mut lines = lines.iter();
-        let magic_ring_line = lines.next().expect("Expected a program (got empty)");
-        let tokens: Vec<&str> = magic_ring_line.split(" ").collect();
-        assert!(tokens.len() == 4, "unexpected header");
-        assert!(tokens[1].to_uppercase() == "MR", "expected MR");
-        let starting_circle: usize = tokens[2].parse().expect("not a number");
+        let mut lines = lines.iter().enumerate();
+        let (mut lnum, mut line) = lines.next().expect("content shouldn't be empty");
+        while line.trim().starts_with("#") {
+            (lnum, line) = lines.next().expect("EOF");
+        }
+        let starting_circle = parse_starter(line).unwrap();
 
         let mut rounds: Vec<Vec<Stitch>> = vec![];
-        for line in lines {
+        for (lnum, line) in lines {
             if line.trim() == "FO" {
                 break;
             }
@@ -71,6 +71,21 @@ impl Pattern {
             rounds,
         })
     }
+}
+
+fn parse_starter(line: &str) -> Result<usize, ParseError> {
+    let tokens: Vec<&str> = line.split(" ").collect();
+    return if tokens.len() != 4 {
+        Err("Syntax error: expected starting round".into())
+    } else if tokens[1].to_ascii_uppercase() != "MR" {
+        Err("Expected a magic ring at the start".into())
+    } else {
+        if let Ok(num) = tokens[2].parse() {
+            Ok(num)
+        } else {
+            Err("Couldn't parse a number".into())
+        }
+    };
 }
 
 fn get_repetitions(roundspec: &str) -> usize {
@@ -112,6 +127,7 @@ fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
 
 fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
     let (roundspec, rest) = line.split_once(":").unwrap();
+    let repetitions = get_repetitions(roundspec);
     let (stitches, anchors_str) = rest.split_once("(").unwrap();
     let anchors: usize = anchors_str
         .trim()
@@ -122,7 +138,7 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
     let stitches = parse_stitches(stitches)?;
     assert!(anchors == count_anchors_produced(&stitches));
 
-    Ok((get_repetitions(roundspec), stitches))
+    Ok((repetitions, stitches))
 }
 
 fn serialize_stitches(stitches: &Vec<Stitch>) -> String {

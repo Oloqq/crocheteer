@@ -1,4 +1,4 @@
-Rnd 1: 4 sc in a magic ring (4)
+Rnd1: MR 4 (4)
 Rnd 2: [1 sc, inc] x 2 (6)
 Rnd 3: 6 sc (6)
 Rnd 4: 2 sc, [inc] x 2, 2 sc (8)
@@ -6,7 +6,7 @@ Rnd 5: 2 sc, [1 sc, inc] x 2, 2 sc (10)
 Rnd 6: dec, 3 sc, [inc] x 2, 3 sc (11)
 Rnd 7: dec, 4 sc, [inc] x 2, 3 sc (12)
 Rnd 8: dec, 4 sc, [inc] x 2, 2 sc, dec (12)
-Stuff the tail tip with filling. Use small scissor or
+# Stuff the tail tip with filling. Use small scissor or
 end of your hook to reach in with filling.
 Rnd 9: 5 sc, inc, 2 sc, inc, 3 sc (14)
 Rnd 10: 7 sc, [inc] x 2, 5 sc (16)
