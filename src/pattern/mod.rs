@@ -1,4 +1,5 @@
 pub mod construction;
+pub mod human_readable;
 pub mod stitches;
 
 use serde::{Deserialize, Serialize};

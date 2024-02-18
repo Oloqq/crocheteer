@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
@@ -5,6 +7,13 @@ pub enum Stitch {
     Sc,
     Inc,
     Dec,
+}
+
+impl Display for Stitch {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let tmp = format!("{:?}", self).to_lowercase();
+        f.write_str(tmp.as_str())
+    }
 }
 
 pub fn count_anchors_produced(round: &Vec<Stitch>) -> usize {
