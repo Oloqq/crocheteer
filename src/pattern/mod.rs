@@ -1,5 +1,6 @@
-pub mod construction;
+pub mod builder;
 pub mod human_readable;
+pub mod protopattern;
 pub mod stitches;
 
 use serde::{Deserialize, Serialize};

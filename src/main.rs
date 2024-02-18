@@ -44,55 +44,17 @@ fn main() {
 }
 
 fn exec_dev_action(num: usize) {
+    fn generate(name: &str, func: fn() -> Plushie) {
+        let mut plushie = func();
+        plushie.animate();
+        save_mesh(name, plushie.to_mesh());
+    }
+
     println!("dev action {num}");
     match num {
-        1 => save_and_stuff_diamnond(),
-        2 => make_pillar(),
-        3 => make_ball(),
-        4 => make_big_ball(),
+        2 => generate("generated/pillar.stl", examples::pillar),
+        3 => generate("generated/ball.stl", examples::ball),
+        4 => generate("generated/bigball.stl", examples::bigball),
         _ => println!("no such action"),
     }
-}
-
-fn make_pillar() {
-    let mut plushie = examples::pillar();
-    plushie.animate();
-    save_mesh("generated/pillar.stl", plushie.to_mesh());
-}
-
-fn make_ball() {
-    let mut plushie = examples::ball();
-    plushie.animate();
-    save_mesh("generated/ball.stl", plushie.to_mesh());
-}
-
-fn make_big_ball() {
-    let mut plushie = examples::bigball();
-    plushie.animate();
-    save_mesh("generated/bigball.stl", plushie.to_mesh());
-}
-
-fn save_and_stuff_diamnond() {
-    use Stitch::*;
-    let p = Pattern {
-        starting_circle: 4,
-        ending_circle: 4,
-        rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
-    };
-    let mut plushie = Plushie::from_pattern(p);
-
-    save_mesh(
-        "generated/from_pattern/before_stuffing.stl",
-        plushie.to_mesh(),
-    );
-    plushie.animate();
-    save_mesh(
-        "generated/from_pattern/after_stuffing.stl",
-        plushie.to_mesh(),
-    );
-    plushie.animate();
-    save_mesh(
-        "generated/from_pattern/after_stuffing_again.stl",
-        plushie.to_mesh(),
-    );
 }

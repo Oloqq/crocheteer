@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 pub use structopt::StructOpt;
 
+// TODO organize those into verbs
+
 #[derive(StructOpt, Debug)]
 pub struct Args {
     #[structopt(long)]
@@ -18,4 +20,7 @@ pub struct Args {
 
     #[structopt(short, long)]
     pub verbose: bool,
+
+    #[structopt(long, parse(from_os_str))]
+    pub protopat: Option<PathBuf>,
 }

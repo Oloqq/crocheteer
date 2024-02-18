@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use crate::pattern::construction::PatternBuilder;
+use crate::pattern::builder::PatternBuilder;
 use crate::pattern::stitches::Stitch;
 use Stitch::*;
 

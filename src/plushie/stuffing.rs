@@ -112,7 +112,7 @@ pub fn per_round_stuffing(
 #[cfg(test)]
 mod tests {
     use crate::{
-        pattern::{construction::PatternBuilder, Stitch},
+        pattern::{builder::PatternBuilder, Stitch},
         plushie::Plushie,
     };
     use Stitch::*;

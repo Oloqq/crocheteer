@@ -1,0 +1,41 @@
+mr 6
+full inc
+full inc sc
+full inc 2 sc
+full inc 3 sc
+full inc 4 sc
+# line comment about placing a cardboard floor inside, should be preserved
+BLO full sc
+full sc
+full inc 5 sc
+full sc
+full sc
+full inc 6 sc
+full sc
+full sc
+full inc 7 sc
+full sc
+full sc
+full sc
+full sc
+full sc
+full dec 7 sc
+full sc
+full dec 6 sc
+full dec 5 sc
+full dec 4 sc
+FLO full sc
+full sc
+full sc # 28
+MOV 26 # moving to insert a dirt patch, comment should be preserved
+BLO full dec 3 sc
+full dec 2 sc
+full dec sc
+full dec
+MOV 28
+full inc 5 sc
+full inc 6 sc
+full inc 7 sc
+full sc
+full sc
+
