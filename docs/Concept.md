@@ -1,25 +1,45 @@
-# Concept
-- user provides
+# Concept (use cases)
+## Generate a pattern that will create a specific shape
+- user provides:
   - 3D model (STL) of the desired shape
-    - (0, 0, 0) is the starting point
-    - starting vector is on the X axis
-    - model forms along the Z axis
-  - yarn thickness
-  - scale factor or a desired height
-- tool generates a pattern
-- pattern can be exported to an STL for visualization
+- crocheteer:
+  - generates a pattern that will form the user's shape
+  - presents the pattern in a human readable format
+  - allows viewing the result as a 3D model
+
+## Show me what shape will that pattern create
+- user provides:
+  - a pattern in a concrete format, similar to the commonly used informal formats
+- crocheteer:
+  - creates a 3D visualization
+
+# Limitations
+Main focus of the project is amigurumi, that is closed shapes filled with stuffing.
+
+Patterns generating lots of folds (kinda like models of non-euclidean planes) are currently not considered, as they would require a different approach in the force graph stage.
 
 # Components
-- https://docs.rs/stl_io/latest/stl_io/
-- STL preprocessor
-- pattern generator (one of)
+- STL loader
+  - https://docs.rs/stl_io/latest/stl_io/
+- formal grammar of a pattern
+- pattern generator
   - genetic
     - fitness function -- how to compare two 3d shapes?
   - procedural
-- pattern visualizer
+- pattern to 3D model conversion
+- pattern visualization
+  - STL export
+  - interactive render
 
-# Pattern visualizer
-First thing to implement.
+# Formal grammar of a pattern
+See solution in [Patter grammar.md](./Pattern%20grammar.md)
+
+
+
+# Pattern to 3D model conversion
+See solution in [Visualization.md](./Visualization.md)
+
+Codename for a converter utilizing a force graph is `Plushie`.
 
 At the beginning may work with any trash represantation of a pattern.
 
@@ -27,20 +47,24 @@ At the beginning may work with any trash represantation of a pattern.
 - fabric is not stiff
 - a packed / sparse region may affect the whole object
 - stuffing will push the walls out
+- force graphs seem like the ideal solution
+  - each stitch
+    - is a node
+    - is connected (has edges)
+       - to the previous stitch in the current row
+       - to $[1, ∞]$ (theoreticaly) stitches from the previous row(chains with no connection to the previous round (aka skips) are not supported -- gotta change STL exporting for that to work)
+  - the origin of the starting circle has to be grounded (unmovable)
 
-## [Force graphs](./Visualization.md)
-- each stitch
-  - is a vertex
-  - is connected
-     - to the previous stitch in a row
-     - $[1, ∞]$ (theoreticaly) stitches from the previous (chains with no connection to the previous round are not supported -- important for visualization)
-  - it's connections are edges
-- the origin of the starting circle has to be grounded (unmovable)
-- "stuffing force" should be applied radialy, coming from a pillar standing in the center of the starting circle
-  - assumption: no wall is allowed to cross the pillar
+## Viewing the model
+### STL
+`Plushie` determines the stitches position in a 3D model. Those can be exported to an `.stl` file, and viewed with any program that supports those files. Extension for vscode `slevesque.vscode-3dviewer` works very well for development.
 
-- hot reload in a viewer [[1]] [[2]] should allow easy monitoring of the process
-  - 3D Viewer for vscode seems fine for that
+NOTE: normals of triangles are set basically randomly, so **view the models as wireframe** if you value sanity
+
+### Interacive
+Crocheteer can act as a websocket server that allows relaxing the force graph one step at a time. A browser based [client](../ws_web_client/) has been implemented. It works way slower than expected, but there's room for optimization. Implementing this visualization directly in rust binary may be easier at this point though.
+
+Three.js inspired crate may be the solution. https://docs.rs/three/latest/three/
 
 # Tools
 

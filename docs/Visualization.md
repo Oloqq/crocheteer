@@ -9,11 +9,7 @@ Plushie must support
 - variable pressure (stuffing amount)
 - fixed points (one is the bare minimum)
 
-NOT supported
-- shapes that require walls intersecting the vertical axis (source of pressure)
-- importing from STL
-
-# Implementation (draft)
+# Implementation
 
 Location of vertices is calculated with a variation of a [force-directed graph](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).
 
@@ -47,3 +43,6 @@ Center of a round is calculated as the average of positions of points.
 
 ![](2024-02-17-23-50-01.png)
 *ball generated with attraction + per-round stuffing*
+
+### Failed attempts
+There was an attempt to just repulse nodes from line X=0, Z=0. However if to many nodes were pulled to one quadrant of the XZ plane, the whole structured would get skewed in an absurd way
