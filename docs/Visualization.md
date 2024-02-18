@@ -45,4 +45,4 @@ Center of a round is calculated as the average of positions of points.
 *ball generated with attraction + per-round stuffing*
 
 ### Failed attempts
-There was an attempt to just repulse nodes from line X=0, Z=0. However if to many nodes were pulled to one quadrant of the XZ plane, the whole structured would get skewed in an absurd way
+There was an attempt to just repulse nodes from line X=0, Z=0. However if too many nodes were pulled to one quadrant of the XZ plane, the whole structure would get skewed in an absurd way
