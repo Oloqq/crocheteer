@@ -33,9 +33,8 @@ fn main() {
             plushie.animate();
             save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
         } else if args.ws {
-            unimplemented!();
-            // let sim = PlushieSimulation::from(plushie);
-            // serve_websocket(sim);
+            let sim = PlushieSimulation::from(plushie);
+            serve_websocket(sim);
         }
     } else if args.ws {
         let plushie = examples::bigball();

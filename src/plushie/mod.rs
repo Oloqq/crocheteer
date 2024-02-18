@@ -59,7 +59,7 @@ impl Plushie {
             self.points[i] += displacement[i] * time;
             // self.points[i].y = (self.points[i].y - self.gravity * time).max(0.0);
         }
-        self.points[1].y += displacement[1].y * time;
+        self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
     }
 
     pub fn step(&mut self, time: f32) {

@@ -72,9 +72,16 @@ impl Pattern {
             }
         }
 
+        let ending_circle = count_anchors_produced(rounds.last().unwrap());
+        if ending_circle > 12 {
+            println!(
+                "Plushie really shouldn't be used with huge closing circles (last round) right now"
+            );
+        }
+
         Ok(Self {
             starting_circle,
-            ending_circle: count_anchors_produced(rounds.last().unwrap()),
+            ending_circle,
             rounds,
         })
     }

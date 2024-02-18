@@ -20,7 +20,7 @@ impl Rounds {
 
     fn ideal_radius(&self, i: usize, desired_stitch_distance: f32) -> f32 {
         let circumference = self.anchors[i] as f32 * desired_stitch_distance;
-        0.7 * circumference / (2.0 * PI)
+        circumference / (2.0 * PI)
     }
 
     fn next_start(&self, current: usize, points: &Vec<Point>) -> usize {
@@ -90,12 +90,12 @@ impl Rounds {
 
 pub fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
     let diff = point.coords - center;
-    let diff_len = diff.magnitude();
+    let too_close = radius - diff.magnitude();
 
-    if diff_len >= radius {
+    if too_close < 0.0 {
         V::zeros()
     } else {
-        diff.normalize()
+        diff.normalize() * (too_close / 4.0).powi(2)
     }
 }
 
