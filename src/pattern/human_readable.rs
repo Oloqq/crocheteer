@@ -55,11 +55,18 @@ impl Pattern {
 
         let mut rounds: Vec<Vec<Stitch>> = vec![];
         for (lnum, line) in lines {
-            if line.trim() == "FO" {
+            let line = line.trim();
+            if line == "FO" {
                 break;
             }
+            if line.starts_with("#") {
+                continue;
+            }
 
-            let (repetitions, stitches) = parse_line(line)?;
+            let (repetitions, stitches) = match parse_line(line) {
+                Ok(x) => x,
+                Err(e) => return Err(format!("Line {}: {e}", lnum + 1)),
+            };
             for i in 0..repetitions {
                 rounds.push(stitches.clone());
             }
@@ -88,13 +95,19 @@ fn parse_starter(line: &str) -> Result<usize, ParseError> {
     };
 }
 
-fn get_repetitions(roundspec: &str) -> usize {
+fn get_repetitions(roundspec: &str) -> Result<usize, ParseError> {
     match roundspec.split_once("-") {
-        None => 1,
+        None => Ok(1),
         Some((lhs, rhs)) => {
-            let lhs_num: usize = lhs.trim()[1..].parse().unwrap();
-            let rhs_num: usize = rhs.trim()[1..].parse().unwrap();
-            rhs_num - lhs_num + 1
+            let lhs_num: usize = match lhs.trim()[1..].parse() {
+                Ok(val) => val,
+                Err(_) => return Err("Couldn't parse repetitions".into()),
+            };
+            let rhs_num: usize = match rhs.trim()[1..].parse() {
+                Ok(val) => val,
+                Err(_) => return Err("Couldn't parse repetitions".into()),
+            };
+            Ok(rhs_num - lhs_num + 1)
         }
     }
 }
@@ -103,18 +116,17 @@ fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
     let tokens = stitches_str.split(", ");
     let mut result = vec![];
     for token in tokens {
-        let reps: usize;
-        let stitch_str: &str;
-        match token.trim().split_once(" ") {
+        let (reps, stitch_str) = match token.trim().split_once(" ") {
             Some((num_str, stitch_str_1)) => {
-                reps = num_str.trim().parse().unwrap();
-                stitch_str = stitch_str_1
+                let num = num_str.trim().parse();
+                if let Ok(num) = num {
+                    (num, stitch_str_1)
+                } else {
+                    return Err(format!("Couldn't parse a number: {num_str}"));
+                }
             }
-            None => {
-                reps = 1;
-                stitch_str = token;
-            }
-        }
+            None => (1, token),
+        };
 
         let stitch = Stitch::from_str(stitch_str).expect("not recognized stitch");
         for _ in 0..reps {
@@ -126,8 +138,11 @@ fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
 }
 
 fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
-    let (roundspec, rest) = line.split_once(":").unwrap();
-    let repetitions = get_repetitions(roundspec);
+    let (roundspec, rest) = match line.split_once(":") {
+        Some(x) => x,
+        None => return Err("Expected a round".into()),
+    };
+    let repetitions = get_repetitions(roundspec)?;
     let (stitches, anchors_str) = rest.split_once("(").unwrap();
     let anchors: usize = anchors_str
         .trim()
@@ -233,8 +248,8 @@ FO
 
     #[test]
     fn test_get_repetitions() {
-        assert_eq!(get_repetitions("R2"), 1);
-        assert_eq!(get_repetitions("R2-R4"), 3);
+        assert_eq!(get_repetitions("R2").unwrap(), 1);
+        assert_eq!(get_repetitions("R2-R4").unwrap(), 3);
     }
 
     #[test]
