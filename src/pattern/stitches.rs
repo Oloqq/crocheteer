@@ -16,6 +16,17 @@ impl Display for Stitch {
     }
 }
 
+impl Stitch {
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s.trim().to_lowercase().as_str() {
+            "sc" => Self::Sc.into(),
+            "inc" => Self::Inc.into(),
+            "dec" => Self::Dec.into(),
+            _ => None,
+        }
+    }
+}
+
 pub fn count_anchors_produced(round: &Vec<Stitch>) -> usize {
     let mut result = 0;
     for stitch in round {

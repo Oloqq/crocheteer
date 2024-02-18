@@ -1,4 +1,9 @@
-use super::{stitches::count_anchors_produced, Pattern, Stitch};
+use super::{
+    stitches::{self, count_anchors_produced},
+    Pattern, Stitch,
+};
+
+type ParseError = String;
 
 impl Pattern {
     #[allow(unused)]
@@ -37,10 +42,86 @@ impl Pattern {
         result
     }
 
-    pub fn from_human_readable(text: &String) -> Self {
-        // let starting = 6;
-        todo!()
+    #[allow(unused)]
+    pub fn from_human_readable(text: &str) -> Result<Self, ParseError> {
+        let lines: Vec<&str> = text.split("\n").collect();
+        let mut lines = lines.iter();
+        let magic_ring_line = lines.next().expect("Expected a program (got empty)");
+        let tokens: Vec<&str> = magic_ring_line.split(" ").collect();
+        assert!(tokens.len() == 2, "unexpected header");
+        assert!(tokens[0].to_uppercase() == "MR", "expected MR");
+        let starting_circle: usize = tokens[1].parse().expect("not a number");
+
+        let mut rounds: Vec<Vec<Stitch>> = vec![];
+        for line in lines {
+            if line.trim() == "FO" {
+                break;
+            }
+
+            let (repetitions, stitches) = parse_line(line)?;
+            for i in 0..repetitions {
+                rounds.push(stitches.clone());
+            }
+        }
+
+        Ok(Self {
+            starting_circle,
+            ending_circle: count_anchors_produced(rounds.last().unwrap()),
+            rounds,
+        })
     }
+}
+
+fn get_repetitions(roundspec: &str) -> usize {
+    match roundspec.split_once("-") {
+        None => 1,
+        Some((lhs, rhs)) => {
+            let lhs_num: usize = lhs.trim()[1..].parse().unwrap();
+            let rhs_num: usize = rhs.trim()[1..].parse().unwrap();
+            rhs_num - lhs_num + 1
+        }
+    }
+}
+
+fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
+    let tokens = stitches_str.split(", ");
+    let mut result = vec![];
+    for token in tokens {
+        let reps: usize;
+        let stitch_str: &str;
+        match token.trim().split_once(" ") {
+            Some((num_str, stitch_str_1)) => {
+                reps = num_str.trim().parse().unwrap();
+                stitch_str = stitch_str_1
+            }
+            None => {
+                reps = 1;
+                stitch_str = token;
+            }
+        }
+
+        let stitch = Stitch::from_str(stitch_str).expect("not recognized stitch");
+        for _ in 0..reps {
+            result.push(stitch);
+        }
+    }
+
+    Ok(result)
+}
+
+fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
+    let (roundspec, rest) = line.split_once(":").unwrap();
+    let (stitches, anchors_str) = rest.split_once("(").unwrap();
+    let anchors: usize = anchors_str
+        .trim()
+        .strip_suffix(")")
+        .unwrap()
+        .parse()
+        .unwrap();
+    let stitches = parse_stitches(stitches)?;
+    assert!(anchors == count_anchors_produced(&stitches));
+
+    Ok((get_repetitions(roundspec), stitches))
 }
 
 fn serialize_stitches(stitches: &Vec<Stitch>) -> String {
@@ -99,7 +180,7 @@ mod tests {
     fn test_serialization_basic() {
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 6,
+            ending_circle: 7,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
 
@@ -133,19 +214,47 @@ FO
         assert_eq!(p.human_readable().as_str(), expected);
     }
 
-    // #[test]
-    // fn test_loading_from_human_readable_basic() {
-    //     let expected = "MR 6
-    //     R1: 6 sc (6)
-    //     FO
-    //     ";
-    // }
+    #[test]
+    fn test_get_repetitions() {
+        assert_eq!(get_repetitions("R2"), 1);
+        assert_eq!(get_repetitions("R2-R4"), 3);
+    }
 
-    // #[test]
-    // fn test_loading_from_human_readable_repeated() {
-    //     let expected = "MR 6
-    //     R1: 6 sc (6)
-    //     FO
-    //     ";
-    // }
+    #[test]
+    fn test_loading_basic() {
+        let src = "MR 6
+        R1: 5 sc, inc (7)
+        FO
+        ";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            ending_circle: 7,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_loading_repeated() {
+        let src = "MR 6
+        R1: 3 sc, inc, dec (6)
+        R2-R4: 6 sc (6)
+        R5: 3 sc, inc, dec (6)
+        FO
+        ";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            ending_circle: 6,
+            rounds: vec![
+                vec![Sc, Sc, Sc, Inc, Dec],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Inc, Dec],
+            ],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
 }
