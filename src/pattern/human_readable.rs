@@ -1,7 +1,4 @@
-use super::{
-    stitches::{self, count_anchors_produced},
-    Pattern, Stitch,
-};
+use super::{stitches::count_anchors_produced, Pattern, Stitch};
 
 type ParseError = String;
 
@@ -9,7 +6,11 @@ impl Pattern {
     #[allow(unused)]
     pub fn human_readable(&self) -> String {
         let mut result = String::with_capacity(100);
-        result += format!("MR {}\n", self.starting_circle).as_str();
+        result += format!(
+            "R1: MR {} ({})\n",
+            self.starting_circle, self.starting_circle
+        )
+        .as_str();
 
         let mut repetition_start: Option<usize> = None;
         let mut last_round = self.rounds.first().unwrap();
@@ -48,9 +49,9 @@ impl Pattern {
         let mut lines = lines.iter();
         let magic_ring_line = lines.next().expect("Expected a program (got empty)");
         let tokens: Vec<&str> = magic_ring_line.split(" ").collect();
-        assert!(tokens.len() == 2, "unexpected header");
-        assert!(tokens[0].to_uppercase() == "MR", "expected MR");
-        let starting_circle: usize = tokens[1].parse().expect("not a number");
+        assert!(tokens.len() == 4, "unexpected header");
+        assert!(tokens[1].to_uppercase() == "MR", "expected MR");
+        let starting_circle: usize = tokens[2].parse().expect("not a number");
 
         let mut rounds: Vec<Vec<Stitch>> = vec![];
         for line in lines {
@@ -162,9 +163,9 @@ fn serialize_stitches(stitches: &Vec<Stitch>) -> String {
 
 fn serialize_round_id(this_round: usize, repetition_start: Option<usize>) -> String {
     if let Some(rep) = repetition_start {
-        format!("R{}-R{}", rep, this_round)
+        format!("R{}-R{}", rep + 1, this_round + 1)
     } else {
-        format!("R{}", this_round)
+        format!("R{}", this_round + 1)
     }
 }
 
@@ -184,8 +185,8 @@ mod tests {
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
 
-        let expected = "MR 6
-R1: 5 sc, inc (7)
+        let expected = "R1: MR 6 (6)
+R2: 5 sc, inc (7)
 FO
 ";
         assert_eq!(p.human_readable().as_str(), expected);
@@ -205,10 +206,10 @@ FO
             ],
         };
 
-        let expected = "MR 6
-R1: 3 sc, inc, dec (6)
-R2-R4: 6 sc (6)
-R5: 3 sc, inc, dec (6)
+        let expected = "R1: MR 6 (6)
+R2: 3 sc, inc, dec (6)
+R3-R5: 6 sc (6)
+R6: 3 sc, inc, dec (6)
 FO
 ";
         assert_eq!(p.human_readable().as_str(), expected);
@@ -222,8 +223,8 @@ FO
 
     #[test]
     fn test_loading_basic() {
-        let src = "MR 6
-        R1: 5 sc, inc (7)
+        let src = "R1: MR 6 (6)
+        R2: 5 sc, inc (7)
         FO
         ";
 
@@ -237,10 +238,10 @@ FO
 
     #[test]
     fn test_loading_repeated() {
-        let src = "MR 6
-        R1: 3 sc, inc, dec (6)
-        R2-R4: 6 sc (6)
-        R5: 3 sc, inc, dec (6)
+        let src = "R1: MR 6 (6)
+        R2: 3 sc, inc, dec (6)
+        R3-R5: 6 sc (6)
+        R6: 3 sc, inc, dec (6)
         FO
         ";
 

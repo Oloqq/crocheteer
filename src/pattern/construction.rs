@@ -13,6 +13,7 @@ impl Pattern {
         let extension = path.extension().expect("Unrecognized format");
         match extension.to_str().unwrap() {
             "yaml" => Self::from_yaml_str(content.as_str()),
+            "txt" => Self::from_human_readable(content.as_str()).unwrap(),
             _ => panic!("Unrecognized format"),
         }
     }

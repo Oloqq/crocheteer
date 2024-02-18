@@ -41,7 +41,7 @@ pattern -> starter `\n` round* `FO`?
 
 starter -> magic_ring // might add support for starting from a chain in the future
 
-magic_ring -> `MR` X
+magic_ring -> `R` `1` `MR` X
 
 round -> round_id `:` stitches count `\n`
 
