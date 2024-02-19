@@ -10,7 +10,7 @@ pub fn is_truthy(x: Number) -> bool {
 pub const NUMBER_TRUE: Number = 1;
 pub const NUMBER_FALSE: Number = 0;
 
-#[derive(Debug, Clone, Copy, PartialEq, Rand, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Rand)]
 pub enum Expr {
     ADD,
     SUB,
@@ -23,7 +23,7 @@ pub enum Expr {
     AND,
     NOT,
     Num(Number),
-    Reg(usize) // Expr::Reg is used only for growing, any real Program should not have it
+    Reg(usize), // Expr::Reg is used only for growing, any real Program should not have it
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Rand, Serialize, Deserialize)]
@@ -70,9 +70,9 @@ pub fn get_node_end(program: &Program, index: usize) -> usize {
         // no arguments
         Token::Reg(_) | Token::Expr(Expr::Num(_)) | Token::END => index + 1,
         // 1 argument
-        Token::Stat(Stat::INPUT)
-        | Token::Stat(Stat::OUTPUT)
-        | Token::Expr(Expr::NOT) => get_node_end(program, index + 1),
+        Token::Stat(Stat::INPUT) | Token::Stat(Stat::OUTPUT) | Token::Expr(Expr::NOT) => {
+            get_node_end(program, index + 1)
+        }
         // 2 arguments
         Token::Stat(Stat::LOAD)
         | Token::Expr(Expr::EQ)

@@ -1,7 +1,7 @@
 use super::common::*;
-use crate::params::Params;
-use rand::prelude::*;
+use super::params::Params;
 use rand::distributions::WeightedIndex;
+use rand::prelude::*;
 
 pub fn rand_reg(params: &Params, rand: &mut StdRng) -> Token {
     Token::Reg(rand.gen_range(0, params.memsize))
@@ -27,9 +27,7 @@ pub fn grow_expr(params: &Params, rand: &mut StdRng) -> Vec<Token> {
         let dist2 = WeightedIndex::new(items.iter().map(|item| item.1)).unwrap();
         let e: Expr = items[dist2.sample(rand)].0;
         match e {
-            Expr::Reg(_) => {
-                code.push(rand_reg(params, rand))
-            }
+            Expr::Reg(_) => code.push(rand_reg(params, rand)),
             Expr::Num(_) => code.push(rand_const(params, rand)),
             _ => {
                 code.push(Token::Expr(e));
@@ -37,17 +35,13 @@ pub fn grow_expr(params: &Params, rand: &mut StdRng) -> Vec<Token> {
                 for _ in 0..e.argnum() {
                     code.append(&mut grow_expr(params, rand));
                 }
-            },
+            }
         }
     }
     code
 }
 
-pub fn grow_stat(
-    size_left: i32,
-    params: &Params,
-    rand: &mut StdRng,
-) -> Vec<Token> {
+pub fn grow_stat(size_left: i32, params: &Params, rand: &mut StdRng) -> Vec<Token> {
     let items = &params.growing.d_stat;
     let dist2 = WeightedIndex::new(items.iter().map(|item| item.1)).unwrap();
     let stat: Stat = items[dist2.sample(rand)].0;
@@ -110,7 +104,11 @@ pub fn grow_stat(
             code.push(Token::END);
         }
     }
-    return if size_left > code.len() as i32 { code } else { vec![] };
+    return if size_left > code.len() as i32 {
+        code
+    } else {
+        vec![]
+    };
 }
 
 pub fn create_random_indiv(params: &Params, rand: &mut StdRng) -> Program {

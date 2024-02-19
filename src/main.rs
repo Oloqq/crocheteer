@@ -17,9 +17,14 @@ use genetic::do_genetics;
 use pattern::Pattern;
 use plushie::examples;
 use plushie::Plushie;
+use std::io::Write;
 use ws_sim::plushie_sim::PlushieSimulation;
 
 fn main() {
+    env_logger::Builder::from_default_env()
+        .format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()))
+        .init();
+
     let args = Args::from_args();
     if let Some(num) = args.dev {
         exec_dev_action(num);

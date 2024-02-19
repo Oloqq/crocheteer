@@ -1,8 +1,8 @@
 use super::execution::*;
 use super::fitness_funcs::*;
+use super::growing::grow_stat;
 use super::growing::rand_const;
-use crate::params::{Case, Params};
-use crate::tinygp::growing::grow_stat;
+use super::params::{Case, Params};
 
 use super::common::*;
 use super::growing::rand_reg;
@@ -14,7 +14,7 @@ pub fn run_and_rank(
     params: &Params,
     cases: &Vec<Case>,
     fitness_func: FitnessFunc,
-    memory_initializer: &mut Option<&mut StdRng>
+    memory_initializer: &mut Option<&mut StdRng>,
 ) -> f32 {
     cases.iter().fold(0.0, |acc, (inputs, targets)| {
         let mut runtime = Runtime::new(params.memsize, &inputs, memory_initializer);
@@ -29,10 +29,10 @@ pub fn crossover(father: &Program, mother: &Program, rand: &mut StdRng) -> Progr
     log::debug!("crossover {father:?} x {mother:?}");
 
     if father.len() == 0 {
-        return mother.clone()
+        return mother.clone();
     }
     if mother.len() == 0 {
-        return father.clone()
+        return father.clone();
     }
     let father_start = rand.gen_range(0, father.len());
     let father_kind = father[father_start];
@@ -41,7 +41,10 @@ pub fn crossover(father: &Program, mother: &Program, rand: &mut StdRng) -> Progr
     let mother_start = match mother
         .iter()
         .enumerate()
-        .filter(|(_i, v)| variant_eq(&father_kind, &v) && !matches!(father_kind, Token::Stat(Stat::IF | Stat::WHILE)))
+        .filter(|(_i, v)| {
+            variant_eq(&father_kind, &v)
+                && !matches!(father_kind, Token::Stat(Stat::IF | Stat::WHILE))
+        })
         .choose(rand)
     {
         Some((i, _v)) => i,
@@ -104,13 +107,21 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
                 Token::Reg(_) => Token::Reg(rand.gen_range(0, params.memsize)),
                 Token::Stat(_) => {
                     if rand.gen_bool(params.growing.p_insertion) {
-                        child.extend(grow_stat(params.max_size as i32 - parent.len() as i32, params, rand));
+                        child.extend(grow_stat(
+                            params.max_size as i32 - parent.len() as i32,
+                            params,
+                            rand,
+                        ));
                     }
                     let end = get_node_end(parent, i);
                     skip_till = Some(end);
-                    child.extend(grow_stat(params.max_size as i32 - parent.len() as i32, params, rand));
+                    child.extend(grow_stat(
+                        params.max_size as i32 - parent.len() as i32,
+                        params,
+                        rand,
+                    ));
                     continue;
-                },
+                }
                 Token::ELSE => Token::ELSE,
                 Token::END => Token::END,
             }
@@ -152,7 +163,7 @@ pub fn negative_tournament(fitness: &Vec<f64>, tournament_size: usize, rand: &mu
 
 #[cfg(test)]
 mod tests {
-    use crate::params::GrowingParams;
+    use crate::genetic::params::GrowingParams;
 
     use super::*;
 
@@ -220,7 +231,6 @@ mod tests {
     //     const END: Token = Token::END;
     //     use Token::Reg;
 
-
     //     let seed = StdRng::from_entropy().next_u64();
     //     // let mut rand = StdRng::seed_from_u64(seed);
 
@@ -242,17 +252,13 @@ mod tests {
     //         INPUT, Reg(1), INPUT, Reg(4),
     //     ];
 
-
     //     let i = vec![1, 2, 3, 4];
     //     let runtime = Runtime::new(8, &i, &mut None);
     //     let output = execute(&program, runtime);
     // }
 
-
-
-
-//= ((Stat . INPUT) (Reg . 0) (Stat . WHILE) (Reg . 2)
-// (Stat . INPUT) (Reg . 3)
-// (Stat . INPUT) (Reg . 4)
-//=  (Stat . INPUT) (Reg . 1) (Stat . INPUT) (Reg . 4))
+    //= ((Stat . INPUT) (Reg . 0) (Stat . WHILE) (Reg . 2)
+    // (Stat . INPUT) (Reg . 3)
+    // (Stat . INPUT) (Reg . 4)
+    //=  (Stat . INPUT) (Reg . 1) (Stat . INPUT) (Reg . 4))
 }
