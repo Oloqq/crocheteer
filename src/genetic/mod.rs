@@ -5,15 +5,11 @@ pub mod fitness_funcs;
 pub mod growing;
 pub mod params;
 
-#[cfg(test)]
-mod interpreter_tests;
-
 use common::*;
 use evolution::*;
+use growing::*;
 use params::Case;
 use params::Params;
-// use execution::*;
-use growing::*;
 
 use rand::prelude::*;
 use rand::SeedableRng;
@@ -113,13 +109,14 @@ impl TinyGP {
         let fitness_normalized = normalize_fitness(&fitness, &population);
         let mut params = params.clone();
         params.seed = seed;
+        let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,
             fitness,
             fitness_normalized,
             population,
             params: params.clone(),
-            cases: cases.clone(),
+            cases: case_copy,
             generation: 0,
             writer: writer.into(),
         })
