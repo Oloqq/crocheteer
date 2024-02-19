@@ -1,7 +1,6 @@
 use crate::pattern::Stitch;
 
-#[derive(Clone, Copy)]
-pub struct Shape {}
+pub use super::shape::Shape;
 #[derive(Clone, Copy)]
 pub struct NoInput {}
 
