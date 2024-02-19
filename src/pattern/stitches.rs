@@ -25,28 +25,28 @@ impl Stitch {
             _ => None,
         }
     }
-}
 
-pub fn count_anchors_produced(round: &Vec<Stitch>) -> usize {
-    let mut result = 0;
-    for stitch in round {
+    pub fn produced(&self) -> usize {
         use Stitch::*;
-        result += match stitch {
+        match self {
             Inc => 2,
             Sc | Dec => 1,
         }
     }
-    result
-}
 
-pub fn count_anchors_consumed(round: &Vec<Stitch>) -> usize {
-    let mut result = 0;
-    for stitch in round {
+    pub fn consumed(&self) -> usize {
         use Stitch::*;
-        result += match stitch {
+        match self {
             Dec => 2,
             Sc | Inc => 1,
         }
     }
-    result
+}
+
+pub fn count_anchors_produced(round: &Vec<Stitch>) -> usize {
+    round.iter().fold(0, |acc, stitch| acc + stitch.produced())
+}
+
+pub fn count_anchors_consumed(round: &Vec<Stitch>) -> usize {
+    round.iter().fold(0, |acc, stitch| acc + stitch.consumed())
 }

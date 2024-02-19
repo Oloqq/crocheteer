@@ -21,11 +21,11 @@ Patterns generating lots of folds (kinda like models of non-euclidean planes) ar
 # Components
 - STL loader
   - https://docs.rs/stl_io/latest/stl_io/
-- formal grammar of a pattern
+- [formal grammar of a pattern](./Pattern%20grammar.md)
 - pattern generator
-  - genetic
-    - fitness function -- how to compare two 3d shapes?
-  - procedural
+  - [genetic](./Genetic.md)
+  - procedural?
+    - simple to define for shapes with axial symmetry, gets complex for other cases
 - pattern to 3D model conversion
 - pattern visualization
   - STL export
@@ -33,7 +33,6 @@ Patterns generating lots of folds (kinda like models of non-euclidean planes) ar
 
 # Formal grammar of a pattern
 See solution in [Patter grammar.md](./Pattern%20grammar.md)
-
 
 
 # Pattern to 3D model conversion

@@ -1,4 +1,5 @@
 pub mod builder;
+pub mod genetic;
 pub mod human_readable;
 pub mod protopattern;
 pub mod stitches;
