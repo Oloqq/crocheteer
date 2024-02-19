@@ -23,4 +23,7 @@ pub struct Args {
 
     #[structopt(long, parse(from_os_str))]
     pub protopat: Option<PathBuf>,
+
+    #[structopt(long)]
+    pub genetic: bool,
 }

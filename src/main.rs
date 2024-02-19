@@ -1,18 +1,19 @@
 #[allow(unused)]
 use crate::meshes_sandbox::*;
-use crate::pattern::Stitch;
 use crate::{common::*, ws_sim::serve_websocket};
 
 extern crate nalgebra as na;
 
 mod args;
 mod common;
+mod genetic;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
 mod ws_sim;
 
 use args::*;
+use genetic::do_genetics;
 use pattern::Pattern;
 use plushie::examples;
 use plushie::Plushie;
@@ -22,6 +23,11 @@ fn main() {
     let args = Args::from_args();
     if let Some(num) = args.dev {
         exec_dev_action(num);
+        return;
+    }
+
+    if args.genetic {
+        do_genetics();
         return;
     }
 
