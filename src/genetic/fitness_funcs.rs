@@ -2,7 +2,7 @@ use super::{
     common::{Number, Program},
     execution::Runtime,
 };
-use std::{cmp, collections::HashMap};
+use std::cmp;
 
 pub type FitnessFunc = fn(expected: &Vec<Number>, actual: &Vec<Number>, runtime: &Runtime) -> f32;
 

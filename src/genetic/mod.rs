@@ -1,11 +1,9 @@
 pub mod common;
-mod evolution;
+pub mod evolution;
 pub mod execution;
 pub mod fitness_funcs;
-mod growing;
-mod params;
-
-pub fn do_genetics() {}
+pub mod growing;
+pub mod params;
 
 #[cfg(test)]
 mod interpreter_tests;
@@ -25,6 +23,8 @@ use std::fs;
 use std::io::Write;
 
 use self::fitness_funcs::*;
+
+pub fn do_genetics() {}
 
 pub struct TinyGP {
     rand: StdRng,

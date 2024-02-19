@@ -26,4 +26,19 @@ pub struct Args {
 
     #[structopt(long)]
     pub genetic: bool,
+
+    #[structopt(long)]
+    pub stdout: bool, // TEMP to compile tinygp
+
+    #[structopt(long)]
+    pub fresh: bool, // TEMP to compile tinygp
+
+    #[structopt(long)]
+    pub seed: Option<u64>, // TEMP to compile tinygp
+
+    #[structopt(long)]
+    pub generations: usize, // TEMP to compile tinygp
+
+    #[structopt(long)]
+    pub suite: Option<String>, // TEMP to compile tinygp
 }

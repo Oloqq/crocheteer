@@ -1,3 +1,4 @@
+use crate::benchmark::run_benchmark;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::{common::*, ws_sim::serve_websocket};
@@ -5,6 +6,7 @@ use crate::{common::*, ws_sim::serve_websocket};
 extern crate nalgebra as na;
 
 mod args;
+mod benchmark;
 mod common;
 mod genetic;
 mod meshes_sandbox;
@@ -34,6 +36,11 @@ fn main() {
     if args.genetic {
         do_genetics();
         return;
+    }
+
+    if let Some(suite) = &args.suite {
+        println!("Selected suite: {suite}");
+        run_benchmark(&suite, &args);
     }
 
     if let Some(pattern_path) = args.pattern {
