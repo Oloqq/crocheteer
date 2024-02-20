@@ -2,10 +2,9 @@ use crate::pattern::stitches::count_anchors_produced;
 
 use super::{Pattern, Stitch};
 
-type Genom = (usize, Vec<Stitch>);
+type Genom<'a> = (usize, &'a Vec<Stitch>);
 
 impl Pattern {
-    #[allow(unused)]
     pub fn from_genom(genom: &Genom) -> Self {
         let (starting_circle, stitches) = genom;
         let starting_circle = *starting_circle;
@@ -78,14 +77,14 @@ mod tests {
 
     #[test]
     fn test_from_genom_1() {
-        let g: Genom = (6, vec![Sc; 6]);
+        let g: Genom = (6, &vec![Sc; 6]);
         let p = Pattern::from_genom(&g);
         assert_eq!(p.rounds, vec![vec![Sc; 6]]);
     }
 
     #[test]
     fn test_from_genom_2() {
-        let g: Genom = (6, vec![Dec, Dec, Dec, Sc, Sc, Sc]);
+        let g: Genom = (6, &vec![Dec, Dec, Dec, Sc, Sc, Sc]);
         let p = Pattern::from_genom(&g);
         assert_eq!(p.rounds, vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Sc]]);
     }
@@ -94,7 +93,7 @@ mod tests {
     fn test_from_genom_3() {
         let g: Genom = (
             6,
-            vec![
+            &vec![
                 Inc, Inc, Inc, Inc, Inc, Inc, Sc, Sc, Sc, Sc, Sc, Sc, Sc, Sc, Sc, Sc, Sc, Sc,
             ],
         );
@@ -104,14 +103,14 @@ mod tests {
 
     #[test]
     fn test_from_genom_4() {
-        let g: Genom = (6, vec![Sc, Sc, Sc, Sc, Sc, Dec]);
+        let g: Genom = (6, &vec![Sc, Sc, Sc, Sc, Sc, Dec]);
         let p = Pattern::from_genom(&g);
         assert_eq!(p.rounds, vec![vec![Sc; 6]]);
     }
 
     #[test]
     fn test_from_genom_5() {
-        let g: Genom = (6, vec![Sc; 8]);
+        let g: Genom = (6, &vec![Sc; 8]);
         let p = Pattern::from_genom(&g);
         assert_eq!(p.rounds, vec![vec![Sc; 6]]);
     }
@@ -122,7 +121,7 @@ mod tests {
         make_ending_circle_reasonable(&mut rounds);
         assert_eq!(rounds, vec![vec![Inc; 6], vec![Inc; 12], vec![Dec; 12]]);
 
-        let g: Genom = (6, vec![Inc; 18]);
+        let g: Genom = (6, &vec![Inc; 18]);
         let p = Pattern::from_genom(&g);
         assert_eq!(p.rounds, vec![vec![Inc; 6], vec![Inc; 12], vec![Dec; 12]]);
     }

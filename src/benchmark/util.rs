@@ -10,7 +10,7 @@ use crate::{
     Args,
 };
 
-pub fn _execute_benchmark(
+pub fn execute_benchmark(
     args: &Args,
     params: Params,
     cases: Vec<Case>,

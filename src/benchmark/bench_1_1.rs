@@ -1,32 +1,34 @@
-// use super::util::execute_benchmark;
-// use crate::genetic::fitness_funcs::*;
-// use crate::genetic::params::{Case, GrowingParams, Params};
-// use crate::Args;
+use super::util::execute_benchmark;
+use crate::genetic::common::NoInput;
+use crate::genetic::fitness_funcs::*;
+use crate::genetic::params::{Case, GrowingParams, Params};
+use crate::genetic::shapes::Shape;
+use crate::Args;
 
-// // 1.1.A Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 1. Poza liczbą 1 może też zwrócić inne liczby.
-// pub fn bench_1_1_a(args: &Args) {
-//     let params = Params {
-//         memsize: 3,
-//         popsize: 100,
-//         max_size: 10,
-//         p_crossover: 0.9,
-//         p_mut_per_node: 0.2,
-//         tournament_size: 2,
-//         random_initial_memory: true,
-//         growing: GrowingParams {
-//             p_prefer_reg_over_num: 0.2,
-//             ..Default::default()
-//         },
-//         ..Default::default()
-//     };
-//     let cases: Vec<Case> = vec![
-//         (vec![0], vec![1]),
-//         (vec![1], vec![1]),
-//         (vec![1, 2], vec![1]),
-//     ];
+// 1.1.A Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 1. Poza liczbą 1 może też zwrócić inne liczby.
+pub fn bench_1_1_a(args: &Args) {
+    let params = Params {
+        memsize: 3,
+        popsize: 100,
+        max_size: 10,
+        p_crossover: 0.9,
+        p_mut_per_node: 0.2,
+        tournament_size: 2,
+        random_initial_memory: true,
+        growing: GrowingParams {
+            p_prefer_reg_over_num: 0.2,
+            ..Default::default()
+        },
+        ..Default::default()
+    };
 
-//     execute_benchmark(args, params, cases, "1_1_a", diff_best);
-// }
+    todo!()
+    // let output: Shape =
+
+    // let cases: Vec<Case> = vec![(NoInput {}, vec![])];
+
+    // execute_benchmark(args, params, cases, "1_1_a", diff_best);
+}
 
 // // 1.1.B Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 789. Poza liczbą 789 może też zwrócić inne liczby.
 // pub fn bench_1_1_b(args: &Args) {

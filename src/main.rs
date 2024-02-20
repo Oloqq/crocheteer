@@ -15,7 +15,6 @@ mod plushie;
 mod ws_sim;
 
 use args::*;
-use genetic::do_genetics;
 use pattern::Pattern;
 use plushie::examples;
 use plushie::Plushie;
@@ -30,11 +29,6 @@ fn main() {
     let args = Args::from_args();
     if let Some(num) = args.dev {
         exec_dev_action(num);
-        return;
-    }
-
-    if args.genetic {
-        do_genetics();
         return;
     }
 

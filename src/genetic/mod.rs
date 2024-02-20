@@ -23,8 +23,6 @@ use std::io::Write;
 
 use self::fitness_funcs::*;
 
-pub fn do_genetics() {}
-
 pub struct TinyGP {
     rand: StdRng,
     params: Params,
