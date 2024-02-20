@@ -1,12 +1,13 @@
 use super::{
     common::{Output, Program},
     execution::Runtime,
+    shapes::compare_shapes,
 };
 
 pub type FitnessFunc = fn(expected: &Output, actual: &Output, runtime: &Runtime) -> f32;
 
-pub fn compare_shapes(expected: &Output, actual: &Output, _runtime: &Runtime) -> f32 {
-    0.0
+pub fn shape_fitness(expected: &Output, actual: &Output, _runtime: &Runtime) -> f32 {
+    compare_shapes(actual, expected)
 }
 
 pub fn normalize_fitness(fitness: &Vec<f32>, _programs: &Vec<Program>) -> Vec<f64> {
@@ -16,7 +17,4 @@ pub fn normalize_fitness(fitness: &Vec<f32>, _programs: &Vec<Program>) -> Vec<f6
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_compare_cylinders() {}
 }

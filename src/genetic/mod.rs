@@ -6,7 +6,7 @@ pub mod execution;
 pub mod fitness_funcs;
 pub mod growing;
 pub mod params;
-pub mod shape;
+pub mod shapes;
 
 use common::*;
 use evolution::*;

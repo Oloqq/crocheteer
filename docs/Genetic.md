@@ -1,9 +1,10 @@
 # Prepare user's file for comparison
 
 user
--> stl?
--> ???
--> `Shape`
+-> stl
+-> take triangle vertexes
+-> put points there
+-> `Shape` with interpolation and resampling for high density
 
 https://github.com/evanchodora/stl-slicer
 
@@ -35,6 +36,7 @@ genetic algorithm
     - it's probably reasonable to assume that points will be distributed somewhat uniformly across the perimeter of the slice
       - if not, resampling would be needed and that's a whole another problem
     - we can just compare each point to position of the point closest to it
+      - POLAR COORDINATES allow some kind of point sorting
       - sounds like some matrix operation could speed that up?
       - with this approach, slices from user's shape MUST be uniform and dense
   - considering folds (not now)
