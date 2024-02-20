@@ -33,13 +33,13 @@ fn highest_point(points: &Vec<Point>) -> &Point {
 }
 
 fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<Vec<Point>> {
-    let slice_span = max_height / levels as f32;
-    let half_slice = slice_span / 2.0;
+    let slice_span = (max_height + 0.1) / levels as f32;
 
     let mut result = vec![vec![]; levels];
 
     for p in points {
-        let level = ((p.y + half_slice) / slice_span).round() as usize - 1;
+        let mut level = (p.y / slice_span).floor() as usize;
+        println!("{} {} {} {}", p.y, slice_span, level, p.y / slice_span);
         match result.get_mut(level) {
             Some(slice) => slice.push(p.clone()),
             None => panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly?"),
@@ -51,6 +51,8 @@ fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<
 
 #[cfg(test)]
 mod tests {
+    use super::super::Point2;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -83,5 +85,37 @@ mod tests {
 
         let shape = Shape::from_points(&points, 3, 2.0);
         assert_eq!(shape.slices, diamond(x).slices)
+    }
+
+    #[test]
+    fn test_from_points_less_levels() {
+        let x = 1.0;
+        let points = vec![
+            Point::origin(),
+            Point::new(0.0, 2.0, 0.0),
+            Point::new(-x, 1.0, -x),
+            Point::new(-x, 1.0, x),
+            Point::new(x, 1.0, x),
+            Point::new(x, 1.0, -x),
+        ];
+
+        let shape = Shape::from_points(&points, 2, 2.0);
+        assert_eq!(
+            shape.slices,
+            vec![
+                Slice {
+                    points: vec![
+                        Point2::new(0.0, 0.0),
+                        Point2::new(-x, -x),
+                        Point2::new(-x, x),
+                        Point2::new(x, x),
+                        Point2::new(x, -x)
+                    ]
+                },
+                Slice {
+                    points: vec![Point2::new(0.0, 0.0)]
+                }
+            ]
+        )
     }
 }

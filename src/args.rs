@@ -36,7 +36,7 @@ pub struct Args {
     #[structopt(long)]
     pub seed: Option<u64>, // TEMP to compile tinygp
 
-    #[structopt(long)]
+    #[structopt(long, default_value = "0")]
     pub generations: usize, // TEMP to compile tinygp
 
     #[structopt(long)]

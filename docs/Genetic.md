@@ -20,7 +20,7 @@ genetic algorithm
 
 - the points form a 3D model
 - let `Shape` be a sliced 3D object (list of `Slice`) (slicing as in 3d printing)
-- convert the points to a `Shape`
+- ✅convert the points to a `Shape`
   - but points are on arbitrary heights, so how to slice?
   - create the `Slice` like:
     - choose a height
