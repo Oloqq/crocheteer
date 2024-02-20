@@ -1,8 +1,20 @@
-use crate::{common::Point, plushie::Plushie};
+use stl_io::{IndexedMesh, IndexedTriangle, Vertex};
 
 use super::{Shape, Slice};
+use crate::{common::Point, plushie::Plushie};
+
+use std::error::Error;
+use std::fs::OpenOptions;
 
 impl Shape {
+    pub fn from_stl_file(path: &str) -> Result<Self, Box<dyn Error>> {
+        let mut file = OpenOptions::new().read(true).open(path)?;
+        let stl = stl_io::read_stl(&mut file).unwrap();
+        let (points, highest) = stl_to_points(stl);
+        let levels = highest.ceil() as usize;
+        Ok(Self::from_points(&points, levels, highest))
+    }
+
     fn from_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Self {
         let mut segregated = segregate_points(points, levels, max_height);
         assert!(segregated.len() == levels);
@@ -24,6 +36,20 @@ impl Shape {
     }
 }
 
+fn stl_to_points(stl: IndexedMesh) -> (Vec<Point>, f32) {
+    let (points, max_height) =
+        stl.vertices
+            .iter()
+            .fold((Vec::new(), f32::MIN), |(mut points, max_h), v| {
+                points.push(Point::new(v[0], v[1], v[2]));
+                (points, max_h.max(v[1]))
+            });
+    // println!("{:?}", points.iter().map(|a| a.y).collect::<Vec<_>>());
+    // println!("max h {max_height}");
+
+    (points, max_height)
+}
+
 fn levels_for(points: &Vec<Point>, highest_y: f32) -> usize {
     highest_y.round() as usize
 }
@@ -39,7 +65,6 @@ fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<
 
     for p in points {
         let mut level = (p.y / slice_span).floor() as usize;
-        println!("{} {} {} {}", p.y, slice_span, level, p.y / slice_span);
         match result.get_mut(level) {
             Some(slice) => slice.push(p.clone()),
             None => panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly?"),

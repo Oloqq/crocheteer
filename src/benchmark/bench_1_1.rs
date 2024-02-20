@@ -5,8 +5,7 @@ use crate::genetic::params::{Case, GrowingParams, Params};
 use crate::genetic::shapes::Shape;
 use crate::Args;
 
-// 1.1.A Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 1. Poza liczbą 1 może też zwrócić inne liczby.
-pub fn bench_1_1_a(args: &Args) {
+pub fn bench_small_ball(args: &Args) {
     let params = Params {
         memsize: 3,
         popsize: 100,
@@ -22,12 +21,11 @@ pub fn bench_1_1_a(args: &Args) {
         ..Default::default()
     };
 
-    todo!()
-    // let output: Shape =
+    let output: Shape = Shape::from_stl_file("src/benchmark/ball.stl").unwrap();
 
-    // let cases: Vec<Case> = vec![(NoInput {}, vec![])];
+    let cases: Vec<Case> = vec![(NoInput {}, output)];
 
-    // execute_benchmark(args, params, cases, "1_1_a", diff_best);
+    execute_benchmark(args, params, cases, "small_ball", shape_fitness);
 }
 
 // // 1.1.B Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 789. Poza liczbą 789 może też zwrócić inne liczby.

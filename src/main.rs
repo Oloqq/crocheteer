@@ -58,7 +58,15 @@ fn main() {
 fn exec_dev_action(num: usize) {
     fn generate(name: &str, func: fn() -> Plushie) {
         let mut plushie = func();
+        // println!(
+        //     "{:?}",
+        //     plushie.points.iter().map(|a| a.y).collect::<Vec<_>>()
+        // );
         plushie.animate();
+        // println!(
+        //     "{:?}",
+        //     plushie.points.iter().map(|a| a.y).collect::<Vec<_>>()
+        // );
         save_mesh(name, plushie.to_mesh());
     }
 
