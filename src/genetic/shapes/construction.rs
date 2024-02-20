@@ -1,0 +1,87 @@
+use crate::{common::Point, plushie::Plushie};
+
+use super::{Shape, Slice};
+
+impl Shape {
+    fn from_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Self {
+        let mut segregated = segregate_points(points, levels, max_height);
+        assert!(segregated.len() == levels);
+
+        let slices = segregated
+            .drain(..)
+            .map(|points| Slice::from_3d(points))
+            .collect();
+
+        Self { slices }
+    }
+
+    pub fn from_plushie(plushie: &Plushie) -> Self {
+        let points = &plushie.points;
+        let highest = highest_point(points);
+        let levels = levels_for(points, highest.y);
+
+        Self::from_points(points, levels, highest.y)
+    }
+}
+
+fn levels_for(points: &Vec<Point>, highest_y: f32) -> usize {
+    highest_y.round() as usize
+}
+
+fn highest_point(points: &Vec<Point>) -> &Point {
+    &points[1] // Assumption: the "ending" point is stored at index one AND is the highest point
+}
+
+fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<Vec<Point>> {
+    let slice_span = max_height / levels as f32;
+    let half_slice = slice_span / 2.0;
+
+    let mut result = vec![vec![]; levels];
+
+    for p in points {
+        let level = ((p.y + half_slice) / slice_span).round() as usize - 1;
+        match result.get_mut(level) {
+            Some(slice) => slice.push(p.clone()),
+            None => panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly?"),
+        }
+    }
+
+    result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    fn diamond(x: f32) -> Shape {
+        Shape {
+            slices: vec![
+                Slice::from_3d(vec![Point::origin()]),
+                Slice::from_3d(vec![
+                    Point::new(-x, 1.0, -x),
+                    Point::new(-x, 1.0, x),
+                    Point::new(x, 1.0, x),
+                    Point::new(x, 1.0, -x),
+                ]),
+                Slice::from_3d(vec![Point::new(0.0, 2.0, 0.0)]),
+            ],
+        }
+    }
+
+    #[test]
+    fn test_from_points() {
+        let x = 1.0;
+        let points = vec![
+            Point::origin(),
+            Point::new(0.0, 2.0, 0.0),
+            Point::new(-x, 1.0, -x),
+            Point::new(-x, 1.0, x),
+            Point::new(x, 1.0, x),
+            Point::new(x, 1.0, -x),
+        ];
+
+        let shape = Shape::from_points(&points, 3, 2.0);
+        assert_eq!(shape.slices, diamond(x).slices)
+    }
+}

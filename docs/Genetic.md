@@ -29,14 +29,14 @@ genetic algorithm
         - utilize the fact that points should have gradually increasing height
         - or apply a function O(n) that will assign nodes to buckets
     - for each `Slice` we now have a set of points on the perimeter
-- comparing `Slice`s
-  - not considering folds
+- ✅comparing `Slice`s
+  - ✅not considering folds
     - what about smth like Hu Moments? (like in image processing)
       - https://learnopencv.com/shape-matching-using-hu-moments-c-python/
     - it's probably reasonable to assume that points will be distributed somewhat uniformly across the perimeter of the slice
       - if not, resampling would be needed and that's a whole another problem
-    - we can just compare each point to position of the point closest to it
-      - POLAR COORDINATES allow some kind of point sorting
+    - ✅ we can just compare each point to position of the point closest to it
+      - ⏳ POLAR COORDINATES allow some kind of point sorting
       - sounds like some matrix operation could speed that up?
       - with this approach, slices from user's shape MUST be uniform and dense
   - considering folds (not now)
