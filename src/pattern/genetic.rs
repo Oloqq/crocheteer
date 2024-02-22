@@ -116,6 +116,29 @@ mod tests {
     }
 
     #[test]
+    fn test_from_genom_6() {
+        let g: Genom = (
+            6,
+            &vec![Dec, Dec, Dec, Sc, Dec, Dec, Dec, Sc, Dec, Inc, Sc, Inc],
+        );
+        let p = Pattern::from_genom(&g);
+        assert_eq!(p.rounds.len(), 8);
+        assert_eq!(
+            p.rounds,
+            vec![
+                vec![Dec, Dec, Dec],
+                vec![Sc, Dec],
+                vec![Dec],
+                vec![Sc],
+                vec![Sc],
+                vec![Sc],
+                vec![Inc],
+                vec![Sc, Inc]
+            ]
+        );
+    }
+
+    #[test]
     fn test_ending_circle_reasonable() {
         let mut rounds = vec![vec![Inc; 6], vec![Inc; 12]];
         make_ending_circle_reasonable(&mut rounds);

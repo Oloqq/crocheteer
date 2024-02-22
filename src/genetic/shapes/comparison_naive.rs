@@ -4,7 +4,12 @@ use super::{Point2, Shape, Slice};
 
 impl Slice {
     fn compare(&self, other: &Self) -> f32 {
-        assert!(self.points.len() >= other.points.len()); // assumption: self is the denser one
+        // assert!(
+        //     self.points.len() >= other.points.len(),
+        //     "{} >= {}",
+        //     self.points.len(),
+        //     other.points.len()
+        // ); // assumption: self is the denser one
 
         let mut result = 0.0;
         for point in &other.points {
@@ -30,9 +35,15 @@ impl Slice {
     }
 }
 
+// TODO implement comparison using k-d trees, this is stupid
 impl Shape {
     pub fn compare(&self, other: &Self) -> f32 {
-        assert!(self.slices.len() == other.slices.len());
+        assert!(
+            self.slices.len() == other.slices.len(),
+            "{} == {}",
+            self.slices.len(),
+            other.slices.len()
+        );
 
         self.slices
             .iter()

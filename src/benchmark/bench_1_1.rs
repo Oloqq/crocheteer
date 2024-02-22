@@ -6,11 +6,11 @@ use crate::genetic::shapes::Shape;
 use crate::Args;
 
 pub fn bench_small_ball(args: &Args) {
-    let params = Params {
+    let mut params = Params {
         memsize: 3,
         popsize: 100,
         max_size: 10,
-        p_crossover: 0.9,
+        p_crossover: 0.0,
         p_mut_per_node: 0.2,
         tournament_size: 2,
         random_initial_memory: true,
@@ -21,7 +21,9 @@ pub fn bench_small_ball(args: &Args) {
         ..Default::default()
     };
 
-    let output: Shape = Shape::from_stl_file("src/benchmark/ball.stl").unwrap();
+    let (output, levels, max_height) = Shape::from_stl_file("src/benchmark/ball.stl").unwrap();
+    params.levels = Some(levels);
+    params.max_height = Some(max_height);
 
     let cases: Vec<Case> = vec![(NoInput {}, output)];
 

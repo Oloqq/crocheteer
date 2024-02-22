@@ -7,12 +7,12 @@ use std::error::Error;
 use std::fs::OpenOptions;
 
 impl Shape {
-    pub fn from_stl_file(path: &str) -> Result<Self, Box<dyn Error>> {
+    pub fn from_stl_file(path: &str) -> Result<(Self, usize, f32), Box<dyn Error>> {
         let mut file = OpenOptions::new().read(true).open(path)?;
         let stl = stl_io::read_stl(&mut file).unwrap();
         let (points, highest) = stl_to_points(stl);
         let levels = highest.ceil() as usize;
-        Ok(Self::from_points(&points, levels, highest))
+        Ok((Self::from_points(&points, levels, highest), levels, highest))
     }
 
     fn from_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Self {
@@ -27,12 +27,17 @@ impl Shape {
         Self { slices }
     }
 
-    pub fn from_plushie(plushie: &Plushie) -> Self {
+    pub fn from_source_plushie(plushie: &Plushie) -> Self {
         let points = &plushie.points;
         let highest = highest_point(points);
         let levels = levels_for(points, highest.y);
 
         Self::from_points(points, levels, highest.y)
+    }
+
+    pub fn from_unfitted_plushie(plushie: &Plushie, levels: usize, max_height: f32) -> Self {
+        let points = &plushie.points;
+        Self::from_points(points, levels, max_height)
     }
 }
 
@@ -67,7 +72,10 @@ fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<
         let mut level = (p.y / slice_span).floor() as usize;
         match result.get_mut(level) {
             Some(slice) => slice.push(p.clone()),
-            None => panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly?"),
+            None => {
+                println!("generated a point above the max slice")
+                // panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly? {}, {}, {}", level, max_height, p.y),
+            }
         }
     }
 

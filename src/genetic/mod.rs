@@ -73,7 +73,6 @@ impl TinyGP {
     ) -> TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
-        params.seed = seed;
         writeln!(writer.borrow_mut(), "Creating population").unwrap();
         let (population, fitness) = random_population(&params, &cases, &mut rand, fitness_func);
         let fitness_normalized = normalize_fitness(&fitness, &population);
@@ -109,7 +108,6 @@ impl TinyGP {
             load_population(filepath, &params, &cases, fitness_func, memory_init)?;
         let fitness_normalized = normalize_fitness(&fitness, &population);
         let mut params = params.clone();
-        params.seed = seed;
         let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,

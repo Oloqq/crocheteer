@@ -27,7 +27,6 @@ pub struct GrowingParams {
 
 #[derive(Clone)]
 pub struct Params {
-    pub seed: u64,
     pub memsize: usize,
     pub popsize: usize,
     /// Max size of Vec<Token> representing a program. Ignored during initial generation.
@@ -41,6 +40,9 @@ pub struct Params {
     pub random_initial_memory: bool,
     pub prefix: Vec<Token>,
     pub suffix: Vec<Token>,
+
+    pub levels: Option<usize>,
+    pub max_height: Option<f32>,
 }
 
 impl Params {
@@ -126,7 +128,6 @@ impl Default for GrowingParams {
 impl Default for Params {
     fn default() -> Self {
         Self {
-            seed: Default::default(),
             memsize: 5,
             popsize: 10,
             max_size: 1000,
@@ -138,6 +139,8 @@ impl Default for Params {
             growing: Default::default(),
             prefix: vec![],
             suffix: vec![],
+            levels: None,
+            max_height: None,
         }
     }
 }
@@ -146,17 +149,13 @@ impl Display for Params {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(
             format!(
-                "SEED={}
+                "
 POPSIZE={}
 CROSSOVER_PROB={}
 PMUT_PER_NODE={}
 TSIZE={}
 ----------------------------------\n",
-                self.seed,
-                self.popsize,
-                self.p_crossover,
-                self.p_mut_per_node,
-                self.tournament_size
+                self.popsize, self.p_crossover, self.p_mut_per_node, self.tournament_size
             )
             .as_str(),
         )
