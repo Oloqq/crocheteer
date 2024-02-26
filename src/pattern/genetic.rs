@@ -42,7 +42,7 @@ fn make_rounds(start: usize, stitches: &Vec<Stitch>) -> Vec<Vec<Stitch>> {
         if stitches_left < 0 {
             assert!(stitch.consumed() > 1);
             assert!(matches!(stitch, Stitch::Dec));
-            println!("overflow, swapping dec to sc");
+            log::trace!("overflow, swapping dec to sc");
             round.push(Stitch::Sc);
         }
     }

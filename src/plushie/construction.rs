@@ -78,6 +78,8 @@ impl Plushie {
             rounds: Rounds::new(round_starts, round_counts),
             // gravity: 0.0000001,
             _gravity: 0.0,
+            acceptable_tension: 0.02,
+            max_relaxing_iterations: 100,
         }
     }
 }

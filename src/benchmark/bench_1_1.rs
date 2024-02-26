@@ -8,7 +8,7 @@ use crate::Args;
 pub fn bench_small_ball(args: &Args) {
     let mut params = Params {
         memsize: 3,
-        popsize: 100,
+        popsize: 1,
         max_size: 10,
         p_crossover: 0.0,
         p_mut_per_node: 0.2,

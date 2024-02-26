@@ -1,1 +1,18 @@
 Loading population
+-- TINY GP (Rust version) --
+GENERATIONS=1
+
+POPSIZE=1
+CROSSOVER_PROB=0
+PMUT_PER_NODE=0.2
+TSIZE=2
+----------------------------------
+
+Generation=0
+Avg Fitness=NaN
+Best Fitness=15.887635
+Avg Size=12
+Best Individual: 
+"(Dec Inc Sc Inc Inc Inc Sc Sc Inc Inc Sc Dec)"
+
+PROBLEM SOLVED

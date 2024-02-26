@@ -36,6 +36,8 @@ pub struct Plushie {
     stuffing: Stuffing,
     desired_stitch_distance: f32,
     _gravity: f32,
+    acceptable_tension: f32,
+    max_relaxing_iterations: usize,
 }
 
 impl Plushie {
@@ -73,18 +75,29 @@ impl Plushie {
         self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
     }
 
-    pub fn step(&mut self, time: f32) {
+    pub fn step(&mut self, time: f32) -> Vec<V> {
         let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);
 
         self.apply_forces(&displacement, time);
+
+        displacement
+    }
+
+    fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
+        // TODO: elbow method
+        let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
+        tension <= self.acceptable_tension
     }
 
     pub fn animate(&mut self) {
-        for _ in 0..1000 {
-            self.step(1.0);
+        for _ in 0..self.max_relaxing_iterations {
+            let displacement = self.step(1.0);
+            if self.is_relaxed(&displacement) {
+                break;
+            }
         }
     }
 }

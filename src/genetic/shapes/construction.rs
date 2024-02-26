@@ -73,7 +73,7 @@ fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<
         match result.get_mut(level) {
             Some(slice) => slice.push(p.clone()),
             None => {
-                println!("generated a point above the max slice")
+                log::trace!("generated a point above the max slice")
                 // panic!("Point would go above the highest slice. Maybe max_height was determined incorrectly? {}, {}, {}", level, max_height, p.y),
             }
         }
