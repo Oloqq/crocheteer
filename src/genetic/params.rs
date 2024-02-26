@@ -131,7 +131,7 @@ impl Default for Params {
             memsize: 5,
             popsize: 10,
             max_size: 1000,
-            p_crossover: 0.9,
+            p_crossover: 0.0,
             p_mut_per_node: 0.05,
             tournament_size: 2,
             acceptable_error: -1e-3,

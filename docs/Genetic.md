@@ -18,6 +18,7 @@ genetic algorithm
 -> points
 -> `Shape`
 
+- current implementation is stupid, use an octotree/kd tree or smth
 - the points form a 3D model
 - let `Shape` be a sliced 3D object (list of `Slice`) (slicing as in 3d printing)
 - ✅convert the points to a `Shape`
@@ -47,5 +48,17 @@ genetic algorithm
       - grow region
       - binary operations on expected and actual
       - count pixels as fitness
+- it would be useful to know if the generated shape is too small or too large
 
+# Evolutionary operators
+## Per node (per stitch)
+use a weighted index
 
+### Mutation
+
+### Duplication
+
+### Removal
+
+## Crossover
+is it even worth implementing?

@@ -41,4 +41,7 @@ pub struct Args {
 
     #[structopt(long)]
     pub suite: Option<String>, // TEMP to compile tinygp
+
+    #[structopt(short = "l", long)]
+    pub save_stl: bool,
 }

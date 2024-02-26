@@ -1,8 +1,11 @@
 use super::util::execute_benchmark;
+use crate::common::save_mesh;
 use crate::genetic::common::NoInput;
 use crate::genetic::fitness_funcs::*;
 use crate::genetic::params::{Case, GrowingParams, Params};
 use crate::genetic::shapes::Shape;
+use crate::pattern::Pattern;
+use crate::plushie::Plushie;
 use crate::Args;
 
 pub fn bench_small_ball(args: &Args) {
@@ -27,7 +30,13 @@ pub fn bench_small_ball(args: &Args) {
 
     let cases: Vec<Case> = vec![(NoInput {}, output)];
 
-    execute_benchmark(args, params, cases, "small_ball", shape_fitness);
+    let best = execute_benchmark(args, params, cases, "small_ball", shape_fitness);
+    if args.save_stl {
+        let pattern = Pattern::from_genom(&(6, &best));
+        let mut plushie = Plushie::from_pattern(pattern);
+        plushie.animate();
+        save_mesh("src/benchmark/ball_generated.stl", plushie.to_mesh());
+    }
 }
 
 // // 1.1.B Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 789. Poza liczbą 789 może też zwrócić inne liczby.

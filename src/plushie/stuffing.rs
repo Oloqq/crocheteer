@@ -105,6 +105,9 @@ pub fn per_round_stuffing(
     desired_stitch_distance: f32,
     displacement: &mut Vec<V>,
 ) {
+    if rounds.start.len() == 0 {
+        return;
+    }
     rounds.update_round_centers(points);
     rounds.push_rounds_offcenter(points, desired_stitch_distance, displacement);
 }

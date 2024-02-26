@@ -213,6 +213,11 @@ impl TinyGP {
         self.generation += 1;
     }
 
+    pub fn get_best(&mut self) -> Program {
+        let (_, besti) = self.stats();
+        self.population[besti].clone()
+    }
+
     fn stats(&mut self) -> (f32, usize) {
         let mut best = 0;
         let mut node_count = 0;

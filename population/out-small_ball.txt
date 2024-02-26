@@ -1,6 +1,6 @@
 Loading population
 -- TINY GP (Rust version) --
-GENERATIONS=1
+GENERATIONS=1000
 
 POPSIZE=1
 CROSSOVER_PROB=0
@@ -10,9 +10,7016 @@ TSIZE=2
 
 Generation=0
 Avg Fitness=NaN
-Best Fitness=15.887635
-Avg Size=12
+Best Fitness=-0.30734307
+Avg Size=15
 Best Individual: 
-"(Dec Inc Sc Inc Inc Inc Sc Sc Inc Inc Sc Dec)"
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
 
-PROBLEM SOLVED
+Generation=1
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=2
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=3
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=4
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=5
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=6
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=7
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=8
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=9
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=10
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=11
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=12
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=13
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=16
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=14
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=15
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=16
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=17
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=18
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=19
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=20
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=21
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=22
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=23
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=24
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=25
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=26
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=27
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=28
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=29
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=30
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=31
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=32
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=33
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=34
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=35
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=36
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=37
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=38
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=39
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=40
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=41
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=42
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=43
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=44
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=45
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=46
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=47
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=48
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=49
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=50
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=51
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=52
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=53
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=54
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=55
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=56
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=57
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=58
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=59
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=60
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=61
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=62
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=63
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=64
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=65
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=66
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=67
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=68
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=69
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=70
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=71
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=72
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=73
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=74
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=75
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=76
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=77
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=78
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=79
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=80
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=81
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=82
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=83
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=84
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=85
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=86
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=87
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=88
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=89
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=90
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=91
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=92
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=93
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=94
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=95
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=96
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=97
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=98
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=99
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=100
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=101
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=102
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=103
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=104
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=105
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=106
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=107
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=108
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=109
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=110
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=111
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=112
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=113
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=114
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=115
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=116
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=117
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=118
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=119
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=120
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=121
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=122
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=123
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=124
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=125
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=126
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=127
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=128
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=129
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=130
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=131
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=132
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=133
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=134
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=135
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=136
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=137
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=138
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=139
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=140
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=141
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=142
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=143
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=144
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=145
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=146
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=147
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=148
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=149
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=150
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=151
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=152
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=153
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=154
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=155
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=156
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=157
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=158
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=159
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=160
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=161
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=162
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=163
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=164
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=165
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=166
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=167
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=168
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=169
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=170
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=171
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=172
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=173
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=174
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=175
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=176
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=177
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=178
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=179
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=180
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=181
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=182
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=183
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=184
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=185
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=186
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=187
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=188
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=189
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=190
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=191
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=192
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=193
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=194
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=195
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=196
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=197
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=198
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=199
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=200
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=201
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=202
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=203
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=204
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=205
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=206
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=207
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=208
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=209
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=210
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=211
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=212
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=213
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=214
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=215
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=216
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=217
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=218
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=219
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=220
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=221
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=222
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=223
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=17
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=224
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=225
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=226
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=18
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=227
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=228
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=229
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=230
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=231
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=232
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=233
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=234
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=235
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=19
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=236
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=237
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=238
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=239
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=240
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=241
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=242
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=243
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=20
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=244
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=21
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=245
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=246
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=247
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=248
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=249
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=250
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=251
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=252
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=253
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=254
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=255
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=22
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=256
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=257
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=258
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=259
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=260
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=23
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=261
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=262
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=24
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=263
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=264
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=265
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=266
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=267
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=268
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=269
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=270
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=271
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=272
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=273
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=274
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=275
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=276
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=277
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=278
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=279
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=280
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=281
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=282
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=283
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=25
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=284
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=285
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=26
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=286
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=287
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=288
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=289
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=27
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=290
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=28
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=291
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=292
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=293
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=294
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=295
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=296
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=297
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=298
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=31
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=299
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=31
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=300
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=30
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=301
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=32
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=302
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=34
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=303
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=34
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=304
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=305
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=34
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=306
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=307
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=308
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=34
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=309
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=310
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=311
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=312
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=313
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=314
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=315
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=316
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=317
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=318
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=319
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=320
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=321
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=322
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=323
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=35
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=324
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=325
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=326
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=327
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=328
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=329
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=330
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=331
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=332
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=333
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=334
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=335
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=336
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=337
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=338
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=339
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=340
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=341
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=342
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=343
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=344
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=345
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=346
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=347
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=348
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=349
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=350
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=36
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=351
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=352
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=353
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=37
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=354
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=355
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=356
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=357
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=358
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=359
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=360
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=39
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=361
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=39
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=362
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=39
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=363
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=364
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=365
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=366
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=367
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=368
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=38
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=369
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=39
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=370
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=40
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=371
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=40
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=372
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=40
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=373
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=40
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=374
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=375
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=376
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=377
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=378
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=379
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=380
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=381
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=382
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=383
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=384
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=385
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=386
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=40
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=387
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=388
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=389
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=390
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=391
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=392
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=393
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=41
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=394
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=42
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=395
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=43
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=396
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=45
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=397
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=45
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=398
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=45
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=399
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=45
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=400
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=46
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=401
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=46
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=402
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=403
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=404
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=405
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=406
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=50
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=407
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=50
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=408
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=50
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=409
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=50
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=410
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=411
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=412
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=413
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=414
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=48
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=415
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=50
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=416
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=51
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=417
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=51
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=418
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=51
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=419
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=53
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=420
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=55
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=421
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=422
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=423
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=424
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=425
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=426
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=55
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=427
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=428
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=429
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=430
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=431
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=432
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=433
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=434
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=435
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=436
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=437
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=438
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=439
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=440
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=441
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=442
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=443
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=444
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=445
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=446
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=447
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=448
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=449
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=450
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=451
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=452
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=453
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=454
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=455
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=456
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=457
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=458
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=459
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=460
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=461
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=462
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=463
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=464
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=465
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=466
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=467
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=468
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=469
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=55
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=470
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=55
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=471
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=472
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=473
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=57
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=474
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=475
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=476
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=477
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=478
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=479
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=480
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=481
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=482
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=483
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=484
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=485
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=486
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=487
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=488
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=489
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=490
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=491
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=72
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=492
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=493
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=494
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=495
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=496
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=497
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=498
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=499
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=500
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=501
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=502
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=503
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=504
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=505
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=506
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=507
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=508
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=509
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=510
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=511
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=512
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=513
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=514
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=515
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=516
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=517
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=518
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=519
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=520
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=521
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=522
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=523
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=524
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=525
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=526
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=527
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=528
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=529
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=530
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=531
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=532
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=533
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=58
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=534
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=535
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=536
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=537
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=538
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=539
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=540
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=541
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=542
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=543
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=544
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=545
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=546
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=547
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=548
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=549
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=550
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=551
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=552
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=553
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=554
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=555
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=556
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=557
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=558
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=559
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=560
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=69
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=561
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=562
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=69
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=563
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=564
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=565
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=71
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=566
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=71
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=567
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=71
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=568
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=73
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=569
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=71
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=570
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=571
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=71
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=572
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=69
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=573
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=69
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=574
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=575
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=576
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=577
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=578
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=70
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=579
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=69
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=580
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=581
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=582
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=583
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=68
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=584
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=585
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=586
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=587
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=588
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=589
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=590
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=591
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=592
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=66
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=593
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=594
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=595
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=596
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=597
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=67
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=598
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=599
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=600
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=601
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=602
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=603
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=64
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=604
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=605
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=606
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=607
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=608
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=609
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=610
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=611
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=612
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=613
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=614
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=615
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=616
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=617
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=60
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=618
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=56
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=619
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=620
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=59
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=621
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=622
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=623
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=624
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=625
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=61
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=626
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=627
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=628
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=629
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=65
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=630
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=631
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=632
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=633
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=634
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=635
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=636
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=63
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=637
+Avg Fitness=NaN
+Best Fitness=-0.30734307
+Avg Size=62
+Best Individual: 
+"(Inc Dec Dec Dec Sc Inc Sc Sc Inc)"
+
+Generation=638
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=62
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=639
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=61
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=640
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=59
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=641
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=57
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=642
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=57
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=643
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=644
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=645
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=646
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=59
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=647
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=59
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=648
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=59
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=649
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=650
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=651
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=58
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=652
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=62
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=653
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=65
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=654
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=66
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=655
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=65
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=656
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=67
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=657
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=66
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=658
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=67
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=659
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=70
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=660
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=70
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=661
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=70
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=662
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=68
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=663
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=68
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=664
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=67
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=665
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=67
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=666
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=67
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=667
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=65
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=668
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=68
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=669
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=68
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=670
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=68
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=671
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=65
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=672
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=65
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=673
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=70
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=674
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=69
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=675
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=74
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=676
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=677
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=678
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=679
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=680
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=681
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=682
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=683
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=75
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=684
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=74
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=685
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=686
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=80
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=687
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=80
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=688
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=80
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=689
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=690
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=691
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=692
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=693
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=694
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=86
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=695
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=86
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=696
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=697
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=698
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=699
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=700
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=701
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=702
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=703
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=704
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=705
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=706
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=707
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=86
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=708
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=709
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=710
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=711
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=712
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=92
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=713
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=714
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=715
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=716
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=717
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=718
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=719
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=720
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=721
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=722
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=723
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=724
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=725
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=726
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=727
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=728
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=729
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=730
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=731
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=732
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=733
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=734
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=735
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=736
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=737
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=738
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=739
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=740
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=741
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=742
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=743
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=744
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=745
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=746
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=747
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=748
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=749
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=750
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=751
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=81
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=752
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=753
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=754
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=755
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=756
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=84
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=757
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=84
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=758
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=759
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=82
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=760
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=82
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=761
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=82
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=762
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=763
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=764
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=765
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=766
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=767
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=768
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=769
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=770
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=771
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=772
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=773
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=774
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=775
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=776
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=92
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=777
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=778
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=779
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=780
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=781
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=782
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=783
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=784
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=785
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=786
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=787
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=104
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=788
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=789
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=106
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=790
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=107
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=791
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=107
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=792
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=793
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=107
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=794
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=107
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=795
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=796
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=109
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=797
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=110
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=798
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=799
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=800
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=801
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=802
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=803
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=804
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=805
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=104
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=806
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=104
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=807
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=104
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=808
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=809
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=810
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=811
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=812
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=813
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=102
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=814
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=815
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=816
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=817
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=818
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=112
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=819
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=820
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=821
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=822
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=109
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=823
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=110
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=824
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=119
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=825
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=117
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=826
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=116
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=827
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=115
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=828
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=829
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=110
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=830
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=110
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=831
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=110
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=832
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=112
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=833
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=834
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=835
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=836
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=837
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=112
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=838
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=111
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=839
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=840
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=841
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=106
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=842
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=105
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=843
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=107
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=844
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=845
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=108
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=846
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=109
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=847
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=848
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=849
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=850
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=96
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=851
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=852
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=96
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=853
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=854
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=855
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=856
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=96
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=857
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=858
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=859
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=92
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=860
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=93
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=861
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=862
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=863
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=864
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=865
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=866
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=867
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=90
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=868
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=89
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=869
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=870
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=871
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=96
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=872
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=873
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=95
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=874
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=94
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=875
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=876
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=877
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=878
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=879
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=880
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=881
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=882
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=103
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=883
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=884
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=885
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=99
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=886
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=91
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=887
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=888
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=889
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=101
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=890
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=891
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=892
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=100
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=893
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=98
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=894
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=97
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=895
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=896
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=897
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=898
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=899
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=900
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=901
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=902
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=903
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=82
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=904
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=81
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=905
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=906
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=907
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=86
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=908
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=909
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=910
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=84
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=911
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=912
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=88
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=913
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=914
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=87
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=915
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=80
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=916
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=917
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=918
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=919
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=920
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=921
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=922
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=923
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=924
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=925
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=76
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=926
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=927
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=78
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=928
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=929
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=81
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=930
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=80
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=931
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=932
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=933
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=934
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=935
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=936
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=937
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=77
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=938
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=79
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=939
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=81
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=940
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=82
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=941
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=84
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=942
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=943
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=84
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=944
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=945
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=85
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=946
+Avg Fitness=NaN
+Best Fitness=-0.3333884
+Avg Size=83
+Best Individual: 
+"(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
+
+Generation=947
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=83
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=948
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=84
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=949
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=84
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=950
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=84
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=951
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=85
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=952
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=84
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=953
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=86
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=954
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=955
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=956
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=957
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=958
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=89
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=959
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=89
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=960
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=961
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=89
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=962
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=89
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=963
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=88
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=964
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=89
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=965
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=87
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=966
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=90
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=967
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=92
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=968
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=969
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=970
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=971
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=972
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=973
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=974
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=94
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=975
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=97
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=976
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=97
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=977
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=97
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=978
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=96
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=979
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=101
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=980
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=102
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=981
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=106
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=982
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=108
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=983
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=109
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=984
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=115
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=985
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=117
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=986
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=121
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=987
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=121
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=988
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=989
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=117
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=990
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=117
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=991
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=119
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=992
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=116
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=993
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=994
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=995
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=996
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=997
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=118
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=998
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=121
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=999
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=117
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+Generation=1000
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=111
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+
+PROBLEM UNSOLVED
+Generation=1000
+Avg Fitness=NaN
+Best Fitness=-0.31065017
+Avg Size=111
+Best Individual: 
+"(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
+

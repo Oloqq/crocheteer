@@ -55,8 +55,13 @@ fn make_rounds(start: usize, stitches: &Vec<Stitch>) -> Vec<Vec<Stitch>> {
 }
 
 fn make_ending_circle_reasonable(rounds: &mut Vec<Vec<Stitch>>) -> usize {
+    log::debug!("{rounds:?}");
     const REASONABLE: usize = 12;
-    let mut len = count_anchors_produced(rounds.last().unwrap());
+    let mut len = match rounds.last() {
+        Some(round) => count_anchors_produced(round),
+        None => return 0,
+    };
+
     while len > REASONABLE {
         let decreases = len / 2;
         let mut round = vec![Stitch::Dec; decreases];

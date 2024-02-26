@@ -21,6 +21,12 @@ impl Slice {
     }
 }
 
+impl Shape {
+    pub fn point_count(&self) -> usize {
+        self.slices.iter().fold(0, |acc, s| acc + s.points.len())
+    }
+}
+
 pub fn compare_shapes(original: &Shape, other: &Shape) -> f32 {
     original.compare(other)
 }

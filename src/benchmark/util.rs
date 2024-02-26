@@ -5,7 +5,10 @@ use std::{
 };
 
 use crate::{
-    genetic::params::{Case, Params},
+    genetic::{
+        common::Program,
+        params::{Case, Params},
+    },
     genetic::{fitness_funcs::FitnessFunc, TinyGP},
     Args,
 };
@@ -16,7 +19,7 @@ pub fn execute_benchmark(
     cases: Vec<Case>,
     name: &str,
     ff: FitnessFunc,
-) {
+) -> Program {
     let out_file = &format!("population/out-{name}.txt");
     let pop_file = &format!("population/{name}.pop");
 
@@ -53,4 +56,6 @@ pub fn execute_benchmark(
     let mut writer: Box<dyn Write> =
         Box::new(File::create(pop_file).expect("Could not create file"));
     tgp.save_population(&mut writer);
+
+    tgp.get_best()
 }
