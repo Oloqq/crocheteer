@@ -4,11 +4,6 @@ import { send } from "./websocket";
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let selectedObject = null;
-let world = null;
-
-export function setWorld(w) {
-  world = w;
-}
 
 function onMouseDown(event) {
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
@@ -59,7 +54,7 @@ function onMouseMove(event) {
   const intersection = new THREE.Vector3();
   if (raycaster.ray.intersectPlane(dragPlane, intersection)) {
     selectedObject.position.copy(intersection);
-    if (world) {
+    if (app.world) {
       world.mouseMove(selectedObject);
     }
   }
@@ -68,8 +63,8 @@ window.addEventListener('mousemove', onMouseMove);
 
 function onMouseUp(event) {
   if (selectedObject) {
-    if (world) {
-      world.mouseUp(selectedObject);
+    if (app.world) {
+      app.world.mouseUp(selectedObject);
     }
     selectedObject = null; // Clear the selection
     app.controls.enabled = true;

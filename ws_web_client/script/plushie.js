@@ -120,6 +120,6 @@ export default class Plushie {
       this.dragged = null;
     }
 
-    this.updateLinks();
+    // this.updateLinks();
   }
 }

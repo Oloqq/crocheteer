@@ -12,6 +12,7 @@ export const app = {
   renderer: renderer,
   controls: new OrbitControls(camera, renderer.domElement),
   gui: new dat.GUI(),
+  world: null,
 
   init: function () {
     initScene();
@@ -64,8 +65,10 @@ function initGui() {
   gui.add(guiControls, 'paused').name('Pause').onChange((value) => {
     if (value) {
       send("pause");
+      app.world.updateLinks();
     } else {
       send("resume");
+      app.world.clearLinks();
     }
   });
   gui.add({ resetCamera }, 'resetCamera').name('Reset camera');

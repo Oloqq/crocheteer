@@ -1,6 +1,5 @@
 import { app } from "./init";
 import { controlViaWebsocket } from './websocket';
-import { setWorld } from "./interaction";
 
 export { send } from "./websocket";
 
@@ -16,7 +15,7 @@ export function init() {
 }
 
 export function connect(address, world) {
-  setWorld(world);
+  app.world = world;
   controlViaWebsocket(address, world);
   animate();
 }
