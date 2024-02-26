@@ -49,7 +49,7 @@ function initScene() {
 
 function initGui() {
   const guiControls = {
-    paused: false,
+    paused: true,
     showXYGrid: true,
     showYZGrid: false,
     showXZGrid: false,
@@ -61,7 +61,7 @@ function initGui() {
 
   const gui = app.gui;
 
-  gui.add(guiControls, 'paused').name('Pause/resume').onChange((value) => {
+  gui.add(guiControls, 'paused').name('Pause').onChange((value) => {
     if (value) {
       send("pause");
     } else {

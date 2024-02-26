@@ -8,6 +8,7 @@ export default class Plushie {
     this.stitchPositions = [];
     this.links = [];
     this.dragged = null;
+    this.displayEdges = true;
   }
 
   getId(obj) {
@@ -28,20 +29,37 @@ export default class Plushie {
     this.drag(obj);
   }
 
-  updateLinks() {
+  toggleLinks() {
+    this.displayEdges = !this.displayEdges;
+    this.clearLinks();
+    if (this.displayEdges)
+      this.drawLinks();
+  }
+
+  clearLinks() {
     for (let link of this.links) {
       if (link.geometry) link.geometry.dispose();
       if (link.material) link.material.dispose();
       create.scene.remove(link);
     }
     this.links = [];
+  }
 
+  drawLinks() {
     for (let from = 0; from < this.edges.length; from++) {
       for (let to of this.edges[from]) {
         let link = create.link(this.stitchPositions[from], this.stitchPositions[to], 0.02, "red")
         this.links.push(link);
       }
     }
+  }
+
+  updateLinks() {
+    if (!this.displayEdges)
+      return;
+
+    this.clearLinks();
+    this.drawLinks();
   }
 
   parseMessage(key, data) {
