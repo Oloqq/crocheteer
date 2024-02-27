@@ -1,6 +1,6 @@
 use super::execution::*;
 use super::fitness_funcs::*;
-use super::params::{Case, Params};
+use super::params::Params;
 
 use super::common::*;
 use rand::distributions::WeightedIndex;

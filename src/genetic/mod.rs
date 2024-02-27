@@ -6,12 +6,12 @@ pub mod execution;
 pub mod fitness_funcs;
 pub mod growing;
 pub mod params;
+pub mod problem;
 pub mod shapes;
 
 use common::*;
 use evolution::*;
 use growing::*;
-use params::Case;
 use params::Params;
 
 use rand::prelude::*;

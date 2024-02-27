@@ -1,8 +1,9 @@
 use super::util::execute_benchmark;
 use crate::common::save_mesh;
-use crate::genetic::common::NoInput;
+use crate::genetic::common::Case;
 use crate::genetic::fitness_funcs::*;
-use crate::genetic::params::{Case, GrowingParams, Params};
+use crate::genetic::params::{GrowingParams, Params};
+use crate::genetic::problem::NoInput;
 use crate::genetic::shapes::Shape;
 use crate::pattern::Pattern;
 use crate::plushie::Plushie;

@@ -1,14 +1,7 @@
-use crate::pattern::Stitch;
+pub use super::problem::{Input, Output, Token};
 
-use super::shapes::Shape;
-#[derive(Clone, Copy)]
-pub struct NoInput {}
-
-pub type Input = NoInput;
-pub type Output = Shape;
-
-pub type Token = Stitch;
 pub type Program = Vec<Token>;
+pub type Case = (Input, Output);
 
 pub fn variant_eq(a: &Token, b: &Token) -> bool {
     std::mem::discriminant(a) == std::mem::discriminant(b)

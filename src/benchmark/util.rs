@@ -6,9 +6,9 @@ use std::{
 
 use crate::{
     genetic::{
-        common::Program,
+        common::{Case, Program},
         fitness_funcs::FitnessFunc,
-        params::{Case, Params},
+        params::Params,
         TinyGP,
     },
     GeneticArgs,

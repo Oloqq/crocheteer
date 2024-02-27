@@ -4,7 +4,6 @@ use std::fmt::Display;
 
 type Number = i32;
 
-pub type Case = (Input, Output);
 type Probability = f64;
 
 #[derive(Clone)]
