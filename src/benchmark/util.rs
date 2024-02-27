@@ -6,15 +6,15 @@ use std::{
 
 use crate::{
     genetic::{
-        common::Program,
+        fitness_funcs::FitnessFunc,
         params::{Case, Params},
+        TinyGP,
     },
-    genetic::{fitness_funcs::FitnessFunc, TinyGP},
-    Args,
+    GeneticArgs,
 };
 
 pub fn execute_benchmark(
-    args: &Args,
+    args: &GeneticArgs,
     params: Params,
     cases: Vec<Case>,
     name: &str,

@@ -1,11 +1,11 @@
-use crate::Args;
+use crate::GeneticArgs;
 
 mod bench_1_1;
 mod util;
 
 use self::bench_1_1::*;
 
-pub fn run_benchmark(suite: &str, args: &Args) {
+pub fn run_benchmark(suite: &str, args: &GeneticArgs) {
     match suite {
         "small_ball" => bench_small_ball(args),
         // "1_1_b" => bench_1_1_b(args),

@@ -29,36 +29,35 @@ fn main() {
         .init();
 
     let args = Args::from_args();
-    if let Some(num) = args.dev {
-        exec_dev_action(num);
-        return;
-    }
-
-    if let Some(suite) = &args.suite {
-        println!("Selected suite: {suite}");
-        run_benchmark(&suite, &args);
-    }
-
-    if let Some(pattern_path) = args.pattern {
-        let pattern = Pattern::from_file(pattern_path);
-        let mut plushie = Plushie::from_pattern(pattern);
-
-        if let Some(stl_path) = args.stl {
-            plushie.animate();
-            save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
-        } else if args.ws {
+    use Command::*;
+    match args.cmd {
+        WebSocket {} => {
+            let plushie = examples::bigball();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
-    } else if args.ws {
-        // let plushie = examples::bigball();
-        let l = "(Inc Inc Inc Inc Inc Inc Sc Sc Sc Sc Inc Inc Sc Sc Dec Sc Sc Sc Inc Sc Dec Dec Sc Sc Dec Dec Dec Sc Inc Inc Inc Inc Inc Sc Sc Dec Dec Sc Sc Sc Inc Inc Sc Sc Dec Sc Dec Sc Sc Inc Inc Inc Dec Inc Dec Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Inc Sc Sc Dec Dec Sc Inc Dec Dec Inc Inc Inc Inc Inc Inc Dec Dec Dec Dec Dec Inc Sc Inc Inc Inc Inc Inc Sc Sc Inc Inc Dec Dec Dec Dec Sc Inc Dec Dec Dec Dec Dec Inc Inc Inc Inc Inc Dec Dec Inc Inc Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec)";
-        let program: Vec<Token> = serde_lexpr::from_str(&l).unwrap();
-        // use Stitch::*;
-        let pattern = Pattern::from_genom(&(6, &program));
-        let plushie = Plushie::from_pattern(pattern);
-        let sim = PlushieSimulation::from(plushie);
-        serve_websocket(sim);
+        Dev { num } => exec_dev_action(num),
+        Genetic(genetic) => {
+            let suite = &genetic.suite;
+            println!("Selected suite: {suite}");
+            run_benchmark(&suite, &genetic);
+        }
+        FromPattern { pattern, stl, ws } => {
+            let pattern = Pattern::from_file(pattern);
+            let mut plushie = Plushie::from_pattern(pattern);
+
+            if stl.is_some() && ws.is_some() {
+                unimplemented!("use either --stl or --ws");
+            }
+
+            if let Some(stl_path) = stl {
+                plushie.animate();
+                save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
+            } else if ws.is_some() {
+                let sim = PlushieSimulation::from(plushie);
+                serve_websocket(sim);
+            }
+        }
     }
 }
 

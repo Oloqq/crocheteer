@@ -12,60 +12,60 @@ Generation=0
 Avg Fitness=NaN
 Best Fitness=-0.31065017
 Avg Size=111
-Best Individual: 
+Best Individual:
 "(Inc Sc Sc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Dec Sc Sc Sc Sc Inc Inc Inc Sc Sc Sc Inc Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc Inc Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Inc Dec Dec Inc)"
 
 Generation=1
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=156
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=2
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=207
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=3
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=308
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=4
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=474
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=5
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=627
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=6
 Avg Fitness=NaN
 Best Fitness=-0.3333884
 Avg Size=750
-Best Individual: 
+Best Individual:
 "(Sc Inc Inc Dec Sc Sc Dec Dec Dec Dec)"
 
 Generation=7
 Avg Fitness=NaN
 Best Fitness=-0.37476772
 Avg Size=1599
-Best Individual: 
+Best Individual:
 "(Inc Inc Inc Inc Inc Inc Sc Sc Sc Sc Inc Inc Sc Sc Dec Sc Sc Sc Inc Sc Dec Dec Sc Sc Dec Dec Dec Sc Inc Inc Inc Inc Inc Sc Sc Dec Dec Sc Sc Sc Inc Inc Sc Sc Dec Sc Dec Sc Sc Inc Inc Inc Dec Inc Dec Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Inc Sc Sc Dec Dec Sc Inc Dec Dec Inc Inc Inc Inc Inc Inc Dec Dec Dec Dec Dec Inc Sc Inc Inc Inc Inc Inc Sc Sc Inc Inc Dec Dec Dec Dec Sc Inc Dec Dec Dec Dec Dec Inc Inc Inc Inc Inc Dec Dec Inc Inc Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec)"
 
 Generation=8
 Avg Fitness=NaN
 Best Fitness=-0.38492203
 Avg Size=1968
-Best Individual: 
+Best Individual:

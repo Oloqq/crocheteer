@@ -8,7 +8,7 @@ use crate::pattern::Pattern;
 use crate::plushie::Plushie;
 use crate::Args;
 
-pub fn bench_small_ball(args: &Args) {
+pub fn bench_small_ball(args: &GeneticArgs) {
     let mut params = Params {
         memsize: 3,
         popsize: 100,

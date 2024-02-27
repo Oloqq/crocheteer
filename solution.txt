@@ -1,1 +1,1 @@
-[Dec, Inc, Sc, Inc, Inc, Inc, Sc, Sc, Inc, Inc, Sc, Dec]
+[Dec, Sc, Sc, Inc, Sc, Inc, Sc, Dec, Inc, Dec, Inc, Sc]
