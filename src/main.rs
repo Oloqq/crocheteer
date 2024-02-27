@@ -1,5 +1,4 @@
 use crate::benchmark::run_benchmark;
-use crate::genetic::common::Token;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::{common::*, ws_sim::serve_websocket};
@@ -17,7 +16,6 @@ mod ws_sim;
 
 use args::*;
 use pattern::Pattern;
-use pattern::Stitch;
 use plushie::examples;
 use plushie::Plushie;
 use std::io::Write;
@@ -58,6 +56,7 @@ fn main() {
                 serve_websocket(sim);
             }
         }
+        FromProtoPattern { protopat: _ } => todo!(),
     }
 }
 

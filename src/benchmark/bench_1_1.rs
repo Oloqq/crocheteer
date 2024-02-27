@@ -6,7 +6,7 @@ use crate::genetic::params::{Case, GrowingParams, Params};
 use crate::genetic::shapes::Shape;
 use crate::pattern::Pattern;
 use crate::plushie::Plushie;
-use crate::Args;
+use crate::GeneticArgs;
 
 pub fn bench_small_ball(args: &GeneticArgs) {
     let mut params = Params {

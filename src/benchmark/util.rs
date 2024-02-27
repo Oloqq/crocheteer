@@ -6,6 +6,7 @@ use std::{
 
 use crate::{
     genetic::{
+        common::Program,
         fitness_funcs::FitnessFunc,
         params::{Case, Params},
         TinyGP,
