@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 pub mod common;
 pub mod evolution;
 pub mod execution;

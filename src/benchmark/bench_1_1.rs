@@ -19,7 +19,6 @@ pub fn bench_small_ball(args: &GeneticArgs) {
         tournament_size: 2,
         random_initial_memory: true,
         growing: GrowingParams {
-            p_prefer_reg_over_num: 0.2,
             ..Default::default()
         },
         ..Default::default()
