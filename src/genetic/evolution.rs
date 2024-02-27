@@ -4,22 +4,19 @@ use super::params::Params;
 
 use super::common::*;
 use rand::distributions::WeightedIndex;
-// use rand::distributions::WeightedIndex;
 use rand::prelude::*;
-use rand_derive::Rand;
 
 pub fn run_and_rank(
     program: &Program,
     params: &Params,
     cases: &Vec<Case>,
     fitness_func: FitnessFunc,
-    memory_initializer: &mut Option<&mut StdRng>,
+    rand: &mut StdRng,
 ) -> f32 {
     cases.iter().fold(0.0, |acc, (inputs, targets)| {
         let mut runtime = Runtime::new(params);
         let output = runtime.execute(program);
         let fitness = fitness_func(targets, &output, &runtime);
-        // log::trace!("the fitness is: {fitness}");
         acc + fitness
     })
 }

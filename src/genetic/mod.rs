@@ -36,14 +36,12 @@ fn load_population(
     params: &Params,
     cases: &Vec<Case>,
     fitness_func: FitnessFunc,
-    memory_initializer: Option<&mut StdRng>,
+    rand: &mut StdRng,
 ) -> Result<(Vec<Program>, Vec<f32>), Box<dyn Error>> {
     let content = fs::read_to_string(filepath)?;
     let lines: Vec<&str> = content.trim_end().split('\n').collect();
     let mut population = Vec::with_capacity(lines.len());
     let mut fitness = Vec::with_capacity(lines.len());
-    let mut memory_initializer = memory_initializer;
-    // let memory_initializer = RefCell::new(memory_initializer);
 
     for i in 0..lines.len() {
         let program: Vec<Token> = serde_lexpr::from_str(&lines[i]).unwrap();
@@ -53,7 +51,7 @@ fn load_population(
             params,
             cases,
             fitness_func,
-            &mut memory_initializer,
+            rand,
         ));
     }
 
@@ -96,15 +94,9 @@ impl TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
         writeln!(writer.borrow_mut(), "Loading population").unwrap();
-        let memory_init = if params.random_initial_memory {
-            Some(&mut rand)
-        } else {
-            None
-        };
         let (population, fitness) =
-            load_population(filepath, &params, &cases, fitness_func, memory_init)?;
+            load_population(filepath, &params, &cases, fitness_func, &mut rand)?;
         let fitness_normalized = normalize_fitness(&fitness, &population);
-        let mut params = params.clone();
         let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,
@@ -202,7 +194,7 @@ impl TinyGP {
                 &self.params,
                 &self.cases,
                 fitness_func,
-                &mut meminit,
+                &mut self.rand,
             );
             self.population[child_index] = child_program;
         }
@@ -281,11 +273,7 @@ pub fn random_population(
             params,
             cases,
             fitness_func,
-            &mut if params.random_initial_memory {
-                Some(rand)
-            } else {
-                None
-            },
+            rand,
         ));
     }
 
