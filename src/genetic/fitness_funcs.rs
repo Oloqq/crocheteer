@@ -13,8 +13,3 @@ pub fn shape_fitness(expected: &Output, actual: &Output, _runtime: &Runtime) -> 
 pub fn normalize_fitness(fitness: &Vec<f32>, _programs: &Vec<Program>) -> Vec<f64> {
     fitness.iter().map(|f| *f as f64).collect()
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-}

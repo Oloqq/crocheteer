@@ -1,13 +1,9 @@
 use super::{
     common::{Output, Program},
-    params::{self, Params},
+    params::Params,
 };
 
-use crate::{
-    genetic::problem::Shape,
-    pattern::{genetic, Pattern},
-    plushie::Plushie,
-};
+use crate::{genetic::problem::Shape, pattern::Pattern, plushie::Plushie};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -42,9 +38,5 @@ impl Runtime {
         };
         let shape = Shape::from_unfitted_plushie(&plushie, self.levels, self.max_height);
         shape
-    }
-
-    pub fn output(&self) {
-        todo!()
     }
 }

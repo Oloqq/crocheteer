@@ -60,7 +60,7 @@ fn load_population(
 
 impl TinyGP {
     pub fn new(
-        mut params: Params,
+        params: Params,
         cases: Vec<Case>,
         seed: Option<u64>,
         writer: RefCell<Box<dyn Write>>,
@@ -184,11 +184,6 @@ impl TinyGP {
                 self.params.tournament_size,
                 &mut self.rand,
             );
-            let mut meminit = if self.params.random_initial_memory {
-                Some(&mut self.rand)
-            } else {
-                None
-            };
             self.fitness[child_index] = run_and_rank(
                 &child_program,
                 &self.params,

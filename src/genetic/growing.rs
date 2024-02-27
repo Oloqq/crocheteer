@@ -2,7 +2,6 @@ use crate::pattern::Stitch;
 
 use super::common::*;
 use super::params::Params;
-use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 
 fn grow(length: usize, rand: &mut StdRng) -> Program {

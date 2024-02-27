@@ -1,5 +1,3 @@
-use crate::common::Point;
-
 use super::{Point2, Shape, Slice};
 
 impl Slice {
@@ -57,6 +55,7 @@ impl Shape {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common::Point;
 
     fn diamond(x: f32) -> Shape {
         Shape {

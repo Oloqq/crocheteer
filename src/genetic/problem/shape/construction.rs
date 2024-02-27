@@ -1,4 +1,6 @@
-use stl_io::{IndexedMesh, IndexedTriangle, Vertex};
+#![allow(unused)]
+
+use stl_io::IndexedMesh;
 
 use super::{Shape, Slice};
 use crate::{common::Point, plushie::Plushie};
