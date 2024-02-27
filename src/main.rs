@@ -1,4 +1,5 @@
 use crate::benchmark::run_benchmark;
+use crate::genetic::common::Token;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::{common::*, ws_sim::serve_websocket};
@@ -16,6 +17,7 @@ mod ws_sim;
 
 use args::*;
 use pattern::Pattern;
+use pattern::Stitch;
 use plushie::examples;
 use plushie::Plushie;
 use std::io::Write;
@@ -49,7 +51,12 @@ fn main() {
             serve_websocket(sim);
         }
     } else if args.ws {
-        let plushie = examples::bigball();
+        // let plushie = examples::bigball();
+        let l = "(Inc Inc Inc Inc Inc Inc Sc Sc Sc Sc Inc Inc Sc Sc Dec Sc Sc Sc Inc Sc Dec Dec Sc Sc Dec Dec Dec Sc Inc Inc Inc Inc Inc Sc Sc Dec Dec Sc Sc Sc Inc Inc Sc Sc Dec Sc Dec Sc Sc Inc Inc Inc Dec Inc Dec Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Inc Sc Sc Dec Dec Sc Inc Dec Dec Inc Inc Inc Inc Inc Inc Dec Dec Dec Dec Dec Inc Sc Inc Inc Inc Inc Inc Sc Sc Inc Inc Dec Dec Dec Dec Sc Inc Dec Dec Dec Dec Dec Inc Inc Inc Inc Inc Dec Dec Inc Inc Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec Dec)";
+        let program: Vec<Token> = serde_lexpr::from_str(&l).unwrap();
+        // use Stitch::*;
+        let pattern = Pattern::from_genom(&(6, &program));
+        let plushie = Plushie::from_pattern(pattern);
         let sim = PlushieSimulation::from(plushie);
         serve_websocket(sim);
     }
