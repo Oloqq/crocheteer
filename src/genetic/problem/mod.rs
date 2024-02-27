@@ -1,6 +1,7 @@
-/// Start here to adopt the genetic system to your problem
-use super::shapes::Shape;
+pub mod shape;
+
 use crate::pattern::Stitch;
+pub use shape::Shape;
 
 #[derive(Clone, Copy)]
 pub struct NoInput {}

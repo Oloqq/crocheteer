@@ -4,7 +4,7 @@ use super::{
 };
 
 use crate::{
-    genetic::shapes::Shape,
+    genetic::problem::Shape,
     pattern::{genetic, Pattern},
     plushie::Plushie,
 };

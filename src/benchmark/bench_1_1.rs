@@ -4,7 +4,7 @@ use crate::genetic::common::Case;
 use crate::genetic::fitness_funcs::*;
 use crate::genetic::params::{GrowingParams, Params};
 use crate::genetic::problem::NoInput;
-use crate::genetic::shapes::Shape;
+use crate::genetic::problem::Shape;
 use crate::pattern::Pattern;
 use crate::plushie::Plushie;
 use crate::GeneticArgs;

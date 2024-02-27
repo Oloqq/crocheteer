@@ -1,7 +1,7 @@
 use super::{
     common::{Output, Program},
     execution::Runtime,
-    shapes::compare_shapes,
+    problem::shape::compare_shapes,
 };
 
 pub type FitnessFunc = fn(expected: &Output, actual: &Output, runtime: &Runtime) -> f32;
