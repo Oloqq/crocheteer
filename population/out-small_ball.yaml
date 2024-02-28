@@ -4,228 +4,78 @@ Creating population
 ---
 seed: 3
 ---
-memsize: 3
 popsize: 100
 max_size: 10
 p_crossover: 0.0
-p_mut_per_node: 0.2
+p_mutation_per_node: 0.2
 tournament_size: 2
 acceptable_error: -0.001
-growing: {}
-random_initial_memory: true
 prefix: []
 suffix: []
 levels: 3
 max_height: 2.8689342
 
 ---
-Starting evolution for 1 generations
+Starting evolution for 10 generations
 ---
 generation: 0
 avg_fitness: -0.5252984
 best_fitness: -0.35525018
 best_program: (Inc Dec Dec Inc Sc Inc Dec Sc Inc Dec Dec Dec)
-programs:
-- - -0.4965052
-  - (Sc Sc Dec Dec Dec Inc Inc Dec Inc Inc Dec Inc)
-- - -0.5075152
-  - (Dec Inc Inc Inc Sc Inc Sc Dec Inc Inc Sc Inc)
-- - -0.48530832
-  - (Sc Dec Dec Dec Sc Dec Sc Dec Inc Dec Dec Dec)
-- - -0.54721546
-  - (Sc Sc Sc Dec Sc Sc Inc Inc Dec Inc Inc Dec)
-- - -0.6421248
-  - (Sc Inc Sc Inc Inc Dec Dec Sc Inc Inc Sc Dec)
-- - -0.61748475
-  - (Sc Inc Sc Dec Dec Dec Dec Sc Inc Sc Dec Inc)
-- - -0.5822057
-  - (Sc Inc Sc Sc Sc Sc Dec Inc Dec Inc Dec Dec)
-- - -0.5737849
-  - (Inc Sc Inc Sc Dec Dec Dec Inc Inc Inc Inc Inc)
-- - -0.47320434
-  - (Inc Inc Dec Sc Sc Dec Sc Inc Dec Dec Inc Dec)
-- - -0.5129457
-  - (Inc Sc Dec Inc Dec Dec Inc Dec Dec Dec Sc Sc)
-- - -0.5797194
-  - (Dec Sc Inc Dec Inc Inc Sc Sc Dec Sc Sc Sc)
-- - -0.52437603
-  - (Dec Sc Dec Inc Inc Dec Inc Dec Sc Sc Inc Dec)
-- - -0.60406774
-  - (Inc Inc Inc Sc Inc Inc Inc Sc Inc Dec Sc Inc)
-- - -0.5447415
-  - (Dec Dec Dec Dec Dec Inc Dec Inc Inc Inc Dec Sc)
-- - -0.37288055
-  - (Inc Dec Inc Sc Inc Sc Sc Dec Sc Inc Dec Dec)
-- - -0.5298207
-  - (Dec Dec Sc Dec Dec Sc Sc Inc Dec Sc Inc Dec)
-- - -0.52322066
-  - (Inc Inc Inc Inc Inc Inc Inc Sc Inc Sc Sc Dec)
-- - -0.41154256
-  - (Sc Dec Dec Sc Sc Sc Sc Inc Inc Sc Dec Dec)
-- - -0.46464375
-  - (Dec Dec Inc Sc Sc Inc Dec Inc Dec Dec Inc Inc)
-- - -0.6006238
-  - (Inc Sc Inc Dec Dec Inc Inc Dec Sc Dec Dec Inc)
-- - -0.44981307
-  - (Inc Sc Inc Dec Dec Inc Dec Inc Dec Inc Dec Inc)
-- - -0.52901727
-  - (Sc Inc Dec Dec Inc Inc Sc Sc Sc Dec Sc Inc)
-- - -0.64870024
-  - (Inc Sc Sc Inc Inc Inc Inc Dec Sc Sc Dec Dec)
-- - -0.58498436
-  - (Sc Dec Inc Inc Dec Dec Inc Dec Inc Inc Inc Sc)
-- - -0.59659576
-  - (Sc Sc Sc Dec Dec Dec Dec Dec Sc Sc Inc Inc)
-- - -0.4422819
-  - (Inc Dec Sc Sc Sc Sc Sc Sc Sc Inc Inc Sc)
-- - -0.51462024
-  - (Dec Dec Sc Sc Dec Dec Sc Inc Inc Sc Dec Inc)
-- - -0.4990942
-  - (Dec Dec Dec Sc Inc Dec Sc Dec Sc Inc Inc Inc)
-- - -0.537062
-  - (Dec Dec Inc Dec Inc Sc Dec Dec Inc Sc Dec Inc)
-- - -0.45984325
-  - (Inc Dec Sc Inc Inc Inc Dec Sc Sc Sc Sc Sc)
-- - -0.41963038
-  - (Inc Sc Dec Dec Sc Dec Dec Sc Inc Sc Dec Inc)
-- - -0.48184317
-  - (Dec Dec Inc Inc Inc Dec Inc Sc Inc Sc Inc Inc)
-- - -0.41073874
-  - (Inc Inc Dec Inc Sc Dec Sc Sc Sc Dec Sc Dec)
-- - -0.5530211
-  - (Sc Dec Inc Inc Inc Inc Inc Dec Dec Sc Dec Dec)
-- - -0.53506136
-  - (Dec Sc Dec Inc Dec Inc Inc Sc Dec Inc Sc Inc)
-- - -0.55595654
-  - (Sc Dec Inc Inc Inc Inc Sc Dec Dec Inc Inc Sc)
-- - -0.5225564
-  - (Inc Dec Inc Sc Dec Inc Inc Sc Inc Dec Inc Inc)
-- - -0.50379735
-  - (Dec Inc Dec Sc Dec Inc Sc Inc Sc Sc Sc Inc)
-- - -0.5209584
-  - (Inc Sc Inc Inc Dec Dec Dec Sc Sc Inc Dec Dec)
-- - -0.46149537
-  - (Inc Inc Inc Sc Dec Dec Dec Sc Sc Inc Dec Sc)
-- - -0.5800093
-  - (Sc Inc Sc Inc Dec Dec Inc Inc Sc Dec Sc Inc)
-- - -0.4555736
-  - (Sc Sc Inc Dec Dec Inc Dec Inc Sc Dec Inc Dec)
-- - -0.41348448
-  - (Sc Dec Dec Inc Sc Inc Inc Sc Dec Sc Sc Dec)
-- - -0.5301173
-  - (Dec Dec Dec Dec Dec Sc Inc Dec Dec Dec Dec Dec)
-- - -0.55023164
-  - (Sc Inc Inc Inc Dec Dec Inc Inc Dec Sc Inc Dec)
-- - -0.6445806
-  - (Sc Sc Inc Dec Inc Inc Dec Dec Sc Inc Dec Inc)
-- - -0.57756275
-  - (Inc Inc Inc Sc Inc Sc Inc Dec Dec Inc Inc Inc)
-- - -0.6129932
-  - (Inc Dec Sc Dec Inc Dec Dec Dec Inc Inc Sc Sc)
-- - -0.46641895
-  - (Inc Sc Dec Sc Dec Dec Inc Inc Sc Dec Sc Dec)
-- - -0.5306547
-  - (Dec Inc Inc Inc Inc Inc Inc Inc Dec Sc Inc Inc)
-- - -0.54517376
-  - (Sc Inc Sc Inc Dec Sc Sc Sc Dec Dec Sc Sc)
-- - -0.52985275
-  - (Inc Inc Dec Inc Dec Inc Dec Inc Dec Sc Sc Dec)
-- - -0.6564258
-  - (Dec Dec Sc Inc Inc Inc Sc Dec Dec Inc Inc Dec)
-- - -0.57829463
-  - (Inc Inc Sc Inc Sc Dec Sc Sc Inc Dec Sc Dec)
-- - -0.6015849
-  - (Sc Sc Sc Sc Sc Inc Sc Dec Sc Inc Inc Inc)
-- - -0.47139034
-  - (Dec Inc Sc Sc Dec Dec Inc Dec Sc Dec Dec Dec)
-- - -0.60650975
-  - (Dec Dec Inc Dec Sc Inc Sc Dec Sc Dec Sc Sc)
-- - -0.47685125
-  - (Sc Sc Inc Inc Sc Inc Dec Inc Sc Dec Dec Dec)
-- - -0.54841936
-  - (Sc Sc Sc Inc Sc Dec Dec Sc Dec Sc Sc Sc)
-- - -0.5628899
-  - (Sc Inc Sc Inc Sc Dec Inc Sc Sc Dec Dec Inc)
-- - -0.4497608
-  - (Inc Dec Inc Sc Inc Inc Dec Sc Inc Sc Inc Sc)
-- - -0.45588765
-  - (Sc Inc Inc Dec Sc Inc Sc Inc Dec Inc Sc Dec)
-- - -0.5744393
-  - (Sc Inc Inc Inc Inc Dec Inc Sc Sc Sc Dec Inc)
-- - -0.38142446
-  - (Dec Sc Inc Inc Sc Sc Sc Sc Inc Dec Inc Dec)
-- - -0.42200178
-  - (Sc Sc Sc Inc Inc Sc Sc Dec Dec Sc Dec Sc)
-- - -0.41492122
-  - (Dec Sc Sc Inc Dec Inc Dec Inc Sc Sc Dec Dec)
-- - -0.57829463
-  - (Inc Inc Sc Inc Sc Dec Dec Inc Inc Sc Dec Sc)
-- - -0.6389869
-  - (Sc Sc Inc Inc Sc Inc Dec Inc Inc Sc Dec Sc)
-- - -0.4907278
-  - (Sc Inc Inc Dec Inc Dec Dec Inc Sc Dec Inc Sc)
-- - -0.51349753
-  - (Sc Dec Inc Dec Sc Inc Dec Sc Sc Inc Inc Inc)
-- - -0.57615304
-  - (Inc Inc Inc Inc Sc Inc Sc Sc Inc Sc Dec Inc)
-- - -0.46973684
-  - (Inc Inc Inc Dec Inc Dec Inc Sc Dec Dec Sc Inc)
-- - -0.49521592
-  - (Sc Inc Sc Inc Sc Sc Dec Dec Inc Dec Dec Sc)
-- - -0.49576545
-  - (Dec Inc Inc Inc Sc Sc Inc Inc Dec Sc Sc Sc)
-- - -0.53424954
-  - (Dec Inc Inc Dec Inc Dec Dec Dec Inc Inc Inc Sc)
-- - -0.5429384
-  - (Dec Sc Sc Sc Dec Dec Inc Sc Sc Sc Sc Dec)
-- - -0.5302595
-  - (Dec Inc Sc Sc Dec Dec Sc Inc Dec Inc Dec Dec)
-- - -0.5790686
-  - (Inc Dec Inc Dec Inc Sc Dec Sc Dec Inc Dec Dec)
-- - -0.5533803
-  - (Dec Dec Inc Inc Inc Dec Sc Dec Sc Inc Inc Sc)
-- - -0.57829463
-  - (Inc Inc Sc Inc Sc Sc Dec Inc Inc Sc Sc Inc)
-- - -0.5251573
-  - (Inc Dec Inc Inc Dec Dec Dec Sc Sc Dec Dec Inc)
-- - -0.42442954
-  - (Dec Dec Sc Sc Sc Sc Sc Sc Inc Dec Dec Sc)
-- - -0.35525018
-  - (Inc Dec Dec Inc Sc Inc Dec Sc Inc Dec Dec Dec)
-- - -0.62093806
-  - (Sc Dec Sc Dec Inc Inc Sc Sc Sc Sc Dec Sc)
-- - -0.5522926
-  - (Inc Sc Sc Inc Dec Sc Dec Dec Inc Inc Dec Sc)
-- - -0.591482
-  - (Dec Dec Dec Inc Inc Dec Inc Sc Dec Dec Inc Sc)
-- - -0.58714724
-  - (Inc Inc Sc Inc Dec Inc Inc Inc Inc Inc Dec Sc)
-- - -0.47043076
-  - (Inc Sc Inc Inc Dec Dec Inc Sc Dec Sc Sc Inc)
-- - -0.39024606
-  - (Sc Dec Dec Sc Sc Sc Sc Dec Inc Dec Sc Dec)
-- - -0.49476504
-  - (Sc Dec Dec Sc Dec Sc Sc Inc Inc Inc Sc Inc)
-- - -0.38068303
-  - (Sc Dec Dec Dec Inc Sc Inc Inc Sc Sc Inc Sc)
-- - -0.49393067
-  - (Dec Sc Sc Sc Sc Inc Sc Sc Sc Sc Dec Inc)
-- - -0.59604824
-  - (Sc Dec Dec Inc Dec Sc Inc Inc Dec Dec Dec Sc)
-- - -0.5506711
-  - (Sc Dec Inc Dec Sc Inc Inc Dec Dec Dec Inc Sc)
-- - -0.5067426
-  - (Sc Inc Sc Sc Inc Dec Sc Dec Dec Dec Sc Inc)
-- - -0.60443777
-  - (Dec Sc Inc Dec Inc Sc Inc Dec Inc Sc Sc Inc)
-- - -0.6159141
-  - (Inc Sc Inc Sc Sc Sc Inc Sc Inc Inc Inc Dec)
-- - -0.67210776
-  - (Sc Sc Inc Sc Inc Sc Sc Sc Dec Inc Sc Sc)
-- - -0.50102615
-  - (Dec Dec Inc Sc Sc Sc Inc Dec Sc Inc Dec Inc)
-- - -0.56112516
-  - (Sc Inc Sc Sc Dec Dec Dec Inc Dec Inc Inc Sc)
+
+---
+generation: 1
+avg_fitness: -0.4775145
+best_fitness: -0.33810875
+best_program: (Inc Inc Sc Sc Dec Sc Sc Dec Dec Dec Inc Inc Inc Inc Sc Sc Sc Dec Dec)
+
+---
+generation: 2
+avg_fitness: -0.45789272
+best_fitness: -0.29186526
+best_program: (Inc Dec Dec Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Dec Dec Dec Dec Dec)
+
+---
+generation: 3
+avg_fitness: -0.44209886
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 4
+avg_fitness: -0.43921193
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 5
+avg_fitness: -0.44724333
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 6
+avg_fitness: -0.44647858
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 7
+avg_fitness: -0.4411831
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 8
+avg_fitness: -0.43842888
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
+
+---
+generation: 9
+avg_fitness: -0.43298125
+best_fitness: -0.2735838
+best_program: (Inc Inc Sc Dec Dec Sc Sc Sc Sc Sc Sc Sc Inc Sc Sc Inc Sc Sc Inc Sc Sc Sc Sc Sc Sc Sc Sc Inc Inc Inc Inc Dec Inc Inc Inc Inc Dec Sc Dec Dec Dec Dec Dec Dec)
 
 ---
 Problem unsolved

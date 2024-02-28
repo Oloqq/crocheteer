@@ -2,7 +2,7 @@ use super::util::execute_benchmark;
 use crate::common::save_mesh;
 use crate::genetic::common::Case;
 use crate::genetic::fitness_funcs::*;
-use crate::genetic::params::{GrowingParams, Params};
+use crate::genetic::params::Params;
 use crate::genetic::problem::NoInput;
 use crate::genetic::problem::Shape;
 use crate::pattern::Pattern;
@@ -11,16 +11,11 @@ use crate::GeneticArgs;
 
 pub fn bench_small_ball(args: &GeneticArgs) {
     let mut params = Params {
-        memsize: 3,
         popsize: 100,
         max_size: 10,
         p_crossover: 0.0,
-        p_mut_per_node: 0.2,
+        p_mutation_per_node: 0.2,
         tournament_size: 2,
-        random_initial_memory: true,
-        growing: GrowingParams {
-            ..Default::default()
-        },
         ..Default::default()
     };
 

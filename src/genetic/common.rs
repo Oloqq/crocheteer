@@ -4,7 +4,6 @@ use super::evolution::*;
 use super::{fitness_funcs::FitnessFunc, params::Params};
 use rand::rngs::StdRng;
 use serde_derive::{Deserialize, Serialize};
-use std::f32::NAN;
 use std::fs::File;
 use std::io::Write;
 use std::{error::Error, fs};
@@ -31,10 +30,6 @@ impl Program {
             Err(_) => Err(format!("Couldn't load program: {src}")),
         }
     }
-
-    // fn judge(fitness_func: FitnessFunc) -> f32 {
-    //     todo!()
-    // }
 }
 
 pub type Case = (Input, Output);
@@ -155,7 +150,7 @@ impl Population {
 
     pub fn average_fitness(&self) -> f32 {
         let sum: f32 = self.fitness.iter().fold(0.0, |acc, f| {
-            // assert!(!f.is_nan(), "NaN fitness");
+            assert!(!f.is_nan(), "NaN fitness");
             acc + f
         });
         sum / self.fitness.len() as f32

@@ -22,7 +22,7 @@ mod tests {
 popsize: 100
 max_size: 10
 p_crossover: 0.0
-p_mut_per_node: 0.2
+p_mutation_per_node: 0.2
 tournament_size: 2
 acceptable_error: -0.001
 growing: {}

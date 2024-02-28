@@ -5,15 +5,6 @@ use super::{
 
 use crate::{genetic::problem::Shape, pattern::Pattern, plushie::Plushie};
 
-#[allow(unused)]
-#[derive(Debug)]
-pub enum EvalError {
-    Finished,
-    Syntax(usize, String),
-    Semantic(String),
-    MaxIteration,
-}
-
 pub struct Runtime {
     levels: usize,
     max_height: f32,
