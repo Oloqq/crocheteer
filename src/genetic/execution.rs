@@ -30,7 +30,7 @@ impl Runtime {
     pub fn execute(&mut self, program: &Program) -> Output {
         const MAGIC_RING: usize = 6;
         log::info!("Processing program: {:?}", program);
-        let pattern = Pattern::from_genom(&(MAGIC_RING, &program));
+        let pattern = Pattern::from_genom(&(MAGIC_RING, &program.tokens));
         let plushie = {
             let mut p = Plushie::from_pattern(pattern);
             p.animate();

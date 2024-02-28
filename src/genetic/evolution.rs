@@ -1,4 +1,5 @@
 #![allow(unused)]
+use super::common::AnyProgram;
 use super::execution::*;
 use super::fitness_funcs::*;
 use super::params::Params;
@@ -29,7 +30,7 @@ pub fn crossover(father: &Program, mother: &Program, rand: &mut StdRng) -> Progr
 }
 
 pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program {
-    log::debug!("mutation of {}", serialize(parent));
+    log::debug!("mutation of {}", parent.serialize());
 
     #[derive(Clone, Copy)]
     enum Operation {
@@ -45,8 +46,8 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
         (Operation::Remove, 0),
     ];
 
-    let mut child = Vec::with_capacity(parent.len());
-    for i in 0..parent.len() {
+    let mut child = Vec::with_capacity(parent.tokens.len());
+    for i in 0..parent.tokens.len() {
         let operation: Operation = {
             let items = &weights;
             let distribution = WeightedIndex::new(items.iter().map(|item| item.1)).unwrap();
@@ -59,13 +60,13 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
                 child.push(replacement);
             }
             Operation::Duplicate => {
-                child.push(parent[i]);
-                child.push(parent[i]);
+                child.push(parent.tokens[i]);
+                child.push(parent.tokens[i]);
             }
             Operation::Remove => continue,
         }
     }
-    child
+    Program { tokens: child }
 }
 
 pub fn tournament(fitness: &Vec<f64>, tournament_size: usize, rand: &mut StdRng) -> usize {

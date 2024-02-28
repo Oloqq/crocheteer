@@ -45,7 +45,7 @@ fn load_population(
 
     for i in 0..lines.len() {
         let program: Vec<Token> = serde_lexpr::from_str(&lines[i]).unwrap();
-        population.push(program);
+        population.push(Program { tokens: program });
         fitness.push(run_and_rank(
             &population[i],
             params,
@@ -161,7 +161,7 @@ impl TinyGP {
                 let father = &self.population[father_id];
                 let mother = &self.population[mother_id];
                 let mby_overgrown = crossover(father, mother, &mut self.rand);
-                if mby_overgrown.len() < self.params.max_size {
+                if mby_overgrown.tokens.len() < self.params.max_size {
                     child_program = mby_overgrown;
                 } else {
                     if self.rand.gen_bool(0.5) {
@@ -210,7 +210,7 @@ impl TinyGP {
         let popsize = self.population.len();
 
         for i in 0..popsize {
-            node_count += self.population[i].len();
+            node_count += self.population[i].tokens.len();
             avg_fitness += self.fitness[i];
             if self.fitness[i] > best_fitness {
                 best = i;
