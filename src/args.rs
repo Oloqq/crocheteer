@@ -50,6 +50,10 @@ pub struct GeneticArgs {
     #[structopt(long)]
     pub save_stl: bool,
 
+    /// Include full information in generation reports. Expensive.
+    #[structopt(short, long)]
+    pub debug: bool,
+
     pub suite: String,
 }
 

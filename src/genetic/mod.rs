@@ -12,6 +12,7 @@ use params::Params;
 
 use rand::prelude::*;
 use rand::SeedableRng;
+use serde_derive::Serialize;
 use std::cell::RefCell;
 use std::error::Error;
 use std::fs;
@@ -26,6 +27,7 @@ pub struct TinyGP {
     generation: i32,
     pub population: Population,
     writer: RefCell<Box<dyn Write>>,
+    pub debug_info: bool,
 }
 
 impl TinyGP {
@@ -49,6 +51,7 @@ impl TinyGP {
             cases,
             generation: 0,
             writer: writer.into(),
+            debug_info: false,
         }
     }
 
@@ -72,6 +75,7 @@ impl TinyGP {
             cases,
             generation: 0,
             writer: writer.into(),
+            debug_info: false,
         })
     }
 
@@ -86,14 +90,14 @@ impl TinyGP {
         }
 
         if best_fitness >= self.params.acceptable_error {
-            writeln!(self.writer.borrow_mut(), "PROBLEM SOLVED").unwrap();
+            writeln!(self.writer.borrow_mut(), "---\nPROBLEM SOLVED").unwrap();
             fs::write(
                 "solution.txt",
                 format!("{}", self.population.programs[best_id].serialize()),
             )
             .unwrap();
         } else {
-            writeln!(self.writer.borrow_mut(), "PROBLEM UNSOLVED").unwrap();
+            writeln!(self.writer.borrow_mut(), "---\nPROBLEM UNSOLVED").unwrap();
         }
         self.writer.borrow_mut().flush().unwrap();
         self.population.get_best()
@@ -157,6 +161,39 @@ impl TinyGP {
     }
 
     fn report_progress(&self) {
-        writeln!(self.writer.borrow_mut(), "TBD: Progress report").unwrap();
+        #[derive(Serialize)]
+        struct Raport {
+            generation: i32,
+            avg_fitness: f32,
+            best_fitness: f32,
+            best_program: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            programs: Option<Vec<(f32, String)>>,
+        }
+
+        let (best_program, best_fitness) = self.population.get_best();
+        let programs = if self.debug_info {
+            let progs: Vec<(f32, String)> = self
+                .population
+                .programs
+                .iter()
+                .zip(&self.population.fitness)
+                .map(|(prog, fit)| (*fit, prog.serialize()))
+                .collect();
+            Some(progs)
+        } else {
+            None
+        };
+
+        let r = Raport {
+            generation: self.generation,
+            avg_fitness: self.population.average_fitness(),
+            best_program: best_program.serialize(),
+            best_fitness,
+            programs,
+        };
+
+        let s = serde_yaml::to_string(&r).unwrap();
+        writeln!(self.writer.borrow_mut(), "---\n{}", s).unwrap();
     }
 }

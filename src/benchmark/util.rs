@@ -21,7 +21,7 @@ pub fn execute_benchmark(
     name: &str,
     ff: FitnessFunc,
 ) -> Program {
-    let out_file = &format!("population/out-{name}.txt");
+    let out_file = &format!("population/out-{name}.yaml");
     let pop_file = &format!("population/{name}.pop");
 
     let writer: RefCell<Box<dyn Write>> = if args.stdout {
@@ -44,6 +44,7 @@ pub fn execute_benchmark(
         tgp = TinyGP::new(params, cases, args.seed, writer, ff);
     }
 
+    tgp.debug_info = args.debug;
     let (program, fitness) = tgp.evolve(args.generations, ff);
 
     println!(

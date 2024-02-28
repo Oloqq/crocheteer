@@ -1,12 +1,13 @@
-use std::fs::File;
-use std::{error::Error, fs};
+pub use super::problem::{Input, Output, Token};
 
+use super::evolution::*;
+use super::{fitness_funcs::FitnessFunc, params::Params};
 use rand::rngs::StdRng;
 use serde_derive::{Deserialize, Serialize};
-
-pub use super::problem::{Input, Output, Token};
-use super::{fitness_funcs::FitnessFunc, params::Params};
+use std::f32::NAN;
+use std::fs::File;
 use std::io::Write;
+use std::{error::Error, fs};
 
 // pub trait AnyProgram {
 //     fn serialize(&self) -> String;
@@ -151,6 +152,12 @@ impl Population {
         assert!(self.best_fitness == self.fitness[self.best_index]);
         (self.best_index, self.best_fitness)
     }
-}
 
-use super::evolution::*;
+    pub fn average_fitness(&self) -> f32 {
+        let sum: f32 = self.fitness.iter().fold(0.0, |acc, f| {
+            // assert!(!f.is_nan(), "NaN fitness");
+            acc + f
+        });
+        sum / self.fitness.len() as f32
+    }
+}
