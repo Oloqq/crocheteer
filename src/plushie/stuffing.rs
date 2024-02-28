@@ -92,7 +92,7 @@ pub fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
     let diff = point.coords - center;
     let too_close = radius - diff.magnitude();
 
-    if too_close < 0.0 {
+    if too_close <= 0.0 || diff.magnitude() == 0.0 {
         V::zeros()
     } else {
         diff.normalize() * (too_close / 4.0).powi(2)

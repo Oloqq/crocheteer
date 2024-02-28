@@ -1,4 +1,4 @@
-use serde_derive::Serialize;
+use serde_derive::{Deserialize, Serialize};
 
 #[allow(unused)]
 use super::common::*;
@@ -6,10 +6,10 @@ use std::fmt::Display;
 
 type Probability = f64;
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct GrowingParams {}
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Params {
     pub memsize: usize,
     pub popsize: usize,

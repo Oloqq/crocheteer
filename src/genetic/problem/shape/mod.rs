@@ -11,7 +11,7 @@ pub struct Slice {
     points: Vec<Point2>,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Shape {
     slices: Vec<Slice>,
 }

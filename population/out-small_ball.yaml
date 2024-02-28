@@ -22,7 +22,7 @@ max_height: 2.8689342
 Starting evolution for 1 generations
 ---
 generation: 0
-avg_fitness: .nan
+avg_fitness: -0.5252984
 best_fitness: -0.35525018
 best_program: (Inc Dec Dec Inc Sc Inc Dec Sc Inc Dec Dec Dec)
 programs:
@@ -112,7 +112,7 @@ programs:
   - (Sc Sc Inc Dec Dec Inc Dec Inc Sc Dec Inc Dec)
 - - -0.41348448
   - (Sc Dec Dec Inc Sc Inc Inc Sc Dec Sc Sc Dec)
-- - .nan
+- - -0.5301173
   - (Dec Dec Dec Dec Dec Sc Inc Dec Dec Dec Dec Dec)
 - - -0.55023164
   - (Sc Inc Inc Inc Dec Dec Inc Inc Dec Sc Inc Dec)

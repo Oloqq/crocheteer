@@ -15,7 +15,6 @@ impl Slice {
             result += (my_closest - point).magnitude();
         }
 
-        // assert!(!result.is_nan(), "compared {:?} and {:?}", self, other);
         result
     }
 
@@ -44,12 +43,22 @@ impl Shape {
             other.slices.len()
         );
 
-        self.slices
+        let result = self
+            .slices
             .iter()
             .zip(&other.slices)
             .fold(0.0, |acc, (my_slice, their_slice)| {
                 acc + my_slice.compare(their_slice)
-            })
+            });
+
+        assert!(
+            !result.is_nan(),
+            "Got NaN in comparison. \nCompared {:?}\nand\n{:?}",
+            self,
+            other
+        );
+
+        result
     }
 }
 
