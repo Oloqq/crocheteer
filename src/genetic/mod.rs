@@ -8,7 +8,6 @@ pub mod problem;
 
 use common::*;
 use evolution::*;
-use growing::*;
 use params::Params;
 
 use rand::prelude::*;
@@ -25,37 +24,10 @@ pub struct TinyGP {
     params: Params,
     cases: Vec<Case>,
     generation: i32,
-    population: Vec<Program>,
+    population: Population,
     fitness: Vec<f32>,
     fitness_normalized: Vec<f64>,
     writer: RefCell<Box<dyn Write>>,
-}
-
-fn load_population(
-    filepath: &str,
-    params: &Params,
-    cases: &Vec<Case>,
-    fitness_func: FitnessFunc,
-    rand: &mut StdRng,
-) -> Result<(Vec<Program>, Vec<f32>), Box<dyn Error>> {
-    let content = fs::read_to_string(filepath)?;
-    let lines: Vec<&str> = content.trim_end().split('\n').collect();
-    let mut population = Vec::with_capacity(lines.len());
-    let mut fitness = Vec::with_capacity(lines.len());
-
-    for i in 0..lines.len() {
-        let program: Vec<Token> = serde_lexpr::from_str(&lines[i]).unwrap();
-        population.push(Program { tokens: program });
-        fitness.push(run_and_rank(
-            &population[i],
-            params,
-            cases,
-            fitness_func,
-            rand,
-        ));
-    }
-
-    Ok((population, fitness))
 }
 
 impl TinyGP {
@@ -69,8 +41,16 @@ impl TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
         writeln!(writer.borrow_mut(), "Creating population").unwrap();
-        let (population, fitness) = random_population(&params, &cases, &mut rand, fitness_func);
+
+        let population = Population::make_random(&params, &cases, &mut rand, fitness_func);
+        let fitness = population.fitness;
+        let population = population.programs;
         let fitness_normalized = normalize_fitness(&fitness, &population);
+        let population = Population {
+            programs: population,
+            fitness: vec![],
+        };
+
         TinyGP {
             rand,
             fitness,
@@ -94,13 +74,12 @@ impl TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
         writeln!(writer.borrow_mut(), "Loading population").unwrap();
-        let (population, fitness) =
-            load_population(filepath, &params, &cases, fitness_func, &mut rand)?;
-        let fitness_normalized = normalize_fitness(&fitness, &population);
+        let population = Population::load(filepath, &params, &cases, fitness_func, &mut rand)?;
+        let fitness_normalized = normalize_fitness(&population.fitness, &population.programs);
         let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,
-            fitness,
+            fitness: population.fitness.clone(),
             fitness_normalized,
             population,
             params: params.clone(),
@@ -111,7 +90,7 @@ impl TinyGP {
     }
 
     pub fn save_population(&self, writer: &mut Box<dyn Write>) {
-        for program in self.population.iter() {
+        for program in self.population.programs.iter() {
             let s = serde_lexpr::to_string(&program).unwrap();
             writeln!(writer, "{}", s).unwrap();
         }
@@ -136,12 +115,16 @@ impl TinyGP {
 
         if best_fitness >= self.params.acceptable_error {
             writeln!(self.writer.borrow_mut(), "PROBLEM SOLVED").unwrap();
-            fs::write("solution.txt", format!("{:?}", self.population[best_id])).unwrap();
+            fs::write(
+                "solution.txt",
+                format!("{}", self.population.programs[best_id].serialize()),
+            )
+            .unwrap();
         } else {
             writeln!(self.writer.borrow_mut(), "PROBLEM UNSOLVED").unwrap();
         }
         self.writer.borrow_mut().flush().unwrap();
-        (self.population[best_id].clone(), best_fitness)
+        (self.population.programs[best_id].clone(), best_fitness)
     }
 
     fn evolve_generation(&mut self, fitness_func: FitnessFunc) {
@@ -158,8 +141,8 @@ impl TinyGP {
                     self.params.tournament_size,
                     &mut self.rand,
                 );
-                let father = &self.population[father_id];
-                let mother = &self.population[mother_id];
+                let father = &self.population.programs[father_id];
+                let mother = &self.population.programs[mother_id];
                 let mby_overgrown = crossover(father, mother, &mut self.rand);
                 if mby_overgrown.tokens.len() < self.params.max_size {
                     child_program = mby_overgrown;
@@ -176,7 +159,7 @@ impl TinyGP {
                     self.params.tournament_size,
                     &mut self.rand,
                 );
-                let parent = &self.population[parent_id];
+                let parent = &self.population.programs[parent_id];
                 child_program = mutation(parent, &self.params, &mut self.rand);
             };
             let child_index = negative_tournament(
@@ -191,15 +174,15 @@ impl TinyGP {
                 fitness_func,
                 &mut self.rand,
             );
-            self.population[child_index] = child_program;
+            self.population.programs[child_index] = child_program;
         }
-        self.fitness_normalized = normalize_fitness(&self.fitness, &self.population);
+        self.fitness_normalized = normalize_fitness(&self.fitness, &self.population.programs);
         self.generation += 1;
     }
 
     pub fn get_best(&mut self) -> Program {
         let (_, besti) = self.stats();
-        self.population[besti].clone()
+        self.population.programs[besti].clone()
     }
 
     fn stats(&mut self) -> (f32, usize) {
@@ -207,10 +190,10 @@ impl TinyGP {
         let mut node_count = 0;
         let mut best_fitness = f32::MIN;
         let mut avg_fitness = 0.0;
-        let popsize = self.population.len();
+        let popsize = self.population.programs.len();
 
         for i in 0..popsize {
-            node_count += self.population[i].tokens.len();
+            node_count += self.population.programs[i].tokens.len();
             avg_fitness += self.fitness[i];
             if self.fitness[i] > best_fitness {
                 best = i;
@@ -238,42 +221,10 @@ Avg Size={}",
         writeln!(
             self.writer.borrow_mut(),
             "{:?}\n",
-            serde_lexpr::to_string(&self.population[best]).unwrap()
+            serde_lexpr::to_string(&self.population.programs[best]).unwrap()
         )
         .unwrap();
 
         (best_fitness, best)
     }
 }
-
-pub fn random_population(
-    params: &Params,
-    cases: &Vec<Case>,
-    rand: &mut StdRng,
-    fitness_func: FitnessFunc,
-) -> (Vec<Program>, Vec<f32>) {
-    let mut population = Vec::with_capacity(params.popsize);
-    let mut fitness = Vec::with_capacity(params.popsize);
-
-    // let memory_init = if params.random_initial_memory {
-    //     Some(&rand)
-    // } else {
-    //     None
-    // };
-
-    for i in 0..params.popsize {
-        population.push(create_random_indiv(params, rand));
-        fitness.push(run_and_rank(
-            &population[i],
-            params,
-            cases,
-            fitness_func,
-            rand,
-        ));
-    }
-
-    return (population, fitness);
-}
-
-#[cfg(test)]
-mod tests {}

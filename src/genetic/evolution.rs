@@ -1,5 +1,4 @@
 #![allow(unused)]
-use super::common::AnyProgram;
 use super::execution::*;
 use super::fitness_funcs::*;
 use super::params::Params;
