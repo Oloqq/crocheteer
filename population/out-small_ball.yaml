@@ -2,6 +2,23 @@ Comparing to: ((slices ((points #(0.0 0.0) #(1.0370732545852661 0.16832482814788
 ---
 Creating population
 ---
+seed: 3
+---
+memsize: 3
+popsize: 100
+max_size: 10
+p_crossover: 0.0
+p_mut_per_node: 0.2
+tournament_size: 2
+acceptable_error: -0.001
+growing: {}
+random_initial_memory: true
+prefix: []
+suffix: []
+levels: 3
+max_height: 2.8689342
+
+---
 Starting evolution for 1 generations
 ---
 generation: 0

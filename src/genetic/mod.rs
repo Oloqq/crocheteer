@@ -31,20 +31,24 @@ pub struct TinyGP {
 }
 
 impl TinyGP {
-    pub fn new(
+    fn start_construction(
+        writer: &RefCell<Box<dyn Write>>,
+        seed: Option<u64>,
+        msg: &str,
+    ) -> StdRng {
+        let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
+        writeln!(writer.borrow_mut(), "---\n{}\n---\nseed: {}", msg, seed).unwrap();
+        StdRng::seed_from_u64(seed)
+    }
+
+    fn init(
+        rand: StdRng,
+        population: Population,
         params: Params,
         cases: Vec<Case>,
-        seed: Option<u64>,
         writer: RefCell<Box<dyn Write>>,
-        fitness_func: FitnessFunc,
-    ) -> TinyGP {
-        let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
-        let mut rand = StdRng::seed_from_u64(seed);
-        writeln!(writer.borrow_mut(), "---\nCreating population").unwrap();
-
-        let population = Population::make_random(&params, &cases, &mut rand, fitness_func);
-
-        TinyGP {
+    ) -> Self {
+        let obj = TinyGP {
             rand,
             population,
             params,
@@ -52,7 +56,22 @@ impl TinyGP {
             generation: 0,
             writer: writer.into(),
             debug_info: false,
-        }
+        };
+        obj.write(serde_yaml::to_string(&obj.params).unwrap().as_str());
+        obj
+    }
+
+    pub fn new(
+        params: Params,
+        cases: Vec<Case>,
+        seed: Option<u64>,
+        writer: RefCell<Box<dyn Write>>,
+        fitness_func: FitnessFunc,
+    ) -> TinyGP {
+        let mut rand = Self::start_construction(&writer, seed, "Creating population");
+        let population = Population::make_random(&params, &cases, &mut rand, fitness_func);
+
+        Self::init(rand, population, params, cases, writer)
     }
 
     fn write(&self, msg: &str) {
@@ -67,20 +86,10 @@ impl TinyGP {
         fitness_func: FitnessFunc,
         filepath: &str,
     ) -> Result<TinyGP, Box<dyn Error>> {
-        let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
-        let mut rand = StdRng::seed_from_u64(seed);
-        writeln!(writer.borrow_mut(), "---\nLoading population").unwrap();
-
+        let mut rand = Self::start_construction(&writer, seed, "Loading population");
         let population = Population::load(filepath, &params, &cases, fitness_func, &mut rand)?;
-        Ok(TinyGP {
-            rand,
-            population,
-            params,
-            cases,
-            generation: 0,
-            writer: writer.into(),
-            debug_info: false,
-        })
+
+        Ok(Self::init(rand, population, params, cases, writer))
     }
 
     pub fn evolve(&mut self, mut generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {

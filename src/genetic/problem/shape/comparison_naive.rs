@@ -15,6 +15,7 @@ impl Slice {
             result += (my_closest - point).magnitude();
         }
 
+        // assert!(!result.is_nan(), "compared {:?} and {:?}", self, other);
         result
     }
 
