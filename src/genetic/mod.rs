@@ -40,7 +40,7 @@ impl TinyGP {
     ) -> TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
-        writeln!(writer.borrow_mut(), "Creating population").unwrap();
+        writeln!(writer.borrow_mut(), "---\nCreating population").unwrap();
 
         let population = Population::make_random(&params, &cases, &mut rand, fitness_func);
 
@@ -55,6 +55,10 @@ impl TinyGP {
         }
     }
 
+    fn write(&self, msg: &str) {
+        writeln!(self.writer.borrow_mut(), "---\n{msg}").unwrap();
+    }
+
     pub fn from_population(
         params: Params,
         cases: Vec<Case>,
@@ -65,7 +69,7 @@ impl TinyGP {
     ) -> Result<TinyGP, Box<dyn Error>> {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
-        writeln!(writer.borrow_mut(), "Loading population").unwrap();
+        writeln!(writer.borrow_mut(), "---\nLoading population").unwrap();
 
         let population = Population::load(filepath, &params, &cases, fitness_func, &mut rand)?;
         Ok(TinyGP {
@@ -80,6 +84,8 @@ impl TinyGP {
     }
 
     pub fn evolve(&mut self, mut generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {
+        self.write(format!("Starting evolution for {generations} generations").as_str());
+
         let (mut best_id, mut best_fitness) = self.population.get_best_id();
         while best_fitness < self.params.acceptable_error && generations > 0 {
             self.report_progress();
@@ -90,14 +96,14 @@ impl TinyGP {
         }
 
         if best_fitness >= self.params.acceptable_error {
-            writeln!(self.writer.borrow_mut(), "---\nPROBLEM SOLVED").unwrap();
+            self.write("Problem solved");
             fs::write(
                 "solution.txt",
                 format!("{}", self.population.programs[best_id].serialize()),
             )
             .unwrap();
         } else {
-            writeln!(self.writer.borrow_mut(), "---\nPROBLEM UNSOLVED").unwrap();
+            self.write("Problem unsolved");
         }
         self.writer.borrow_mut().flush().unwrap();
         self.population.get_best()

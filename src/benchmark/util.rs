@@ -9,6 +9,7 @@ use crate::{
         common::{Case, Program},
         fitness_funcs::FitnessFunc,
         params::Params,
+        problem::Shape,
         TinyGP,
     },
     GeneticArgs,
@@ -32,6 +33,16 @@ pub fn execute_benchmark(
         ))
     };
 
+    if cases.len() == 1 {
+        let expected: &Shape = &cases[0].1;
+        writeln!(
+            writer.borrow_mut(),
+            "Comparing to: {}",
+            expected.serialize()
+        )
+        .unwrap();
+    }
+
     let mut tgp;
     if !args.fresh {
         tgp = match TinyGP::from_population(params, cases, args.seed, writer, ff, pop_file) {
@@ -45,6 +56,7 @@ pub fn execute_benchmark(
     }
 
     tgp.debug_info = args.debug;
+
     let (program, fitness) = tgp.evolve(args.generations, ff);
 
     println!(

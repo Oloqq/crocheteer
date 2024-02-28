@@ -1,15 +1,17 @@
+use serde_derive::{Deserialize, Serialize};
+
 use crate::common::Point;
 mod comparison_naive;
 mod construction;
 
 type Point2 = na::Point2<f32>;
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct Slice {
     points: Vec<Point2>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Shape {
     slices: Vec<Slice>,
 }
@@ -24,6 +26,15 @@ impl Slice {
 impl Shape {
     pub fn point_count(&self) -> usize {
         self.slices.iter().fold(0, |acc, s| acc + s.points.len())
+    }
+
+    pub fn serialize(&self) -> String {
+        serde_lexpr::to_string(&self).unwrap()
+    }
+
+    #[allow(unused)]
+    pub fn deserialize(s: &str) -> Self {
+        serde_lexpr::from_str(s).unwrap()
     }
 }
 
