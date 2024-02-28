@@ -76,18 +76,12 @@ impl TinyGP {
     }
 
     pub fn evolve(&mut self, mut generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {
-        writeln!(
-            self.writer.borrow_mut(),
-            "-- TINY GP (Rust version) --\nGENERATIONS={}\n{}",
-            generations,
-            self.params
-        )
-        .unwrap();
-        let (mut best_fitness, mut best_id) = self.stats();
+        let (mut best_id, mut best_fitness) = self.population.get_best_id();
         while best_fitness < self.params.acceptable_error && generations > 0 {
+            self.report_progress();
             generations -= 1;
             self.evolve_generation(fitness_func);
-            (best_fitness, best_id) = self.stats();
+            (best_id, best_fitness) = self.population.get_best_id();
             self.writer.borrow_mut().flush().unwrap();
         }
 
@@ -102,7 +96,7 @@ impl TinyGP {
             writeln!(self.writer.borrow_mut(), "PROBLEM UNSOLVED").unwrap();
         }
         self.writer.borrow_mut().flush().unwrap();
-        (self.population.programs[best_id].clone(), best_fitness)
+        self.population.get_best()
     }
 
     fn evolve_generation(&mut self, fitness_func: FitnessFunc) {
@@ -145,63 +139,24 @@ impl TinyGP {
                 self.params.tournament_size,
                 &mut self.rand,
             );
-            self.population.fitness[child_index] = run_and_rank(
-                &child_program,
+
+            self.population.emplace(
+                child_index,
+                child_program,
                 &self.params,
                 &self.cases,
                 fitness_func,
                 &mut self.rand,
             );
-            self.population.programs[child_index] = child_program;
         }
         self.generation += 1;
     }
 
     pub fn get_best(&mut self) -> Program {
-        let (_, besti) = self.stats();
-        self.population.programs[besti].clone()
+        self.population.get_best().0
     }
 
-    fn stats(&mut self) -> (f32, usize) {
-        let mut best = 0;
-        let mut node_count = 0;
-        let mut best_fitness = f32::MIN;
-        let mut avg_fitness = 0.0;
-        let popsize = self.population.programs.len();
-
-        for i in 0..popsize {
-            node_count += self.population.programs[i].tokens.len();
-            avg_fitness += self.population.fitness[i];
-            if self.population.fitness[i] > best_fitness {
-                best = i;
-                best_fitness = self.population.fitness[i];
-            }
-        }
-        let avg_len = node_count / popsize;
-        avg_fitness /= popsize as f32;
-
-        writeln!(
-            self.writer.borrow_mut(),
-            "Generation={}
-Avg Fitness={}
-Best Fitness={}
-Avg Size={}",
-            self.generation,
-            avg_fitness,
-            best_fitness,
-            avg_len
-        )
-        .unwrap();
-        writeln!(self.writer.borrow_mut(), "Best Individual: ").unwrap();
-        // writeln!(self.writer.borrow_mut(), "{:?}", self.population[best]);
-        // pprint(&self.population[best]);
-        writeln!(
-            self.writer.borrow_mut(),
-            "{:?}\n",
-            serde_lexpr::to_string(&self.population.programs[best]).unwrap()
-        )
-        .unwrap();
-
-        (best_fitness, best)
+    fn report_progress(&self) {
+        writeln!(self.writer.borrow_mut(), "TBD: Progress report").unwrap();
     }
 }

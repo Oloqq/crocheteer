@@ -123,8 +123,33 @@ impl Population {
         Ok(Self::init(programs, params, cases, rand, fitness_func))
     }
 
-    pub fn get_best(&self) -> Program {
-        self.programs[self.best_index].clone()
+    pub fn emplace(
+        &mut self,
+        index: usize,
+        program: Program,
+        params: &Params,
+        cases: &Vec<Case>,
+        fitness_func: FitnessFunc,
+        rand: &mut StdRng,
+    ) {
+        assert!(index < self.programs.len());
+        let fit = run_and_rank(&program, &params, &cases, fitness_func, rand);
+        if fit > self.best_fitness {
+            self.best_fitness = fit;
+            self.best_index = index;
+        }
+        self.fitness[index] = fit;
+        self.programs[index] = program;
+    }
+
+    pub fn get_best(&self) -> (Program, f32) {
+        assert!(self.best_fitness == self.fitness[self.best_index]);
+        (self.programs[self.best_index].clone(), self.best_fitness)
+    }
+
+    pub fn get_best_id(&self) -> (usize, f32) {
+        assert!(self.best_fitness == self.fitness[self.best_index]);
+        (self.best_index, self.best_fitness)
     }
 }
 
