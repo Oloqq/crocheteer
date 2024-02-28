@@ -45,17 +45,53 @@ pub type Case = (Input, Output);
 pub struct Population {
     pub programs: Vec<Program>,
     pub fitness: Vec<f32>,
+    best_fitness: f32,
+    best_index: usize,
 }
 
 impl Population {
+    fn init(
+        programs: Vec<Program>,
+        params: &Params,
+        cases: &Vec<Case>,
+        rand: &mut StdRng,
+        fitness_func: FitnessFunc,
+    ) -> Self {
+        let mut fitness = Vec::with_capacity(programs.len());
+        let mut best_fitness = f32::MIN;
+        let mut best_index = 0;
+
+        assert!(params.popsize == programs.len());
+        for i in 0..programs.len() {
+            let fit = run_and_rank(&programs[i], params, cases, fitness_func, rand);
+            if fit > best_fitness {
+                best_fitness = fit;
+                best_index = i;
+            }
+            fitness.push(fit);
+        }
+
+        Self {
+            programs,
+            fitness,
+            best_fitness,
+            best_index,
+        }
+    }
+
     pub fn make_random(
         params: &Params,
         cases: &Vec<Case>,
         rand: &mut StdRng,
         fitness_func: FitnessFunc,
     ) -> Self {
-        let (programs, fitness) = random_population(&params, &cases, rand, fitness_func);
-        Population { programs, fitness }
+        use super::growing::create_random_indiv;
+
+        let programs = (0..params.popsize)
+            .map(|_| create_random_indiv(params, rand))
+            .collect();
+
+        Self::init(programs, params, cases, rand, fitness_func)
     }
 
     pub fn save(&self, filepath: &str) {
@@ -83,39 +119,13 @@ impl Population {
             programs
         };
 
-        let fitness = programs
-            .iter()
-            .map(|program| run_and_rank(program, params, cases, fitness_func, rand))
-            .collect();
-
         assert!(programs.len() == params.popsize);
+        Ok(Self::init(programs, params, cases, rand, fitness_func))
+    }
 
-        Ok(Self { programs, fitness })
+    pub fn get_best(&self) -> Program {
+        self.programs[self.best_index].clone()
     }
 }
 
 use super::evolution::*;
-use super::growing::*;
-
-fn random_population(
-    params: &Params,
-    cases: &Vec<Case>,
-    rand: &mut StdRng,
-    fitness_func: FitnessFunc,
-) -> (Vec<Program>, Vec<f32>) {
-    let mut population = Vec::with_capacity(params.popsize);
-    let mut fitness = Vec::with_capacity(params.popsize);
-
-    for i in 0..params.popsize {
-        population.push(create_random_indiv(params, rand));
-        fitness.push(run_and_rank(
-            &population[i],
-            params,
-            cases,
-            fitness_func,
-            rand,
-        ));
-    }
-
-    return (population, fitness);
-}

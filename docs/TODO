@@ -3,9 +3,11 @@
   - switching "working position" like working the front loop, then going back and working the back loop
   - chains
   - attaching a chain to a set point
-      - how to calculate the anchors now available?
+  - how to calculate the anchors now available?
   - non-uniform stuffing
   - creations that are not closed at the top (like the vase)
   - handling heavily folded shapes
   - build Plushie directly from the builder
   - handle dec overflowing into the next round properly
+
+- why is average fitness NaN

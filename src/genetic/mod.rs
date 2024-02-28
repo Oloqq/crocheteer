@@ -75,7 +75,7 @@ impl TinyGP {
         })
     }
 
-    pub fn evolve(&mut self, generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {
+    pub fn evolve(&mut self, mut generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {
         writeln!(
             self.writer.borrow_mut(),
             "-- TINY GP (Rust version) --\nGENERATIONS={}\n{}",
@@ -83,7 +83,6 @@ impl TinyGP {
             self.params
         )
         .unwrap();
-        let mut generations = generations;
         let (mut best_fitness, mut best_id) = self.stats();
         while best_fitness < self.params.acceptable_error && generations > 0 {
             generations -= 1;
