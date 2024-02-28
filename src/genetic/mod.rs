@@ -25,8 +25,6 @@ pub struct TinyGP {
     cases: Vec<Case>,
     generation: i32,
     population: Population,
-    fitness: Vec<f32>,
-    fitness_normalized: Vec<f64>,
     writer: RefCell<Box<dyn Write>>,
 }
 
@@ -43,18 +41,9 @@ impl TinyGP {
         writeln!(writer.borrow_mut(), "Creating population").unwrap();
 
         let population = Population::make_random(&params, &cases, &mut rand, fitness_func);
-        let fitness = population.fitness;
-        let population = population.programs;
-        let fitness_normalized = normalize_fitness(&fitness, &population);
-        let population = Population {
-            programs: population,
-            fitness: vec![],
-        };
 
         TinyGP {
             rand,
-            fitness,
-            fitness_normalized,
             population,
             params,
             cases,
@@ -75,12 +64,9 @@ impl TinyGP {
         let mut rand = StdRng::seed_from_u64(seed);
         writeln!(writer.borrow_mut(), "Loading population").unwrap();
         let population = Population::load(filepath, &params, &cases, fitness_func, &mut rand)?;
-        let fitness_normalized = normalize_fitness(&population.fitness, &population.programs);
         let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,
-            fitness: population.fitness.clone(),
-            fitness_normalized,
             population,
             params: params.clone(),
             cases: case_copy,
@@ -132,12 +118,12 @@ impl TinyGP {
             let child_program: Program;
             if self.rand.gen_bool(self.params.p_crossover as f64) {
                 let father_id = tournament(
-                    &self.fitness_normalized,
+                    &self.population.fitness,
                     self.params.tournament_size,
                     &mut self.rand,
                 );
                 let mother_id = tournament(
-                    &self.fitness_normalized,
+                    &self.population.fitness,
                     self.params.tournament_size,
                     &mut self.rand,
                 );
@@ -155,7 +141,7 @@ impl TinyGP {
                 }
             } else {
                 let parent_id = tournament(
-                    &self.fitness_normalized,
+                    &self.population.fitness,
                     self.params.tournament_size,
                     &mut self.rand,
                 );
@@ -163,11 +149,11 @@ impl TinyGP {
                 child_program = mutation(parent, &self.params, &mut self.rand);
             };
             let child_index = negative_tournament(
-                &self.fitness_normalized,
+                &self.population.fitness,
                 self.params.tournament_size,
                 &mut self.rand,
             );
-            self.fitness[child_index] = run_and_rank(
+            self.population.fitness[child_index] = run_and_rank(
                 &child_program,
                 &self.params,
                 &self.cases,
@@ -176,7 +162,6 @@ impl TinyGP {
             );
             self.population.programs[child_index] = child_program;
         }
-        self.fitness_normalized = normalize_fitness(&self.fitness, &self.population.programs);
         self.generation += 1;
     }
 
@@ -194,10 +179,10 @@ impl TinyGP {
 
         for i in 0..popsize {
             node_count += self.population.programs[i].tokens.len();
-            avg_fitness += self.fitness[i];
-            if self.fitness[i] > best_fitness {
+            avg_fitness += self.population.fitness[i];
+            if self.population.fitness[i] > best_fitness {
                 best = i;
-                best_fitness = self.fitness[i];
+                best_fitness = self.population.fitness[i];
             }
         }
         let avg_len = node_count / popsize;

@@ -68,7 +68,7 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
     Program { tokens: child }
 }
 
-pub fn tournament(fitness: &Vec<f64>, tournament_size: usize, rand: &mut StdRng) -> usize {
+pub fn tournament(fitness: &Vec<f32>, tournament_size: usize, rand: &mut StdRng) -> usize {
     let mut best = rand.gen_range(0, fitness.len());
     let mut best_fitness = fitness[best];
 
@@ -82,7 +82,7 @@ pub fn tournament(fitness: &Vec<f64>, tournament_size: usize, rand: &mut StdRng)
     best
 }
 
-pub fn negative_tournament(fitness: &Vec<f64>, tournament_size: usize, rand: &mut StdRng) -> usize {
+pub fn negative_tournament(fitness: &Vec<f32>, tournament_size: usize, rand: &mut StdRng) -> usize {
     let mut worst = rand.gen_range(0, fitness.len());
     let mut worst_fitness = fitness[worst];
 
