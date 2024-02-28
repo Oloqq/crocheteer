@@ -34,12 +34,10 @@ pub fn execute_benchmark(
 
     let mut tgp;
     if !args.fresh {
-        tgp = match TinyGP::from_population(&params, &cases, args.seed, writer, ff, pop_file) {
+        tgp = match TinyGP::from_population(params, cases, args.seed, writer, ff, pop_file) {
             Ok(tgp) => tgp,
-            Err(_) => {
-                println!("Couldn't load previous population, starting fresh");
-                let writer: RefCell<Box<dyn Write>> = RefCell::new(Box::new(io::stdout()));
-                TinyGP::new(params, cases, args.seed, writer, ff)
+            Err(e) => {
+                panic!("Couldn't load previous population. Error: {e}");
             }
         }
     } else {
@@ -54,9 +52,6 @@ pub fn execute_benchmark(
     );
     println!("{}", serde_lexpr::to_string(&program).unwrap());
 
-    let mut writer: Box<dyn Write> =
-        Box::new(File::create(pop_file).expect("Could not create file"));
-    tgp.save_population(&mut writer);
-
+    tgp.population.save(pop_file);
     tgp.get_best()
 }

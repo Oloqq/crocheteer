@@ -24,7 +24,7 @@ pub struct TinyGP {
     params: Params,
     cases: Vec<Case>,
     generation: i32,
-    population: Population,
+    pub population: Population,
     writer: RefCell<Box<dyn Write>>,
 }
 
@@ -53,8 +53,8 @@ impl TinyGP {
     }
 
     pub fn from_population(
-        params: &Params,
-        cases: &Vec<Case>,
+        params: Params,
+        cases: Vec<Case>,
         seed: Option<u64>,
         writer: RefCell<Box<dyn Write>>,
         fitness_func: FitnessFunc,
@@ -63,23 +63,16 @@ impl TinyGP {
         let seed = seed.unwrap_or(StdRng::from_entropy().next_u64());
         let mut rand = StdRng::seed_from_u64(seed);
         writeln!(writer.borrow_mut(), "Loading population").unwrap();
+
         let population = Population::load(filepath, &params, &cases, fitness_func, &mut rand)?;
-        let case_copy: Vec<Case> = cases.clone();
         Ok(TinyGP {
             rand,
             population,
-            params: params.clone(),
-            cases: case_copy,
+            params,
+            cases,
             generation: 0,
             writer: writer.into(),
         })
-    }
-
-    pub fn save_population(&self, writer: &mut Box<dyn Write>) {
-        for program in self.population.programs.iter() {
-            let s = serde_lexpr::to_string(&program).unwrap();
-            writeln!(writer, "{}", s).unwrap();
-        }
     }
 
     pub fn evolve(&mut self, generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {

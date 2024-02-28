@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::{error::Error, fs};
 
 use rand::rngs::StdRng;
@@ -5,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 pub use super::problem::{Input, Output, Token};
 use super::{fitness_funcs::FitnessFunc, params::Params};
+use std::io::Write;
 
 // pub trait AnyProgram {
 //     fn serialize(&self) -> String;
@@ -19,12 +21,12 @@ pub struct Program {
 
 impl Program {
     pub fn serialize(&self) -> String {
-        serde_lexpr::to_string(&self).unwrap()
+        serde_lexpr::to_string(&self.tokens).unwrap()
     }
 
     pub fn deserialize(src: &str) -> Result<Self, String> {
         match serde_lexpr::from_str(src) {
-            Ok(prog) => Ok(prog),
+            Ok(prog) => Ok(Self { tokens: prog }),
             Err(_) => Err(format!("Couldn't load program: {src}")),
         }
     }
@@ -54,6 +56,13 @@ impl Population {
     ) -> Self {
         let (programs, fitness) = random_population(&params, &cases, rand, fitness_func);
         Population { programs, fitness }
+    }
+
+    pub fn save(&self, filepath: &str) {
+        let mut file = File::create(filepath).unwrap();
+        for program in &self.programs {
+            writeln!(file, "{}", program.serialize()).unwrap()
+        }
     }
 
     pub fn load(
