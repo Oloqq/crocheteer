@@ -22,13 +22,16 @@ impl Program {
         serde_lexpr::to_string(&self).unwrap()
     }
 
-    pub fn deserialize(src: &str) -> Self {
-        serde_lexpr::from_str(src).unwrap()
+    pub fn deserialize(src: &str) -> Result<Self, String> {
+        match serde_lexpr::from_str(src) {
+            Ok(prog) => Ok(prog),
+            Err(_) => Err(format!("Couldn't load program: {src}")),
+        }
     }
 
-    fn judge(fitness_func: FitnessFunc) -> f32 {
-        todo!()
-    }
+    // fn judge(fitness_func: FitnessFunc) -> f32 {
+    //     todo!()
+    // }
 }
 
 pub type Case = (Input, Output);
@@ -49,11 +52,8 @@ impl Population {
         rand: &mut StdRng,
         fitness_func: FitnessFunc,
     ) -> Self {
-        let (population, fitness) = random_population(&params, &cases, rand, fitness_func);
-        Population {
-            programs: population,
-            fitness: fitness,
-        }
+        let (programs, fitness) = random_population(&params, &cases, rand, fitness_func);
+        Population { programs, fitness }
     }
 
     pub fn load(
@@ -63,11 +63,25 @@ impl Population {
         fitness_func: FitnessFunc,
         rand: &mut StdRng,
     ) -> Result<Self, Box<dyn Error>> {
-        let (population, fitness) = load_population(filepath, &params, &cases, fitness_func, rand)?;
-        Ok(Self {
-            programs: population,
-            fitness: fitness,
-        })
+        let content = fs::read_to_string(filepath)?;
+        let lines: Vec<&str> = content.trim_end().split('\n').collect();
+
+        let programs: Vec<Program> = {
+            let mut programs = Vec::with_capacity(lines.len());
+            for line in lines {
+                programs.push(Program::deserialize(line)?);
+            }
+            programs
+        };
+
+        let fitness = programs
+            .iter()
+            .map(|program| run_and_rank(program, params, cases, fitness_func, rand))
+            .collect();
+
+        assert!(programs.len() == params.popsize);
+
+        Ok(Self { programs, fitness })
     }
 }
 
@@ -96,34 +110,3 @@ fn random_population(
 
     return (population, fitness);
 }
-
-fn load_population(
-    filepath: &str,
-    params: &Params,
-    cases: &Vec<Case>,
-    fitness_func: FitnessFunc,
-    rand: &mut StdRng,
-) -> Result<(Vec<Program>, Vec<f32>), Box<dyn Error>> {
-    let content = fs::read_to_string(filepath)?;
-    let lines: Vec<&str> = content.trim_end().split('\n').collect();
-    let mut population = Vec::with_capacity(lines.len());
-    let mut fitness = Vec::with_capacity(lines.len());
-
-    for i in 0..lines.len() {
-        let program: Vec<Token> = serde_lexpr::from_str(&lines[i]).unwrap();
-        population.push(Program { tokens: program });
-        fitness.push(run_and_rank(
-            &population[i],
-            params,
-            cases,
-            fitness_func,
-            rand,
-        ));
-    }
-
-    Ok((population, fitness))
-}
-
-// pub fn variant_eq(a: &Token, b: &Token) -> bool {
-//     std::mem::discriminant(a) == std::mem::discriminant(b)
-// }
