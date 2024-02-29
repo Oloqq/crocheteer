@@ -1,3 +1,8 @@
+use std::{
+    error::Error,
+    sync::{Arc, Mutex},
+};
+
 use crate::{common::Point, genetic::common::Program, plushie::Plushie};
 
 use super::sim::{Data, Simulation};
@@ -23,6 +28,7 @@ impl PlushieControls {
 pub struct PlushieSimulation {
     controls: PlushieControls,
     plushie: Plushie,
+    messages: Arc<Mutex<Vec<String>>>,
 }
 
 impl PlushieSimulation {
@@ -30,6 +36,7 @@ impl PlushieSimulation {
         Self {
             controls: PlushieControls::new(),
             plushie,
+            messages: Arc::new(Mutex::new(vec![])),
         }
     }
 
@@ -46,9 +53,23 @@ impl PlushieSimulation {
             "dat": serde_json::json!(self.plushie)
         })
     }
+
+    fn change_pattern(&mut self, msg: &str) -> Result<(), String> {
+        let (_, pattern) = match msg.split_once(" ") {
+            Some(x) => x,
+            None => return Err("frontend fuckup".into()),
+        };
+        let stitches = Program::deserialize(pattern)?.tokens;
+        self.plushie = Plushie::from_genetic(&(6, &stitches));
+        Ok(())
+    }
 }
 
 impl Simulation for PlushieSimulation {
+    fn messages(&self) -> Arc<Mutex<Vec<String>>> {
+        self.messages.clone()
+    }
+
     fn step(&mut self, dt: f32) -> Option<Data> {
         if self.controls.need_init {
             self.controls.need_init = false;
@@ -81,9 +102,23 @@ impl Simulation for PlushieSimulation {
             let z: f32 = tokens[4].parse().unwrap();
             self.plushie.points[id] = Point::new(x, y, z);
         } else if msg.starts_with("pattern") {
-            let (_, pattern) = msg.split_once(" ").unwrap();
-            let stitches = Program::deserialize(pattern).unwrap().tokens;
-            self.plushie = Plushie::from_genetic(&(6, &stitches));
+            if let Err(error) = self.change_pattern(msg) {
+                self.messages.lock().unwrap().push(
+                    serde_json::json!({
+                        "key": "status",
+                        "dat": format!("Couldn't parse: {}", error)
+                    })
+                    .to_string(),
+                )
+            } else {
+                self.messages.lock().unwrap().push(
+                    serde_json::json!({
+                        "key": "status",
+                        "dat": "success"
+                    })
+                    .to_string(),
+                )
+            }
         } else {
             match msg {
                 "pause" => controls.paused = true,

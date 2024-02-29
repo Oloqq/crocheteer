@@ -24,7 +24,7 @@ function main() {
   const app = simulator.init();
   const gui = app.gui;
 
-  const simulationWorld = new Plushie();
+  const simulationWorld = new Plushie(status);
 
   gui.add({ advance }, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {

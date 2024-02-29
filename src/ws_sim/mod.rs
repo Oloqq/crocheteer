@@ -63,6 +63,19 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
             },
             _ = sleep_future => {
                 let dt = 1.0;
+                let messages = simulation.messages();
+
+                let msgopt = messages.lock().unwrap().pop();
+                match msgopt {
+                    Some(msg) => {
+                        if write.send(Message::Text(msg)).await.is_err() {
+                            println!("Connection done");
+                            break;
+                        }
+                    }
+                    None => ()
+                }
+
                 if let Some(data) = simulation.step(dt) {
                     if write.send(Message::Text(data)).await.is_err() {
                         println!("Connection done");

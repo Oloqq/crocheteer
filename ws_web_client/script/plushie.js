@@ -2,13 +2,14 @@ import * as create from "./lib/create";
 import * as simulation from "./lib/simulation";
 
 export default class Plushie {
-  constructor() {
+  constructor(status) {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
     this.links = [];
     this.dragged = null;
     this.displayEdges = true;
+    this.status = status;
   }
 
   getId(obj) {
@@ -69,6 +70,10 @@ export default class Plushie {
         break;
       case "ini":
         this.init(data);
+        break;
+      case "status":
+        console.log("response", data);
+        this.status.innerText = data;
         break;
       default:
         console.error(`Unrecognized key: ${dict["key"]}`);
