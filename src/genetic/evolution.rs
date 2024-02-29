@@ -6,6 +6,7 @@ use super::params::Params;
 use super::common::*;
 use rand::distributions::WeightedIndex;
 use rand::prelude::*;
+use tokio_tungstenite::tungstenite::http::uri::PathAndQuery;
 
 pub fn run_and_rank(
     program: &Program,
@@ -40,9 +41,9 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
 
     // TODO params
     let weights = vec![
-        (Operation::Mutate, 2),
-        (Operation::Duplicate, 2),
-        (Operation::Remove, 0),
+        (Operation::Mutate, 2.0),
+        (Operation::Duplicate, 1.0),
+        (Operation::Remove, 1.0),
     ];
 
     let mut child = Vec::with_capacity(parent.tokens.len());
@@ -64,6 +65,9 @@ pub fn mutation(parent: &Program, params: &Params, rand: &mut StdRng) -> Program
             }
             Operation::Remove => continue,
         }
+    }
+    if child.len() > params.max_size {
+        child.split_off(params.max_size);
     }
     Program { tokens: child }
 }
