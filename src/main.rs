@@ -1,4 +1,5 @@
 use crate::benchmark::run_benchmark;
+use crate::genetic::common::Program;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::{common::*, ws_sim::serve_websocket};
@@ -40,18 +41,30 @@ fn main() {
             println!("Selected suite: {suite}");
             run_benchmark(&suite, &genetic);
         }
-        FromPattern { pattern, stl, ws } => {
-            let pattern = Pattern::from_file(pattern);
+        FromPattern {
+            is_string,
+            pattern,
+            stl,
+            ws,
+        } => {
+            let pattern = if is_string {
+                let tokens = Program::deserialize(pattern.to_str().unwrap())
+                    .unwrap()
+                    .tokens;
+                Pattern::from_genom(&(6, &tokens))
+            } else {
+                Pattern::from_file(pattern).unwrap()
+            };
             let mut plushie = Plushie::from_pattern(pattern);
 
-            if stl.is_some() && ws.is_some() {
+            if stl.is_some() && ws || stl.is_none() && !ws {
                 unimplemented!("use either --stl or --ws");
             }
 
             if let Some(stl_path) = stl {
                 plushie.animate();
                 save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
-            } else if ws.is_some() {
+            } else if ws {
                 let sim = PlushieSimulation::from(plushie);
                 serve_websocket(sim);
             }

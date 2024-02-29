@@ -20,10 +20,15 @@ pub enum Command {
         about = "Transformations starting from a pattern file"
     )]
     FromPattern {
+        #[structopt(short, long)]
+        is_string: bool,
+
         pattern: PathBuf,
 
         stl: Option<PathBuf>,
-        ws: Option<PathBuf>,
+
+        #[structopt(short, long)]
+        ws: bool,
     },
 
     #[structopt(

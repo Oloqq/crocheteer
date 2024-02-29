@@ -1,5 +1,5 @@
-use std::fs;
 use std::path::PathBuf;
+use std::{error::Error, fs};
 
 use super::{
     stitches::{count_anchors_consumed, count_anchors_produced},
@@ -7,19 +7,19 @@ use super::{
 };
 
 impl Pattern {
-    pub fn from_file(path: PathBuf) -> Self {
+    pub fn from_file(path: PathBuf) -> Result<Self, Box<dyn Error>> {
         println!("{path:?}");
-        let content = fs::read_to_string(&path).expect("File not found");
-        let extension = path.extension().expect("Unrecognized format");
+        let content = fs::read_to_string(&path)?;
+        let extension = path.extension().unwrap_or_default();
         match extension.to_str().unwrap() {
-            "yaml" => Self::from_yaml_str(content.as_str()),
-            "txt" => Self::from_human_readable(content.as_str()).unwrap(),
+            "yaml" => Ok(Self::from_yaml_str(content.as_str())?),
+            "txt" => Ok(Self::from_human_readable(content.as_str())?),
             _ => panic!("Unrecognized format"),
         }
     }
 
-    pub fn from_yaml_str(content: &str) -> Self {
-        serde_yaml::from_str(&content).expect("Could not parse yaml into pattern")
+    pub fn from_yaml_str(content: &str) -> Result<Self, String> {
+        serde_yaml::from_str(&content).map_err(|_| "Could not load a file".into())
     }
 }
 
