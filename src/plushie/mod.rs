@@ -35,7 +35,7 @@ pub struct Plushie {
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
     desired_stitch_distance: f32,
-    _gravity: f32,
+    gravity: f32,
     acceptable_tension: f32,
     max_relaxing_iterations: usize,
 }
@@ -65,12 +65,18 @@ impl Plushie {
         }
     }
 
+    fn add_gravity(&self, displacement: &mut Vec<V>) {
+        for i in 0..self.points.len() {
+            displacement[i].y -= self.gravity;
+        }
+    }
+
     fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) {
         let mut total = V::zeros();
         for i in self.fixed_num..self.points.len() {
             total += displacement[i];
             self.points[i] += displacement[i] * time;
-            // self.points[i].y = (self.points[i].y - self.gravity * time).max(0.0);
+            self.points[i].y = self.points[i].y.max(0.0);
         }
         self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
     }
@@ -80,6 +86,7 @@ impl Plushie {
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);
+        self.add_gravity(&mut displacement);
 
         self.apply_forces(&displacement, time);
 
