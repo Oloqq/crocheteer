@@ -10,11 +10,31 @@
         * {
             margin: 0;
         }
+
+        #pattern-container {
+            position: absolute;
+        }
+
+        #status {
+            background-color: aliceblue;
+            padding: 5px;
+        }
+
+        #pattern {
+            font-family: monospace;
+        }
     </style>
 </head>
 
 <body>
-    <div id="container"></div>
+    <div id="container">
+        <div id="pattern-container">
+            <p id="status">Write a pattern:</p>
+            <textarea
+                id="pattern">(Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)</textarea><br>
+            <button id="update">Update</button><button id="hide" hidden>TODO: Hide</button>
+        </div>
+    </div>
     <script type="module" src="/script/main.js"></script>
 </body>
 

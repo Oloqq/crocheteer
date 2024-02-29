@@ -1,4 +1,4 @@
-use crate::{common::Point, plushie::Plushie};
+use crate::{common::Point, genetic::common::Program, plushie::Plushie};
 
 use super::sim::{Data, Simulation};
 
@@ -80,6 +80,10 @@ impl Simulation for PlushieSimulation {
             let y: f32 = tokens[3].parse().unwrap();
             let z: f32 = tokens[4].parse().unwrap();
             self.plushie.points[id] = Point::new(x, y, z);
+        } else if msg.starts_with("pattern") {
+            let (_, pattern) = msg.split_once(" ").unwrap();
+            let stitches = Program::deserialize(pattern).unwrap().tokens;
+            self.plushie = Plushie::from_genetic(&(6, &stitches));
         } else {
             match msg {
                 "pause" => controls.paused = true,

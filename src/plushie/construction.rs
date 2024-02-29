@@ -1,6 +1,7 @@
 use std::f32::consts::PI;
 
 use crate::common::*;
+use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
 use crate::plushie::stuffing::Rounds;
@@ -9,6 +10,11 @@ use crate::plushie::Stuffing;
 use super::Plushie;
 
 impl Plushie {
+    pub fn from_genetic(genom: &Genom) -> Self {
+        let pattern = Pattern::from_genom(&genom);
+        Self::from_pattern(pattern)
+    }
+
     pub fn from_pattern(pattern: Pattern) -> Self {
         const FIXED_NUM: usize = 2;
         const START_EDGE: usize = 0;

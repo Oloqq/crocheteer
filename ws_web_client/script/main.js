@@ -11,6 +11,15 @@ const customGui = {
   edgesVisible: true
 }
 
+const pattern = document.getElementById("pattern");
+const updateButton = document.getElementById("update");
+const status = document.getElementById("status");
+
+updateButton.addEventListener("click", () => {
+  let text = pattern.value;
+  simulator.send(`pattern ${text}`);
+});
+
 function main() {
   const app = simulator.init();
   const gui = app.gui;

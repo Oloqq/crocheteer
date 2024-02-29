@@ -2,7 +2,7 @@ use crate::pattern::stitches::count_anchors_produced;
 
 use super::{Pattern, Stitch};
 
-type Genom<'a> = (usize, &'a Vec<Stitch>);
+pub type Genom<'a> = (usize, &'a Vec<Stitch>);
 
 impl Pattern {
     pub fn from_genom(genom: &Genom) -> Self {
