@@ -1,7 +1,4 @@
-use std::{
-    error::Error,
-    sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 
 use crate::{common::Point, genetic::common::Program, plushie::Plushie};
 

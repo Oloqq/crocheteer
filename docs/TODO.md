@@ -10,4 +10,8 @@
   - build Plushie directly from the builder
   - handle dec overflowing into the next round properly
 
-- why is average fitness NaN
+- websocket server/client
+  - allow human readable patterns in textarea
+  - allow setting gravity in GUI
+  - display a pattern even when plushie was loaded from a file?
+
