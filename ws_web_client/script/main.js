@@ -17,6 +17,7 @@ const status = document.getElementById("status");
 
 updateButton.addEventListener("click", () => {
   let text = pattern.value;
+  status.innerText = "sending...";
   simulator.send(`pattern ${text}`);
 });
 

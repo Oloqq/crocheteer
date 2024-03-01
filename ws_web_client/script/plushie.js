@@ -84,6 +84,13 @@ export default class Plushie {
     const points = data["points"];
     this.edges = data["edges"];
 
+    this.stitchPositions = [];
+    for (let sph of this.stitchSpheres) {
+      create.scene.remove(sph);
+    }
+    this.clearLinks();
+    this.stitchSpheres = [];
+
     for (let point of points) {
       let sph = create.sphere(point, 0.1);
       this.stitchPositions.push(sph.position);

@@ -30,10 +30,10 @@ fn handle_incoming(
 ) -> Result<(), ()> {
     if let Some(msg_res) = msg {
         if let Ok(message) = msg_res {
-            println!("Received a message: {:?}", message);
+            log::trace!("Received a message: {:?}", message);
             simulation.react(message.to_string().as_str());
         } else {
-            println!("Received not Ok message: {:?}, wtf?", msg_res);
+            log::trace!("Received not Ok message: {:?}, wtf?", msg_res);
         }
         Ok(())
     } else {
@@ -45,11 +45,12 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
     let ws_stream = accept_async(stream)
         .await
         .expect("Error during the websocket handshake occurred");
-    println!("New WebSocket connection");
+    log::trace!("New WebSocket connection");
 
     let (mut write, mut read) = ws_stream.split();
     let mut simulation = simulation;
-    let mut interval_duration = Duration::from_millis(17);
+    // let mut interval_duration = Duration::from_millis(17);
+    let mut interval_duration = Duration::from_millis(500);
     let mut last_tick = Instant::now();
 
     loop {
@@ -69,7 +70,7 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
                 match msgopt {
                     Some(msg) => {
                         if write.send(Message::Text(msg)).await.is_err() {
-                            println!("Connection done");
+                            log::trace!("Connection done");
                             break;
                         }
                     }
@@ -77,8 +78,9 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
                 }
 
                 if let Some(data) = simulation.step(dt) {
+                    log::info!("data");
                     if write.send(Message::Text(data)).await.is_err() {
-                        println!("Connection done");
+                        log::trace!("Connection done");
                         break;
                     }
                 }

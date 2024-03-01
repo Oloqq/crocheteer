@@ -56,6 +56,7 @@ impl PlushieSimulation {
             Some(x) => x,
             None => return Err("frontend fuckup".into()),
         };
+        log::info!("Changing pattern...");
         let stitches = Program::deserialize(pattern)?.tokens;
         self.plushie = Plushie::from_genetic(&(6, &stitches));
         Ok(())
@@ -108,6 +109,7 @@ impl Simulation for PlushieSimulation {
                     .to_string(),
                 )
             } else {
+                self.controls.need_init = true;
                 self.messages.lock().unwrap().push(
                     serde_json::json!({
                         "key": "status",
@@ -121,7 +123,7 @@ impl Simulation for PlushieSimulation {
                 "pause" => controls.paused = true,
                 "resume" => controls.paused = false,
                 "advance" => controls.advance += 1,
-                _ => println!("Unexpected msg: {msg}"),
+                _ => log::error!("Unexpected msg: {msg}"),
             }
         }
     }
