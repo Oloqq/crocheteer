@@ -35,7 +35,7 @@ pub struct Plushie {
     edges: Vec<Vec<usize>>,
     stuffing: Stuffing,
     desired_stitch_distance: f32,
-    gravity: f32,
+    pub gravity: f32,
     acceptable_tension: f32,
     max_relaxing_iterations: usize,
 }

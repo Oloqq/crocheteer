@@ -8,7 +8,8 @@ function advance() {
 }
 
 const customGui = {
-  edgesVisible: true
+  edgesVisible: true,
+  gravity: 5e-4
 }
 
 const pattern = document.getElementById("pattern");
@@ -30,6 +31,9 @@ function main() {
   gui.add({ advance }, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
     simulationWorld.toggleLinks();
+  });
+  gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
+    simulator.send(`gravity ${value}`)
   });
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);

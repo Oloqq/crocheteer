@@ -61,6 +61,16 @@ impl PlushieSimulation {
         self.plushie = Plushie::from_genetic(&(6, &stitches));
         Ok(())
     }
+
+    fn send(&self, key: &str, data: &str) {
+        self.messages.lock().unwrap().push(
+            serde_json::json!({
+                "key": key,
+                "dat": data
+            })
+            .to_string(),
+        )
+    }
 }
 
 impl Simulation for PlushieSimulation {
@@ -84,47 +94,43 @@ impl Simulation for PlushieSimulation {
             self.plushie.step(dt);
 
             let serialized = self.get_update_data().to_string();
-            // println!("serialized: {serialized}");
             Some(serialized)
         }
     }
 
     fn react(&mut self, msg: &str) {
         let controls = &mut self.controls;
-        if msg.starts_with("pos") {
-            let tokens: Vec<&str> = msg.split(" ").collect();
-            assert!(tokens.len() == 5);
-            let id: usize = tokens[1].parse().unwrap();
-            let x: f32 = tokens[2].parse().unwrap();
-            let y: f32 = tokens[3].parse().unwrap();
-            let z: f32 = tokens[4].parse().unwrap();
-            self.plushie.points[id] = Point::new(x, y, z);
-        } else if msg.starts_with("pattern") {
-            if let Err(error) = self.change_pattern(msg) {
-                self.messages.lock().unwrap().push(
-                    serde_json::json!({
-                        "key": "status",
-                        "dat": format!("Couldn't parse: {}", error)
-                    })
-                    .to_string(),
-                )
-            } else {
-                self.controls.need_init = true;
-                self.messages.lock().unwrap().push(
-                    serde_json::json!({
-                        "key": "status",
-                        "dat": "success"
-                    })
-                    .to_string(),
-                )
+        let tokens: Vec<&str> = msg.split(" ").collect();
+        let command = *match tokens.get(0) {
+            Some(command) => command,
+            None => {
+                log::error!("Unexpected msg: {msg}");
+                return;
             }
-        } else {
-            match msg {
-                "pause" => controls.paused = true,
-                "resume" => controls.paused = false,
-                "advance" => controls.advance += 1,
-                _ => log::error!("Unexpected msg: {msg}"),
+        };
+
+        match command {
+            "pos" => {
+                assert!(tokens.len() == 5);
+                let id: usize = tokens[1].parse().unwrap();
+                let x: f32 = tokens[2].parse().unwrap();
+                let y: f32 = tokens[3].parse().unwrap();
+                let z: f32 = tokens[4].parse().unwrap();
+                self.plushie.points[id] = Point::new(x, y, z);
             }
+            "pattern" => {
+                if let Err(error) = self.change_pattern(msg) {
+                    self.send("status", format!("Couldn't parse: {}", error).as_str());
+                } else {
+                    self.controls.need_init = true;
+                    self.send("status", "success");
+                }
+            }
+            "pause" => controls.paused = true,
+            "resume" => controls.paused = false,
+            "advance" => controls.advance += 1,
+            "gravity" => self.plushie.gravity = tokens.get(1).unwrap().parse().unwrap(),
+            _ => log::error!("Unexpected msg: {msg}"),
         }
     }
 }
