@@ -12,6 +12,5 @@
 
 - websocket server/client
   - allow human readable patterns in textarea
-  - allow setting gravity in GUI
   - display a pattern even when plushie was loaded from a file?
 
