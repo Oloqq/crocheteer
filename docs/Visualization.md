@@ -81,6 +81,9 @@ Calculating center of mass, then pushing away from it would be trivial, however 
 What we actually need is a [skeleton](https://scikit-image.org/docs/stable/auto_examples/edges/plot_skeleton.html) that will repel walls
 ![](2024-03-01-20-02-37.png)
 
+The pushing part could be simplified by sampling points along the skeleton
+![](2024-03-02-18-57-18.png)
+
 Problem: the plushie is a point cloud, a radically different data structure than 2D images for which skeletonization is defined
 
 [The algorithm is also utilized in 3D](https://imagej.net/plugins/skeletonize3d)
@@ -99,3 +102,82 @@ Problem: the plushie is a point cloud, a radically different data structure than
         - if encountered a wall, continue processing, but don't mark voxels
         - when a wall is encountered again start marking once again
         - repeat
+
+### Skeleton stuffing
+
+#### Recap
+Genom -> Pattern -> Plushie(initial) -> Plushie(relaxed) -> Shape -> fitness
+
+Genom -> Pattern
+- creates rounds from stitch list
+- ensures the ending circle won't glitch a Plushie
+
+Pattern -> Plushie(initial)
+- turns rounds into a list of Points
+- could essentially work on a 1D list
+- prepares positions for relaxing
+
+Plushie(initial) -> Plushie(relaxed)
+- moves the point cloud around, until there is no stress
+
+Plushie(relaxed) -> Shape
+- prepares the point cloud for comparison
+
+Now we must add a skeleton to the process.
+*Bone* = a point that lies on the skeleton. Bone count can be calculated based on overall volume, and density parametrized
+
+#### Morphology/volumetric approach
+- Pushie initialization
+  - the initial placement of points shall be improved (take round size into account)
+  - after the initial placement, an initial skeleton is calculated
+    - prepare a 3D image, init with 0's
+    - find the insides of a plushie
+      - TODO
+      - clone this result, add voxels containing walls, make it available for volumetric fitness function
+    - skeletonize the image
+      - morphology
+        - TODO
+- Plushie relaxation
+  - calculate displacement
+    - perform link attraction
+    - stuffing: for each point
+      - option 1
+        - find the nearest bone
+        - save that point belongs to that bone in a map
+        - push the point away from the bone
+      - option 2
+        - push the point from each bone
+        - seems like the more accurate way
+  - apply displacement
+    - apply displacement
+    - update the volumetric state where points change voxels
+      - assumption: point can only transfer to neighboring voxels in one step OR additional logic that handles those jumps
+    - update bone positions based on total voxel movement of it's points
+- Since volumetric representation is already calculated, it could be used for a fitness function
+
+#### Point cloud clustering approach
+- Pushie initialization
+  - the initial placement of points shall be improved (take round size into account)
+  - after the initial placement calculate initial skeleton
+    - k-means and it's centroids?
+    - that would directly give bones, but can accuracy be guaranteed?
+    - it's not obvious for me which approach is more efficient
+    - this approach does not require volumetric representation
+    - approach needs some testing on 2D images
+- Plushie relaxation
+  - calculate displacement
+    - perform link attraction
+    - stuffing: for each point
+      - option 1
+        - find the nearest bone
+        - save that point belongs to that bone in a map
+        - push the point away from the bone
+      - option 2
+        - push the point from each bone
+        - seems like the more accurate way
+  - apply displacement
+    - apply displacement
+    - update the volumetric state where points change voxels
+      - assumption: point can only transfer to neighboring voxels in one step OR additional logic that handles those jumps
+    - update bone positions based on total voxel movement of it's points
+- There is no volumetric representation involved, so fitness must work on point clouds here
