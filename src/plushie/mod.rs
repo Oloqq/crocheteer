@@ -17,7 +17,7 @@ mod per_round_stuffing;
 pub enum Stuffing {
     None,
     PerRound,
-    Centroid,
+    Centroids,
 }
 
 /* Things to consider next
@@ -68,7 +68,7 @@ impl Plushie {
                 self.desired_stitch_distance,
                 displacement,
             ),
-            Stuffing::Centroid => centroid_stuffing(
+            Stuffing::Centroids => centroid_stuffing(
                 &self.points,
                 &mut self.centroids,
                 self.centroid_force,
@@ -123,6 +123,27 @@ impl Plushie {
                 break;
             }
         }
+    }
+
+    pub fn set_centroid_num(&mut self, num: usize) {
+        if self.centroids.len() == num {
+            return;
+        }
+
+        while self.centroids.len() > num {
+            self.centroids.pop();
+        }
+
+        while self.centroids.len() < num {
+            self.centroids.push(Point::new(0.0, 1.0, 0.0));
+            let centroid2points = self::centroid_stuffing::map(&self.points, &self.centroids);
+            self::centroid_stuffing::recalculate_centroids(
+                &self.points,
+                &mut self.centroids,
+                centroid2points,
+            );
+        }
+        println!("cent {:?}", self.centroids);
     }
 }
 

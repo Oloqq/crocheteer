@@ -36,7 +36,24 @@ fn push_and_map(
     centroid2points
 }
 
-fn recalculate_centroids(
+pub fn map(points: &Vec<Point>, centroids: &Vec<Point>) -> Vec<Vec<usize>> {
+    assert!(centroids.len() > 0);
+    let mut centroid2points = vec![vec![]; centroids.len()];
+    for (i_p, point) in points.iter().enumerate() {
+        let mut closest_i = 0;
+        let mut closest = distance(point, &centroids[closest_i]);
+        for (i_c, centroid) in centroids.iter().enumerate() {
+            if distance(point, centroid) < closest {
+                closest = distance(point, centroid);
+                closest_i = i_c;
+            }
+        }
+        centroid2points[closest_i].push(i_p);
+    }
+    centroid2points
+}
+
+pub fn recalculate_centroids(
     points: &Vec<Point>,
     centroids: &mut Vec<Point>,
     centroid2points: Vec<Vec<usize>>,

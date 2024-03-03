@@ -80,7 +80,7 @@ impl Plushie {
             points,
             edges,
             desired_stitch_distance: 1.0,
-            stuffing: Stuffing::Centroid,
+            stuffing: Stuffing::Centroids,
             rounds: Rounds::new(round_starts, round_counts),
             gravity: 5e-4,
             acceptable_tension: 0.02,

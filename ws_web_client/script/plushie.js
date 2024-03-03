@@ -2,7 +2,7 @@ import * as create from "./lib/create";
 import * as simulation from "./lib/simulation";
 
 export default class Plushie {
-  constructor(status) {
+  constructor(status, gui) {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
@@ -11,6 +11,7 @@ export default class Plushie {
     this.dragged = null;
     this.displayEdges = true;
     this.status = status;
+    this.gui = gui;
   }
 
   getId(obj) {
@@ -82,8 +83,11 @@ export default class Plushie {
   }
 
   init(data) {
+    console.log(data);
     const points = data["points"];
     this.edges = data["edges"];
+    this.gui.stuffing = data["stuffing"];
+    this.gui.gravity = data["gravity"];
 
     this.stitchPositions = [];
     for (let sph of this.stitchSpheres) {
@@ -140,7 +144,22 @@ export default class Plushie {
     }
   }
 
+  setCentroidNum(num) {
+    console.log(this.centroidSpheres.length, num)
+    while (this.centroidSpheres.length < num) {
+      let sph = create.sphere([0, 0, 0], 0.1, 0xffa500);
+      this.centroidSpheres.push(sph);
+    }
+
+    while (this.centroidSpheres.length > num) {
+      let sph = this.centroidSpheres.pop();
+      create.scene.remove(sph);
+    }
+  }
+
   updateCentroids(centroids) {
+    console.log(this.centroidSpheres);
+    console.log(centroids);
     for (let i in centroids) {
       let centroid = centroids[i];
       let sph = this.centroidSpheres[i];

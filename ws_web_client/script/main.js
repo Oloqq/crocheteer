@@ -29,7 +29,7 @@ function main() {
   const app = simulator.init();
   const gui = app.gui;
 
-  const simulationWorld = new Plushie(status);
+  const simulationWorld = new Plushie(status, customGui);
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
@@ -37,17 +37,18 @@ function main() {
   });
   gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
     simulator.send(`gravity ${value}`)
-  });
+  }).listen();
   gui.add(customGui, 'stuffing', { None: 'None', PerRound: 'PerRound', Centroids: 'Centroids' }).onChange((val) => {
     simulator.send(`stuffing ${val}`);
     simulator.send(`centroid.amount ${customGui.centroids.amount}`);
-  })
+  }).listen();
 
   var _ = gui.addFolder('PerRound stuffing config');
 
   var centroids = gui.addFolder('Centroid stuffing config');
-  centroids.add(customGui.centroids, "amount").onChange((val) => {
+  centroids.add(customGui.centroids, "amount", 1, 20, 1).onChange((val) => {
     simulator.send(`centroid.amount ${val}`);
+    simulationWorld.setCentroidNum(val);
   })
   centroids.open();
 

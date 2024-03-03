@@ -1,6 +1,10 @@
 use std::sync::{Arc, Mutex};
 
-use crate::{common::Point, genetic::common::Program, plushie::Plushie};
+use crate::{
+    common::Point,
+    genetic::common::Program,
+    plushie::{Plushie, Stuffing},
+};
 
 use super::sim::{Data, Simulation};
 
@@ -136,11 +140,10 @@ impl Simulation for PlushieSimulation {
             "gravity" => self.plushie.gravity = tokens.get(1).unwrap().parse().unwrap(),
             "stuffing" => {
                 let name = tokens.get(1).unwrap();
-                use crate::plushie::Stuffing;
                 if let Some(stuffing) = match *name {
                     "None" => Some(Stuffing::None),
                     "PerRound" => Some(Stuffing::PerRound),
-                    "Centroids" => Some(Stuffing::Centroid),
+                    "Centroids" => Some(Stuffing::Centroids),
                     _ => {
                         log::error!("Unexpected stuffing: {name}");
                         None
@@ -150,7 +153,10 @@ impl Simulation for PlushieSimulation {
                 };
             }
             "centroid.amount" => {
-                log::warn!("todo: centroid amount");
+                if let Stuffing::Centroids = self.plushie.stuffing {
+                    let num: usize = tokens.get(1).unwrap().parse().unwrap();
+                    self.plushie.set_centroid_num(num);
+                }
             }
             _ => log::error!("Unexpected msg: {msg}"),
         }
