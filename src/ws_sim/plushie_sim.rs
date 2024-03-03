@@ -40,7 +40,10 @@ impl PlushieSimulation {
     fn get_update_data(&self) -> serde_json::Value {
         serde_json::json!({
             "key": "upd",
-            "dat": serde_json::json!(&self.plushie.points)
+            "dat": {
+                "points": serde_json::json!(&self.plushie.points),
+                "centroids": self.plushie.centroids
+            }
         })
     }
 
@@ -130,6 +133,20 @@ impl Simulation for PlushieSimulation {
             "resume" => controls.paused = false,
             "advance" => controls.advance += 1,
             "gravity" => self.plushie.gravity = tokens.get(1).unwrap().parse().unwrap(),
+            "stuffing" => {
+                let name = tokens.get(1).unwrap();
+                use crate::plushie::Stuffing;
+                if let Some(stuffing) = match *name {
+                    "None" => Some(Stuffing::None),
+                    "PerRound" => Some(Stuffing::PerRound),
+                    _ => {
+                        log::error!("Unexpected stuffing: {name}");
+                        None
+                    }
+                } {
+                    self.plushie.stuffing = stuffing;
+                };
+            }
             _ => log::error!("Unexpected msg: {msg}"),
         }
     }

@@ -6,6 +6,7 @@ export default class Plushie {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
+    this.centoidSpheres = [];
     this.links = [];
     this.dragged = null;
     this.displayEdges = true;
@@ -104,9 +105,9 @@ export default class Plushie {
     }
   }
 
-  update(data) {
-    if (data.length != this.stitchSpheres.length) {
-      throw "WHYYYYY";
+  updateWallPoints(positions) {
+    if (positions.length != this.stitchSpheres.length) {
+      alert("position data got corrupted");
     }
 
     let id = undefined;
@@ -119,10 +120,10 @@ export default class Plushie {
       save.z = this.dragged.position.z;
     }
 
-    for (let i = 0; i < data.length; i++) {
-      this.stitchPositions[i].x = data[i][0]
-      this.stitchPositions[i].y = data[i][1]
-      this.stitchPositions[i].z = data[i][2]
+    for (let i = 0; i < positions.length; i++) {
+      this.stitchPositions[i].x = positions[i][0]
+      this.stitchPositions[i].y = positions[i][1]
+      this.stitchPositions[i].z = positions[i][2]
     }
 
     if (this.dragged) {
@@ -131,7 +132,16 @@ export default class Plushie {
       this.dragged.position.z = save.z;
       this.dragged = null;
     }
+  }
 
-    // this.updateLinks();
+  updateCentroids(centroids) {
+    console.log(centroids);
+  }
+
+  update(data) {
+    this.updateWallPoints(data["points"]);
+    // this.updateCentroids(data["centroids"]);
+
+    // this.updateLinks(); // disabled until an efficient solutions is found
   }
 }

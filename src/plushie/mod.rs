@@ -32,8 +32,9 @@ pub struct Plushie {
     fixed_num: usize, // treat first N elements of `points` as fixed
     rounds: Rounds,
     pub points: Vec<Point>,
+    pub centroids: Vec<Point>,
     edges: Vec<Vec<usize>>,
-    stuffing: Stuffing,
+    pub stuffing: Stuffing,
     desired_stitch_distance: f32,
     pub gravity: f32,
     acceptable_tension: f32,

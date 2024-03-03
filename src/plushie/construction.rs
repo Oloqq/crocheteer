@@ -85,6 +85,7 @@ impl Plushie {
             gravity: 5e-4,
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,
+            centroids: vec![Point::new(0.0, 2.0, 0.0)],
         }
     }
 }

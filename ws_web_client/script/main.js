@@ -3,13 +3,16 @@ import "./lib/interaction";
 
 import * as simulator from "./lib/simulation";
 
-function advance() {
-  simulator.send("advance");
-}
-
 const customGui = {
   edgesVisible: true,
-  gravity: 5e-4
+  gravity: 5e-4,
+  advance: function () {
+    simulator.send("advance");
+  },
+  stuffing: 'PerRound',
+  centroids: {
+    amount: 5
+  }
 }
 
 const pattern = document.getElementById("pattern");
@@ -28,13 +31,22 @@ function main() {
 
   const simulationWorld = new Plushie(status);
 
-  gui.add({ advance }, 'advance').name("Advance 1 step");
+  gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
     simulationWorld.toggleLinks();
   });
   gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
     simulator.send(`gravity ${value}`)
   });
+  gui.add(customGui, 'stuffing', { None: 'None', PerRound: 'PerRound', Centroids: 'Centroids' }).onChange((val) => {
+    simulator.send(`stuffing ${val}`);
+  })
+
+  var _ = gui.addFolder('PerRound stuffing config');
+
+  var centroids = gui.addFolder('Centroid stuffing config');
+  centroids.add(customGui.centroids, "amount")
+  centroids.open();
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);
 }
