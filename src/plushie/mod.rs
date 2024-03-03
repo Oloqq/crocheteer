@@ -1,5 +1,6 @@
 use serde_derive::Serialize;
 
+use self::centroid_stuffing::centroid_stuffing;
 use self::per_round_stuffing::{per_round_stuffing, Rounds};
 
 use super::common::*;
@@ -34,6 +35,7 @@ pub struct Plushie {
     rounds: Rounds,
     pub points: Vec<Point>,
     pub centroids: Vec<Point>,
+    pub centroid_force: f32,
     edges: Vec<Vec<usize>>,
     pub stuffing: Stuffing,
     desired_stitch_distance: f32,
@@ -64,7 +66,12 @@ impl Plushie {
                 self.desired_stitch_distance,
                 displacement,
             ),
-            Stuffing::Centroid => todo!(),
+            Stuffing::Centroid => centroid_stuffing(
+                &self.points,
+                &mut self.centroids,
+                self.centroid_force,
+                displacement,
+            ),
         }
     }
 
