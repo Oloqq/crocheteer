@@ -6,7 +6,7 @@ export default class Plushie {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
-    this.centoidSpheres = [];
+    this.centroidSpheres = [];
     this.links = [];
     this.dragged = null;
     this.displayEdges = true;
@@ -107,7 +107,7 @@ export default class Plushie {
     const centroids = data["centroids"];
     for (let point of centroids) {
       let sph = create.sphere(point, 0.1, 0xffa500);
-      this.centoidSpheres.push(sph);
+      this.centroidSpheres.push(sph);
     }
   }
 
@@ -141,7 +141,13 @@ export default class Plushie {
   }
 
   updateCentroids(centroids) {
-    console.log(centroids);
+    for (let i in centroids) {
+      let centroid = centroids[i];
+      let sph = this.centroidSpheres[i];
+      sph.position.x = centroid[0]
+      sph.position.y = centroid[1]
+      sph.position.z = centroid[2]
+    }
   }
 
   update(data) {

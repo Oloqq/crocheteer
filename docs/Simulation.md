@@ -181,3 +181,6 @@ Now we must add a skeleton to the process.
       - assumption: point can only transfer to neighboring voxels in one step OR additional logic that handles those jumps
     - update bone positions based on total voxel movement of it's points
 - There is no volumetric representation involved, so fitness must work on point clouds here
+
+![](2024-03-03-19-10-01.png)
+*the same ball using early version of kmeans based approach. Effect is stable in time, even with gravity*
