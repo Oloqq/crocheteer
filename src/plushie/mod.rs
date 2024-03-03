@@ -1,3 +1,5 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use serde_derive::Serialize;
 
 use self::centroid_stuffing::centroid_stuffing;
@@ -93,10 +95,15 @@ impl Plushie {
 
     pub fn step(&mut self, time: f32) -> Vec<V> {
         let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
+        let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);
         self.add_gravity(&mut displacement);
+
+        let end = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+        let elapsed = end - start;
+        log::trace!("Elapsed: {}", elapsed.as_nanos());
 
         self.apply_forces(&displacement, time);
 

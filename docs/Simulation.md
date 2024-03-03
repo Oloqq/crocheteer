@@ -183,4 +183,37 @@ Now we must add a skeleton to the process.
 - There is no volumetric representation involved, so fitness must work on point clouds here
 
 ![](2024-03-03-19-10-01.png)
-*the same ball using early version of kmeans based approach. Effect is stable in time, even with gravity*
+*the same ball using early version of kmeans based approach. Effect is stable in time, even with gravity. The spiral building a plushie is clearly visible, which is a great improvement.*
+
+Initial tests show that point cloud based vertical stuffing is approximately 2 times slower
+
+### Centroid stuffing
+Algorithm inspired by k-means
+
+- on creation of a Plushie, specify how many centroids (bones) it will use
+- create those centroids at random positions
+  - behavior is not tested if centroids start out of the shape
+- during each relaxing iteration
+  - push each point away from every centroid
+    - magnitude is given by $\frac{1}{x+0.5}$, where x is the distance
+  - a point is *associated* with a centroid if that is the closest centroid to the point
+  - map each centroid to a list of points associated with it
+  - recalculate new positions for each centroid
+    - take a weighted average of associated point positions
+    - weight function is $e^{\frac{-\left(\ln\left(x\right)-b\right)^{2}}{c^{2}}}$
+      - x = distance from the centroid
+    - the purpose of the weight function is to prevent centroids from moving inside the walls
+    - set the new position of the centroid to the calculated average
+
+
+![](2024-03-03-21-34-51.png)
+*pushing force function*
+
+![](2024-03-03-21-35-21.png)
+*weight function*
+
+![](2024-03-03-21-38-11.png)
+*a bean generated with centroid stuffing*
+
+![](2024-03-03-21-38-57.png)
+*a bean generated with per-round stuffing*
