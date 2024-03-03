@@ -8,31 +8,49 @@ pub fn centroid_stuffing(
     centroid_force: f32,
     displacement: &mut Vec<V>,
 ) {
-    recalculate_centroids(points, centroids);
+    let centroid2points = push_and_map(points, centroids, centroid_force, displacement);
+    recalculate_centroids(points, centroids, centroid2points);
     // println!("{centroids:?}");
-    push(points, centroids, centroid_force, displacement);
 }
 
-fn push(
+fn push_and_map(
     points: &Vec<Point>,
     centroids: &Vec<Point>,
     centroid_force: f32,
     displacement: &mut Vec<V>,
-) {
-    for (i, point) in points.iter().enumerate() {
-        for centroid in centroids {
-            displacement[i] += push_away(point, centroid) * centroid_force;
+) -> Vec<Vec<usize>> {
+    assert!(centroids.len() > 0);
+    let mut centroid2points = vec![vec![]; centroids.len()];
+    for (i_p, point) in points.iter().enumerate() {
+        let mut closest_i = 0;
+        let mut closest = distance(point, &centroids[closest_i]);
+        for (i_c, centroid) in centroids.iter().enumerate() {
+            if distance(point, centroid) < closest {
+                closest = distance(point, centroid);
+                closest_i = i_c;
+            }
+            displacement[i_p] += push_away(point, centroid) * centroid_force;
         }
+        centroid2points[closest_i].push(i_p);
     }
+    centroid2points
 }
 
-fn recalculate_centroids(points: &Vec<Point>, centroids: &mut Vec<Point>) {
-    centroids.iter_mut().for_each(|centroid| {
+fn recalculate_centroids(
+    points: &Vec<Point>,
+    centroids: &mut Vec<Point>,
+    centroid2points: Vec<Vec<usize>>,
+) {
+    centroids.iter_mut().enumerate().for_each(|(i, centroid)| {
         let mut new_pos: V = V::zeros();
-        for point in points {
-            new_pos += point.coords * weight(distance(&centroid, point));
+        let mut weight_sum = 0.0;
+        for point_index in &centroid2points[i] {
+            let point = points[*point_index];
+            let w = weight(distance(&centroid, &point));
+            new_pos += point.coords * w;
+            weight_sum += w;
         }
-        let new_pos: Point = Point::from(new_pos / points.len() as f32);
+        let new_pos: Point = Point::from(new_pos / weight_sum);
         *centroid = new_pos
     })
 }

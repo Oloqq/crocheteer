@@ -112,6 +112,7 @@ impl Simulation for PlushieSimulation {
             }
         };
 
+        log::info!("Message: {tokens:?}");
         match command {
             "pos" => {
                 assert!(tokens.len() == 5);

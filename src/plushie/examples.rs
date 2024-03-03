@@ -32,3 +32,13 @@ pub fn ball() -> Plushie {
         .unwrap();
     Plushie::from_pattern(pattern)
 }
+
+pub fn bigpillar() -> Plushie {
+    let pattern = PatternBuilder::new(6)
+        .round_like(&vec![Inc])
+        .full_rounds(6)
+        .round_like(&vec![Dec])
+        .build()
+        .unwrap();
+    Plushie::from_pattern(pattern)
+}

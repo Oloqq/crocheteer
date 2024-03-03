@@ -78,7 +78,6 @@ async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simul
                 }
 
                 if let Some(data) = simulation.step(dt) {
-                    log::info!("data");
                     if write.send(Message::Text(data)).await.is_err() {
                         log::trace!("Connection done");
                         break;
