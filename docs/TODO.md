@@ -14,3 +14,7 @@
   - allow human readable patterns in textarea
   - display a pattern even when plushie was loaded from a file?
 
+- k-means
+  - visualization of additional points in different colors
+  - new stuffing enum variant
+  - kmeans needs a weight system, where weight is dependent on distance between point and centroid, so that placing centroids on the wall is discouraged

@@ -36,7 +36,7 @@ See solution in [Patter grammar.md](./Pattern%20grammar.md)
 
 
 # Pattern to 3D model conversion
-See solution in [Visualization.md](./Visualization.md)
+See solution in [Simulation.md](./Simulation.md)
 
 Codename for a converter utilizing a force graph is `Plushie`.
 
