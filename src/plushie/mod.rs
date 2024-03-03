@@ -1,19 +1,20 @@
 use serde_derive::Serialize;
 
-use self::stuffing::{per_round_stuffing, Rounds};
+use self::per_round_stuffing::{per_round_stuffing, Rounds};
 
 use super::common::*;
 
+mod centroid_stuffing;
 mod construction;
 mod conversions;
 pub mod examples;
-mod stuffing;
+mod per_round_stuffing;
 
 #[derive(Clone, Serialize)]
 pub enum Stuffing {
-    #[allow(unused)]
     None,
     PerRound,
+    Centroid,
 }
 
 /* Things to consider next
@@ -63,6 +64,7 @@ impl Plushie {
                 self.desired_stitch_distance,
                 displacement,
             ),
+            Stuffing::Centroid => todo!(),
         }
     }
 

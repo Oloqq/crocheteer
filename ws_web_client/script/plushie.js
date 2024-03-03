@@ -103,6 +103,12 @@ export default class Plushie {
         this.links.push(link);
       }
     }
+
+    const centroids = data["centroids"];
+    for (let point of centroids) {
+      let sph = create.sphere(point, 0.1, 0xffa500);
+      this.centoidSpheres.push(sph);
+    }
   }
 
   updateWallPoints(positions) {
@@ -140,7 +146,7 @@ export default class Plushie {
 
   update(data) {
     this.updateWallPoints(data["points"]);
-    // this.updateCentroids(data["centroids"]);
+    this.updateCentroids(data["centroids"]);
 
     // this.updateLinks(); // disabled until an efficient solutions is found
   }

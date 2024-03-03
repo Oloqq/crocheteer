@@ -3,9 +3,9 @@ import { app } from "./init";
 
 export const scene = app.scene;
 
-export function sphere(coords, r) {
+export function sphere(coords, r, color = 0x00ff00) {
   const geometry = new THREE.SphereGeometry(r);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const material = new THREE.MeshBasicMaterial({ color: color });
   const result = new THREE.Mesh(geometry, material);
   result.position.x = coords[0];
   result.position.y = coords[1];

@@ -11,7 +11,7 @@ const customGui = {
   },
   stuffing: 'PerRound',
   centroids: {
-    amount: 5
+    amount: 1
   }
 }
 
@@ -40,12 +40,15 @@ function main() {
   });
   gui.add(customGui, 'stuffing', { None: 'None', PerRound: 'PerRound', Centroids: 'Centroids' }).onChange((val) => {
     simulator.send(`stuffing ${val}`);
+    simulator.send(`centroid.amount ${customGui.centroids.amount}`);
   })
 
   var _ = gui.addFolder('PerRound stuffing config');
 
   var centroids = gui.addFolder('Centroid stuffing config');
-  centroids.add(customGui.centroids, "amount")
+  centroids.add(customGui.centroids, "amount").onChange((val) => {
+    simulator.send(`centroid.amount ${val}`);
+  })
   centroids.open();
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);

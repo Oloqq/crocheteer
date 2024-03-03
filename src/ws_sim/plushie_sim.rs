@@ -139,6 +139,7 @@ impl Simulation for PlushieSimulation {
                 if let Some(stuffing) = match *name {
                     "None" => Some(Stuffing::None),
                     "PerRound" => Some(Stuffing::PerRound),
+                    "Centroids" => Some(Stuffing::Centroid),
                     _ => {
                         log::error!("Unexpected stuffing: {name}");
                         None
@@ -146,6 +147,9 @@ impl Simulation for PlushieSimulation {
                 } {
                     self.plushie.stuffing = stuffing;
                 };
+            }
+            "centroid.amount" => {
+                log::warn!("todo: centroid amount");
             }
             _ => log::error!("Unexpected msg: {msg}"),
         }

@@ -4,7 +4,7 @@ use crate::common::*;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
-use crate::plushie::stuffing::Rounds;
+use crate::plushie::per_round_stuffing::Rounds;
 use crate::plushie::Stuffing;
 
 use super::Plushie;
