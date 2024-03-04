@@ -43,13 +43,12 @@ impl Pattern {
         result
     }
 
-    #[allow(unused)]
     pub fn from_human_readable(text: &str) -> Result<Self, String> {
         let lines: Vec<&str> = text.split("\n").collect();
         let mut lines = lines.iter().enumerate();
-        let (mut lnum, mut line) = lines.next().expect("content shouldn't be empty");
+        let (mut _lnum, mut line) = lines.next().expect("content shouldn't be empty");
         while line.trim().starts_with("#") {
-            (lnum, line) = lines.next().expect("EOF");
+            (_lnum, line) = lines.next().expect("EOF");
         }
         let starting_circle = parse_starter(line).unwrap();
 
@@ -67,12 +66,16 @@ impl Pattern {
                 Ok(x) => x,
                 Err(e) => return Err(format!("Line {}: {e}", lnum + 1)),
             };
-            for i in 0..repetitions {
+            for _ in 0..repetitions {
                 rounds.push(stitches.clone());
             }
         }
 
-        let ending_circle = count_anchors_produced(rounds.last().unwrap());
+        let last_round = match rounds.last() {
+            Some(x) => x,
+            None => return Err("no rounds".into()),
+        };
+        let ending_circle = count_anchors_produced(last_round);
         if ending_circle > 12 {
             println!(
                 "Plushie really shouldn't be used with huge closing circles (last round) right now"
@@ -150,7 +153,11 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
         None => return Err("Expected a round".into()),
     };
     let repetitions = get_repetitions(roundspec)?;
-    let (stitches, anchors_str) = rest.split_once("(").unwrap();
+    let (stitches, anchors_str) = match rest.split_once("(") {
+        Some(x) => x,
+        None => return Err("Expected current round's stitch number".into()),
+    };
+
     let anchors: usize = anchors_str
         .trim()
         .strip_suffix(")")

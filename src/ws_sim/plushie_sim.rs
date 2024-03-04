@@ -3,6 +3,7 @@ use std::sync::{Arc, Mutex};
 use crate::{
     common::Point,
     genetic::common::Program,
+    pattern::Pattern,
     plushie::{Plushie, Stuffing},
 };
 
@@ -64,8 +65,19 @@ impl PlushieSimulation {
             None => return Err("frontend fuckup".into()),
         };
         log::info!("Changing pattern...");
-        let stitches = Program::deserialize(pattern)?.tokens;
-        self.plushie = Plushie::from_genetic(&(6, &stitches));
+        self.plushie = match Program::deserialize(pattern) {
+            Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
+            Err(e) => {
+                log::info!("The pattern could not be interpreted as genetic");
+                match Pattern::from_human_readable(pattern) {
+                    Ok(pattern) => Plushie::from_pattern(pattern),
+                    Err(e) => {
+                        log::info!("The pattern could not be interpreted as human readable");
+                        return Err(e);
+                    }
+                }
+            }
+        };
         Ok(())
     }
 
