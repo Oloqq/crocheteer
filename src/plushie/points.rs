@@ -39,12 +39,13 @@ impl Points {
 
     pub fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) -> V {
         let mut total = V::zeros();
+        let root_move = displacement[0] * time;
         for (i, point) in self.movable() {
             total += displacement[i];
-            *point += displacement[i] * time;
-            point.y = point.y.max(0.0);
+            *point += displacement[i] * time - root_move;
         }
-        self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
+        self.points[1] += displacement[1].normalize() / 16.0 * time - root_move;
+        // self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
         total
     }
 }

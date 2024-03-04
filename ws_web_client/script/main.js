@@ -46,10 +46,11 @@ function main() {
   var _ = gui.addFolder('PerRound stuffing config');
 
   var centroids = gui.addFolder('Centroid stuffing config');
-  centroids.add(customGui.centroids, "amount", 1, 20, 1).onChange((val) => {
+  let amount = centroids.add(customGui.centroids, "amount", 1, 20, 1).onChange((val) => {
     simulator.send(`centroid.amount ${val}`);
     simulationWorld.setCentroidNum(val);
   })
+  amount.domElement.children[1].style.pointerEvents = "none";
   centroids.open();
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);
