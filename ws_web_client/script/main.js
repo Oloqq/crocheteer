@@ -29,7 +29,7 @@ function main() {
   const app = simulator.init();
   const gui = app.gui;
 
-  const simulationWorld = new Plushie(status, customGui);
+  const simulationWorld = new Plushie(status, customGui, gui);
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
@@ -41,7 +41,7 @@ function main() {
   gui.add(customGui, 'stuffing', { None: 'None', PerRound: 'PerRound', Centroids: 'Centroids' }).onChange((val) => {
     simulator.send(`stuffing ${val}`);
     simulator.send(`centroid.amount ${customGui.centroids.amount}`);
-  }).listen();
+  });
 
   var _ = gui.addFolder('PerRound stuffing config');
 

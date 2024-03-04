@@ -67,7 +67,7 @@ impl PlushieSimulation {
         log::info!("Changing pattern...");
         self.plushie = match Program::deserialize(pattern) {
             Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
-            Err(e) => {
+            Err(_) => {
                 log::info!("The pattern could not be interpreted as genetic");
                 match Pattern::from_human_readable(pattern) {
                     Ok(pattern) => Plushie::from_pattern(pattern),
