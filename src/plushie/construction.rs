@@ -4,7 +4,8 @@ use crate::common::*;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
-use crate::plushie::per_round_stuffing::Rounds;
+use crate::plushie::per_round_stuffing::RoundsInfo;
+use crate::plushie::points::Points;
 use crate::plushie::Stuffing;
 
 use super::Plushie;
@@ -16,9 +17,9 @@ impl Plushie {
     }
 
     pub fn from_pattern(pattern: Pattern) -> Self {
-        const FIXED_NUM: usize = 2;
-        const START_EDGE: usize = 0;
-        const END_EDGE: usize = 1;
+        const ROOT_NODE: usize = 0;
+        const TIP_NODE: usize = 1;
+        use super::points::FIXED_POINTS_NUM;
 
         let start = Point::origin();
         let end = Point::new(0.0, pattern.rounds.len() as f32 + 1.0, 0.0);
@@ -30,13 +31,13 @@ impl Plushie {
 
         points.append(&mut ring(pattern.starting_circle, height));
 
-        for i in FIXED_NUM..pattern.starting_circle + FIXED_NUM {
-            edges[START_EDGE].push(i);
+        for i in FIXED_POINTS_NUM..pattern.starting_circle + FIXED_POINTS_NUM {
+            edges[ROOT_NODE].push(i);
             edges.push(vec![i + 1]);
         }
 
-        let mut anchor = FIXED_NUM;
-        let mut current = FIXED_NUM + pattern.starting_circle;
+        let mut anchor = FIXED_POINTS_NUM;
+        let mut current = FIXED_POINTS_NUM + pattern.starting_circle;
         let mut round_starts: Vec<usize> = vec![];
         let mut round_counts: Vec<usize> = vec![];
         for round in pattern.rounds {
@@ -73,15 +74,14 @@ impl Plushie {
         }
 
         *edges.last_mut().unwrap() = vec![];
-        edges[END_EDGE] = (points.len() - pattern.ending_circle..points.len()).collect();
+        edges[TIP_NODE] = (points.len() - pattern.ending_circle..points.len()).collect();
 
         Plushie {
-            fixed_num: FIXED_NUM,
-            points,
+            points: Points::new(points),
             edges,
             desired_stitch_distance: 1.0,
             stuffing: Stuffing::Centroids,
-            rounds: Rounds::new(round_starts, round_counts),
+            rounds: RoundsInfo::new(round_starts, round_counts),
             gravity: 5e-4,
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,
@@ -121,7 +121,6 @@ mod tests {
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
-        assert_eq!(plushie.fixed_num, 2);
         assert_eq!(plushie.points.len(), 10);
         assert_eq!(
             plushie.edges,
@@ -159,7 +158,6 @@ mod tests {
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
-        assert_eq!(plushie.fixed_num, 2);
         assert_eq!(plushie.points.len(), 15);
         assert_eq!(
             plushie.edges,
@@ -241,7 +239,7 @@ mod tests {
         };
         assert_eq!(p.rounds.len(), 3);
         let pl = Plushie::from_pattern(p);
-        println!("{:?}", pl.points);
+        println!("{:?}", pl.points.as_vec());
         assert_eq!(pl.points[1].y, 4.0);
         assert_eq!(pl.points.len(), 14);
         // pl.animate();

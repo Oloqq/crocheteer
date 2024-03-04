@@ -217,3 +217,6 @@ Algorithm inspired by k-means
 
 ![](2024-03-03-21-38-57.png)
 *a bean generated with per-round stuffing*
+
+![](2024-03-04-16-04-54.png)
+*another more complex shape, that's part of a multipiece toy*

@@ -30,7 +30,7 @@ impl Shape {
     }
 
     pub fn from_source_plushie(plushie: &Plushie) -> Self {
-        let points = &plushie.points;
+        let points = plushie.get_points_vec();
         let highest = highest_point(points);
         let levels = levels_for(points, highest.y);
 
@@ -38,7 +38,7 @@ impl Shape {
     }
 
     pub fn from_unfitted_plushie(plushie: &Plushie, levels: usize, max_height: f32) -> Self {
-        let points = &plushie.points;
+        let points = &plushie.get_points_vec();
         Self::from_points(points, levels, max_height)
     }
 }

@@ -46,7 +46,7 @@ impl PlushieSimulation {
         serde_json::json!({
             "key": "upd",
             "dat": {
-                "points": serde_json::json!(&self.plushie.points),
+                "points": serde_json::json!(&self.plushie.get_points_vec()),
                 "centroids": self.plushie.centroids
             }
         })
@@ -136,7 +136,7 @@ impl Simulation for PlushieSimulation {
                 let x: f32 = tokens[2].parse().unwrap();
                 let y: f32 = tokens[3].parse().unwrap();
                 let z: f32 = tokens[4].parse().unwrap();
-                self.plushie.points[id] = Point::new(x, y, z);
+                self.plushie.set_point_position(id, Point::new(x, y, z));
             }
             "pattern" => {
                 if let Err(error) = self.change_pattern(msg) {

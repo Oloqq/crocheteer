@@ -3,7 +3,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde_derive::Serialize;
 
 use self::centroid_stuffing::centroid_stuffing;
-use self::per_round_stuffing::{per_round_stuffing, Rounds};
+use self::per_round_stuffing::{per_round_stuffing, RoundsInfo};
+use self::points::Points;
 
 use super::common::*;
 
@@ -12,6 +13,7 @@ mod construction;
 mod conversions;
 pub mod examples;
 mod per_round_stuffing;
+mod points;
 
 #[derive(Clone, Serialize)]
 pub enum Stuffing {
@@ -33,9 +35,8 @@ pub enum Stuffing {
 
 #[derive(Clone, Serialize)]
 pub struct Plushie {
-    fixed_num: usize, // treat first N elements of `points` as fixed
-    rounds: Rounds,
-    pub points: Vec<Point>,
+    points: Points,
+    rounds: RoundsInfo,
     pub centroids: Vec<Point>,
     pub centroid_force: f32,
     edges: Vec<Vec<usize>>,
@@ -48,11 +49,10 @@ pub struct Plushie {
 
 impl Plushie {
     fn add_link_forces(&self, displacement: &mut Vec<V>) {
-        for i in 0..self.points.len() {
-            let this = self.points[i];
+        for (i, point) in self.points.all() {
             for neibi in &self.edges[i] {
-                let neib = self.points[*neibi];
-                let diff: V = attract(this, neib, self.desired_stitch_distance);
+                let neib = &self.points[*neibi];
+                let diff: V = attract(point, neib, self.desired_stitch_distance);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
@@ -64,12 +64,12 @@ impl Plushie {
             Stuffing::None => (),
             Stuffing::PerRound => per_round_stuffing(
                 &mut self.rounds,
-                &self.points,
+                &self.points.as_vec(),
                 self.desired_stitch_distance,
                 displacement,
             ),
             Stuffing::Centroids => centroid_stuffing(
-                &self.points,
+                &self.points.as_vec(),
                 &mut self.centroids,
                 self.centroid_force,
                 displacement,
@@ -78,19 +78,9 @@ impl Plushie {
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
-        for i in 0..self.points.len() {
+        for (i, _point) in self.points.all() {
             displacement[i].y -= self.gravity;
         }
-    }
-
-    fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) {
-        let mut total = V::zeros();
-        for i in self.fixed_num..self.points.len() {
-            total += displacement[i];
-            self.points[i] += displacement[i] * time;
-            self.points[i].y = self.points[i].y.max(0.0);
-        }
-        self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
     }
 
     pub fn step(&mut self, time: f32) -> Vec<V> {
@@ -105,7 +95,7 @@ impl Plushie {
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        self.apply_forces(&displacement, time);
+        let _total = self.points.apply_forces(&displacement, time);
 
         displacement
     }
@@ -126,6 +116,7 @@ impl Plushie {
     }
 
     pub fn set_centroid_num(&mut self, num: usize) {
+        // FIXME adding to many centroids at once glitches the plushie irrecoverably
         if self.centroids.len() == num {
             return;
         }
@@ -136,18 +127,30 @@ impl Plushie {
 
         while self.centroids.len() < num {
             self.centroids.push(Point::new(0.0, 1.0, 0.0));
-            let centroid2points = self::centroid_stuffing::map(&self.points, &self.centroids);
+            let centroid2points =
+                self::centroid_stuffing::map(&self.points.as_vec(), &self.centroids);
             self::centroid_stuffing::recalculate_centroids(
-                &self.points,
+                &self.points.as_vec(),
                 &mut self.centroids,
                 centroid2points,
             );
         }
-        println!("cent {:?}", self.centroids);
+    }
+
+    pub fn get_points_vec(&self) -> &Vec<Point> {
+        self.points.as_vec()
+    }
+
+    pub fn set_point_position(&mut self, i: usize, pos: Point) {
+        if i >= self.points.len() {
+            // using websockets, this could theoretically happen with reloading and some network delays
+            panic!("Point index greater than vector size");
+        }
+        self.points[i] = pos;
     }
 }
 
-fn attract(this: Point, other: Point, desired_distance: f32) -> V {
+fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
     let diff = this - other;
     let x = diff.magnitude();
     let d = desired_distance;

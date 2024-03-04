@@ -3,15 +3,15 @@ use serde_derive::Serialize;
 use std::f32::consts::PI;
 
 #[derive(Clone, Serialize)]
-pub struct Rounds {
+pub struct RoundsInfo {
     start: Vec<usize>,
     anchors: Vec<usize>,
     center: Vec<V>,
 }
 
-impl Rounds {
+impl RoundsInfo {
     pub fn new(round_starts: Vec<usize>, round_counts: Vec<usize>) -> Self {
-        Rounds {
+        RoundsInfo {
             center: vec![V::new(0.0, 0.0, 0.0); round_counts.len()],
             start: round_starts,
             anchors: round_counts,
@@ -100,7 +100,7 @@ pub fn push_offcenter(point: &Point, center: &V, radius: f32) -> V {
 }
 
 pub fn per_round_stuffing(
-    rounds: &mut Rounds,
+    rounds: &mut RoundsInfo,
     points: &Vec<Point>,
     desired_stitch_distance: f32,
     displacement: &mut Vec<V>,
@@ -148,7 +148,7 @@ mod tests {
             Point::new(1.0, 0.0, 1.0),
             Point::new(1.0, 0.0, -1.0),
         ];
-        let mut rounds = Rounds::new(vec![0, 4], vec![4, 4]);
+        let mut rounds = RoundsInfo::new(vec![0, 4], vec![4, 4]);
         rounds.update_round_centers(&points);
         assert_eq!(
             rounds.center,
@@ -165,7 +165,7 @@ mod tests {
             Point::new(2.0, 0.0, -1.0),
         ];
 
-        let mut rounds = Rounds::new(vec![0], vec![4]);
+        let mut rounds = RoundsInfo::new(vec![0], vec![4]);
         rounds.update_round_centers(&points);
         assert_eq!(rounds.center, vec![V::new(0.0, 0.0, 0.5)]);
     }
@@ -185,7 +185,7 @@ mod tests {
         assert_eq!(rounds.start, vec![8, 20, 32]);
         assert_eq!(rounds.anchors, vec![12, 12, 6]);
 
-        rounds.update_round_centers(&plushie.points);
+        rounds.update_round_centers(&plushie.points.as_vec());
     }
 
     #[test]
@@ -197,7 +197,7 @@ mod tests {
             Point::new(2.0, 0.0, -1.0),
         ];
         let mut displacement = vec![V::new(0.0, 0.0, 0.0); 4];
-        let rounds = Rounds {
+        let rounds = RoundsInfo {
             start: vec![0, 4],
             anchors: vec![4],
             center: vec![V::new(0.0, 0.0, 0.5)],

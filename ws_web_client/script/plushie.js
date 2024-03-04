@@ -84,7 +84,9 @@ export default class Plushie {
 
   init(data) {
     console.log(data);
-    const points = data["points"];
+    const pointsWrapper = data["points"];
+    const points = pointsWrapper["points"];
+    const _fixedNum = pointsWrapper["fixed"];
     this.edges = data["edges"];
     this.gui.stuffing = data["stuffing"];
     this.gui.gravity = data["gravity"];
@@ -117,7 +119,7 @@ export default class Plushie {
 
   updateWallPoints(positions) {
     if (positions.length != this.stitchSpheres.length) {
-      alert("position data got corrupted");
+      console.error("Position data got corrupted");
     }
 
     let id = undefined;
