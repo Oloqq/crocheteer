@@ -37,7 +37,14 @@
 starting rule: **pattern**
 
 ```js
-pattern -> starter `\n` round* `FO`?
+pattern -> metadata? starter `\n` round* `FO`?
+
+metadata -> metatoken+ `\n`
+
+metatoken ->
+    `@` X |   // centroids
+    `g` FLOAT // gravity
+
 
 starter -> magic_ring // might add support for starting from a chain in the future
 
@@ -47,13 +54,15 @@ round -> round_id `:` stitches count `\n`
 
 round_id ->
     `R` X |
-    `R` X `-` `R` X
+    `R` X `-` `R` X |
+    X | // TODO
+    NONE
 
 count -> `(` X `)`
 
 stitches -> repeated | action (`,` action)*
 
-repeated -> `[` stitches `]` `x` X
+repeated -> `[` stitches `]` `x` X // TODO
 
 // another actions may be: transferring to another stitch, reversing order etc.
 action -> X? STITCH
