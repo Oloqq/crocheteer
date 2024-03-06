@@ -4,8 +4,7 @@ use serde_derive::Serialize;
 
 use crate::common::{Point, V};
 
-pub const FIXED_POINTS_NUM: usize = 2;
-const ROOT_INDEX: usize = 0;
+pub const ROOT_INDEX: usize = 0;
 
 #[derive(Clone, Serialize)]
 pub struct Points {
@@ -63,23 +62,25 @@ impl Points {
             false => V::zeros(),
         };
 
-        const ROOT: usize = 1;
+        const SKIP_ROOT: usize = 1;
 
         for ((i, point), constraint) in self
             .points
             .iter_mut()
             .enumerate()
             .zip(&self.constraints)
-            .skip(ROOT)
+            .skip(SKIP_ROOT)
         {
             let adjusted: V = displacement[i].component_mul(&constraint);
             total += adjusted;
             *point += (adjusted - root_move) * time;
+            point.y = point.y.max(0.0);
         }
 
         for (i, point) in self.freely_movable() {
             total += displacement[i];
             *point += (displacement[i] - root_move) * time;
+            point.y = point.y.max(0.0);
         }
         total
     }

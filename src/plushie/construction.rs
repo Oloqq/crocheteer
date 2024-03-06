@@ -5,7 +5,7 @@ use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
 use crate::plushie::per_round_stuffing::RoundsInfo;
-use crate::plushie::points::Points;
+use crate::plushie::points::{Points, ROOT_INDEX};
 use crate::plushie::Stuffing;
 
 use super::Plushie;
@@ -17,19 +17,25 @@ impl Plushie {
     }
 
     pub fn from_pattern(pattern: Pattern) -> Self {
-        const ROOT_NODE: usize = 0;
-        const TIP_NODE: usize = 1;
-        use super::points::FIXED_POINTS_NUM;
-        let approximate_height = pattern.rounds.len() as f32 + 1.0;
+        const ROOT_NODE: usize = ROOT_INDEX;
+        let (fixed_points_num, tip_node): (usize, Option<usize>) = match pattern.fasten_off {
+            true => (2, Some(1)),
+            false => (1, None),
+        };
+
         let height_per_round = 1.0;
         let desired_stitch_distance = 1.0;
 
         let start = Point::origin();
-        let end = Point::new(0.0, approximate_height, 0.0);
-
-        let mut points = vec![start, end];
-        let mut edges: Vec<Vec<usize>> = vec![vec![], vec![]];
+        let mut points = vec![start];
+        let mut edges: Vec<Vec<usize>> = vec![vec![]];
         let mut height: f32 = 0.0;
+
+        if tip_node.is_some() {
+            let approximate_height = pattern.rounds.len() as f32 + 1.0;
+            points.push(Point::new(0.0, approximate_height, 0.0));
+            edges.push(vec![]);
+        }
 
         points.append(&mut ring(
             pattern.starting_circle,
@@ -38,13 +44,13 @@ impl Plushie {
         ));
 
         // edges around root
-        for i in FIXED_POINTS_NUM..pattern.starting_circle + FIXED_POINTS_NUM {
+        for i in fixed_points_num..pattern.starting_circle + fixed_points_num {
             edges[ROOT_NODE].push(i);
             edges.push(vec![i + 1]);
         }
 
-        let mut anchor = FIXED_POINTS_NUM;
-        let mut current = FIXED_POINTS_NUM + pattern.starting_circle;
+        let mut anchor = fixed_points_num;
+        let mut current = fixed_points_num + pattern.starting_circle;
         let mut round_starts: Vec<usize> = vec![];
         let mut round_counts: Vec<usize> = vec![];
         for round in pattern.rounds {
@@ -89,9 +95,11 @@ impl Plushie {
         *edges.last_mut().unwrap() = vec![];
 
         // connect the tip
-        let last_round_count = *round_counts.last().unwrap();
-        assert!(last_round_count == pattern.ending_circle);
-        edges[TIP_NODE] = (points.len() - last_round_count..points.len()).collect();
+        if let Some(tip) = tip_node {
+            let last_round_count = *round_counts.last().unwrap();
+            assert!(last_round_count == pattern.ending_circle);
+            edges[tip] = (points.len() - last_round_count..points.len()).collect();
+        }
 
         Plushie {
             points: Points::new(points, vec![V::zeros(), V::new(0.1, 0.1, 0.1)]),
