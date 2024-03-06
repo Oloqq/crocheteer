@@ -87,14 +87,14 @@ impl Plushie {
 
         // delete the connection from last point (the tip) to the next
         *edges.last_mut().unwrap() = vec![];
+
         // connect the tip
         let last_round_count = *round_counts.last().unwrap();
-        println!("{last_round_count}, {:?}", round_counts);
         assert!(last_round_count == pattern.ending_circle);
         edges[TIP_NODE] = (points.len() - last_round_count..points.len()).collect();
 
         Plushie {
-            points: Points::new(points),
+            points: Points::new(points, vec![V::zeros(), V::new(0.1, 0.1, 0.1)]),
             edges,
             desired_stitch_distance,
             stuffing: Stuffing::Centroids,
@@ -110,7 +110,7 @@ impl Plushie {
 
 pub fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
     let circumference = (nodes + 1) as f32 * desired_stitch_distance;
-    let radius = circumference / (2.0 * PI);
+    let radius = circumference / (2.0 * PI) / 4.0;
 
     let interval = 2.0 * PI / nodes as f32;
     let mut result: Vec<Point> = vec![];

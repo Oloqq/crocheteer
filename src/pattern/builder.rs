@@ -8,7 +8,6 @@ use super::{
 
 impl Pattern {
     pub fn from_file(path: PathBuf) -> Result<Self, Box<dyn Error>> {
-        println!("{path:?}");
         let content = fs::read_to_string(&path)?;
         let extension = path.extension().unwrap_or_default();
         match extension.to_str().unwrap() {

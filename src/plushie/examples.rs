@@ -18,7 +18,7 @@ pub fn bigball() -> Plushie {
         .full_rounds(1)
         .round_like(&vec![Sc, Dec])
         .round_like(&vec![Dec])
-        .loose_end()
+        .fasten_off()
         .unwrap();
     Plushie::from_pattern(pattern)
 }
@@ -28,7 +28,7 @@ pub fn ball() -> Plushie {
         .round_like(&vec![Inc])
         .full_rounds(1)
         .round_like(&vec![Dec])
-        .loose_end()
+        .fasten_off()
         .unwrap();
     Plushie::from_pattern(pattern)
 }
@@ -38,6 +38,15 @@ pub fn bigpillar() -> Plushie {
         .round_like(&vec![Inc])
         .full_rounds(6)
         .round_like(&vec![Dec])
+        .fasten_off()
+        .unwrap();
+    Plushie::from_pattern(pattern)
+}
+
+pub fn vase() -> Plushie {
+    let pattern = PatternBuilder::new(6)
+        .round_like(&vec![Inc])
+        .full_rounds(6)
         .loose_end()
         .unwrap();
     Plushie::from_pattern(pattern)

@@ -66,7 +66,6 @@ impl Pattern {
                 continue;
             }
 
-            println!("line, {line}");
             let (repetitions, stitches) = match parse_line(line) {
                 Ok(x) => x,
                 Err(e) => return Err(format!("Line {}: {e}", lnum + 1)),

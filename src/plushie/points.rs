@@ -5,19 +5,35 @@ use serde_derive::Serialize;
 use crate::common::{Point, V};
 
 pub const FIXED_POINTS_NUM: usize = 2;
+const ROOT_INDEX: usize = 0;
 
 #[derive(Clone, Serialize)]
 pub struct Points {
-    /// treat first N elements of `points` as fixed
-    fixed: usize,
+    /// Constraints of the first points. The calculated movement will be multiplied by them.
+    constraints: Vec<V>,
+    /// All points in the shape
     points: Vec<Point>,
+    /// true => the whole shape will be translated by displacement applied to root, so that root stays at (0, 0, 0).
+    ///     `constrains[0]` is ignored
+    ///     keep in mind, `constraints[0]` still corresponds to root, and `constraints[1]` to the next one
+    /// false => the root is treated accordingly to `constraints`
+    keep_root_at_origin: bool,
 }
 
 impl Points {
-    pub fn new(points: Vec<Point>) -> Self {
+    pub fn new(points: Vec<Point>, constraints: Vec<V>) -> Self {
+        let keep_root_at_origin = true;
+        if keep_root_at_origin {
+            assert!(
+                constraints.len() == 0 || constraints[0] == V::zeros(),
+                "Root's constraint should be 0 if it is to be kept at origin"
+            );
+        }
+
         Self {
-            fixed: FIXED_POINTS_NUM,
+            constraints,
             points,
+            keep_root_at_origin,
         }
     }
 
@@ -33,19 +49,38 @@ impl Points {
         self.points.len()
     }
 
-    fn movable<'a>(&'a mut self) -> impl Iterator<Item = (usize, &'a mut Point)> {
-        self.points.iter_mut().enumerate().skip(self.fixed)
+    fn freely_movable<'a>(&'a mut self) -> impl Iterator<Item = (usize, &'a mut Point)> {
+        self.points
+            .iter_mut()
+            .enumerate()
+            .skip(self.constraints.len())
     }
 
     pub fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) -> V {
         let mut total = V::zeros();
-        let root_move = displacement[0] * time;
-        for (i, point) in self.movable() {
-            total += displacement[i];
-            *point += displacement[i] * time - root_move;
+        let root_move = match self.keep_root_at_origin {
+            true => displacement[ROOT_INDEX],
+            false => V::zeros(),
+        };
+
+        const ROOT: usize = 1;
+
+        for ((i, point), constraint) in self
+            .points
+            .iter_mut()
+            .enumerate()
+            .zip(&self.constraints)
+            .skip(ROOT)
+        {
+            let adjusted: V = displacement[i].component_mul(&constraint);
+            total += adjusted;
+            *point += (adjusted - root_move) * time;
         }
-        self.points[1] += displacement[1].normalize() / 16.0 * time - root_move;
-        // self.points[1].y += displacement[1].y.clamp(-1.0, 1.0) * time;
+
+        for (i, point) in self.freely_movable() {
+            total += displacement[i];
+            *point += (displacement[i] - root_move) * time;
+        }
         total
     }
 }
