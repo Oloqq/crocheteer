@@ -39,7 +39,9 @@ impl Pattern {
         )
         .as_str();
 
-        result += format!("FO\n").as_str();
+        if self.fasten_off {
+            result += format!("FO\n").as_str();
+        }
         result
     }
 
@@ -52,16 +54,19 @@ impl Pattern {
         }
         let starting_circle = parse_starter(line).unwrap();
 
+        let mut fasten_off = false;
         let mut rounds: Vec<Vec<Stitch>> = vec![];
         for (lnum, line) in lines {
             let line = line.trim();
             if line == "FO" {
+                fasten_off = true;
                 break;
             }
-            if line.starts_with("#") {
+            if line.starts_with("#") || line == "" {
                 continue;
             }
 
+            println!("line, {line}");
             let (repetitions, stitches) = match parse_line(line) {
                 Ok(x) => x,
                 Err(e) => return Err(format!("Line {}: {e}", lnum + 1)),
@@ -84,6 +89,7 @@ impl Pattern {
 
         Ok(Self {
             starting_circle,
+            fasten_off,
             ending_circle,
             rounds,
         })
@@ -227,6 +233,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 6,
             ending_circle: 7,
+            fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
 
@@ -238,10 +245,27 @@ FO
     }
 
     #[test]
+    #[ignore]
+    fn test_serialization_basic_no_fasten_off() {
+        let p = Pattern {
+            starting_circle: 6,
+            ending_circle: 7,
+            fasten_off: false,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+        };
+
+        let expected = "R1: MR 6 (6)
+R2: 5 sc, inc (7)
+";
+        assert_eq!(p.human_readable().as_str(), expected);
+    }
+
+    #[test]
     fn test_serialization_repeated() {
         let p = Pattern {
             starting_circle: 6,
             ending_circle: 6,
+            fasten_off: true,
             rounds: vec![
                 vec![Sc, Sc, Sc, Inc, Dec],
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
@@ -261,9 +285,38 @@ FO
     }
 
     #[test]
+    fn test_serialization_repeated_no_fasten_off() {
+        let p = Pattern {
+            starting_circle: 6,
+            ending_circle: 6,
+            fasten_off: false,
+            rounds: vec![
+                vec![Sc, Sc, Sc, Inc, Dec],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Inc, Dec],
+            ],
+        };
+
+        let expected = "R1: MR 6 (6)
+R2: 3 sc, inc, dec (6)
+R3-R5: 6 sc (6)
+R6: 3 sc, inc, dec (6)
+";
+        assert_eq!(p.human_readable().as_str(), expected);
+    }
+
+    #[test]
     fn test_get_repetitions() {
         assert_eq!(get_repetitions("R2").unwrap(), 1);
         assert_eq!(get_repetitions("R2-R4").unwrap(), 3);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_get_repetitions_shortened() {
+        assert_eq!(get_repetitions("4").unwrap(), 4);
     }
 
     #[test]
@@ -276,6 +329,53 @@ FO
         let expected = Pattern {
             starting_circle: 6,
             ending_circle: 7,
+            fasten_off: true,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_loading_basic_no_new_line() {
+        let src = "R1: MR 6 (6)
+        R2: 5 sc, inc (7)
+        FO";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            ending_circle: 7,
+            fasten_off: true,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_loading_basic_no_fasten_off() {
+        let src = "R1: MR 6 (6)
+        R2: 5 sc, inc (7)
+        ";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            ending_circle: 7,
+            fasten_off: false,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_loading_basic_no_new_line_no_fasten_off() {
+        let src = "R1: MR 6 (6)
+        R2: 5 sc, inc (7)";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            ending_circle: 7,
+            fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
@@ -293,6 +393,7 @@ FO
         let expected = Pattern {
             starting_circle: 6,
             ending_circle: 6,
+            fasten_off: true,
             rounds: vec![
                 vec![Sc, Sc, Sc, Inc, Dec],
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],

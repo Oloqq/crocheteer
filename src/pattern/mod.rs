@@ -8,9 +8,15 @@ use serde::{Deserialize, Serialize};
 
 pub use self::stitches::Stitch;
 
+// enum Starter {
+//     MagicRing(usize),
+//     Chain(usize),
+// }
+
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Pattern {
     pub starting_circle: usize,
+    pub fasten_off: bool,
     pub ending_circle: usize,
     pub rounds: Vec<Vec<Stitch>>,
 }
@@ -24,6 +30,7 @@ mod tests {
         use Stitch::*;
         let p1 = Pattern {
             starting_circle: 4,
+            fasten_off: true,
             ending_circle: 4,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };

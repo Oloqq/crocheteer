@@ -9,6 +9,7 @@ impl Pattern {
         let (starting_circle, stitches) = genom;
         let starting_circle = *starting_circle;
         assert!(starting_circle == 6 as usize);
+        const IS_CLOSED: bool = true; // probably need to load it from a param (if genes should even handle open shapes)
 
         let mut rounds = make_rounds(starting_circle, stitches);
         let ending_circle = make_ending_circle_reasonable(&mut rounds);
@@ -16,6 +17,7 @@ impl Pattern {
         Self {
             starting_circle,
             ending_circle,
+            fasten_off: IS_CLOSED,
             rounds,
         }
     }

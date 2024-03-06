@@ -176,7 +176,7 @@ mod tests {
             .round_like(&vec![Inc])
             .full_rounds(1)
             .round_like(&vec![Dec])
-            .build()
+            .loose_end()
             .unwrap();
         let plushie = Plushie::from_pattern(pattern);
         let mut rounds = plushie.rounds;

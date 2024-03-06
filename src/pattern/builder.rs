@@ -87,7 +87,7 @@ impl PatternBuilder {
         self
     }
 
-    pub fn build(self) -> Result<Pattern, (usize, String)> {
+    pub fn loose_end(self) -> Result<Pattern, (usize, String)> {
         if let Some(error) = self.has_error {
             return Err(error);
         }
@@ -99,8 +99,16 @@ impl PatternBuilder {
         Ok(Pattern {
             starting_circle: self.starting_ring,
             ending_circle: last_round.len(),
+            fasten_off: false,
             rounds: self.rounds,
         })
+    }
+
+    #[allow(unused)]
+    pub fn fasten_off(self) -> Result<Pattern, (usize, String)> {
+        let mut ret = self.loose_end()?;
+        ret.fasten_off = true;
+        Ok(ret)
     }
 }
 
@@ -112,7 +120,7 @@ mod tests {
 
     #[test]
     fn test_detects_no_rounds() {
-        assert!(PatternBuilder::new(6).build().is_err());
+        assert!(PatternBuilder::new(6).loose_end().is_err());
     }
 
     #[test]
@@ -123,7 +131,21 @@ mod tests {
         assert_eq!(p.rounds.len(), 2);
         assert_eq!(p.rounds[0].len(), 6);
         assert_eq!(p.rounds[1].len(), 6);
-        let pat = p.build().unwrap();
+        let pat = p.loose_end().unwrap();
+        assert_eq!(pat.fasten_off, false);
+        assert_eq!(pat.ending_circle, 6);
+    }
+
+    #[test]
+    fn test_fasten_off() {
+        let mut p = PatternBuilder::new(6);
+        assert_eq!(p.rounds.len(), 0);
+        p = p.full_rounds(2);
+        assert_eq!(p.rounds.len(), 2);
+        assert_eq!(p.rounds[0].len(), 6);
+        assert_eq!(p.rounds[1].len(), 6);
+        let pat = p.fasten_off().unwrap();
+        assert_eq!(pat.fasten_off, true);
         assert_eq!(pat.ending_circle, 6);
     }
 

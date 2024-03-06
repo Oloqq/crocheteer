@@ -33,3 +33,5 @@
 
 - build an open vase
   - require fasten off (FO) to actually fasten off
+
+- highlight points when cursor is on the text area

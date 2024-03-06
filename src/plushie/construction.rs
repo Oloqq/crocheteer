@@ -77,6 +77,7 @@ impl Plushie {
                     }
                 }
             }
+            // place the points in 3d space
             points.append(&mut ring(
                 current - current_at_round_start,
                 height,
@@ -84,8 +85,13 @@ impl Plushie {
             ));
         }
 
+        // delete the connection from last point (the tip) to the next
         *edges.last_mut().unwrap() = vec![];
-        edges[TIP_NODE] = (points.len() - pattern.ending_circle..points.len()).collect();
+        // connect the tip
+        let last_round_count = *round_counts.last().unwrap();
+        println!("{last_round_count}, {:?}", round_counts);
+        assert!(last_round_count == pattern.ending_circle);
+        edges[TIP_NODE] = (points.len() - last_round_count..points.len()).collect();
 
         Plushie {
             points: Points::new(points),
@@ -130,6 +136,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 4,
             ending_circle: 4,
+            fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
@@ -162,11 +169,49 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
+    fn test_from_pattern_no_fasten_off() {
+        use Stitch::Sc;
+        let p = Pattern {
+            starting_circle: 4,
+            ending_circle: 4,
+            fasten_off: false,
+            rounds: vec![vec![Sc, Sc, Sc, Sc]],
+        };
+        let plushie = Plushie::from_pattern(p);
+        assert_eq!(plushie.points.len(), 9);
+        assert_eq!(
+            plushie.edges,
+            vec![
+                // 0 ->
+                vec![2, 3, 4, 5],
+                // 1 ->
+                vec![3, 6],
+                // 2 ->
+                vec![4, 7],
+                // 3 ->
+                vec![5, 8],
+                // 4 ->
+                vec![6, 9],
+                // 5 ->
+                vec![7],
+                // 6 ->
+                vec![8],
+                // 7 ->
+                vec![9],
+                // 8 ->
+                vec![],
+            ]
+        );
+    }
+
+    #[test]
     fn test_from_pattern_increase_decrese() {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 4,
             ending_circle: 4,
+            fasten_off: true,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
         let plushie = Plushie::from_pattern(p);
@@ -199,6 +244,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 6,
             ending_circle: 3,
+            fasten_off: true,
             rounds: vec![
                 vec![Dec, Dec, Dec],
                 vec![Sc, Dec],
@@ -221,6 +267,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 6,
             ending_circle: 3,
+            fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec]],
         };
         let pl = Plushie::from_pattern(p);
@@ -234,6 +281,7 @@ mod tests {
         let p = Pattern {
             starting_circle: 6,
             ending_circle: 4,
+            fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
         };
         let pl = Plushie::from_pattern(p);
@@ -243,10 +291,12 @@ mod tests {
 
     #[test]
     fn from_genetic_mutant_4() {
+        // this tests assumes dec is not allowed to overflow
         use Stitch::*;
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 2,
+            ending_circle: 1,
+            fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Dec], vec![Dec]],
         };
         assert_eq!(p.rounds.len(), 3);
