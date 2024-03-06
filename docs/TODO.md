@@ -12,7 +12,7 @@
   - prevent twitching on the fastened off point
 
 - websocket server/client
-  - add a <select> with sample patterns
+  - add a <select> with sample patterns instead of the text input
   - allow changing simulation speed (corresponds to time variable in step)
 
 - handling bigger shapes
@@ -34,4 +34,6 @@
 - build an open vase
   - require fasten off (FO) to actually fasten off
 
-- highlight points when cursor is on the text area
+- frontend
+  - highlight points when cursor is on the text area
+

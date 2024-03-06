@@ -9,6 +9,7 @@
     <style>
         * {
             margin: 0;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
         #pattern-container {
@@ -29,17 +30,38 @@
 <body>
     <div id="container">
         <div id="pattern-container">
-            <p id="status">Write a pattern:</p>
-            <textarea id="pattern">R1: MR 4 (4)
-R2: sc, inc, sc, inc (6)
-R3: 6 sc (6)
-R4: 2 sc, 2 inc, 2 sc (8)
-R5: 2 sc, sc, inc, sc, inc, 2 sc (10)
+            <p id="status">Visualize your pattern:</p>
+            <textarea id="pattern"># Manual
+# This is a comment.
+# Comments can take a whole line or can be placed after the instruction.
+# You can load an example by typing a name in the input below,
+# then clicking "Load example:".
+# Current examples: pillar, bigpillar, ball, bigball, vase.
+
+# Simulation controls:
+# - after the pattern is loaded, you have to unpause the simulation
+# - pause it again at any convenient time
+# - if the plushie is wrinkled (has not enough stuffing),
+#   - increase the number of centroids under "Centroid stuffing config/amount"
+#   - add up to 2 then run the simulation for a second
+#   - otherwise the simulation may glitch irrecoverably
+# - I do not recommend playing with gravity at the moment
+
+# This is a sample pattern
+# Keep in mind, if you reload the page, changes are lost
+R1: MR 4 (4) # pattern must start with a MagicRing in round one
+R2: sc, inc, sc, inc (6) # each line must end with a number of stitches produced,
+# like "(6)" in the line above
+: 6 sc (6) # round numbers are actually optional (useful for prototyping)
+: 6 sc (6) # colons are mandatory though
+2: 6 sc (6) # repeated rounds are denoted with a number
+R0-R1: 6 sc (6) # but if you want to number your repeating rounds, you can!
+# I haven't yet implemented repetitions like "[sc, inc] x 2", stay tuned
+: sc, inc, sc, inc, 2 sc (8)
+: 2 sc, sc, inc, sc, inc, 2 sc (10)
 R6: dec, 3 sc, inc, inc, 3 sc (11)
 R7: dec, 4 sc, inc, inc, 3 sc (12)
 R8: dec, 4 sc, inc, inc, 2 sc, dec (12)
-# Stuff the tail tip with filling. Use small scissor or
-# end of your hook to reach in with filling.
 R9: 5 sc, inc, 2 sc, inc, 3 sc (14)
 R10: 7 sc, inc, inc, 5 sc (16)
 R11: 8 sc, inc, inc, 6 sc (18)
@@ -53,9 +75,11 @@ R20: 36 sc (36)
 R21: 10 sc, 4 sc, inc, 4 sc, inc, 4 sc, inc, 4 sc, inc, 6 sc (40)
 R22: 40 sc (40)
 R23: 10 sc, inc, 5 sc, inc, 5 sc, inc, 5 sc, inc, 5 sc, 6 sc (44)
-R24-R26: 44 sc (44)
+3: 44 sc (44)
 R27: 22 dec (22)
-R28: 11 dec (11)</textarea><br>
+R28: 11 dec (11)
+FO # remember to fasten-off if you want a closed shape
+</textarea><br>
             <button id="update">Update</button><button id="hide" hidden>TODO: Hide</button><br>
             <button id="example-btn">Load example:</button><input id="example-name" type="text">
         </div>

@@ -3,7 +3,6 @@ use super::{stitches::count_anchors_produced, Pattern, Stitch};
 type ParseError = String;
 
 impl Pattern {
-    #[allow(unused)]
     pub fn human_readable(&self) -> String {
         let mut result = String::with_capacity(100);
         result += format!(
@@ -49,7 +48,7 @@ impl Pattern {
         let lines: Vec<&str> = text.split("\n").collect();
         let mut lines = lines.iter().enumerate();
         let (mut _lnum, mut line) = lines.next().expect("content shouldn't be empty");
-        while line.trim().starts_with("#") {
+        while line.trim().starts_with("#") || line.is_empty() {
             (_lnum, line) = lines.next().expect("EOF");
         }
         let starting_circle = parse_starter(line).unwrap();
@@ -58,11 +57,16 @@ impl Pattern {
         let mut rounds: Vec<Vec<Stitch>> = vec![];
         for (lnum, line) in lines {
             let line = line.trim();
+            let line = match line.split_once("#") {
+                Some((x, _comment)) => x.trim(),
+                None => line,
+            };
+
             if line == "FO" {
                 fasten_off = true;
                 break;
             }
-            if line.starts_with("#") || line == "" {
+            if line.starts_with("#") || line.is_empty() {
                 continue;
             }
 
@@ -96,7 +100,11 @@ impl Pattern {
 }
 
 fn parse_starter(line: &str) -> Result<usize, ParseError> {
-    let tokens: Vec<&str> = line.split(" ").collect();
+    let no_comment = match line.split_once("#") {
+        Some((x, _comment)) => x.trim(),
+        None => line,
+    };
+    let tokens: Vec<&str> = no_comment.split(" ").collect();
     return if tokens.len() != 4 {
         Err("Syntax error: expected starting round".into())
     } else if tokens[1].to_ascii_uppercase() != "MR" {
@@ -170,7 +178,12 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
         .parse()
         .unwrap();
     let stitches = parse_stitches(stitches)?;
-    assert!(anchors == count_anchors_produced(&stitches));
+    if anchors != count_anchors_produced(&stitches) {
+        return Err(format!(
+            "Stitches noted ({anchors}) does not match actually produced: {}",
+            count_anchors_produced(&stitches)
+        ));
+    }
 
     Ok((repetitions, stitches))
 }

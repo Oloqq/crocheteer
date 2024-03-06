@@ -81,7 +81,7 @@ export default class Plushie {
         break;
       case "pattern_update":
         console.log("new pattern");
-        this.pattern.innerText = data;
+        this.pattern.value = data;
         break;
       default:
         console.error(`Unrecognized key: ${dict["key"]}`);
