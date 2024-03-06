@@ -13,10 +13,10 @@ use super::Plushie;
 impl Plushie {
     pub fn from_genetic(genom: &Genom) -> Self {
         let pattern = Pattern::from_genom(&genom);
-        Self::from_pattern(pattern)
+        Self::from_pattern(&pattern)
     }
 
-    pub fn from_pattern(pattern: Pattern) -> Self {
+    pub fn from_pattern(pattern: &Pattern) -> Self {
         const ROOT_NODE: usize = ROOT_INDEX;
         let (fixed_points_num, tip_node): (usize, Option<usize>) = match pattern.fasten_off {
             true => (2, Some(1)),
@@ -53,7 +53,7 @@ impl Plushie {
         let mut current = fixed_points_num + pattern.starting_circle;
         let mut round_starts: Vec<usize> = vec![];
         let mut round_counts: Vec<usize> = vec![];
-        for round in pattern.rounds {
+        for round in &pattern.rounds {
             round_starts.push(points.len());
             round_counts.push(count_anchors_produced(&round));
             height += height_per_round;
@@ -147,7 +147,7 @@ mod tests {
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
-        let plushie = Plushie::from_pattern(p);
+        let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 10);
         assert_eq!(
             plushie.edges,
@@ -186,7 +186,7 @@ mod tests {
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
-        let plushie = Plushie::from_pattern(p);
+        let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 9);
         assert_eq!(
             plushie.edges,
@@ -222,7 +222,7 @@ mod tests {
             fasten_off: true,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
-        let plushie = Plushie::from_pattern(p);
+        let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 15);
         assert_eq!(
             plushie.edges,
@@ -264,7 +264,7 @@ mod tests {
                 vec![Sc, Inc],
             ],
         };
-        let pl = Plushie::from_pattern(p);
+        let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 22);
         // pl.animate();
     }
@@ -278,7 +278,7 @@ mod tests {
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec]],
         };
-        let pl = Plushie::from_pattern(p);
+        let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 11);
         // pl.animate();
     }
@@ -292,7 +292,7 @@ mod tests {
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
         };
-        let pl = Plushie::from_pattern(p);
+        let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 15);
         // pl.animate();
     }
@@ -308,7 +308,7 @@ mod tests {
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Dec], vec![Dec]],
         };
         assert_eq!(p.rounds.len(), 3);
-        let pl = Plushie::from_pattern(p);
+        let pl = Plushie::from_pattern(&p);
         println!("{:?}", pl.points.as_vec());
         assert_eq!(pl.points[1].y, 4.0);
         assert_eq!(pl.points.len(), 14);

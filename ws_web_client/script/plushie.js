@@ -2,7 +2,7 @@ import * as create from "./lib/create";
 import * as simulation from "./lib/simulation";
 
 export default class Plushie {
-  constructor(status, guiData, gui) {
+  constructor(status, guiData, gui, pattern) {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
@@ -13,6 +13,7 @@ export default class Plushie {
     this.status = status;
     this.guiData = guiData;
     this.gui = gui;
+    this.pattern = pattern;
   }
 
   getId(obj) {
@@ -77,6 +78,10 @@ export default class Plushie {
       case "status":
         console.log("response", data);
         this.status.innerText = data;
+        break;
+      case "pattern_update":
+        console.log("new pattern");
+        this.pattern.innerText = data;
         break;
       default:
         console.error(`Unrecognized key: ${dict["key"]}`);

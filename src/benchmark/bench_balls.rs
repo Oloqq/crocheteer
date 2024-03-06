@@ -29,7 +29,7 @@ pub fn bench_small_ball(args: &GeneticArgs) {
     let best = execute_benchmark(args, params, cases, "small_ball", shape_fitness);
     if args.save_stl {
         let pattern = Pattern::from_genom(&(6, &best.tokens));
-        let mut plushie = Plushie::from_pattern(pattern);
+        let mut plushie = Plushie::from_pattern(&pattern);
         plushie.animate();
         save_mesh("src/benchmark/small_ball_generated.stl", plushie.to_mesh());
     }
@@ -54,7 +54,7 @@ pub fn bench_big_ball(args: &GeneticArgs) {
     let best = execute_benchmark(args, params, cases, "big_ball", shape_fitness);
     if args.save_stl {
         let pattern = Pattern::from_genom(&(6, &best.tokens));
-        let mut plushie = Plushie::from_pattern(pattern);
+        let mut plushie = Plushie::from_pattern(&pattern);
         plushie.animate();
         save_mesh("src/benchmark/big_ball_generated.stl", plushie.to_mesh());
     }

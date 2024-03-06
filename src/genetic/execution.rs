@@ -23,7 +23,7 @@ impl Runtime {
         log::info!("Processing program: {:?}", program);
         let pattern = Pattern::from_genom(&(MAGIC_RING, &program.tokens));
         let plushie = {
-            let mut p = Plushie::from_pattern(pattern);
+            let mut p = Plushie::from_pattern(&pattern);
             p.animate();
             p
         };

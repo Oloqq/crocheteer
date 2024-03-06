@@ -17,6 +17,8 @@ const customGui = {
 
 const pattern = document.getElementById("pattern");
 const updateButton = document.getElementById("update");
+const loadExampleButton = document.getElementById("example-btn");
+const loadExampleText = document.getElementById("example-name");
 const status = document.getElementById("status");
 
 updateButton.addEventListener("click", () => {
@@ -24,12 +26,18 @@ updateButton.addEventListener("click", () => {
   status.innerText = "sending...";
   simulator.send(`pattern ${text}`);
 });
+loadExampleButton.addEventListener("click", () => {
+  let text = loadExampleText.value;
+  console.log(text);
+  status.innerText = "asking for example...";
+  simulator.send(`load_example ${text}`);
+});
 
 function main() {
   const app = simulator.init();
   const gui = app.gui;
 
-  const simulationWorld = new Plushie(status, customGui, gui);
+  const simulationWorld = new Plushie(status, customGui, gui, pattern);
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {

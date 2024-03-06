@@ -70,7 +70,7 @@ impl PlushieSimulation {
             Err(_) => {
                 log::info!("The pattern could not be interpreted as genetic");
                 match Pattern::from_human_readable(pattern) {
-                    Ok(pattern) => Plushie::from_pattern(pattern),
+                    Ok(pattern) => Plushie::from_pattern(&pattern),
                     Err(e) => {
                         log::info!("The pattern could not be interpreted as human readable");
                         return Err(e);
@@ -168,6 +168,19 @@ impl Simulation for PlushieSimulation {
                 if let Stuffing::Centroids = self.plushie.stuffing {
                     let num: usize = tokens.get(1).unwrap().parse().unwrap();
                     self.plushie.set_centroid_num(num);
+                }
+            }
+            "load_example" => {
+                use crate::plushie::examples;
+                let name = tokens.get(1).unwrap();
+                match examples::get(name) {
+                    Some((pattern, plushie)) => {
+                        self.controls.need_init = true;
+                        self.plushie = plushie;
+                        self.send("pattern_update", &pattern.human_readable());
+                        self.send("status", "success");
+                    }
+                    None => self.send("status", "no such example"),
                 }
             }
             _ => log::error!("Unexpected msg: {msg}"),

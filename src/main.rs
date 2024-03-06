@@ -31,7 +31,7 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket {} => {
-            let plushie = examples::vase();
+            let (_, plushie) = examples::vase();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
@@ -55,7 +55,7 @@ fn main() {
             } else {
                 Pattern::from_file(pattern).unwrap()
             };
-            let mut plushie = Plushie::from_pattern(pattern);
+            let mut plushie = Plushie::from_pattern(&pattern);
 
             if stl.is_some() && ws || stl.is_none() && !ws {
                 unimplemented!("use either --stl or --ws");
@@ -74,8 +74,8 @@ fn main() {
 }
 
 fn exec_dev_action(num: usize) {
-    fn generate(name: &str, func: fn() -> Plushie) {
-        let mut plushie = func();
+    fn generate(name: &str, func: fn() -> (Pattern, Plushie)) {
+        let (_pat, mut plushie) = func();
         // println!(
         //     "{:?}",
         //     plushie.points.iter().map(|a| a.y).collect::<Vec<_>>()
