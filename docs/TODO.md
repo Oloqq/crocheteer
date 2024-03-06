@@ -27,3 +27,9 @@
   - repeats (subpatterns)
   - shorter round repeat notation (R1-R5:... -> 5:...)
   - handle mismatch of actual vs noted stitch counts gracefully
+
+- stl to shape conversion
+  - first -> shape refactor using kd trees
+
+- build an open vase
+  - require fasten off (FO) to actually fasten off

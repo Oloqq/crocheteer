@@ -22,17 +22,6 @@ pub enum Stuffing {
     Centroids,
 }
 
-/* Things to consider next
-- working the back or the front loop only (BLO/FLO)
-- switching "working position" like working the front loop, then going back and working the back loop
-- chains
-- attaching a chain to a set point
-    - how to calculate the anchors now available?
-- non-uniform stuffing
-- creations that are not closed at the top (like the vase)
-- handling heavily folded shapes
-*/
-
 #[derive(Clone, Serialize)]
 pub struct Plushie {
     points: Points,

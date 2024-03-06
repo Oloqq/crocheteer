@@ -20,17 +20,24 @@ impl Plushie {
         const ROOT_NODE: usize = 0;
         const TIP_NODE: usize = 1;
         use super::points::FIXED_POINTS_NUM;
+        let approximate_height = pattern.rounds.len() as f32 + 1.0;
+        let height_per_round = 1.0;
+        let desired_stitch_distance = 1.0;
 
         let start = Point::origin();
-        let end = Point::new(0.0, pattern.rounds.len() as f32 + 1.0, 0.0);
+        let end = Point::new(0.0, approximate_height, 0.0);
 
         let mut points = vec![start, end];
-
         let mut edges: Vec<Vec<usize>> = vec![vec![], vec![]];
         let mut height: f32 = 0.0;
 
-        points.append(&mut ring(pattern.starting_circle, height));
+        points.append(&mut ring(
+            pattern.starting_circle,
+            height,
+            desired_stitch_distance,
+        ));
 
+        // edges around root
         for i in FIXED_POINTS_NUM..pattern.starting_circle + FIXED_POINTS_NUM {
             edges[ROOT_NODE].push(i);
             edges.push(vec![i + 1]);
@@ -43,7 +50,7 @@ impl Plushie {
         for round in pattern.rounds {
             round_starts.push(points.len());
             round_counts.push(count_anchors_produced(&round));
-            height += 1.0;
+            height += height_per_round;
             let current_at_round_start = current;
             for stitch in round {
                 match stitch {
@@ -70,7 +77,11 @@ impl Plushie {
                     }
                 }
             }
-            points.append(&mut ring(current - current_at_round_start, height));
+            points.append(&mut ring(
+                current - current_at_round_start,
+                height,
+                desired_stitch_distance,
+            ));
         }
 
         *edges.last_mut().unwrap() = vec![];
@@ -79,7 +90,7 @@ impl Plushie {
         Plushie {
             points: Points::new(points),
             edges,
-            desired_stitch_distance: 1.0,
+            desired_stitch_distance,
             stuffing: Stuffing::Centroids,
             rounds: RoundsInfo::new(round_starts, round_counts),
             gravity: 5e-4,
@@ -91,16 +102,17 @@ impl Plushie {
     }
 }
 
-pub fn ring(nodes: usize, y: f32) -> Vec<Point> {
-    const RADIUS: f32 = 1.0;
+pub fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
+    let circumference = (nodes + 1) as f32 * desired_stitch_distance;
+    let radius = circumference / (2.0 * PI);
 
     let interval = 2.0 * PI / nodes as f32;
     let mut result: Vec<Point> = vec![];
 
     for i in 0..nodes {
         let rads = interval * i as f32;
-        let x = rads.cos() * RADIUS;
-        let z = rads.sin() * RADIUS;
+        let x = rads.cos() * radius;
+        let z = rads.sin() * radius;
         let point = Point::new(x, y, z);
         result.push(point);
     }
