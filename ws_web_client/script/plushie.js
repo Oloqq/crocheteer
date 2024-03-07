@@ -101,6 +101,8 @@ export default class Plushie {
 
     this.stitchPositions = [];
     for (let sph of this.stitchSpheres) {
+      if (sph.geometry) sph.geometry.dispose();
+      if (sph.material) sph.material.dispose();
       create.scene.remove(sph);
     }
     this.clearLinks();
@@ -119,6 +121,8 @@ export default class Plushie {
     }
 
     for (let sph of this.centroidSpheres) {
+      if (sph.geometry) sph.geometry.dispose();
+      if (sph.material) sph.material.dispose();
       create.scene.remove(sph);
     }
     this.centroidSpheres = [];

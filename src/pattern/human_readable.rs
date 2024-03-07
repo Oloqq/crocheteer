@@ -120,7 +120,10 @@ fn parse_starter(line: &str) -> Result<usize, ParseError> {
 
 fn get_repetitions(roundspec: &str) -> Result<usize, ParseError> {
     match roundspec.split_once("-") {
-        None => Ok(1),
+        None => match roundspec.parse::<usize>() {
+            Ok(num) => Ok(num),
+            Err(_) => Ok(1),
+        },
         Some((lhs, rhs)) => {
             let lhs_num: usize = match lhs.trim()[1..].parse() {
                 Ok(val) => val,
@@ -326,7 +329,6 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
-    #[ignore]
     fn test_get_repetitions_shortened() {
         assert_eq!(get_repetitions("4").unwrap(), 4);
     }
