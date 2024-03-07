@@ -97,7 +97,6 @@ impl Plushie {
         // connect the tip
         if let Some(tip) = tip_node {
             let last_round_count = *round_counts.last().unwrap();
-            assert!(last_round_count == pattern.ending_circle);
             edges[tip] = (points.len() - last_round_count..points.len()).collect();
         }
 
@@ -143,7 +142,6 @@ mod tests {
         use Stitch::Sc;
         let p = Pattern {
             starting_circle: 4,
-            ending_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
@@ -182,7 +180,6 @@ mod tests {
         use Stitch::Sc;
         let p = Pattern {
             starting_circle: 4,
-            ending_circle: 4,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
         };
@@ -218,7 +215,6 @@ mod tests {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 4,
-            ending_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
         };
@@ -251,7 +247,6 @@ mod tests {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 3,
             fasten_off: true,
             rounds: vec![
                 vec![Dec, Dec, Dec],
@@ -274,7 +269,6 @@ mod tests {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 3,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec]],
         };
@@ -288,7 +282,6 @@ mod tests {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
         };
@@ -303,7 +296,6 @@ mod tests {
         use Stitch::*;
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 1,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Dec], vec![Dec]],
         };

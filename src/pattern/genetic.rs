@@ -11,12 +11,10 @@ impl Pattern {
         assert!(starting_circle == 6 as usize);
         const IS_CLOSED: bool = true; // probably need to load it from a param (if genes should even handle open shapes)
 
-        let mut rounds = make_rounds(starting_circle, stitches);
-        let ending_circle = make_ending_circle_reasonable(&mut rounds);
+        let rounds = make_rounds(starting_circle, stitches);
 
         Self {
             starting_circle,
-            ending_circle,
             fasten_off: IS_CLOSED,
             rounds,
         }
@@ -54,26 +52,6 @@ fn make_rounds(start: usize, stitches: &Vec<Stitch>) -> Vec<Vec<Stitch>> {
     }
 
     rounds
-}
-
-fn make_ending_circle_reasonable(rounds: &mut Vec<Vec<Stitch>>) -> usize {
-    log::debug!("{rounds:?}");
-    const REASONABLE: usize = 12;
-    let mut len = match rounds.last() {
-        Some(round) => count_anchors_produced(round),
-        None => return 0,
-    };
-
-    while len > REASONABLE {
-        let decreases = len / 2;
-        let mut round = vec![Stitch::Dec; decreases];
-        if len % 2 == 1 {
-            round.push(Stitch::Sc);
-        }
-        len = count_anchors_produced(&round);
-        rounds.push(round);
-    }
-    len
 }
 
 #[cfg(test)]
@@ -143,16 +121,5 @@ mod tests {
                 vec![Sc, Inc]
             ]
         );
-    }
-
-    #[test]
-    fn test_ending_circle_reasonable() {
-        let mut rounds = vec![vec![Inc; 6], vec![Inc; 12]];
-        make_ending_circle_reasonable(&mut rounds);
-        assert_eq!(rounds, vec![vec![Inc; 6], vec![Inc; 12], vec![Dec; 12]]);
-
-        let g: Genom = (6, &vec![Inc; 18]);
-        let p = Pattern::from_genom(&g);
-        assert_eq!(p.rounds, vec![vec![Inc; 6], vec![Inc; 12], vec![Dec; 12]]);
     }
 }

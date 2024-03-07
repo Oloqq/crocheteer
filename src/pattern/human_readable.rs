@@ -79,21 +79,9 @@ impl Pattern {
             }
         }
 
-        let last_round = match rounds.last() {
-            Some(x) => x,
-            None => return Err("no rounds".into()),
-        };
-        let ending_circle = count_anchors_produced(last_round);
-        if ending_circle > 12 {
-            println!(
-                "Plushie really shouldn't be used with huge closing circles (last round) right now"
-            );
-        }
-
         Ok(Self {
             starting_circle,
             fasten_off,
-            ending_circle,
             rounds,
         })
     }
@@ -247,7 +235,6 @@ mod tests {
     fn test_serialization_basic() {
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -264,7 +251,6 @@ FO
     fn test_serialization_basic_no_fasten_off() {
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -279,7 +265,6 @@ R2: 5 sc, inc (7)
     fn test_serialization_repeated() {
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 6,
             fasten_off: true,
             rounds: vec![
                 vec![Sc, Sc, Sc, Inc, Dec],
@@ -303,7 +288,6 @@ FO
     fn test_serialization_repeated_no_fasten_off() {
         let p = Pattern {
             starting_circle: 6,
-            ending_circle: 6,
             fasten_off: false,
             rounds: vec![
                 vec![Sc, Sc, Sc, Inc, Dec],
@@ -342,7 +326,6 @@ R6: 3 sc, inc, dec (6)
 
         let expected = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -358,7 +341,6 @@ R6: 3 sc, inc, dec (6)
 
         let expected = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -373,7 +355,6 @@ R6: 3 sc, inc, dec (6)
 
         let expected = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -388,7 +369,6 @@ R6: 3 sc, inc, dec (6)
 
         let expected = Pattern {
             starting_circle: 6,
-            ending_circle: 7,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
         };
@@ -406,7 +386,6 @@ R6: 3 sc, inc, dec (6)
 
         let expected = Pattern {
             starting_circle: 6,
-            ending_circle: 6,
             fasten_off: true,
             rounds: vec![
                 vec![Sc, Sc, Sc, Inc, Dec],

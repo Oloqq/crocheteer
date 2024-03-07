@@ -90,20 +90,14 @@ impl PatternBuilder {
         if let Some(error) = self.has_error {
             return Err(error);
         }
-        let last_round = match self.rounds.last() {
-            Some(round) => round,
-            None => return Err((0, "Pattern must have at least one round".into())),
-        };
 
         Ok(Pattern {
             starting_circle: self.starting_ring,
-            ending_circle: last_round.len(),
             fasten_off: false,
             rounds: self.rounds,
         })
     }
 
-    #[allow(unused)]
     pub fn fasten_off(self) -> Result<Pattern, (usize, String)> {
         let mut ret = self.loose_end()?;
         ret.fasten_off = true;
@@ -118,11 +112,6 @@ mod tests {
     use Stitch::*;
 
     #[test]
-    fn test_detects_no_rounds() {
-        assert!(PatternBuilder::new(6).loose_end().is_err());
-    }
-
-    #[test]
     fn test_full_round() {
         let mut p = PatternBuilder::new(6);
         assert_eq!(p.rounds.len(), 0);
@@ -132,7 +121,6 @@ mod tests {
         assert_eq!(p.rounds[1].len(), 6);
         let pat = p.loose_end().unwrap();
         assert_eq!(pat.fasten_off, false);
-        assert_eq!(pat.ending_circle, 6);
     }
 
     #[test]
@@ -145,7 +133,6 @@ mod tests {
         assert_eq!(p.rounds[1].len(), 6);
         let pat = p.fasten_off().unwrap();
         assert_eq!(pat.fasten_off, true);
-        assert_eq!(pat.ending_circle, 6);
     }
 
     #[test]
