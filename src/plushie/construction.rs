@@ -175,7 +175,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_from_pattern_no_fasten_off() {
         use Stitch::Sc;
         let p = Pattern {
@@ -189,21 +188,21 @@ mod tests {
             plushie.edges,
             vec![
                 // 0 ->
-                vec![2, 3, 4, 5],
+                vec![1, 2, 3, 4],
                 // 1 ->
-                vec![3, 6],
+                vec![2, 5],
                 // 2 ->
-                vec![4, 7],
+                vec![3, 6],
                 // 3 ->
-                vec![5, 8],
+                vec![4, 7],
                 // 4 ->
-                vec![6, 9],
+                vec![5, 8],
                 // 5 ->
-                vec![7],
+                vec![6],
                 // 6 ->
-                vec![8],
+                vec![7],
                 // 7 ->
-                vec![9],
+                vec![8],
                 // 8 ->
                 vec![],
             ]
