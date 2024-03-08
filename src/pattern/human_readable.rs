@@ -1,6 +1,61 @@
 use super::{stitches::count_anchors_produced, Pattern, Stitch};
+use ParseErrorKind::*;
 
-type ParseError = String;
+#[derive(Debug)]
+struct ParseError {
+    line: Option<usize>,
+    reason: ParseErrorKind,
+}
+
+#[derive(Debug)]
+enum ParseErrorKind {
+    MissingStarter,
+    ExpectedNumber,
+    MultipleRounds,
+    ExpectedRound,
+    ExpectedStitchNumber,
+    StitchNumberMismatch { written: usize, actual: usize },
+    Unsupported(&'static str),
+}
+
+impl ParseError {
+    fn new(reason: ParseErrorKind) -> Self {
+        Self { line: None, reason }
+    }
+
+    fn at_line(line: usize, reason: ParseErrorKind) -> Self {
+        Self {
+            line: Some(line + 1),
+            reason,
+        }
+    }
+
+    fn description(&self) -> String {
+        let description: String = match self.reason {
+            MissingStarter => "Expected starting round".into(),
+            ExpectedNumber => "Expected a number".into(),
+            MultipleRounds => "Expected a round number or notation of multiple rounds".into(),
+            ExpectedRound => "Expected a round".into(),
+            ExpectedStitchNumber => {
+                "Expected stitch number produced by current round in parentheses".into()
+            }
+            StitchNumberMismatch { written, actual } => {
+                format!("Round produces {actual} stitches, but user expected ({written}) stitches")
+            }
+            Unsupported(details) => details.into(),
+        };
+        match self.line {
+            Some(x) => format!("Line: {x}: {description}"),
+            None => description,
+        }
+    }
+}
+
+impl From<ParseError> for String {
+    fn from(value: ParseError) -> Self {
+        value.description()
+    }
+}
 
 impl Pattern {
     pub fn human_readable(&self) -> String {
@@ -47,11 +102,11 @@ impl Pattern {
     pub fn from_human_readable(text: &str) -> Result<Self, String> {
         let lines: Vec<&str> = text.split("\n").collect();
         let mut lines = lines.iter().enumerate();
-        let (mut _lnum, mut line) = lines.next().expect("content shouldn't be empty");
+        let (mut lnum, mut line) = lines.next().expect("content shouldn't be empty");
         while line.trim().starts_with("#") || line.is_empty() {
-            (_lnum, line) = lines.next().expect("EOF");
+            (lnum, line) = lines.next().expect("EOF");
         }
-        let starting_circle = parse_starter(line).unwrap();
+        let starting_circle = parse_starter(lnum, line)?;
 
         let mut fasten_off = false;
         let mut rounds: Vec<Vec<Stitch>> = vec![];
@@ -72,7 +127,12 @@ impl Pattern {
 
             let (repetitions, stitches) = match parse_line(line) {
                 Ok(x) => x,
-                Err(e) => return Err(format!("Line {}: {e}", lnum + 1)),
+                Err(mut e) => {
+                    if e.line.is_none() {
+                        e.line = Some(lnum)
+                    }
+                    return Err(e.into());
+                }
             };
             for _ in 0..repetitions {
                 rounds.push(stitches.clone());
@@ -87,21 +147,24 @@ impl Pattern {
     }
 }
 
-fn parse_starter(line: &str) -> Result<usize, ParseError> {
+fn parse_starter(lnum: usize, line: &str) -> Result<usize, ParseError> {
     let no_comment = match line.split_once("#") {
         Some((x, _comment)) => x.trim(),
         None => line,
     };
     let tokens: Vec<&str> = no_comment.split(" ").collect();
     return if tokens.len() != 4 {
-        Err("Syntax error: expected starting round".into())
+        Err(ParseError::at_line(lnum, MissingStarter))
     } else if tokens[1].to_ascii_uppercase() != "MR" {
-        Err("Expected a magic ring at the start".into())
+        Err(ParseError::at_line(
+            lnum,
+            Unsupported("Expected a magic ring (MR) at the start"),
+        ))
     } else {
         if let Ok(num) = tokens[2].parse() {
             Ok(num)
         } else {
-            Err("Couldn't parse a number".into())
+            Err(ParseError::at_line(lnum, ExpectedNumber))
         }
     };
 }
@@ -115,11 +178,11 @@ fn get_repetitions(roundspec: &str) -> Result<usize, ParseError> {
         Some((lhs, rhs)) => {
             let lhs_num: usize = match lhs.trim()[1..].parse() {
                 Ok(val) => val,
-                Err(_) => return Err("Couldn't parse repetitions".into()),
+                Err(_) => return Err(ParseError::new(MultipleRounds)),
             };
             let rhs_num: usize = match rhs.trim()[1..].parse() {
                 Ok(val) => val,
-                Err(_) => return Err("Couldn't parse repetitions".into()),
+                Err(_) => return Err(ParseError::new(MultipleRounds)),
             };
             Ok(rhs_num - lhs_num + 1)
         }
@@ -136,7 +199,7 @@ fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
                 if let Ok(num) = num {
                     (num, stitch_str_1)
                 } else {
-                    return Err(format!("Couldn't parse a number: {num_str}"));
+                    return Err(ParseError::new(ExpectedNumber));
                 }
             }
             None => (1, token),
@@ -154,12 +217,12 @@ fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
 fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
     let (roundspec, rest) = match line.split_once(":") {
         Some(x) => x,
-        None => return Err("Expected a round".into()),
+        None => return Err(ParseError::new(ExpectedRound)),
     };
     let repetitions = get_repetitions(roundspec)?;
     let (stitches, anchors_str) = match rest.split_once("(") {
         Some(x) => x,
-        None => return Err("Expected current round's stitch number".into()),
+        None => return Err(ParseError::new(ExpectedStitchNumber)),
     };
 
     let anchors: usize = anchors_str
@@ -169,11 +232,12 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
         .parse()
         .unwrap();
     let stitches = parse_stitches(stitches)?;
-    if anchors != count_anchors_produced(&stitches) {
-        return Err(format!(
-            "Stitches noted ({anchors}) does not match actually produced: {}",
-            count_anchors_produced(&stitches)
-        ));
+    let produced = count_anchors_produced(&stitches);
+    if anchors != produced {
+        return Err(ParseError::new(StitchNumberMismatch {
+            written: anchors,
+            actual: produced,
+        }));
     }
 
     Ok((repetitions, stitches))
@@ -393,6 +457,28 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
+            ],
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    #[ignore = "todo"]
+    fn test_subpattern() {
+        let src = "R1: MR 4 (4)
+        R2: [sc, inc] x 2 (6)
+        R3: 6 sc
+        R4: [dec, sc] x 2 (4)
+        FO
+        ";
+
+        let expected = Pattern {
+            starting_circle: 4,
+            fasten_off: true,
+            rounds: vec![
+                vec![Sc, Inc, Sc, Inc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Dec, Sc, Dec, Sc],
             ],
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
