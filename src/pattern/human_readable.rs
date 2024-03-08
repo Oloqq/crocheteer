@@ -192,11 +192,11 @@ fn get_repetitions(roundspec: &str) -> Result<usize, ParseError> {
 }
 
 fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
-    let tokens = stitches_str.split(", ").into_iter();
+    let mut tokens = stitches_str.split(", ").into_iter();
     let mut result = vec![];
-    for token in tokens {
+    while let Some(token) = tokens.next() {
         let (reps, insertion) = if token.starts_with("[") {
-            parse_subpattern()?
+            parse_subpattern(&mut tokens)?
         } else {
             let (reps, stitch) = parse_stitch(token)?;
             (reps, vec![stitch])
@@ -225,7 +225,10 @@ fn parse_stitch(token: &str) -> Result<(usize, Stitch), ParseError> {
     Ok((reps, stitch))
 }
 
-fn parse_subpattern() -> Result<(usize, Vec<Stitch>), ParseError> {
+fn parse_subpattern<'a, I>(tokens: &mut I) -> Result<(usize, Vec<Stitch>), ParseError>
+where
+    I: Iterator<Item = &'a str>,
+{
     todo!()
 }
 
