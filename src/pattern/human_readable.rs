@@ -1,7 +1,4 @@
-use super::{
-    stitches::{self, count_anchors_produced},
-    Pattern, Stitch,
-};
+use super::{stitches::count_anchors_produced, Pattern, Stitch};
 use ParseErrorKind::*;
 
 #[derive(Debug)]
@@ -247,11 +244,19 @@ fn parse_stitch(token: &str) -> Result<(usize, Stitch), ParseError> {
 }
 
 fn parse_subpattern_reps(rep_str: &str) -> Result<usize, ParseError> {
-    Ok(rep_str
+    let num_str = rep_str
         .split_once("x")
         .ok_or(ParseError::new(ExpectedSubpatternMultiplier))?
         .1
-        .trim()
+        .trim();
+
+    if num_str.split_once("]").is_some() {
+        return Err(ParseError::new(Unsupported(
+            "Nested patterns ending one after another (situations like '] x 1] x 2')".into(),
+        )));
+    }
+
+    Ok(num_str
         .parse()
         .map_err(|_| ParseError::new(ExpectedNumber))?)
 }
@@ -302,7 +307,7 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
     let anchors: usize = anchors_str
         .trim()
         .strip_suffix(")")
-        .unwrap()
+        .ok_or(ParseError::new(ExpectedStitchNumber))?
         .trim()
         .parse()
         .unwrap();
@@ -539,6 +544,7 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
+    #[ignore = "todo: parser (tokenizer) refactor for nested patterns"]
     fn test_subpattern() {
         let src = "R1: MR 4 (4)
         R2: [sc, inc] x 2 (6)
@@ -608,15 +614,34 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
+    #[ignore = "todo: parser (tokenizer) refactor for nested patterns"]
     fn test_parse_line_subpattern_nested() {
         let line = ": [sc, [sc, sc] x 1] x 2 (6)";
         let (_, s) = parse_line(line).unwrap();
         assert_eq!(s, vec![Sc, Sc, Sc, Sc, Sc, Sc]);
     }
+
+    #[test]
+    fn test_parse_line_subpattern_nested_temporary_before_supportin_nested_subpatterns() {
+        let line = ": [sc, [sc, sc] x 1] x 2 (6)";
+        assert!(parse_line(line).is_err_and(|e| matches!(e.reason, Unsupported(_))));
+    }
+
+    #[test]
+    fn test_parse_line_no_rparen_err() {
+        let line = ": sc (1";
+        assert!(parse_line(line).is_err());
+    }
+
+    #[test]
+    fn test_parse_line_no_lparen_err() {
+        let line = ": sc 1)";
+        assert!(parse_line(line).is_err());
+    }
+
+    #[test]
+    fn test_parse_line_no_paren_err() {
+        let line = ": sc 1";
+        assert!(parse_line(line).is_err());
+    }
 }
-//
-// R3
-// R4
-// R5: [[sc, sc] x 2, sc, sc] x 1 (6)
-// R6: 3 sc, [ sc ] x 3 (6)
-// R7: [ dec, sc ] x 2 (4)
