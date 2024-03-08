@@ -29,3 +29,18 @@ review of the various skeleton extraction methods that are
 available.
 
 # L1-Medial Skeleton of Point Cloud
+> seems similar to my solution
+>
+> even uses a similar weight function
+> $w(r) = e^{-r/(h/2)^2}
+>> their function looks better
+>
+> "is a fast decaying smooth function with support radius h defining the size of the supporting local neighborhood for L1-medial skeleton construction"
+>
+> they take a sample out of a raw scan (downsampling)
+> I could probably also skip every X point for efficiency
+>
+> neighborhood size gradually increases as the algorithm works, this could also be useful especially if a centroid is not stressed
+>>
+
+mentioned ROSA algo https://github.com/taiya/rosa
