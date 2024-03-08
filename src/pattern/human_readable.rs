@@ -14,8 +14,9 @@ enum ParseErrorKind {
     MultipleRounds,
     ExpectedRound,
     ExpectedStitchNumber,
+    UnknownStitch(String),
     StitchNumberMismatch { written: usize, actual: usize },
-    Unsupported(&'static str),
+    Unsupported(String),
 }
 
 impl ParseError {
@@ -31,7 +32,7 @@ impl ParseError {
     }
 
     fn description(&self) -> String {
-        let description: String = match self.reason {
+        let description: String = match &self.reason {
             MissingStarter => "Expected starting round".into(),
             ExpectedNumber => "Expected a number".into(),
             MultipleRounds => "Expected a round number or notation of multiple rounds".into(),
@@ -43,6 +44,7 @@ impl ParseError {
                 format!("Round produces {actual} stitches, but user expected ({written}) stitches")
             }
             Unsupported(details) => details.into(),
+            UnknownStitch(found) => format!("Unknown stitch: {found}"),
         };
         match self.line {
             Some(x) => format!("Line: {x}: {description}"),
@@ -158,7 +160,7 @@ fn parse_starter(lnum: usize, line: &str) -> Result<usize, ParseError> {
     } else if tokens[1].to_ascii_uppercase() != "MR" {
         Err(ParseError::at_line(
             lnum,
-            Unsupported("Expected a magic ring (MR) at the start"),
+            Unsupported("Expected a magic ring (MR) at the start".into()),
         ))
     } else {
         if let Ok(num) = tokens[2].parse() {
@@ -190,28 +192,41 @@ fn get_repetitions(roundspec: &str) -> Result<usize, ParseError> {
 }
 
 fn parse_stitches(stitches_str: &str) -> Result<Vec<Stitch>, ParseError> {
-    let tokens = stitches_str.split(", ");
+    let tokens = stitches_str.split(", ").into_iter();
     let mut result = vec![];
     for token in tokens {
-        let (reps, stitch_str) = match token.trim().split_once(" ") {
-            Some((num_str, stitch_str_1)) => {
-                let num = num_str.trim().parse();
-                if let Ok(num) = num {
-                    (num, stitch_str_1)
-                } else {
-                    return Err(ParseError::new(ExpectedNumber));
-                }
-            }
-            None => (1, token),
+        let (reps, insertion) = if token.starts_with("[") {
+            parse_subpattern()?
+        } else {
+            let (reps, stitch) = parse_stitch(token)?;
+            (reps, vec![stitch])
         };
-
-        let stitch = Stitch::from_str(stitch_str).expect("not recognized stitch");
-        for _ in 0..reps {
-            result.push(stitch);
-        }
+        result.extend(insertion.iter().cycle().take(insertion.len() * reps));
     }
 
     Ok(result)
+}
+
+fn parse_stitch(token: &str) -> Result<(usize, Stitch), ParseError> {
+    let (reps, stitch_str) = match token.trim().split_once(" ") {
+        Some((num_str, stitch_str_1)) => {
+            let num = num_str.trim().parse();
+            if let Ok(num) = num {
+                (num, stitch_str_1)
+            } else {
+                return Err(ParseError::new(ExpectedNumber));
+            }
+        }
+        None => (1, token),
+    };
+    // TODO use ok_or everywhere
+    let stitch = Stitch::from_str(stitch_str)
+        .ok_or(ParseError::new(UnknownStitch(stitch_str.to_owned())))?;
+    Ok((reps, stitch))
+}
+
+fn parse_subpattern() -> Result<(usize, Vec<Stitch>), ParseError> {
+    todo!()
 }
 
 fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
@@ -463,7 +478,6 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
-    #[ignore = "todo"]
     fn test_subpattern() {
         let src = "R1: MR 4 (4)
         R2: [sc, inc] x 2 (6)
