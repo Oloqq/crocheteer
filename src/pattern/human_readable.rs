@@ -121,7 +121,6 @@ impl Pattern {
 
         let conf = if let Some(num) = parse_centroid_num(line)? {
             (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
-            println!("{line}");
             SimulationConfig { centroids: num }
         } else {
             SimulationConfig::default()

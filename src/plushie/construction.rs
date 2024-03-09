@@ -31,8 +31,8 @@ impl Plushie {
         let mut edges: Vec<Vec<usize>> = vec![vec![]];
         let mut height: f32 = 0.0;
 
+        let approximate_height = pattern.rounds.len() as f32 + 1.0;
         if tip_node.is_some() {
-            let approximate_height = pattern.rounds.len() as f32 + 1.0;
             points.push(Point::new(0.0, approximate_height, 0.0));
             edges.push(vec![]);
         }
@@ -105,6 +105,17 @@ impl Plushie {
             false => vec![V::zeros()],
         };
 
+        let centroids = {
+            let cnum = pattern.simulation_config.centroids;
+            let margin = 2.0;
+            let ceiling = approximate_height - margin;
+            let floor = margin;
+            let spacing = (ceiling - floor) / cnum as f32;
+            (0..cnum)
+                .map(|i| Point::new(0.0, floor + spacing * i as f32, 0.0))
+                .collect()
+        };
+
         Plushie {
             points: Points::new(points, constraints),
             edges,
@@ -114,7 +125,7 @@ impl Plushie {
             gravity: 5e-4,
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,
-            centroids: vec![Point::new(0.0, 2.0, 0.0), Point::new(0.0, 4.0, 0.0)],
+            centroids,
             centroid_force: 0.05,
         }
     }

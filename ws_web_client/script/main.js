@@ -21,11 +21,13 @@ const loadExampleButton = document.getElementById("example-btn");
 const loadExampleText = document.getElementById("example-name");
 const status = document.getElementById("status");
 
-updateButton.addEventListener("click", () => {
+function sendPattern() {
   let text = pattern.value;
   status.innerText = "sending...";
   simulator.send(`pattern ${text}`);
-});
+}
+
+updateButton.addEventListener("click", sendPattern);
 loadExampleButton.addEventListener("click", () => {
   let text = loadExampleText.value;
   console.log(text);
@@ -62,6 +64,16 @@ function main() {
   centroids.open();
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);
+  status.innerText = "Waiting for websocket connection...";
+  initialSendPattern();
+}
+
+function initialSendPattern() {
+  if (simulator.isWebSocketOpened()) {
+    sendPattern();
+  } else {
+    setTimeout(initialSendPattern, 1000);
+  }
 }
 
 main();

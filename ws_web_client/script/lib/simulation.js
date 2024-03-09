@@ -1,7 +1,7 @@
 import { app } from "./init";
 import { controlViaWebsocket } from './websocket';
 
-export { send } from "./websocket";
+export { send, isOpened as isWebSocketOpened } from "./websocket";
 
 function animate() {
   requestAnimationFrame(animate);

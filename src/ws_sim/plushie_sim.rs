@@ -143,7 +143,7 @@ impl Simulation for PlushieSimulation {
                     self.send("status", format!("Couldn't parse: {}", error).as_str());
                 } else {
                     self.controls.need_init = true;
-                    self.send("status", "success");
+                    self.send("status", "Loaded the pattern");
                 }
             }
             "pause" => controls.paused = true,
@@ -178,7 +178,7 @@ impl Simulation for PlushieSimulation {
                         self.controls.need_init = true;
                         self.plushie = plushie;
                         self.send("pattern_update", &pattern.human_readable());
-                        self.send("status", "success");
+                        self.send("status", "Loaded an example");
                     }
                     None => self.send("status", "no such example"),
                 }
