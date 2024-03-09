@@ -110,9 +110,9 @@ impl Pattern {
     pub fn from_human_readable(text: &str) -> Result<Self, String> {
         let lines: Vec<&str> = text.split("\n").collect();
         let mut lines = lines.iter().enumerate();
-        let (mut lnum, mut line) = lines.next().expect("content shouldn't be empty");
+        let (mut lnum, mut line) = lines.next().ok_or("No content".to_string())?;
         while line.trim().starts_with("#") || line.is_empty() {
-            (lnum, line) = lines.next().expect("EOF");
+            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
         }
         let starting_circle = parse_starter(lnum, line)?;
 
