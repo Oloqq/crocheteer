@@ -14,6 +14,7 @@
 - websocket server/client
   - add a <select> with sample patterns instead of the text input
   - allow changing simulation speed (corresponds to time variable in step)
+  - save pattern source on update
 
 - handling bigger shapes
   - stuff gets squished at Y=0, once some of the centroids go up
@@ -37,3 +38,7 @@
 - frontend
   - highlight points when cursor is on the text area
 
+- deployment
+  - make rust serve the index.html
+  - heroku https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust
+  - should be $5 per month
