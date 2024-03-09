@@ -100,8 +100,13 @@ impl Plushie {
             edges[tip] = (points.len() - last_round_count..points.len()).collect();
         }
 
+        let constraints = match pattern.fasten_off {
+            true => vec![V::zeros(), V::new(0.1, 0.1, 0.1)],
+            false => vec![V::zeros()],
+        };
+
         Plushie {
-            points: Points::new(points, vec![V::zeros(), V::new(0.1, 0.1, 0.1)]),
+            points: Points::new(points, constraints),
             edges,
             desired_stitch_distance,
             stuffing: Stuffing::Centroids,
