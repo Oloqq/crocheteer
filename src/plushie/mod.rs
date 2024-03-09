@@ -9,6 +9,7 @@ use self::points::Points;
 use super::common::*;
 
 mod centroid_stuffing;
+pub mod config;
 mod construction;
 mod conversions;
 pub mod examples;

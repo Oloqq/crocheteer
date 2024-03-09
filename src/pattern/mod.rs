@@ -6,6 +6,8 @@ pub mod stitches;
 
 use serde::{Deserialize, Serialize};
 
+use crate::plushie::config::SimulationConfig;
+
 pub use self::stitches::Stitch;
 
 // enum Starter {
@@ -18,6 +20,7 @@ pub struct Pattern {
     pub starting_circle: usize,
     pub fasten_off: bool,
     pub rounds: Vec<Vec<Stitch>>,
+    pub simulation_config: SimulationConfig,
 }
 
 #[cfg(test)]
@@ -31,6 +34,7 @@ mod tests {
             starting_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
+            simulation_config: SimulationConfig::default(),
         };
         let s = serde_yaml::to_string(&p1).unwrap();
         println!("{s}");

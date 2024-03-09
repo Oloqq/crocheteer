@@ -1,3 +1,5 @@
+use crate::plushie::config::SimulationConfig;
+
 use super::{stitches::count_anchors_produced, Pattern, Stitch};
 use ParseErrorKind::*;
 
@@ -17,6 +19,7 @@ enum ParseErrorKind {
     UnknownStitch(String),
     StitchNumberMismatch { written: usize, actual: usize },
     ExpectedSubpatternMultiplier,
+    MetaError,
     Internal(String),
     Unsupported(String),
 }
@@ -51,6 +54,7 @@ impl ParseError {
             Internal(details) => {
                 format!("Parser error. Please open a github issue with your pattern and this message: {details}")
             }
+            MetaError => "Metadata error. Expected '@centroids = <number>'".into(),
         };
         match self.line {
             Some(x) => format!("Line: {x}: {description}"),
@@ -114,6 +118,18 @@ impl Pattern {
         while line.trim().starts_with("#") || line.is_empty() {
             (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
         }
+
+        let conf = if let Some(num) = parse_centroid_num(line)? {
+            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
+            println!("{line}");
+            SimulationConfig { centroids: num }
+        } else {
+            SimulationConfig::default()
+        };
+
+        while line.trim().starts_with("#") || line.is_empty() {
+            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
+        }
         let starting_circle = parse_starter(lnum, line)?;
 
         let mut fasten_off = false;
@@ -151,14 +167,36 @@ impl Pattern {
             starting_circle,
             fasten_off,
             rounds,
+            simulation_config: conf,
         })
     }
+}
+
+fn parse_centroid_num(line: &str) -> Result<Option<usize>, ParseError> {
+    let no_comment = match line.split_once("#") {
+        Some((x, _comment)) => x.trim(),
+        None => line,
+    };
+    return if let Some(meta) = no_comment.trim().strip_prefix("@") {
+        let (name, val) = meta.split_once("=").ok_or(ParseError::new(MetaError))?;
+        if name.trim() == "centroids" {
+            Ok(Some(
+                val.trim()
+                    .parse()
+                    .map_err(|_| ParseError::new(ExpectedNumber))?,
+            ))
+        } else {
+            Err(ParseError::new(MetaError))
+        }
+    } else {
+        Ok(None)
+    };
 }
 
 fn parse_starter(lnum: usize, line: &str) -> Result<usize, ParseError> {
     let no_comment = match line.split_once("#") {
         Some((x, _comment)) => x.trim(),
-        None => line,
+        None => line.trim(),
     };
     let tokens: Vec<&str> = no_comment.split(" ").collect();
     return if tokens.len() != 4 {
@@ -390,6 +428,7 @@ mod tests {
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -405,6 +444,7 @@ FO
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -425,6 +465,7 @@ R2: 5 sc, inc (7)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
+            simulation_config: SimulationConfig::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -448,6 +489,7 @@ FO
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
+            simulation_config: SimulationConfig::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -480,6 +522,24 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig { centroids: 2 },
+        };
+        assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_loading_with_centroid_num() {
+        let src = "@centroids = 3
+        R1: MR 6 (6)
+        R2: 5 sc, inc (7)
+        FO
+        ";
+
+        let expected = Pattern {
+            starting_circle: 6,
+            fasten_off: true,
+            rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig { centroids: 3 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -494,6 +554,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig { centroids: 2 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -508,6 +569,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig { centroids: 2 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -521,6 +583,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
+            simulation_config: SimulationConfig { centroids: 2 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -544,6 +607,7 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
+            simulation_config: SimulationConfig { centroids: 2 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -554,7 +618,7 @@ R6: 3 sc, inc, dec (6)
         R2: [sc, inc] x 2 (6)
         R3: [sc, [sc, sc] x 1,] x 2 (6)
         R4: [sc] x 3, [ sc ] x 3 (6)
-        R5: [[sc, sc] x 2, sc, sc] x 1 (6)
+        R5: [,[sc, sc] x 2, sc, sc] x 1 (6)
         R6: 3 sc, [ sc ] x 3 (6)
         R7: [ dec, sc ] x 2 (4)
         FO
@@ -568,8 +632,10 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
+                vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Dec, Sc, Dec, Sc],
             ],
+            simulation_config: SimulationConfig { centroids: 2 },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
