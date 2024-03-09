@@ -19,6 +19,7 @@
         #status {
             background-color: aliceblue;
             padding: 5px;
+            max-width: 50vw;
         }
 
         #pattern {
@@ -65,10 +66,9 @@ R2: sc, inc, sc, inc (6) # each line must end with a number of stitches produced
 : 6 sc (6) # colons are mandatory though
 2: 6 sc (6) # repeated rounds are denoted with a number
 R0-R1: 6 sc (6) # but if you want to number your repeating rounds, you can!
-# I haven't yet implemented repetitions like "[sc, inc] x 2", stay tuned
-: sc, inc, sc, inc, 2 sc (8)
-: 2 sc, sc, inc, sc, inc, 2 sc (10)
-R6: dec, 3 sc, inc, inc, 3 sc (11)
+: [sc, inc] x 2, 2 sc (8) # subpatterns are supported
+: [inc, [sc,] x 3,] x 2 (10) # but nested subpatterns have some issues so comma before closing bracket is mandatory when nesting
+R6: dec, 3 sc, [,[inc] x 2,] x 1, 3 sc (11) # similarly, two opening brackets have to be separated, I'll fix it one day
 R7: dec, 4 sc, inc, inc, 3 sc (12)
 R8: dec, 4 sc, inc, inc, 2 sc, dec (12)
 R9: 5 sc, inc, 2 sc, inc, 3 sc (14)

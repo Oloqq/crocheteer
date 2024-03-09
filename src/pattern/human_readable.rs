@@ -237,7 +237,6 @@ fn parse_stitch(token: &str) -> Result<(usize, Stitch), ParseError> {
         }
         None => (1, token),
     };
-    // TODO use ok_or everywhere
     let stitch = Stitch::from_str(stitch_str)
         .ok_or(ParseError::new(UnknownStitch(stitch_str.to_owned())))?;
     Ok((reps, stitch))
@@ -252,7 +251,7 @@ fn parse_subpattern_reps(rep_str: &str) -> Result<usize, ParseError> {
 
     if num_str.split_once("]").is_some() {
         return Err(ParseError::new(Unsupported(
-            "Nested patterns ending one after another (situations like '] x 1] x 2')".into(),
+            "Nested patterns ending one after another are not fully supported (situations like '] x 1] x 2'). Workadound: place commas before ending bracket like: ',] x 1,] x 2'".into(),
         )));
     }
 
@@ -275,6 +274,12 @@ where
     };
 
     let subpattern_reps = if !first.is_empty() {
+        if let Some(_) = first.strip_prefix("[") {
+            return Err(ParseError::new(Unsupported(
+                "Nested patterns starting one after another are not fully supported (situations like '[[sc] x 1, sc] x 1'). Workadound: place commas between opening brackets like: '[,[sc] x 1, sc] x 1'".into(),
+            )));
+        }
+
         if let Some((stitch_str, rep_str)) = first.split_once("]") {
             if !stitch_str.is_empty() {
                 let (num, stitch) = parse_stitch(stitch_str)?;
@@ -313,7 +318,7 @@ fn parse_line(line: &str) -> Result<(usize, Vec<Stitch>), ParseError> {
         .unwrap();
 
     let stitches = {
-        let mut tokens = stitches.split(", ").into_iter();
+        let mut tokens = stitches.split(",").into_iter();
         parse_stitches(&mut tokens)?.0
     };
     let produced = count_anchors_produced(&stitches);
@@ -544,11 +549,10 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
-    #[ignore = "todo: parser (tokenizer) refactor for nested patterns"]
     fn test_subpattern() {
         let src = "R1: MR 4 (4)
         R2: [sc, inc] x 2 (6)
-        R3: [sc, [sc, sc] x 1] x 2 (6)
+        R3: [sc, [sc, sc] x 1,] x 2 (6)
         R4: [sc] x 3, [ sc ] x 3 (6)
         R5: [[sc, sc] x 2, sc, sc] x 1 (6)
         R6: 3 sc, [ sc ] x 3 (6)
@@ -614,9 +618,30 @@ R6: 3 sc, inc, dec (6)
     }
 
     #[test]
+    fn test_parse_line_subpattern_immediate_nesting_workaround() {
+        let line = ": [,[sc, sc] x 2, sc, sc] x 1 (6)";
+        let (_, s) = parse_line(line).unwrap();
+        assert_eq!(s, vec![Sc, Sc, Sc, Sc, Sc, Sc]);
+    }
+
+    #[test]
+    fn test_parse_line_subpattern_immediate_nesting_and_closing_workaround() {
+        let line = ": [,[sc] x 2, 4 sc] x 1 (6)";
+        let (_, s) = parse_line(line).unwrap();
+        assert_eq!(s, vec![Sc, Sc, Sc, Sc, Sc, Sc]);
+    }
+
+    #[test]
     #[ignore = "todo: parser (tokenizer) refactor for nested patterns"]
     fn test_parse_line_subpattern_nested() {
         let line = ": [sc, [sc, sc] x 1] x 2 (6)";
+        let (_, s) = parse_line(line).unwrap();
+        assert_eq!(s, vec![Sc, Sc, Sc, Sc, Sc, Sc]);
+    }
+
+    #[test]
+    fn test_parse_line_subpattern_nested_workaround() {
+        let line = ": [sc, [sc, sc] x 1,] x 2 (6)";
         let (_, s) = parse_line(line).unwrap();
         assert_eq!(s, vec![Sc, Sc, Sc, Sc, Sc, Sc]);
     }
