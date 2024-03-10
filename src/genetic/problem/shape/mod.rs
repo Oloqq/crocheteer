@@ -18,7 +18,7 @@ pub struct Shape {
 
 impl Slice {
     pub fn from_3d(points: Vec<Point>) -> Self {
-        let points2d = points.iter().map(|p3d| Point2::from(p3d.xz())).collect();
+        let points2d: Vec<Point2> = points.iter().map(|p3d| Point2::from(p3d.xz())).collect();
         Self { points: points2d }
     }
 }

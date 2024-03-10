@@ -4,8 +4,9 @@ use super::evolution::*;
 use super::{fitness_funcs::FitnessFunc, params::Params};
 use rand::rngs::StdRng;
 use serde_derive::{Deserialize, Serialize};
+use std::cell::RefCell;
 use std::fs::File;
-use std::io::Write;
+use std::io::{self, Write};
 use std::{error::Error, fs};
 
 // pub trait AnyProgram {
@@ -59,7 +60,8 @@ impl Population {
 
         assert!(params.popsize == programs.len());
         for i in 0..programs.len() {
-            let fit = run_and_rank(&programs[i], params, cases, fitness_func, rand);
+            let writer = RefCell::new(Box::new(io::stdout()) as Box<dyn Write>);
+            let fit = run_and_rank(&programs[i], params, cases, fitness_func, rand, writer);
             if fit > best_fitness {
                 best_fitness = fit;
                 best_index = i;
@@ -129,7 +131,8 @@ impl Population {
         rand: &mut StdRng,
     ) {
         assert!(index < self.programs.len());
-        let fit = run_and_rank(&program, &params, &cases, fitness_func, rand);
+        let writer = RefCell::new(Box::new(io::stdout()) as Box<dyn Write>);
+        let fit = run_and_rank(&program, &params, &cases, fitness_func, rand, writer);
         if fit > self.best_fitness {
             self.best_fitness = fit;
             self.best_index = index;

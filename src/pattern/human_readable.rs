@@ -57,7 +57,7 @@ impl ParseError {
             MetaError => "Metadata error. Expected '@centroids = <number>'".into(),
         };
         match self.line {
-            Some(x) => format!("Line: {x}: {description}"),
+            Some(x) => format!("Line: {}: {description}", x + 1),
             None => description,
         }
     }

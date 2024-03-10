@@ -107,7 +107,7 @@ impl Plushie {
 
         let centroids = {
             let cnum = pattern.simulation_config.centroids;
-            let margin = 2.0;
+            let margin = 1.0;
             let ceiling = approximate_height - margin;
             let floor = margin;
             let spacing = (ceiling - floor) / cnum as f32;

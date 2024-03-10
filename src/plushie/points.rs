@@ -63,6 +63,7 @@ impl Points {
         };
 
         const SKIP_ROOT: usize = 1;
+        const SITTING: bool = false;
 
         for ((i, point), constraint) in self
             .points
@@ -74,13 +75,17 @@ impl Points {
             let adjusted: V = displacement[i].component_mul(&constraint);
             total += adjusted;
             *point += (adjusted - root_move) * time;
-            point.y = point.y.max(0.0);
+            if SITTING {
+                point.y = point.y.max(0.0);
+            }
         }
 
         for (i, point) in self.freely_movable() {
             total += displacement[i];
             *point += (displacement[i] - root_move) * time;
-            point.y = point.y.max(0.0);
+            if SITTING {
+                point.y = point.y.max(0.0);
+            }
         }
         total
     }

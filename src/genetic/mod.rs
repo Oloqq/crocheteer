@@ -92,7 +92,11 @@ impl TinyGP {
         Ok(Self::init(rand, population, params, cases, writer))
     }
 
-    pub fn evolve(&mut self, mut generations: usize, fitness_func: FitnessFunc) -> (Program, f32) {
+    pub fn evolve(
+        &mut self,
+        mut generations: usize,
+        fitness_func: FitnessFunc,
+    ) -> Option<(Program, f32)> {
         self.write(format!("Starting evolution for {generations} generations").as_str());
 
         let (mut best_id, mut best_fitness) = self.population.get_best_id();
@@ -115,7 +119,7 @@ impl TinyGP {
             self.write("Problem unsolved");
         }
         self.writer.borrow_mut().flush().unwrap();
-        self.population.get_best()
+        Some(self.population.get_best())
     }
 
     fn evolve_generation(&mut self, fitness_func: FitnessFunc) {

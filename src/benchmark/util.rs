@@ -5,13 +5,10 @@ use std::{
 };
 
 use crate::{
-    genetic::{
-        common::{Case, Program},
-        fitness_funcs::FitnessFunc,
-        params::Params,
-        problem::Shape,
-        TinyGP,
-    },
+    common::save_mesh,
+    genetic::{common::Case, fitness_funcs::FitnessFunc, params::Params, problem::Shape, TinyGP},
+    pattern::Pattern,
+    plushie::Plushie,
     GeneticArgs,
 };
 
@@ -21,7 +18,7 @@ pub fn execute_benchmark(
     cases: Vec<Case>,
     name: &str,
     ff: FitnessFunc,
-) -> Program {
+) {
     let out_file = &format!("population/out-{name}.yaml");
     let pop_file = &format!("population/{name}.pop");
 
@@ -57,7 +54,9 @@ pub fn execute_benchmark(
 
     tgp.debug_info = args.debug;
 
-    let (program, fitness) = tgp.evolve(args.generations, ff);
+    let result = tgp.evolve(args.generations, ff);
+    tgp.population.save(pop_file);
+    let (program, fitness) = result.expect("Benchmark execution failed");
 
     println!(
         "Finished with program\n{:?}\nof fitness = {}",
@@ -65,6 +64,15 @@ pub fn execute_benchmark(
     );
     println!("{}", serde_lexpr::to_string(&program).unwrap());
 
-    tgp.population.save(pop_file);
-    tgp.get_best()
+    let best = tgp.get_best();
+
+    if args.save_stl {
+        let pattern = Pattern::from_genom(&(6, &best.tokens));
+        let mut plushie = Plushie::from_pattern(&pattern);
+        plushie.animate();
+        save_mesh(
+            format!("src/benchmark/{name}_generated.stl").as_str(),
+            plushie.to_mesh(),
+        );
+    }
 }

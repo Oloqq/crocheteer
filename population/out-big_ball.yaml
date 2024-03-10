@@ -5,7 +5,7 @@ Creating population
 seed: 2
 ---
 popsize: 100
-max_size: 40
+max_size: 80
 p_crossover: 0.0
 p_mutation_per_node: 0.2
 tournament_size: 2
@@ -19,123 +19,123 @@ max_height: 4.3693905
 Starting evolution for 20 generations
 ---
 generation: 0
-avg_fitness: -0.04829288
-best_fitness: -0.03412972
-best_program: (Inc Inc Inc Dec Inc Sc Sc Inc Inc Sc Dec Inc)
+avg_fitness: -0.043263543
+best_fitness: -0.030284246
+best_program: (Inc Sc Inc Dec Inc Dec Sc Inc Dec Sc Sc Sc)
 
 ---
 generation: 1
-avg_fitness: -0.040393062
-best_fitness: -0.015936736
-best_program: (Inc Inc Sc Sc Sc Inc Inc Inc Sc Inc Inc Inc Inc Inc Inc Sc)
+avg_fitness: -0.038353685
+best_fitness: -0.022650233
+best_program: (Sc Sc Sc Sc Inc Inc Inc Inc Sc Dec Dec Dec Dec Dec Dec Inc Inc Dec Dec Sc)
 
 ---
 generation: 2
-avg_fitness: -0.033990074
-best_fitness: -0.014545043
-best_program: (Dec Sc Inc Sc Inc Dec Inc Inc Inc Inc Dec Dec Inc Inc Inc Inc Inc Inc Sc Sc)
+avg_fitness: -0.031003773
+best_fitness: -0.014459276
+best_program: (Sc Inc Inc Inc Sc Inc Sc Inc Sc Sc Inc Dec Dec Sc Dec Dec Dec Inc Inc Inc Inc)
 
 ---
 generation: 3
-avg_fitness: -0.029398466
-best_fitness: -0.013054525
-best_program: (Inc Inc Dec Inc Inc Sc Inc Sc Sc Sc Inc Inc Dec Dec Inc Inc Dec Sc Inc Inc Inc Inc Dec Dec)
+avg_fitness: -0.024460834
+best_fitness: -0.009777922
+best_program: (Dec Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Dec Dec Dec Dec Dec Inc Inc Inc Inc Sc Sc)
 
 ---
 generation: 4
-avg_fitness: -0.02470904
-best_fitness: -0.008014374
-best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Sc Inc Sc Inc Inc Dec Inc Inc Dec Sc Sc Sc Sc Sc Dec Sc Sc Inc Sc Sc Sc Inc Sc Sc Inc Dec Dec)
+avg_fitness: -0.022966769
+best_fitness: -0.009777922
+best_program: (Dec Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Dec Dec Dec Dec Dec Inc Inc Inc Inc Sc Sc)
 
 ---
 generation: 5
-avg_fitness: -0.020632217
-best_fitness: -0.007034484
-best_program: (Inc Inc Inc Sc Inc Dec Inc Inc Inc Sc Sc Inc Inc Inc Inc Sc Inc Inc Dec Dec Sc Sc Sc Inc Inc Dec Inc Sc Inc Inc Inc Inc)
+avg_fitness: -0.021262629
+best_fitness: -0.009128006
+best_program: (Sc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Sc Sc Dec Inc Inc Inc Inc Inc Dec Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Dec Dec Inc Inc Sc Inc Inc Sc Inc)
 
 ---
 generation: 6
-avg_fitness: -0.016836943
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.017499877
+best_fitness: -0.00895225
+best_program: (Inc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Inc Inc Dec Dec Inc Inc Inc Sc Sc Inc Inc Inc Inc Sc Sc Sc Dec Inc Sc Sc)
 
 ---
 generation: 7
-avg_fitness: -0.015614964
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.016492037
+best_fitness: -0.008240135
+best_program: (Inc Inc Sc Inc Inc Inc Inc Sc Sc Inc Inc Inc Inc Inc Dec Inc Inc Inc Dec Dec Dec Dec Inc Inc Dec Inc Inc Sc Sc Sc Inc Dec Dec Inc Inc)
 
 ---
 generation: 8
-avg_fitness: -0.0142603135
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.01547965
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 9
-avg_fitness: -0.013145688
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.016782712
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 10
-avg_fitness: -0.013767288
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.014414795
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 11
-avg_fitness: -0.014169262
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.013745118
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 12
-avg_fitness: -0.013658971
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.014386548
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 13
-avg_fitness: -0.011994934
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.014015818
+best_fitness: -0.0070934594
+best_program: (Sc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Inc Dec Inc Inc Inc Inc Inc Inc Inc Inc Sc Sc Dec Inc Dec Dec Sc Dec Inc Dec Dec Sc Dec Dec Dec Dec Inc Sc Inc)
 
 ---
 generation: 14
-avg_fitness: -0.012463496
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.013869349
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 generation: 15
-avg_fitness: -0.012361014
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.0138111655
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 generation: 16
-avg_fitness: -0.012424659
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.013469669
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 generation: 17
-avg_fitness: -0.011907366
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.013182524
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 generation: 18
-avg_fitness: -0.01196447
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.014238461
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 generation: 19
-avg_fitness: -0.012132606
-best_fitness: -0.0054739215
-best_program: (Sc Inc Inc Inc Inc Inc Sc Inc Inc Sc Inc Inc Inc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Dec Sc Inc Inc Inc Inc Sc Dec Inc Dec Sc Sc Dec Dec Dec Dec Dec)
+avg_fitness: -0.013738602
+best_fitness: -0.0067868866
+best_program: (Inc Inc Inc Inc Inc Inc Sc Sc Inc Inc Sc Inc Inc Inc Inc Inc Inc Inc Inc Sc Inc Inc Sc Sc Dec Dec Dec Sc Sc Dec Dec Inc Inc Inc Inc Dec Sc Dec Inc Inc Dec Sc Dec Inc Inc Inc Inc Dec Dec Inc Inc Dec Inc Sc Dec Sc Sc Dec Dec Sc Dec Sc)
 
 ---
 Problem unsolved

@@ -86,6 +86,8 @@ fn segregate_points(points: &Vec<Point>, levels: usize, max_height: f32) -> Vec<
 
 #[cfg(test)]
 mod tests {
+    use crate::pattern::Pattern;
+
     use super::super::Point2;
 
     use super::*;
@@ -152,5 +154,18 @@ mod tests {
                 }
             ]
         )
+    }
+
+    #[test]
+    fn test_from_stl() {
+        let (output, levels, max_height) =
+            Shape::from_stl_file("src/benchmark/small_ball.stl").unwrap();
+
+        for slice in output.slices {
+            for point in slice.points {
+                assert!(!point.coords.x.is_nan());
+                assert!(!point.coords.y.is_nan());
+            }
+        }
     }
 }

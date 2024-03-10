@@ -51,13 +51,6 @@ impl Shape {
                 acc + my_slice.compare(their_slice)
             });
 
-        assert!(
-            !result.is_nan(),
-            "Got NaN in comparison. \nCompared {:?}\nand\n{:?}",
-            self,
-            other
-        );
-
         result
     }
 }

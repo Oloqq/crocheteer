@@ -42,3 +42,5 @@
   - make rust serve the index.html
   - heroku https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust
   - should be $5 per month
+
+- set sitting parameter through gui

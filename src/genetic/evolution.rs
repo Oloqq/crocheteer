@@ -1,4 +1,8 @@
 #![allow(unused)]
+use std::cell::RefCell;
+use std::io::Write;
+use std::ops::DerefMut;
+
 use super::execution::*;
 use super::fitness_funcs::*;
 use super::params::Params;
@@ -14,11 +18,16 @@ pub fn run_and_rank(
     cases: &Vec<Case>,
     fitness_func: FitnessFunc,
     rand: &mut StdRng,
+    writer: RefCell<Box<dyn Write>>,
 ) -> f32 {
     cases.iter().fold(0.0, |acc, (inputs, targets)| {
         let mut runtime = Runtime::new(params);
         let output = runtime.execute(program);
         let fitness = fitness_func(targets, &output, &runtime);
+        if fitness.is_nan() {
+            writeln!(writer.borrow_mut(), "Got fitness NaN with:").unwrap();
+            runtime.log(&writer);
+        }
         acc + fitness
     })
 }
