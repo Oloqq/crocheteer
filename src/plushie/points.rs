@@ -63,7 +63,7 @@ impl Points {
         };
 
         const SKIP_ROOT: usize = 1;
-        const SITTING: bool = false;
+        const SITTING: bool = true;
 
         for ((i, point), constraint) in self
             .points

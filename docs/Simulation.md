@@ -220,3 +220,6 @@ Algorithm inspired by k-means
 
 ![](2024-03-04-16-04-54.png)
 *another more complex shape, that's part of a multipiece toy*
+
+![](2024-03-11-14-35-16.png)
+*vase2 loaded from a human readable pattern*
