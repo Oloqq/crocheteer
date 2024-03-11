@@ -115,6 +115,7 @@ impl Plushie {
                 .map(|i| Point::new(0.0, floor + spacing * i as f32, 0.0))
                 .collect()
         };
+        let floor = pattern.simulation_config.floor;
 
         Plushie {
             points: Points::new(points, constraints),
@@ -127,6 +128,7 @@ impl Plushie {
             max_relaxing_iterations: 100,
             centroids,
             centroid_force: 0.05,
+            floor,
         }
     }
 }

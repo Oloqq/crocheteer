@@ -188,14 +188,15 @@ where
             "centroids" => {
                 config.centroids = val.parse().map_err(|_| ParseError::new(ExpectedNumber))?
             }
-            // "floor" => {
-            //     config.floor = val
-            //         .parse()
-            //         .map_err(|_| ParseError::new(Unsupported("expected bool".to_string())))?
-            // }
+            "floor" => {
+                config.floor = val
+                    .parse()
+                    .map_err(|_| ParseError::new(Unsupported("expected bool".to_string())))?
+            }
             _ => return Err(ParseError::new(MetaError)),
         }
 
+        log::debug!("Config: {config:?}");
         (lnum, line, lines) = skip_comments(lines)?;
     }
 

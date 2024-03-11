@@ -35,6 +35,7 @@ pub struct Plushie {
     pub gravity: f32,
     acceptable_tension: f32,
     max_relaxing_iterations: usize,
+    floor: bool,
 }
 
 impl Plushie {
