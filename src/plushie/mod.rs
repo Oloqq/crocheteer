@@ -1,13 +1,10 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use serde_derive::Serialize;
 
-use self::centroid_stuffing::centroid_stuffing;
-use self::per_round_stuffing::{per_round_stuffing, RoundsInfo};
-use self::points::Points;
+use self::{per_round_stuffing::RoundsInfo, points::Points};
 
 use super::common::*;
 
+mod animation;
 mod centroid_stuffing;
 pub mod config;
 mod construction;
@@ -39,58 +36,6 @@ pub struct Plushie {
 }
 
 impl Plushie {
-    fn add_link_forces(&self, displacement: &mut Vec<V>) {
-        for (i, point) in self.points.all() {
-            for neibi in &self.edges[i] {
-                let neib = &self.points[*neibi];
-                let diff: V = attract(point, neib, self.desired_stitch_distance);
-                displacement[i] += diff;
-                displacement[*neibi] -= diff;
-            }
-        }
-    }
-
-    fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
-        match &self.stuffing {
-            Stuffing::None => (),
-            Stuffing::PerRound => per_round_stuffing(
-                &mut self.rounds,
-                &self.points.as_vec(),
-                self.desired_stitch_distance,
-                displacement,
-            ),
-            Stuffing::Centroids => centroid_stuffing(
-                &self.points.as_vec(),
-                &mut self.centroids,
-                self.centroid_force,
-                displacement,
-            ),
-        }
-    }
-
-    fn add_gravity(&self, displacement: &mut Vec<V>) {
-        for (i, _point) in self.points.all() {
-            displacement[i].y -= self.gravity;
-        }
-    }
-
-    pub fn step(&mut self, time: f32) -> Vec<V> {
-        let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
-        let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-
-        self.add_link_forces(&mut displacement);
-        self.add_stuffing_force(&mut displacement);
-        self.add_gravity(&mut displacement);
-
-        let end = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-        let elapsed = end - start;
-        log::trace!("Elapsed: {}", elapsed.as_nanos());
-
-        let _total = self.points.apply_forces(&displacement, time);
-
-        displacement
-    }
-
     fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
@@ -139,13 +84,4 @@ impl Plushie {
         }
         self.points[i] = pos;
     }
-}
-
-fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
-    let diff = this - other;
-    let x = diff.magnitude();
-    let d = desired_distance;
-
-    let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
-    -diff.normalize() * fx
 }

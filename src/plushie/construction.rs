@@ -1,6 +1,7 @@
 use std::f32::consts::PI;
 
 use crate::common::*;
+use crate::flow::Flow;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
@@ -10,7 +11,19 @@ use crate::plushie::Stuffing;
 
 use super::Plushie;
 
+#[allow(unused)]
+mod from_flow;
+#[allow(unused)]
+use from_flow::from_flow;
+
 impl Plushie {
+    #[allow(unused)]
+    pub fn from_flow(flow: impl Flow) -> Self {
+        // let (points, edges) = from_flow();
+        // Self { points, edges }
+        todo!()
+    }
+
     pub fn from_genetic(genom: &Genom) -> Self {
         let pattern = Pattern::from_genom(&genom);
         Self::from_pattern(&pattern)

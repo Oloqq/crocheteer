@@ -22,31 +22,36 @@
 - Base representation is just a list of stitches (like in genetic currently)
 - New conversions
   - Human -> Plushie
-    - collapse the rounds into list of actions (like genetic)
+    - class `Pattern` is only applicable to human readable
+    - and has a `Flow` inside
+    - collapse the rounds into list of actions (like genetic), call it `FlatFlow`
   - Genetic -> Plushie
+    - `Program = FlatFlow`
     - build the list of points directly
   - Genetic -> Human
     - not important yet
 
-
+- `Flow` consists of other `Flow`s
+-  `Action` is the most basic instance of a Flow
 - Builder works on ~~stitches~~ `RepeatedAction`:
   - `RepeatedAction` :=
     - repeats: usize
-    - action: BuilderAction
+    - action: Action
     - Action -> RepeatedAction conversion is defined with repeats = 1
     - Action * usize -> RepeatedAction conversion is defined
   - Action
     - Sc
     - Inc
     - Dec
-    - Ch(X), ..., Attach(Y) -> Chain of X, attach on the shape Y stitches before the chain started
-      - ignore the case where a chain attaches onto itself
+    - Ch(X), ..., Attach(Y) -> Chain of X, attach on the shape Y anchors after the chain started (min 1) (max round length)
       - must appear in pair
     - Reverse
     - FLO
     - BLO
     - Both loops
     - Switch working position
+      - Goto
+      - Mark - Save position to go back to later
 
 # Backlog
 
@@ -64,7 +69,7 @@
   - refactor parser so weird subpattern shit is fixed
 
 - websocket server/client
-  - add a <select> with sample patterns instead of the text input
+  - add a `<select>` with sample patterns instead of the text input
   - allow changing simulation speed (corresponds to time variable in step)
   - save pattern source on update
 

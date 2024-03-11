@@ -9,6 +9,7 @@ extern crate nalgebra as na;
 mod args;
 mod benchmark;
 mod common;
+mod flow;
 mod genetic;
 mod meshes_sandbox;
 mod pattern;
