@@ -15,9 +15,11 @@ mod from_flow;
 #[allow(unused)]
 use from_flow::from_flow;
 
+mod hook;
+
 impl Plushie {
     #[allow(unused)]
-    pub fn from_flow(flow: impl Flow) -> Self {
+    pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         from_flow(flow)
     }
 

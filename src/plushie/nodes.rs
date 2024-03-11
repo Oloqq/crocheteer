@@ -8,10 +8,12 @@ pub const ROOT_INDEX: usize = 0;
 
 #[derive(Clone, Serialize)]
 pub struct Nodes {
+    // TODO to params
     /// Constraints of the first points. The calculated movement will be multiplied by them.
     constraints: Vec<V>,
     /// All points in the shape
     points: Vec<Point>,
+    // TODO to params
     /// true => the whole shape will be translated by displacement applied to root, so that root stays at (0, 0, 0).
     ///     `constrains[0]` is ignored
     ///     keep in mind, `constraints[0]` still corresponds to root, and `constraints[1]` to the next one

@@ -6,6 +6,7 @@
       - doesn't make sense for genetic
   - genetic optimizations
     - MUST allow inserting / deleting stitches at arbitrary positions mid simulation
+    - maybe it's sufficient if we generate the plushie from the ground up, but assign 3D positions from the old shape, that way minimal relaxing should be required
   - handle dec overflowing into the next round properly
     - this is a hack in builder.round_like
   - MUST have non-uniform stuffing

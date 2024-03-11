@@ -1,19 +1,55 @@
+use std::f32::consts::PI;
+
 use crate::{
-    flow::Flow,
-    plushie::{animation::centroid::Centroids, Plushie},
+    common::*,
+    flow::{actions::Action, Flow},
+    plushie::{animation::centroid::Centroids, nodes::Nodes, Plushie},
 };
 
-// TODO make it return just nodes and edges
-pub fn from_flow(flow: impl Flow) -> Plushie {
-    let approximate_height = 2.0;
+use super::hook::{Hook, HookResult};
 
-    Plushie {
-        nodes: todo!(),
-        edges: todo!(),
-        params: Default::default(),
-        centroids: Centroids::new(2, approximate_height),
-        stuffing: crate::plushie::Stuffing::Centroids,
+type Error = String;
+
+// TODO make it return just nodes and edges
+pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
+    let fasten_off = true;
+
+    let first = flow.next().ok_or("Flow empty")?;
+    let mut hook = Hook::start_with(&first)?;
+    while let Some(action) = flow.next() {
+        hook.perform(&action);
     }
+    let result = hook.finish();
+
+    let constraints = match fasten_off {
+        true => vec![V::zeros(), V::new(0.1, 0.1, 0.1)],
+        false => vec![V::zeros()],
+    };
+
+    Ok(Plushie {
+        nodes: Nodes::new(result.positions, constraints),
+        edges: result.edges,
+        params: Default::default(),
+        centroids: Centroids::new(2, result.approximate_height),
+        stuffing: crate::plushie::Stuffing::Centroids,
+    })
+}
+
+fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
+    let circumference = (nodes + 1) as f32 * desired_stitch_distance;
+    let radius = circumference / (2.0 * PI) / 4.0;
+
+    let interval = 2.0 * PI / nodes as f32;
+    let mut result: Vec<Point> = vec![];
+
+    for i in 0..nodes {
+        let rads = interval * i as f32;
+        let x = rads.cos() * radius;
+        let z = rads.sin() * radius;
+        let point = Point::new(x, y, z);
+        result.push(point);
+    }
+    result
 }
 
 #[cfg(test)]
@@ -68,7 +104,7 @@ mod tests {
                     vec![],
                 ]
             );
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
             assert_eq!(plushie_flow.edges, plushie_pattern.edges);
         }
@@ -112,7 +148,7 @@ mod tests {
                     vec![],
                 ]
             );
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
             assert_eq!(plushie_flow.edges, plushie_pattern.edges);
         }
@@ -153,7 +189,7 @@ mod tests {
                     /* 14 -> */ vec![],
                 ]
             );
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
             assert_eq!(plushie_flow.edges, plushie_pattern.edges);
         }
@@ -184,7 +220,7 @@ mod tests {
             let pl = Plushie::from_pattern(&p);
             assert_eq!(pl.nodes.len(), 22);
             // pl.animate();
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
             assert_eq!(plushie_flow.edges, pl.edges);
         }
@@ -206,7 +242,7 @@ mod tests {
             let pl = Plushie::from_pattern(&p);
             assert_eq!(pl.nodes.len(), 11);
             // pl.animate();
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
             assert_eq!(plushie_flow.edges, pl.edges);
         }
@@ -228,7 +264,7 @@ mod tests {
             let pl = Plushie::from_pattern(&p);
             assert_eq!(pl.nodes.len(), 15);
             // pl.animate();
-            let plushie_flow = Plushie::from_flow(f);
+            let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
             assert_eq!(plushie_flow.edges, pl.edges);
         }

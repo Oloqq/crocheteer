@@ -18,6 +18,15 @@ pub enum Action {
     FO,
 }
 
+impl Action {
+    pub fn is_starter(&self) -> bool {
+        if matches!(self, Action::Ch(_)) {
+            unimplemented!()
+        }
+        matches!(self, Action::MR(_))
+    }
+}
+
 // #[cfg(test)]
 // mod tests {
 //     use super::*;
