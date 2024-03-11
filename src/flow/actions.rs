@@ -1,6 +1,6 @@
 type Label = usize;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[allow(unused)]
 pub enum Action {
     Sc,
@@ -14,6 +14,8 @@ pub enum Action {
     Both,
     Goto(Label),
     Mark(Label),
+    MR(usize),
+    FO,
 }
 
 // #[cfg(test)]

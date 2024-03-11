@@ -18,9 +18,7 @@ use from_flow::from_flow;
 impl Plushie {
     #[allow(unused)]
     pub fn from_flow(flow: impl Flow) -> Self {
-        // let (points, edges) = from_flow();
-        // Self { points, edges }
-        todo!()
+        from_flow(flow)
     }
 
     pub fn from_genetic(genom: &Genom) -> Self {
