@@ -54,7 +54,7 @@ impl ParseError {
             Internal(details) => {
                 format!("Parser error. Please open a github issue with your pattern and this message: {details}")
             }
-            MetaError => "Metadata error. Expected '@centroids = <number>'".into(),
+            MetaError => "Metadata error. Expected '@<name> = <value>'".into(),
         };
         match self.line {
             Some(x) => format!("Line: {}: {description}", x + 1),
@@ -113,22 +113,8 @@ impl Pattern {
 
     pub fn from_human_readable(text: &str) -> Result<Self, String> {
         let lines: Vec<&str> = text.split("\n").collect();
-        let mut lines = lines.iter().enumerate();
-        let (mut lnum, mut line) = lines.next().ok_or("No content".to_string())?;
-        while line.trim().starts_with("#") || line.is_empty() {
-            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
-        }
 
-        let conf = if let Some(num) = parse_centroid_num(line)? {
-            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
-            SimulationConfig { centroids: num }
-        } else {
-            SimulationConfig::default()
-        };
-
-        while line.trim().starts_with("#") || line.is_empty() {
-            (lnum, line) = lines.next().ok_or("Unexpected end of file".to_string())?;
-        }
+        let (conf, lnum, line, lines) = parse_header(lines.iter().enumerate())?;
         let starting_circle = parse_starter(lnum, line)?;
 
         let mut fasten_off = false;
@@ -171,25 +157,49 @@ impl Pattern {
     }
 }
 
-fn parse_centroid_num(line: &str) -> Result<Option<usize>, ParseError> {
-    let no_comment = match line.split_once("#") {
-        Some((x, _comment)) => x.trim(),
-        None => line,
-    };
-    return if let Some(meta) = no_comment.trim().strip_prefix("@") {
-        let (name, val) = meta.split_once("=").ok_or(ParseError::new(MetaError))?;
-        if name.trim() == "centroids" {
-            Ok(Some(
-                val.trim()
-                    .parse()
-                    .map_err(|_| ParseError::new(ExpectedNumber))?,
-            ))
-        } else {
-            Err(ParseError::new(MetaError))
+fn skip_comments<'a, I>(mut lines: I) -> Result<(usize, &'a str, I), ParseError>
+where
+    I: Iterator<Item = (usize, &'a &'a str)>,
+{
+    let (mut lnum, mut line) = lines.next().ok_or(ParseError::new(MissingStarter))?;
+    while line.trim().starts_with("#") || line.is_empty() {
+        (lnum, line) = lines.next().ok_or(ParseError::new(MissingStarter))?;
+    }
+    Ok((lnum, line, lines))
+}
+
+fn parse_header<'a, I>(lines: I) -> Result<(SimulationConfig, usize, &'a str, I), ParseError>
+where
+    I: Iterator<Item = (usize, &'a &'a str)>,
+{
+    let (mut lnum, mut line, mut lines) = skip_comments(lines)?;
+    let mut config = SimulationConfig::default();
+    while let Some(metaline) = line.trim().strip_prefix("@") {
+        let no_comment = match metaline.split_once("#") {
+            Some((x, _comment)) => x.trim(),
+            None => metaline.trim(),
+        };
+        let (name, val) = no_comment
+            .split_once("=")
+            .ok_or(ParseError::new(MetaError))?;
+        let val = val.trim();
+
+        match name.trim() {
+            "centroids" => {
+                config.centroids = val.parse().map_err(|_| ParseError::new(ExpectedNumber))?
+            }
+            // "floor" => {
+            //     config.floor = val
+            //         .parse()
+            //         .map_err(|_| ParseError::new(Unsupported("expected bool".to_string())))?
+            // }
+            _ => return Err(ParseError::new(MetaError)),
         }
-    } else {
-        Ok(None)
-    };
+
+        (lnum, line, lines) = skip_comments(lines)?;
+    }
+
+    Ok((config, lnum, line, lines))
 }
 
 fn parse_starter(lnum: usize, line: &str) -> Result<usize, ParseError> {
@@ -521,7 +531,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -538,7 +548,10 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig { centroids: 3 },
+            simulation_config: SimulationConfig {
+                centroids: 3,
+                floor: false,
+            },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -553,7 +566,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -568,7 +581,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -582,7 +595,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -606,7 +619,7 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -634,7 +647,7 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Dec, Sc, Dec, Sc],
             ],
-            simulation_config: SimulationConfig { centroids: 2 },
+            simulation_config: SimulationConfig::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }

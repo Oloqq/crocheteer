@@ -1,3 +1,4 @@
+@centroids = 6
 : MR 6 (6)
 : 6 inc (12)
 : [inc, sc] x 6 (18)
