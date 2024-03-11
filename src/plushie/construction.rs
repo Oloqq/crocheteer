@@ -2,12 +2,10 @@ use std::f32::consts::PI;
 
 use crate::common::*;
 use crate::flow::Flow;
-use crate::genetic::params::Params;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
 use crate::plushie::points::{Points, ROOT_INDEX};
-use crate::plushie::Stuffing;
 
 use super::Plushie;
 
@@ -119,7 +117,7 @@ impl Plushie {
         };
 
         let centroids = {
-            let cnum = pattern.simulation_config.centroids;
+            let cnum = pattern.simulation_config.centroids.number;
             let margin = 1.0;
             let ceiling = approximate_height - margin;
             let floor = margin;
@@ -128,19 +126,13 @@ impl Plushie {
                 .map(|i| Point::new(0.0, floor + spacing * i as f32, 0.0))
                 .collect()
         };
-        let floor = pattern.simulation_config.floor;
-        let params = crate::plushie::params::Params::default();
 
-        Plushie {
-            points: Points::new(points, constraints),
+        Plushie::new(
+            Points::new(points, constraints),
             edges,
-            params,
-            stuffing: Stuffing::Centroids,
-            acceptable_tension: 0.02,
-            max_relaxing_iterations: 100,
+            pattern.simulation_config.clone(),
             centroids,
-            centroid_force: 0.05,
-        }
+        )
     }
 }
 

@@ -186,7 +186,8 @@ where
 
         match name.trim() {
             "centroids" => {
-                config.centroids = val.parse().map_err(|_| ParseError::new(ExpectedNumber))?
+                config.centroids.number =
+                    val.parse().map_err(|_| ParseError::new(ExpectedNumber))?
             }
             "floor" => {
                 config.floor = val
@@ -426,7 +427,7 @@ fn serialize_round_id(this_round: usize, repetition_start: Option<usize>) -> Str
 
 #[cfg(test)]
 mod tests {
-    use crate::pattern::Stitch;
+    use crate::{pattern::Stitch, plushie::params::CentroidParams};
     use pretty_assertions::assert_eq;
     use Stitch::*;
 
@@ -550,7 +551,10 @@ R6: 3 sc, inc, dec (6)
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
             simulation_config: Params {
-                centroids: 3,
+                centroids: CentroidParams {
+                    number: 3,
+                    ..Default::default()
+                },
                 floor: false,
                 ..Default::default()
             },

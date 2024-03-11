@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use std::{cell::RefCell, io::Write};
 
 use super::{
@@ -27,24 +29,25 @@ impl Runtime {
         }
     }
 
-    pub fn execute(&mut self, program: &Program) -> Output {
-        const MAGIC_RING: usize = 6;
-        log::info!("Processing program: {:?}", program);
-        // self.tokens = Some(program.tokens.clone());
-        self.pattern = Pattern::from_genom(&(MAGIC_RING, &program.tokens)).into();
-        self.pattern.as_mut().unwrap().simulation_config.centroids = 1;
-        self.plushie = {
-            let mut p = Plushie::from_pattern(self.pattern.as_ref().unwrap());
-            p.animate();
-            p
-        }
-        .into();
-        let shape = Shape::from_unfitted_plushie(
-            self.plushie.as_ref().unwrap(),
-            self.levels,
-            self.max_height,
-        );
-        shape
+    pub fn execute(&mut self, _program: &Program) -> Output {
+        todo!()
+        // const MAGIC_RING: usize = 6;
+        // log::info!("Processing program: {:?}", program);
+        // // self.tokens = Some(program.tokens.clone());
+        // self.pattern = Pattern::from_genom(&(MAGIC_RING, &program.tokens)).into();
+        // self.pattern.as_mut().unwrap().simulation_config.centroids = 1;
+        // self.plushie = {
+        //     let mut p = Plushie::from_pattern(self.pattern.as_ref().unwrap());
+        //     p.animate();
+        //     p
+        // }
+        // .into();
+        // let shape = Shape::from_unfitted_plushie(
+        //     self.plushie.as_ref().unwrap(),
+        //     self.levels,
+        //     self.max_height,
+        // );
+        // shape
     }
 
     pub fn log(&self, writer: &RefCell<Box<dyn Write>>) {

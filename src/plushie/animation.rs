@@ -42,7 +42,7 @@ impl Plushie {
             Stuffing::Centroids => centroid_stuffing(
                 &self.points.as_vec(),
                 &mut self.centroids,
-                self.centroid_force,
+                self.params.centroids.force,
                 displacement,
             ),
         }

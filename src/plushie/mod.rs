@@ -23,21 +23,33 @@ pub struct Plushie {
     pub params: Params,
 
     pub centroids: Vec<Point>,
-    pub centroid_force: f32,
     pub stuffing: Stuffing,
-    acceptable_tension: f32,
-    max_relaxing_iterations: usize,
 }
 
 impl Plushie {
+    pub fn new(
+        points: Points,
+        edges: Vec<Vec<usize>>,
+        params: Params,
+        centroids: Vec<Point>,
+    ) -> Self {
+        Self {
+            stuffing: Stuffing::Centroids,
+            points,
+            edges,
+            params,
+            centroids,
+        }
+    }
+
     fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
-        tension <= self.acceptable_tension
+        tension <= self.params.acceptable_tension
     }
 
     pub fn animate(&mut self) {
-        for _ in 0..self.max_relaxing_iterations {
+        for _ in 0..self.params.max_relaxing_iterations {
             let displacement = self.step(1.0);
             if self.is_relaxed(&displacement) {
                 break;
