@@ -1,4 +1,4 @@
-use crate::plushie::config::SimulationConfig;
+use crate::plushie::params::Params;
 
 use super::{stitches::count_anchors_produced, Pattern, Stitch};
 use ParseErrorKind::*;
@@ -168,12 +168,12 @@ where
     Ok((lnum, line, lines))
 }
 
-fn parse_header<'a, I>(lines: I) -> Result<(SimulationConfig, usize, &'a str, I), ParseError>
+fn parse_header<'a, I>(lines: I) -> Result<(Params, usize, &'a str, I), ParseError>
 where
     I: Iterator<Item = (usize, &'a &'a str)>,
 {
     let (mut lnum, mut line, mut lines) = skip_comments(lines)?;
-    let mut config = SimulationConfig::default();
+    let mut config = Params::default();
     while let Some(metaline) = line.trim().strip_prefix("@") {
         let no_comment = match metaline.split_once("#") {
             Some((x, _comment)) => x.trim(),
@@ -438,7 +438,7 @@ mod tests {
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -454,7 +454,7 @@ FO
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -475,7 +475,7 @@ R2: 5 sc, inc (7)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -499,7 +499,7 @@ FO
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
 
         let expected = "R1: MR 6 (6)
@@ -532,7 +532,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -549,9 +549,10 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig {
+            simulation_config: Params {
                 centroids: 3,
                 floor: false,
+                ..Default::default()
             },
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
@@ -567,7 +568,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -582,7 +583,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -596,7 +597,7 @@ R6: 3 sc, inc, dec (6)
             starting_circle: 6,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -620,7 +621,7 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Sc, Sc, Sc, Inc, Dec],
             ],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }
@@ -648,7 +649,7 @@ R6: 3 sc, inc, dec (6)
                 vec![Sc, Sc, Sc, Sc, Sc, Sc],
                 vec![Dec, Sc, Dec, Sc],
             ],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(Pattern::from_human_readable(src).unwrap(), expected);
     }

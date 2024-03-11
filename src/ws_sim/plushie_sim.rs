@@ -149,7 +149,7 @@ impl Simulation for PlushieSimulation {
             "pause" => controls.paused = true,
             "resume" => controls.paused = false,
             "advance" => controls.advance += 1,
-            "gravity" => self.plushie.gravity = tokens.get(1).unwrap().parse().unwrap(),
+            "gravity" => self.plushie.params.gravity = tokens.get(1).unwrap().parse().unwrap(),
             "stuffing" => {
                 let name = tokens.get(1).unwrap();
                 if let Some(stuffing) = match *name {

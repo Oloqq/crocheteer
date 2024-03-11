@@ -1,13 +1,13 @@
-use self::points::Points;
+use self::{params::Params, points::Points};
 use super::common::*;
 
 use serde_derive::Serialize;
 
 mod animation;
-pub mod config;
 mod construction;
 mod conversions;
 pub mod examples;
+pub mod params;
 mod points;
 
 #[derive(Clone, Serialize)]
@@ -19,15 +19,14 @@ pub enum Stuffing {
 #[derive(Clone, Serialize)]
 pub struct Plushie {
     points: Points,
+    edges: Vec<Vec<usize>>,
+    pub params: Params,
+
     pub centroids: Vec<Point>,
     pub centroid_force: f32,
-    edges: Vec<Vec<usize>>,
     pub stuffing: Stuffing,
-    desired_stitch_distance: f32,
-    pub gravity: f32,
     acceptable_tension: f32,
     max_relaxing_iterations: usize,
-    floor: bool,
 }
 
 impl Plushie {

@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::{error::Error, fs};
 
-use crate::plushie::config::SimulationConfig;
+use crate::plushie::params::Params;
 
 use super::{
     stitches::{count_anchors_consumed, count_anchors_produced},
@@ -97,7 +97,7 @@ impl PatternBuilder {
             starting_circle: self.starting_ring,
             fasten_off: false,
             rounds: self.rounds,
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         })
     }
 

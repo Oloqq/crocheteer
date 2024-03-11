@@ -1,5 +1,4 @@
 pub mod centroid;
-mod no_stuffing;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -30,7 +29,7 @@ impl Plushie {
         for (i, point) in self.points.all() {
             for neibi in &self.edges[i] {
                 let neib = &self.points[*neibi];
-                let diff: V = attract(point, neib, self.desired_stitch_distance);
+                let diff: V = attract(point, neib, self.params.desired_stitch_distance);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
             }
@@ -51,7 +50,7 @@ impl Plushie {
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
         for (i, _point) in self.points.all() {
-            displacement[i].y -= self.gravity;
+            displacement[i].y -= self.params.gravity;
         }
     }
 }

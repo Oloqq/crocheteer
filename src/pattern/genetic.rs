@@ -1,4 +1,4 @@
-use crate::{pattern::stitches::count_anchors_produced, plushie::config::SimulationConfig};
+use crate::{pattern::stitches::count_anchors_produced, plushie::params::Params};
 
 use super::{Pattern, Stitch};
 
@@ -17,7 +17,7 @@ impl Pattern {
             starting_circle,
             fasten_off: IS_CLOSED,
             rounds,
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         }
     }
 }

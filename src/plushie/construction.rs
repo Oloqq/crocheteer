@@ -2,6 +2,7 @@ use std::f32::consts::PI;
 
 use crate::common::*;
 use crate::flow::Flow;
+use crate::genetic::params::Params;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
@@ -128,18 +129,17 @@ impl Plushie {
                 .collect()
         };
         let floor = pattern.simulation_config.floor;
+        let params = crate::plushie::params::Params::default();
 
         Plushie {
             points: Points::new(points, constraints),
             edges,
-            desired_stitch_distance,
+            params,
             stuffing: Stuffing::Centroids,
-            gravity: 5e-4,
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,
             centroids,
             centroid_force: 0.05,
-            floor,
         }
     }
 }
@@ -163,7 +163,7 @@ pub fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
 
 #[cfg(test)]
 mod tests {
-    use crate::plushie::config::SimulationConfig;
+    use crate::plushie::params::Params;
 
     use super::*;
     use pretty_assertions::assert_eq;
@@ -175,7 +175,7 @@ mod tests {
             starting_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 10);
@@ -213,7 +213,7 @@ mod tests {
             starting_circle: 4,
             fasten_off: false,
             rounds: vec![vec![Sc, Sc, Sc, Sc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 9);
@@ -249,7 +249,7 @@ mod tests {
             starting_circle: 4,
             fasten_off: true,
             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
         assert_eq!(plushie.points.len(), 15);
@@ -291,7 +291,7 @@ mod tests {
                 vec![Inc],
                 vec![Sc, Inc],
             ],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 22);
@@ -305,7 +305,7 @@ mod tests {
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 11);
@@ -319,7 +319,7 @@ mod tests {
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
         assert_eq!(pl.points.len(), 15);
@@ -334,7 +334,7 @@ mod tests {
             starting_circle: 6,
             fasten_off: true,
             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Dec], vec![Dec]],
-            simulation_config: SimulationConfig::default(),
+            simulation_config: Params::default(),
         };
         assert_eq!(p.rounds.len(), 3);
         let pl = Plushie::from_pattern(&p);
