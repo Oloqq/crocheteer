@@ -5,7 +5,6 @@ use crate::flow::Flow;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
-use crate::plushie::per_round_stuffing::RoundsInfo;
 use crate::plushie::points::{Points, ROOT_INDEX};
 use crate::plushie::Stuffing;
 
@@ -135,7 +134,6 @@ impl Plushie {
             edges,
             desired_stitch_distance,
             stuffing: Stuffing::Centroids,
-            rounds: RoundsInfo::new(round_starts, round_counts),
             gravity: 5e-4,
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,

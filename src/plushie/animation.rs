@@ -1,10 +1,12 @@
+pub mod centroid;
+mod no_stuffing;
+
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use super::{Plushie, Stuffing};
 use crate::common::*;
 
-use super::centroid_stuffing::centroid_stuffing;
-use super::per_round_stuffing::per_round_stuffing;
+use self::centroid::centroid_stuffing;
 
 impl Plushie {
     pub fn step(&mut self, time: f32) -> Vec<V> {
@@ -38,12 +40,6 @@ impl Plushie {
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         match &self.stuffing {
             Stuffing::None => (),
-            Stuffing::PerRound => per_round_stuffing(
-                &mut self.rounds,
-                &self.points.as_vec(),
-                self.desired_stitch_distance,
-                displacement,
-            ),
             Stuffing::Centroids => centroid_stuffing(
                 &self.points.as_vec(),
                 &mut self.centroids,

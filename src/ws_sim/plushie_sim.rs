@@ -154,7 +154,6 @@ impl Simulation for PlushieSimulation {
                 let name = tokens.get(1).unwrap();
                 if let Some(stuffing) = match *name {
                     "None" => Some(Stuffing::None),
-                    "PerRound" => Some(Stuffing::PerRound),
                     "Centroids" => Some(Stuffing::Centroids),
                     _ => {
                         log::error!("Unexpected stuffing: {name}");

@@ -1,29 +1,24 @@
-use serde_derive::Serialize;
-
-use self::{per_round_stuffing::RoundsInfo, points::Points};
-
+use self::points::Points;
 use super::common::*;
 
+use serde_derive::Serialize;
+
 mod animation;
-mod centroid_stuffing;
 pub mod config;
 mod construction;
 mod conversions;
 pub mod examples;
-mod per_round_stuffing;
 mod points;
 
 #[derive(Clone, Serialize)]
 pub enum Stuffing {
     None,
-    PerRound,
     Centroids,
 }
 
 #[derive(Clone, Serialize)]
 pub struct Plushie {
     points: Points,
-    rounds: RoundsInfo,
     pub centroids: Vec<Point>,
     pub centroid_force: f32,
     edges: Vec<Vec<usize>>,
@@ -63,9 +58,8 @@ impl Plushie {
 
         while self.centroids.len() < num {
             self.centroids.push(Point::new(0.0, 1.0, 0.0));
-            let centroid2points =
-                self::centroid_stuffing::map(&self.points.as_vec(), &self.centroids);
-            self::centroid_stuffing::recalculate_centroids(
+            let centroid2points = animation::centroid::map(&self.points.as_vec(), &self.centroids);
+            animation::centroid::recalculate_centroids(
                 &self.points.as_vec(),
                 &mut self.centroids,
                 centroid2points,

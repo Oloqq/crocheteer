@@ -48,7 +48,7 @@ function main() {
   gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
     simulator.send(`gravity ${value}`)
   });
-  gui.add(customGui, 'stuffing', { None: 'None', PerRound: 'PerRound', Centroids: 'Centroids' }).onChange((val) => {
+  gui.add(customGui, 'stuffing', { None: 'None', Centroids: 'Centroids' }).onChange((val) => {
     simulator.send(`stuffing ${val}`);
     simulator.send(`centroid.amount ${customGui.centroids.amount}`);
   });
