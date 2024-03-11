@@ -90,9 +90,9 @@ export default class Plushie {
 
   init(data) {
     console.log(data);
-    const pointsWrapper = data["points"];
-    const points = pointsWrapper["points"];
-    const _fixedNum = pointsWrapper["fixed"];
+    const nodes = data["nodes"];
+    const points = nodes["points"];
+    const _fixedNum = nodes["fixed"];
     this.edges = data["edges"];
     this.guiData.stuffing = data["stuffing"];
     this.guiData.gravity = data["gravity"];
@@ -126,7 +126,7 @@ export default class Plushie {
       create.scene.remove(sph);
     }
     this.centroidSpheres = [];
-    const centroids = data["centroids"];
+    const centroids = data["centroids"]["centroids"];
     for (let point of centroids) {
       let sph = create.sphere(point, 0.1, 0xffa500);
       this.centroidSpheres.push(sph);
@@ -189,7 +189,7 @@ export default class Plushie {
 
   update(data) {
     this.updateWallPoints(data["points"]);
-    this.updateCentroids(data["centroids"]);
+    this.updateCentroids(data["centroids"]["centroids"]);
 
     // this.updateLinks(); // disabled until an efficient solutions is found
   }

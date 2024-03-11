@@ -5,7 +5,8 @@ use crate::flow::Flow;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
-use crate::plushie::points::{Points, ROOT_INDEX};
+use crate::plushie::animation::centroid::Centroids;
+use crate::plushie::nodes::{Nodes, ROOT_INDEX};
 
 use super::Plushie;
 
@@ -116,22 +117,14 @@ impl Plushie {
             false => vec![V::zeros()],
         };
 
-        let centroids = {
-            let cnum = pattern.simulation_config.centroids.number;
-            let margin = 1.0;
-            let ceiling = approximate_height - margin;
-            let floor = margin;
-            let spacing = (ceiling - floor) / cnum as f32;
-            (0..cnum)
-                .map(|i| Point::new(0.0, floor + spacing * i as f32, 0.0))
-                .collect()
-        };
-
         Plushie::new(
-            Points::new(points, constraints),
+            Nodes::new(points, constraints),
             edges,
             pattern.simulation_config.clone(),
-            centroids,
+            Centroids::new(
+                pattern.simulation_config.centroids.number,
+                approximate_height,
+            ),
         )
     }
 }
@@ -170,7 +163,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
-        assert_eq!(plushie.points.len(), 10);
+        assert_eq!(plushie.nodes.len(), 10);
         assert_eq!(
             plushie.edges,
             vec![
@@ -208,7 +201,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
-        assert_eq!(plushie.points.len(), 9);
+        assert_eq!(plushie.nodes.len(), 9);
         assert_eq!(
             plushie.edges,
             vec![
@@ -244,7 +237,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let plushie = Plushie::from_pattern(&p);
-        assert_eq!(plushie.points.len(), 15);
+        assert_eq!(plushie.nodes.len(), 15);
         assert_eq!(
             plushie.edges,
             vec![
@@ -286,7 +279,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
-        assert_eq!(pl.points.len(), 22);
+        assert_eq!(pl.nodes.len(), 22);
         // pl.animate();
     }
 
@@ -300,7 +293,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
-        assert_eq!(pl.points.len(), 11);
+        assert_eq!(pl.nodes.len(), 11);
         // pl.animate();
     }
 
@@ -314,7 +307,7 @@ mod tests {
             simulation_config: Params::default(),
         };
         let pl = Plushie::from_pattern(&p);
-        assert_eq!(pl.points.len(), 15);
+        assert_eq!(pl.nodes.len(), 15);
         // pl.animate();
     }
 
@@ -330,9 +323,9 @@ mod tests {
         };
         assert_eq!(p.rounds.len(), 3);
         let pl = Plushie::from_pattern(&p);
-        println!("{:?}", pl.points.as_vec());
-        assert_eq!(pl.points[1].y, 4.0);
-        assert_eq!(pl.points.len(), 14);
+        println!("{:?}", pl.nodes.as_vec());
+        assert_eq!(pl.nodes[1].y, 4.0);
+        assert_eq!(pl.nodes.len(), 14);
         // pl.animate();
     }
 }

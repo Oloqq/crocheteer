@@ -7,7 +7,7 @@ use crate::common::{Point, V};
 pub const ROOT_INDEX: usize = 0;
 
 #[derive(Clone, Serialize)]
-pub struct Points {
+pub struct Nodes {
     /// Constraints of the first points. The calculated movement will be multiplied by them.
     constraints: Vec<V>,
     /// All points in the shape
@@ -19,7 +19,7 @@ pub struct Points {
     keep_root_at_origin: bool,
 }
 
-impl Points {
+impl Nodes {
     pub fn new(points: Vec<Point>, constraints: Vec<V>) -> Self {
         let keep_root_at_origin = true;
         if keep_root_at_origin {
@@ -91,14 +91,14 @@ impl Points {
     }
 }
 
-impl Index<usize> for Points {
+impl Index<usize> for Nodes {
     type Output = Point;
     fn index<'a>(&'a self, i: usize) -> &'a Point {
         &self.points[i]
     }
 }
 
-impl IndexMut<usize> for Points {
+impl IndexMut<usize> for Nodes {
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Point {
         &mut self.points[i]
     }

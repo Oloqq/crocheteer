@@ -5,11 +5,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use super::{Plushie, Stuffing};
 use crate::common::*;
 
-use self::centroid::centroid_stuffing;
-
 impl Plushie {
     pub fn step(&mut self, time: f32) -> Vec<V> {
-        let mut displacement: Vec<V> = vec![V::zeros(); self.points.len()];
+        let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
         let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
 
         self.add_link_forces(&mut displacement);
@@ -20,15 +18,15 @@ impl Plushie {
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        let _total = self.points.apply_forces(&displacement, time);
+        let _total = self.nodes.apply_forces(&displacement, time);
 
         displacement
     }
 
     fn add_link_forces(&self, displacement: &mut Vec<V>) {
-        for (i, point) in self.points.all() {
+        for (i, point) in self.nodes.all() {
             for neibi in &self.edges[i] {
-                let neib = &self.points[*neibi];
+                let neib = &self.nodes[*neibi];
                 let diff: V = attract(point, neib, self.params.desired_stitch_distance);
                 displacement[i] += diff;
                 displacement[*neibi] -= diff;
@@ -39,17 +37,15 @@ impl Plushie {
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         match &self.stuffing {
             Stuffing::None => (),
-            Stuffing::Centroids => centroid_stuffing(
-                &self.points.as_vec(),
-                &mut self.centroids,
-                self.params.centroids.force,
-                displacement,
-            ),
+            Stuffing::Centroids => {
+                self.centroids
+                    .stuff(self.params.centroids.force, &self.nodes, displacement)
+            }
         }
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
-        for (i, _point) in self.points.all() {
+        for (i, _point) in self.nodes.all() {
             displacement[i].y -= self.params.gravity;
         }
     }

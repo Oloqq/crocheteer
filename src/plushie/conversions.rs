@@ -11,16 +11,16 @@ impl Plushie {
             }
             for j in 0..neibs.len() - 1 {
                 result.push(make_triangle(
-                    self.points[i],
-                    self.points[neibs[j]],
-                    self.points[neibs[j + 1]],
+                    self.nodes[i],
+                    self.nodes[neibs[j]],
+                    self.nodes[neibs[j + 1]],
                 ))
             }
             if neibs.len() > 2 {
                 result.push(make_triangle(
-                    self.points[i],
-                    self.points[neibs[0]],
-                    self.points[neibs[neibs.len() - 1]],
+                    self.nodes[i],
+                    self.nodes[neibs[0]],
+                    self.nodes[neibs[neibs.len() - 1]],
                 ))
             }
         }
