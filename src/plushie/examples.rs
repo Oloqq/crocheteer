@@ -14,6 +14,7 @@ pub fn get(name: &str) -> Option<(Pattern, Plushie)> {
         "ball" => ball(),
         "bigpillar" => bigpillar(),
         "vase" => vase(),
+        "bowl" => bowl(),
         _ => return None,
     })
 }
@@ -65,6 +66,27 @@ pub fn vase() -> (Pattern, Plushie) {
         .full_rounds(6)
         .loose_end()
         .unwrap();
+    let plushie = Plushie::from_pattern(&pattern);
+    (pattern, plushie)
+}
+
+pub fn bowl() -> (Pattern, Plushie) {
+    let pattern = Pattern::from_human_readable(
+        "@centroids = 6
+    @floor = true
+    : MR 6 (6)
+    : 6 inc (12)
+    : [inc, sc] x 6 (18)
+    : [inc, 2 sc] x 6 (24)
+    : [inc, 3 sc] x 6 (30)
+    : [inc, 4 sc] x 6 (36)
+    : 36 sc (36) # BLO
+    : 36 sc (36)
+    : [inc, 5 sc] x 6 (42)
+    2: 42 sc (42)
+    : [inc, 6 sc] x 6 (48)",
+    )
+    .unwrap();
     let plushie = Plushie::from_pattern(&pattern);
     (pattern, plushie)
 }
