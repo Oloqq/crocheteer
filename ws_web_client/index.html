@@ -27,6 +27,11 @@
             width: 50vw;
             height: 70vh;
         }
+
+        #command-txt {
+            display: inline-block;
+            width: 300px;
+        }
     </style>
 </head>
 
@@ -95,8 +100,11 @@ R28: 11 dec (11)
 FO # remember to fasten-off if you want a closed shape
 # The parser stops after end of file or FO
 </textarea><br>
-            <button id="update">Update</button><button id="hide" hidden>TODO: Hide</button><br>
-            <button id="example-btn">Load example:</button><input id="example-name" type="text">
+            <button id="update-btn">Update</button>
+            <button id="soft-update-btn">Soft update</button>
+            <br>
+            <button id="example-btn">Load example:</button><input id="example-txt" type="text"><br>
+            <button id="command-btn">Command:</button><input id="command-txt" type="text">
         </div>
     </div>
     <script type="module" src="/script/main.js"></script>

@@ -16,23 +16,38 @@ const customGui = {
 }
 
 const pattern = document.getElementById("pattern");
-const updateButton = document.getElementById("update");
+const updateButton = document.getElementById("update-btn");
+const softUpdateButton = document.getElementById("soft-update-btn");
 const loadExampleButton = document.getElementById("example-btn");
-const loadExampleText = document.getElementById("example-name");
+const loadExampleText = document.getElementById("example-txt");
 const status = document.getElementById("status");
+const commandButton = document.getElementById("command-btn");
+const commandText = document.getElementById("command-txt");
 
 function sendPattern() {
   let text = pattern.value;
-  status.innerText = "sending...";
+  status.innerText = "sending pattern...";
   simulator.send(`pattern ${text}`);
 }
 
+function softUpdate() {
+  let text = pattern.value;
+  status.innerText = "sending pattern (soft update)...";
+  simulator.send(`soft_update ${text}`);
+}
+
 updateButton.addEventListener("click", sendPattern);
+softUpdateButton.addEventListener("click", softUpdate);
 loadExampleButton.addEventListener("click", () => {
   let text = loadExampleText.value;
-  console.log(text);
   status.innerText = "asking for example...";
   simulator.send(`load_example ${text}`);
+});
+
+commandButton.addEventListener("click", () => {
+  let text = commandText.value;
+  status.innerText = `sending command... ${text}`;
+  simulator.send(`${text}`);
 });
 
 function main() {
@@ -65,7 +80,7 @@ function main() {
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);
   status.innerText = "Waiting for websocket connection...";
-  initialSendPattern();
+  // initialSendPattern();
 }
 
 function initialSendPattern() {

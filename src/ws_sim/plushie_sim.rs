@@ -2,8 +2,6 @@ use std::sync::{Arc, Mutex};
 
 use crate::{
     common::Point,
-    genetic::common::Program,
-    pattern::Pattern,
     plushie::{Plushie, Stuffing},
 };
 
@@ -59,25 +57,17 @@ impl PlushieSimulation {
         })
     }
 
-    fn change_pattern(&mut self, msg: &str) -> Result<(), String> {
+    fn change_pattern(&mut self, msg: &str, soft: bool) -> Result<(), String> {
         let (_, pattern) = match msg.split_once(" ") {
             Some(x) => x,
             None => return Err("frontend fuckup".into()),
         };
         log::info!("Changing pattern...");
-        self.plushie = match Program::deserialize(pattern) {
-            Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
-            Err(_) => {
-                log::info!("The pattern could not be interpreted as genetic");
-                match Pattern::from_human_readable(pattern) {
-                    Ok(pattern) => Plushie::from_pattern(&pattern),
-                    Err(e) => {
-                        log::info!("The pattern could not be interpreted as human readable");
-                        return Err(e);
-                    }
-                }
-            }
-        };
+        let mut new = Plushie::parse_any_format(pattern)?;
+        if soft {
+            new.position_based_on(&self.plushie);
+        }
+        self.plushie = new;
         Ok(())
     }
 
@@ -138,8 +128,8 @@ impl Simulation for PlushieSimulation {
                 let z: f32 = tokens[4].parse().unwrap();
                 self.plushie.set_point_position(id, Point::new(x, y, z));
             }
-            "pattern" => {
-                if let Err(error) = self.change_pattern(msg) {
+            "pattern" | "soft_update" => {
+                if let Err(error) = self.change_pattern(msg, command == "soft_update") {
                     self.send("status", format!("Couldn't parse: {}", error).as_str());
                 } else {
                     self.controls.need_init = true;

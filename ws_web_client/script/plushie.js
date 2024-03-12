@@ -89,7 +89,7 @@ export default class Plushie {
   }
 
   init(data) {
-    console.log(data);
+    // console.log(data);
     const nodes = data["nodes"];
     const points = nodes["points"];
     const _fixedNum = nodes["fixed"];
@@ -163,7 +163,7 @@ export default class Plushie {
   }
 
   setCentroidNum(num) {
-    console.log(this.centroidSpheres.length, num)
+    // console.log(this.centroidSpheres.length, num)
     while (this.centroidSpheres.length < num) {
       let sph = create.sphere([0, 0, 0], 0.1, 0xffa500);
       this.centroidSpheres.push(sph);
@@ -176,8 +176,8 @@ export default class Plushie {
   }
 
   updateCentroids(centroids) {
-    console.log(this.centroidSpheres);
-    console.log(centroids);
+    // console.log(this.centroidSpheres);
+    // console.log(centroids);
     for (let i in centroids) {
       let centroid = centroids[i];
       let sph = this.centroidSpheres[i];

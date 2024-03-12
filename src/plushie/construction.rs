@@ -2,6 +2,7 @@ use std::f32::consts::PI;
 
 use crate::common::*;
 use crate::flow::Flow;
+use crate::genetic::common::Program;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
@@ -21,6 +22,26 @@ impl Plushie {
     #[allow(unused)]
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         from_flow(flow)
+    }
+
+    pub fn parse_any_format(src: &str) -> Result<Self, String> {
+        Ok(match Program::deserialize(src) {
+            Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
+            Err(_) => {
+                log::info!("The pattern could not be interpreted as genetic");
+                match Pattern::from_human_readable(src) {
+                    Ok(pattern) => Plushie::from_pattern(&pattern),
+                    Err(e) => {
+                        log::info!("The pattern could not be interpreted as human readable");
+                        return Err(e);
+                    }
+                }
+            }
+        })
+    }
+
+    pub fn position_based_on(&mut self, _other: &Self) {
+        println!("TODO: Repositioning");
     }
 
     pub fn from_genetic(genom: &Genom) -> Self {

@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use crate::common::*;
 use crate::{flow::actions::Action, plushie::Edges};
 use HookError::*;
@@ -23,6 +21,8 @@ impl From<HookError> for String {
 
 // chains shall be approximated as a line from start point to attachment point
 // how to avoid mutiple shoves of the nodes array during construction (e.g. with multiple FOs that should be placed at the beginning)
+
+/// Responsible for building the graph used in the simulation
 pub struct Hook {
     edges: Edges,
     nodes: Vec<Point>,
@@ -48,5 +48,5 @@ impl Hook {
         }
     }
 
-    pub fn perform(&mut self, action: &Action) {}
+    pub fn perform(&mut self, _action: &Action) {}
 }

@@ -12,7 +12,7 @@ pub struct Nodes {
     /// Constraints of the first points. The calculated movement will be multiplied by them.
     constraints: Vec<V>,
     /// All points in the shape
-    points: Vec<Point>,
+    pub points: Vec<Point>,
     // TODO to params
     /// true => the whole shape will be translated by displacement applied to root, so that root stays at (0, 0, 0).
     ///     `constrains[0]` is ignored
