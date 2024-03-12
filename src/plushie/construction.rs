@@ -1,3 +1,7 @@
+mod from_flow;
+mod graph;
+mod hook;
+
 use std::f32::consts::PI;
 
 use crate::common::*;
@@ -12,11 +16,7 @@ use crate::plushie::nodes::{Nodes, ROOT_INDEX};
 use super::Plushie;
 
 #[allow(unused)]
-mod from_flow;
-#[allow(unused)]
 use from_flow::from_flow;
-
-mod hook;
 
 impl Plushie {
     #[allow(unused)]

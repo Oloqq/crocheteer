@@ -2,11 +2,11 @@ use std::f32::consts::PI;
 
 use crate::{
     common::*,
-    flow::{actions::Action, Flow},
+    flow::Flow,
     plushie::{animation::centroid::Centroids, nodes::Nodes, Plushie},
 };
 
-use super::hook::{Hook, HookResult};
+use super::hook::Hook;
 
 type Error = String;
 
@@ -17,7 +17,7 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
     let first = flow.next().ok_or("Flow empty")?;
     let mut hook = Hook::start_with(&first)?;
     while let Some(action) = flow.next() {
-        hook.perform(&action);
+        hook.perform(&action)?;
     }
     let result = hook.finish();
 
@@ -27,7 +27,7 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
     };
 
     Ok(Plushie {
-        nodes: Nodes::new(result.positions, constraints),
+        nodes: Nodes::new(result.nodes, constraints),
         edges: result.edges,
         params: Default::default(),
         centroids: Centroids::new(2, result.approximate_height),
@@ -35,6 +35,7 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
     })
 }
 
+#[allow(unused)]
 fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
     let circumference = (nodes + 1) as f32 * desired_stitch_distance;
     let radius = circumference / (2.0 * PI) / 4.0;
@@ -63,7 +64,6 @@ mod tests {
             plushie::{params::Params, Plushie},
         };
 
-        use super::*;
         use pretty_assertions::assert_eq;
         #[test]
         fn test_from_pattern_1() {
