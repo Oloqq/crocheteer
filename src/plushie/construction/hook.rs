@@ -1,5 +1,4 @@
-use super::graph::{Edges, Graph, Nodes, Peculiarity};
-use crate::common::*;
+use super::graph::{Edges, Graph, Peculiarity};
 use crate::flow::actions::Action;
 use Action::*;
 use HookError::*;
@@ -88,8 +87,38 @@ impl Hook {
                 self.anchor += 1;
                 Ok(())
             }
-            Inc => todo!(),
-            Dec => todo!(),
+            Inc => {
+                for _ in 0..2 {
+                    if self.round_left == 0 {
+                        self.round_starts.push(self.next);
+                        self.round_left = self.round_count;
+                        self.round_count = 0;
+                    }
+                    let this = self.next;
+                    self.edge(self.anchor).push(this);
+                    self.round_count += 1;
+                    self.next += 1;
+                }
+                self.round_left -= 1;
+                self.anchor += 1;
+                Ok(())
+            }
+            Dec => {
+                let this = self.next;
+                for _ in 0..2 {
+                    if self.round_left == 0 {
+                        self.round_starts.push(self.next);
+                        self.round_left = self.round_count;
+                        self.round_count = 0;
+                    }
+                    self.edge(self.anchor).push(this);
+                    self.round_left -= 1;
+                    self.anchor += 1;
+                }
+                self.round_count += 1;
+                self.next += 1;
+                Ok(())
+            }
             Ch(_) => unimplemented!(),
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),
@@ -154,5 +183,27 @@ mod tests {
         q!(h.round_starts, vec![4, 7]);
         q!(h.round_count, 1);
         q!(h.round_left, 2);
+    }
+
+    #[test]
+    fn test_perform_inc() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        h.perform(&Inc).unwrap();
+        q!(h.anchor, 2);
+        q!(h.next, 6);
+        q!(h.round_count, 2);
+        q!(h.round_left, 2);
+        q!(h.round_starts, vec![4]);
+    }
+
+    #[test]
+    fn test_perform_dec() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        h.perform(&Dec).unwrap();
+        q!(h.anchor, 3);
+        q!(h.next, 5);
+        q!(h.round_count, 1);
+        q!(h.round_left, 1);
+        q!(h.round_starts, vec![4]);
     }
 }
