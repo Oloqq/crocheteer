@@ -1,6 +1,6 @@
 use crate::{
     common::{Point, V},
-    plushie::nodes::Nodes,
+    plushie2::nodes::Nodes,
 };
 
 use na::distance;

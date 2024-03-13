@@ -3,6 +3,7 @@ use std::sync::{Arc, Mutex};
 use crate::{
     common::Point,
     plushie::{Plushie, Stuffing},
+    traits::plushie::PlushieTrait,
 };
 
 use super::sim::{Data, Simulation};

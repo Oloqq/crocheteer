@@ -1,3 +1,5 @@
+use crate::traits::plushie::PlushieTrait;
+
 use self::{animation::centroid::Centroids, nodes::Nodes, params::Params};
 use super::common::*;
 
@@ -46,7 +48,13 @@ impl Plushie {
         tension <= self.params.acceptable_tension
     }
 
-    pub fn animate(&mut self) {
+    pub fn get_points_vec(&self) -> &Vec<Point> {
+        self.nodes.as_vec()
+    }
+}
+
+impl PlushieTrait for Plushie {
+    fn animate(&mut self) {
         for _ in 0..self.params.max_relaxing_iterations {
             let displacement = self.step(1.0);
             if self.is_relaxed(&displacement) {
@@ -55,11 +63,7 @@ impl Plushie {
         }
     }
 
-    pub fn get_points_vec(&self) -> &Vec<Point> {
-        self.nodes.as_vec()
-    }
-
-    pub fn set_point_position(&mut self, i: usize, pos: Point) {
+    fn set_point_position(&mut self, i: usize, pos: Point) {
         if i >= self.nodes.len() {
             // using websockets, this could theoretically happen with reloading and some network delays
             panic!("Point index greater than vector size");
@@ -67,7 +71,7 @@ impl Plushie {
         self.nodes[i] = pos;
     }
 
-    pub fn set_centroid_num(&mut self, num: usize) {
+    fn set_centroid_num(&mut self, num: usize) {
         self.centroids.set_centroid_num(num, &self.nodes)
     }
 }

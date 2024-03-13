@@ -1,10 +1,7 @@
 use std::f32::consts::PI;
 
-use crate::{
-    common::*,
-    flow::Flow,
-    plushie::{animation::centroid::Centroids, nodes::Nodes, Plushie},
-};
+use super::super::{animation::centroid::Centroids, nodes::Nodes, Plushie};
+use crate::{common::*, flow::Flow};
 
 use super::hook::Hook;
 
@@ -31,7 +28,7 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
         edges: result.edges,
         params: Default::default(),
         centroids: Centroids::new(2, result.approximate_height),
-        stuffing: crate::plushie::Stuffing::Centroids,
+        stuffing: super::super::Stuffing::Centroids,
     })
 }
 
@@ -61,49 +58,13 @@ mod tests {
         use crate::flow::simple_flow::SimpleFlow;
         use crate::{
             pattern::{Pattern, Stitch},
-            plushie::{params::Params, Plushie},
+            plushie2::{params::Params, Plushie},
         };
 
         use pretty_assertions::assert_eq;
         #[test]
         fn test_from_pattern_1() {
-            let p = {
-                use Stitch::Sc;
-                Pattern {
-                    starting_circle: 4,
-                    fasten_off: true,
-                    rounds: vec![vec![Sc, Sc, Sc, Sc]],
-                    simulation_config: Params::default(),
-                }
-            };
             let f = SimpleFlow::new(vec![MR(4), Sc, Sc, Sc, Sc, FO]);
-            let plushie_pattern = Plushie::from_pattern(&p);
-            assert_eq!(plushie_pattern.nodes.len(), 10);
-            assert_eq!(
-                plushie_pattern.edges,
-                vec![
-                    // 0 ->
-                    vec![2, 3, 4, 5],
-                    // 1 ->
-                    vec![6, 7, 8, 9],
-                    // 2 ->
-                    vec![3, 6],
-                    // 3 ->
-                    vec![4, 7],
-                    // 4 ->
-                    vec![5, 8],
-                    // 5 ->
-                    vec![6, 9],
-                    // 6 ->
-                    vec![7],
-                    // 7 ->
-                    vec![8],
-                    // 8 ->
-                    vec![9],
-                    // 9 ->
-                    vec![],
-                ]
-            );
             let plushie_flow = Plushie::from_flow(f).unwrap();
             assert_eq!(
                 plushie_flow.edges,
@@ -130,167 +91,167 @@ mod tests {
                     vec![],
                 ]
             );
-            assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
+            assert_eq!(plushie_flow.nodes.len(), 10);
         }
 
-        #[test]
-        #[ignore = "need to fill"]
-        fn test_from_pattern_no_fasten_off() {
-            let p = {
-                use Stitch::Sc;
-                Pattern {
-                    starting_circle: 4,
-                    fasten_off: false,
-                    rounds: vec![vec![Sc, Sc, Sc, Sc]],
-                    simulation_config: Params::default(),
-                }
-            };
-            let f = SimpleFlow::new(vec![]);
+        // #[test]
+        // #[ignore = "need to fill"]
+        // fn test_from_pattern_no_fasten_off() {
+        //     let p = {
+        //         use Stitch::Sc;
+        //         Pattern {
+        //             starting_circle: 4,
+        //             fasten_off: false,
+        //             rounds: vec![vec![Sc, Sc, Sc, Sc]],
+        //             simulation_config: Params::default(),
+        //         }
+        //     };
+        //     let f = SimpleFlow::new(vec![]);
 
-            let plushie_pattern = Plushie::from_pattern(&p);
-            assert_eq!(plushie_pattern.nodes.len(), 9);
-            assert_eq!(
-                plushie_pattern.edges,
-                vec![
-                    // 0 ->
-                    vec![1, 2, 3, 4],
-                    // 1 ->
-                    vec![2, 5],
-                    // 2 ->
-                    vec![3, 6],
-                    // 3 ->
-                    vec![4, 7],
-                    // 4 ->
-                    vec![5, 8],
-                    // 5 ->
-                    vec![6],
-                    // 6 ->
-                    vec![7],
-                    // 7 ->
-                    vec![8],
-                    // 8 ->
-                    vec![],
-                ]
-            );
-            let plushie_flow = Plushie::from_flow(f).unwrap();
-            assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
-            assert_eq!(plushie_flow.edges, plushie_pattern.edges);
-        }
+        //     let plushie_pattern = Plushie::from_pattern(&p);
+        //     assert_eq!(plushie_pattern.nodes.len(), 9);
+        //     assert_eq!(
+        //         plushie_pattern.edges,
+        //         vec![
+        //             // 0 ->
+        //             vec![1, 2, 3, 4],
+        //             // 1 ->
+        //             vec![2, 5],
+        //             // 2 ->
+        //             vec![3, 6],
+        //             // 3 ->
+        //             vec![4, 7],
+        //             // 4 ->
+        //             vec![5, 8],
+        //             // 5 ->
+        //             vec![6],
+        //             // 6 ->
+        //             vec![7],
+        //             // 7 ->
+        //             vec![8],
+        //             // 8 ->
+        //             vec![],
+        //         ]
+        //     );
+        //     let plushie_flow = Plushie::from_flow(f).unwrap();
+        //     assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
+        //     assert_eq!(plushie_flow.edges, plushie_pattern.edges);
+        // }
 
-        #[test]
-        #[ignore = "need to fill"]
-        fn test_from_pattern_increase_decrese() {
-            let p = {
-                use Stitch::*;
-                Pattern {
-                    starting_circle: 4,
-                    fasten_off: true,
-                    rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
-                    simulation_config: Params::default(),
-                }
-            };
-            let f = SimpleFlow::new(vec![]);
+        // #[test]
+        // #[ignore = "need to fill"]
+        // fn test_from_pattern_increase_decrese() {
+        //     let p = {
+        //         use Stitch::*;
+        //         Pattern {
+        //             starting_circle: 4,
+        //             fasten_off: true,
+        //             rounds: vec![vec![Sc, Inc, Sc, Sc], vec![Sc, Dec, Sc, Sc]],
+        //             simulation_config: Params::default(),
+        //         }
+        //     };
+        //     let f = SimpleFlow::new(vec![]);
 
-            let plushie_pattern = Plushie::from_pattern(&p);
-            assert_eq!(plushie_pattern.nodes.len(), 15);
-            assert_eq!(
-                plushie_pattern.edges,
-                vec![
-                    /* 0 -> */ vec![2, 3, 4, 5],
-                    /* 1 -> */ vec![11, 12, 13, 14],
-                    /* 2 -> */ vec![3, 6],
-                    /* 3 -> */ vec![4, 7, 8],
-                    /* 4 -> */ vec![5, 9],
-                    /* 5 -> */ vec![6, 10],
-                    /* 6 -> */ vec![7, 11],
-                    /* 7 -> */ vec![8, 12],
-                    /* 8 -> */ vec![9, 12],
-                    /* 9 -> */ vec![10, 13],
-                    /* 10 -> */ vec![11, 14],
-                    /* 11 -> */ vec![12],
-                    /* 12 -> */ vec![13],
-                    /* 13 -> */ vec![14],
-                    /* 14 -> */ vec![],
-                ]
-            );
-            let plushie_flow = Plushie::from_flow(f).unwrap();
-            assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
-            assert_eq!(plushie_flow.edges, plushie_pattern.edges);
-        }
+        //     let plushie_pattern = Plushie::from_pattern(&p);
+        //     assert_eq!(plushie_pattern.nodes.len(), 15);
+        //     assert_eq!(
+        //         plushie_pattern.edges,
+        //         vec![
+        //             /* 0 -> */ vec![2, 3, 4, 5],
+        //             /* 1 -> */ vec![11, 12, 13, 14],
+        //             /* 2 -> */ vec![3, 6],
+        //             /* 3 -> */ vec![4, 7, 8],
+        //             /* 4 -> */ vec![5, 9],
+        //             /* 5 -> */ vec![6, 10],
+        //             /* 6 -> */ vec![7, 11],
+        //             /* 7 -> */ vec![8, 12],
+        //             /* 8 -> */ vec![9, 12],
+        //             /* 9 -> */ vec![10, 13],
+        //             /* 10 -> */ vec![11, 14],
+        //             /* 11 -> */ vec![12],
+        //             /* 12 -> */ vec![13],
+        //             /* 13 -> */ vec![14],
+        //             /* 14 -> */ vec![],
+        //         ]
+        //     );
+        //     let plushie_flow = Plushie::from_flow(f).unwrap();
+        //     assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
+        //     assert_eq!(plushie_flow.edges, plushie_pattern.edges);
+        // }
 
-        #[test]
-        #[ignore = "need to fill"]
-        fn from_genetic_mutant_1() {
-            let p = {
-                use Stitch::*;
-                Pattern {
-                    starting_circle: 6,
-                    fasten_off: true,
-                    rounds: vec![
-                        vec![Dec, Dec, Dec],
-                        vec![Sc, Dec],
-                        vec![Dec],
-                        vec![Sc],
-                        vec![Sc],
-                        vec![Sc],
-                        vec![Inc],
-                        vec![Sc, Inc],
-                    ],
-                    simulation_config: Params::default(),
-                }
-            };
-            let f = SimpleFlow::new(vec![]);
+        // #[test]
+        // #[ignore = "need to fill"]
+        // fn from_genetic_mutant_1() {
+        //     let p = {
+        //         use Stitch::*;
+        //         Pattern {
+        //             starting_circle: 6,
+        //             fasten_off: true,
+        //             rounds: vec![
+        //                 vec![Dec, Dec, Dec],
+        //                 vec![Sc, Dec],
+        //                 vec![Dec],
+        //                 vec![Sc],
+        //                 vec![Sc],
+        //                 vec![Sc],
+        //                 vec![Inc],
+        //                 vec![Sc, Inc],
+        //             ],
+        //             simulation_config: Params::default(),
+        //         }
+        //     };
+        //     let f = SimpleFlow::new(vec![]);
 
-            let pl = Plushie::from_pattern(&p);
-            assert_eq!(pl.nodes.len(), 22);
-            // pl.animate();
-            let plushie_flow = Plushie::from_flow(f).unwrap();
-            assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
-            assert_eq!(plushie_flow.edges, pl.edges);
-        }
+        //     let pl = Plushie::from_pattern(&p);
+        //     assert_eq!(pl.nodes.len(), 22);
+        //     // pl.animate();
+        //     let plushie_flow = Plushie::from_flow(f).unwrap();
+        //     assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
+        //     assert_eq!(plushie_flow.edges, pl.edges);
+        // }
 
-        #[test]
-        #[ignore = "need to fill"]
-        fn from_genetic_mutant_2() {
-            let p = {
-                use Stitch::*;
-                Pattern {
-                    starting_circle: 6,
-                    fasten_off: true,
-                    rounds: vec![vec![Dec, Dec, Dec]],
-                    simulation_config: Params::default(),
-                }
-            };
-            let f = SimpleFlow::new(vec![]);
+        // #[test]
+        // #[ignore = "need to fill"]
+        // fn from_genetic_mutant_2() {
+        //     let p = {
+        //         use Stitch::*;
+        //         Pattern {
+        //             starting_circle: 6,
+        //             fasten_off: true,
+        //             rounds: vec![vec![Dec, Dec, Dec]],
+        //             simulation_config: Params::default(),
+        //         }
+        //     };
+        //     let f = SimpleFlow::new(vec![]);
 
-            let pl = Plushie::from_pattern(&p);
-            assert_eq!(pl.nodes.len(), 11);
-            // pl.animate();
-            let plushie_flow = Plushie::from_flow(f).unwrap();
-            assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
-            assert_eq!(plushie_flow.edges, pl.edges);
-        }
+        //     let pl = Plushie::from_pattern(&p);
+        //     assert_eq!(pl.nodes.len(), 11);
+        //     // pl.animate();
+        //     let plushie_flow = Plushie::from_flow(f).unwrap();
+        //     assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
+        //     assert_eq!(plushie_flow.edges, pl.edges);
+        // }
 
-        #[test]
-        #[ignore = "need to fill"]
-        fn from_genetic_mutant_3() {
-            let p = {
-                use Stitch::*;
-                Pattern {
-                    starting_circle: 6,
-                    fasten_off: true,
-                    rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
-                    simulation_config: Params::default(),
-                }
-            };
-            let f = SimpleFlow::new(vec![]);
+        // #[test]
+        // #[ignore = "need to fill"]
+        // fn from_genetic_mutant_3() {
+        //     let p = {
+        //         use Stitch::*;
+        //         Pattern {
+        //             starting_circle: 6,
+        //             fasten_off: true,
+        //             rounds: vec![vec![Dec, Dec, Dec], vec![Sc, Sc, Inc]],
+        //             simulation_config: Params::default(),
+        //         }
+        //     };
+        //     let f = SimpleFlow::new(vec![]);
 
-            let pl = Plushie::from_pattern(&p);
-            assert_eq!(pl.nodes.len(), 15);
-            // pl.animate();
-            let plushie_flow = Plushie::from_flow(f).unwrap();
-            assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
-            assert_eq!(plushie_flow.edges, pl.edges);
-        }
+        //     let pl = Plushie::from_pattern(&p);
+        //     assert_eq!(pl.nodes.len(), 15);
+        //     // pl.animate();
+        //     let plushie_flow = Plushie::from_flow(f).unwrap();
+        //     assert_eq!(plushie_flow.nodes.len(), pl.nodes.len());
+        //     assert_eq!(plushie_flow.edges, pl.edges);
+        // }
     }
 }

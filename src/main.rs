@@ -2,6 +2,7 @@ use crate::benchmark::run_benchmark;
 use crate::genetic::common::Program;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
+use crate::traits::plushie::PlushieTrait;
 use crate::{common::*, ws_sim::serve_websocket};
 
 extern crate nalgebra as na;
@@ -14,7 +15,9 @@ mod genetic;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
+#[allow(unused)]
 mod plushie2;
+mod traits;
 mod ws_sim;
 
 use args::*;

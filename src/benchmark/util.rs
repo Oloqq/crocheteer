@@ -9,6 +9,7 @@ use crate::{
     genetic::{common::Case, fitness_funcs::FitnessFunc, params::Params, problem::Shape, TinyGP},
     pattern::Pattern,
     plushie::Plushie,
+    traits::plushie::PlushieTrait,
     GeneticArgs,
 };
 
