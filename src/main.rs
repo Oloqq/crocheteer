@@ -14,6 +14,7 @@ mod genetic;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
+mod plushie2;
 mod ws_sim;
 
 use args::*;
