@@ -76,7 +76,7 @@ mod tests {
                     simulation_config: Params::default(),
                 }
             };
-            let f = SimpleFlow::new(vec![MR(4), Sc, Sc, Sc, Sc]);
+            let f = SimpleFlow::new(vec![MR(4), Sc, Sc, Sc, Sc, FO]);
             let plushie_pattern = Plushie::from_pattern(&p);
             assert_eq!(plushie_pattern.nodes.len(), 10);
             assert_eq!(
