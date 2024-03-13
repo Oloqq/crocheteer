@@ -105,8 +105,32 @@ mod tests {
                 ]
             );
             let plushie_flow = Plushie::from_flow(f).unwrap();
+            assert_eq!(
+                plushie_flow.edges,
+                vec![
+                    // 0 ->
+                    vec![1, 2, 3, 4],
+                    // 1 ->
+                    vec![2, 5],
+                    // 2 ->
+                    vec![3, 6],
+                    // 3 ->
+                    vec![4, 7],
+                    // 4 ->
+                    vec![5, 8],
+                    // new round 5 ->
+                    vec![6, 9],
+                    // 6 ->
+                    vec![7, 9],
+                    // 7 ->
+                    vec![8, 9],
+                    // 8 ->
+                    vec![9],
+                    // tip 9 ->
+                    vec![],
+                ]
+            );
             assert_eq!(plushie_flow.nodes.len(), plushie_pattern.nodes.len());
-            assert_eq!(plushie_flow.edges, plushie_pattern.edges);
         }
 
         #[test]

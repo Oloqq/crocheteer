@@ -38,6 +38,7 @@ impl Graph {
 }
 
 fn make_nodes(round_starts: Vec<usize>) -> (Nodes, f32) {
+    // assumption: only one radial axis, how to handle shape of letter Y?
     let mut prev = 0;
     let mut y = 0.0;
     let mut nodes = vec![];
@@ -70,4 +71,20 @@ fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
         result.push(point);
     }
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_make_nodes() {
+        let rs = vec![4];
+        let (res, _) = make_nodes(rs);
+        assert_eq!(res.len(), 4);
+
+        let rs = vec![4, 8];
+        let (res, _) = make_nodes(rs);
+        assert_eq!(res.len(), 8);
+    }
 }

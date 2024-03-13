@@ -148,6 +148,7 @@ impl Hook {
                     self.edge(i - di).push(this);
                 }
                 self.edges.push(vec![]);
+                self.round_starts.push(this + 1);
                 // TODO set self.next to Option::None
                 Ok(())
             }
@@ -271,6 +272,7 @@ mod tests {
                 vec![]         // 7
             ]
         );
+        q!(h.round_starts, vec![4, 8]);
         // TODO assert next Sc won't succeed
     }
 
