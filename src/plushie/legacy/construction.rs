@@ -4,14 +4,14 @@ mod hook;
 
 use std::f32::consts::PI;
 
+use super::animation::centroid::Centroids;
+use super::nodes::{Nodes, ROOT_INDEX};
 use crate::common::*;
 use crate::flow::Flow;
-use crate::genetic::common::Program;
+// use crate::genetic::common::Program;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
 use crate::pattern::{Pattern, Stitch};
-use crate::plushie::animation::centroid::Centroids;
-use crate::plushie::nodes::{Nodes, ROOT_INDEX};
 
 use super::Plushie;
 
@@ -25,17 +25,25 @@ impl Plushie {
     }
 
     pub fn parse_any_format(src: &str) -> Result<Self, String> {
-        Ok(match Program::deserialize(src) {
-            Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
-            Err(_) => {
-                log::info!("The pattern could not be interpreted as genetic");
-                match Pattern::from_human_readable(src) {
-                    Ok(pattern) => Plushie::from_pattern(&pattern),
-                    Err(e) => {
-                        log::info!("The pattern could not be interpreted as human readable");
-                        return Err(e);
-                    }
-                }
+        // Ok(match Program::deserialize(src) {
+        //     Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
+        //     Err(_) => {
+        //         log::info!("The pattern could not be interpreted as genetic");
+        //         match Pattern::from_human_readable(src) {
+        //             Ok(pattern) => Plushie::from_pattern(&pattern),
+        //             Err(e) => {
+        //                 log::info!("The pattern could not be interpreted as human readable");
+        //                 return Err(e);
+        //             }
+        //         }
+        //     }
+        // })
+        Ok(match Pattern::from_human_readable(src) {
+            Ok(pattern) => Plushie::from_pattern(&pattern),
+            Err(e) => {
+                log::info!("The pattern could not be interpreted as human readable");
+                log::warn!("Remember the genetic format is temporarily disabled");
+                return Err(e);
             }
         })
     }
@@ -169,7 +177,7 @@ pub fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
 
 #[cfg(test)]
 mod tests {
-    use crate::plushie::params::Params;
+    use crate::plushie::legacy::params::Params;
 
     use super::*;
     use pretty_assertions::assert_eq;

@@ -1,6 +1,6 @@
 use crate::{
     common::{Point, V},
-    plushie::nodes::Nodes,
+    for_flows::nodes::Nodes,
 };
 
 use na::distance;

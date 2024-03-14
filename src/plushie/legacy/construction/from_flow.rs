@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use crate::{
     common::*,
     flow::Flow,
-    plushie::{animation::centroid::Centroids, nodes::Nodes, Plushie},
+    plushie::legacy::{animation::centroid::Centroids, nodes::Nodes, Plushie},
 };
 
 use super::hook::Hook;
@@ -31,7 +31,7 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
         edges: result.edges,
         params: Default::default(),
         centroids: Centroids::new(2, result.approximate_height),
-        stuffing: crate::plushie::Stuffing::Centroids,
+        stuffing: crate::plushie::legacy::Stuffing::Centroids,
     })
 }
 
@@ -61,7 +61,7 @@ mod tests {
         use crate::flow::simple_flow::SimpleFlow;
         use crate::{
             pattern::{Pattern, Stitch},
-            plushie::{params::Params, Plushie},
+            plushie::legacy::{params::Params, Plushie},
         };
 
         use pretty_assertions::assert_eq;

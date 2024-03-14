@@ -4,7 +4,7 @@ use stl_io::IndexedMesh;
 
 use super::{Shape, Slice};
 use crate::traits::plushie::PlushieTrait;
-use crate::{common::Point, plushie::Plushie};
+use crate::{common::Point, legacy::Plushie};
 
 use std::error::Error;
 use std::fs::OpenOptions;

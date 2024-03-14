@@ -2,8 +2,10 @@ use std::sync::{Arc, Mutex};
 
 use crate::{
     common::Point,
-    plushie::{Plushie, Stuffing},
-    traits::plushie::PlushieTrait,
+    plushie::{
+        legacy::{Plushie, Stuffing},
+        PlushieTrait,
+    },
 };
 
 use super::sim::{Data, Simulation};
@@ -160,7 +162,7 @@ impl Simulation for PlushieSimulation {
                 }
             }
             "load_example" => {
-                use crate::plushie::examples;
+                use crate::plushie::legacy::examples;
                 let name = tokens.get(1).unwrap();
                 match examples::get(name) {
                     Some((pattern, plushie)) => {

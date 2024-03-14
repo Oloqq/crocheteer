@@ -7,8 +7,8 @@ use std::{
 use crate::{
     common::save_mesh,
     genetic::{common::Case, fitness_funcs::FitnessFunc, params::Params, problem::Shape, TinyGP},
+    legacy::Plushie,
     pattern::Pattern,
-    plushie::Plushie,
     traits::plushie::PlushieTrait,
     GeneticArgs,
 };

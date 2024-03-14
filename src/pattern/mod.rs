@@ -6,7 +6,7 @@ pub mod stitches;
 
 use serde::{Deserialize, Serialize};
 
-use crate::plushie::params::Params;
+use crate::plushie::legacy::params::Params;
 
 pub use self::stitches::Stitch;
 

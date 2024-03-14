@@ -57,8 +57,8 @@ mod tests {
         use crate::flow::actions::Action::*;
         use crate::flow::simple_flow::SimpleFlow;
         use crate::{
+            for_flows::{params::Params, Plushie},
             pattern::{Pattern, Stitch},
-            plushie2::{params::Params, Plushie},
         };
 
         use pretty_assertions::assert_eq;

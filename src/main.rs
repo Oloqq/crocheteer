@@ -1,29 +1,27 @@
-use crate::benchmark::run_benchmark;
-use crate::genetic::common::Program;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
-use crate::traits::plushie::PlushieTrait;
+use crate::plushie::legacy::examples;
+use crate::plushie::legacy::Plushie;
+use crate::plushie::PlushieTrait;
 use crate::{common::*, ws_sim::serve_websocket};
 
 extern crate nalgebra as na;
 
+// mod benchmark;
+// use crate::benchmark::run_benchmark;
+// mod genetic;
+// use crate::genetic::common::Program;
+
 mod args;
-mod benchmark;
 mod common;
 mod flow;
-mod genetic;
 mod meshes_sandbox;
 mod pattern;
 mod plushie;
-#[allow(unused)]
-mod plushie2;
-mod traits;
 mod ws_sim;
 
 use args::*;
 use pattern::Pattern;
-use plushie::examples;
-use plushie::Plushie;
 use std::io::Write;
 use ws_sim::plushie_sim::PlushieSimulation;
 
@@ -44,7 +42,8 @@ fn main() {
         Genetic(genetic) => {
             let suite = &genetic.suite;
             println!("Selected suite: {suite}");
-            run_benchmark(&suite, &genetic);
+            unimplemented!();
+            // run_benchmark(&suite, &genetic);
         }
         FromPattern {
             is_string,
@@ -53,10 +52,11 @@ fn main() {
             ws,
         } => {
             let pattern = if is_string {
-                let tokens = Program::deserialize(pattern.to_str().unwrap())
-                    .unwrap()
-                    .tokens;
-                Pattern::from_genom(&(6, &tokens))
+                unimplemented!()
+                // let tokens = Program::deserialize(pattern.to_str().unwrap())
+                //     .unwrap()
+                //     .tokens;
+                // Pattern::from_genom(&(6, &tokens))
             } else {
                 Pattern::from_file(pattern).unwrap()
             };

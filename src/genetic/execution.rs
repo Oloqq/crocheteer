@@ -8,7 +8,7 @@ use super::{
     problem::Token,
 };
 
-use crate::{genetic::problem::Shape, pattern::Pattern, plushie::Plushie};
+use crate::{genetic::problem::Shape, legacy::Plushie, pattern::Pattern};
 
 pub struct Runtime {
     levels: usize,
