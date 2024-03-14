@@ -25,18 +25,17 @@ impl PlushieControls {
     }
 }
 
-#[derive(Clone)]
 pub struct PlushieSimulation {
     controls: PlushieControls,
-    plushie: Plushie,
+    plushie: Box<dyn PlushieTrait>,
     messages: Arc<Mutex<Vec<String>>>,
 }
 
 impl PlushieSimulation {
-    pub fn from(plushie: Plushie) -> Self {
+    pub fn from(plushie: impl PlushieTrait) -> Self {
         Self {
             controls: PlushieControls::new(),
-            plushie,
+            plushie: Box::new(plushie),
             messages: Arc::new(Mutex::new(vec![])),
         }
     }
@@ -46,7 +45,7 @@ impl PlushieSimulation {
             "key": "upd",
             "dat": {
                 "points": serde_json::json!(&self.plushie.get_points_vec()),
-                "centroids": self.plushie.centroids
+                "centroids": self.plushie.get_centroids()
             }
         })
     }
@@ -54,21 +53,21 @@ impl PlushieSimulation {
     fn get_init_data(&self) -> serde_json::Value {
         serde_json::json!({
             "key": "ini",
-            "dat": serde_json::json!(self.plushie)
+            "dat": self.plushie.serialize()
         })
     }
 
-    fn change_pattern(&mut self, msg: &str, soft: bool) -> Result<(), String> {
+    fn change_pattern(&mut self, msg: &str, _soft: bool) -> Result<(), String> {
         let (_, pattern) = match msg.split_once(" ") {
             Some(x) => x,
             None => return Err("frontend fuckup".into()),
         };
         log::info!("Changing pattern...");
-        let mut new = Plushie::parse_any_format(pattern)?;
-        if soft {
-            new.position_based_on(&self.plushie);
-        }
-        self.plushie = new;
+        let new = Plushie::parse_any_format(pattern)?;
+        // if soft {
+        //     new.position_based_on(*self.plushie);
+        // }
+        self.plushie = Box::new(new);
         Ok(())
     }
 
@@ -140,7 +139,7 @@ impl Simulation for PlushieSimulation {
             "pause" => controls.paused = true,
             "resume" => controls.paused = false,
             "advance" => controls.advance += 1,
-            "gravity" => self.plushie.params.gravity = tokens.get(1).unwrap().parse().unwrap(),
+            "gravity" => self.plushie.params().gravity = tokens.get(1).unwrap().parse().unwrap(),
             "stuffing" => {
                 let name = tokens.get(1).unwrap();
                 if let Some(stuffing) = match *name {
@@ -151,11 +150,11 @@ impl Simulation for PlushieSimulation {
                         None
                     }
                 } {
-                    self.plushie.stuffing = stuffing;
+                    self.plushie.set_stuffing(stuffing);
                 };
             }
             "centroid.amount" => {
-                if let Stuffing::Centroids = self.plushie.stuffing {
+                if let Stuffing::Centroids = self.plushie.stuffing() {
                     let num: usize = tokens.get(1).unwrap().parse().unwrap();
                     self.plushie.set_centroid_num(num);
                 }
@@ -166,7 +165,7 @@ impl Simulation for PlushieSimulation {
                 match examples::get(name) {
                     Some((pattern, plushie)) => {
                         self.controls.need_init = true;
-                        self.plushie = plushie;
+                        self.plushie = Box::new(plushie);
                         self.send("pattern_update", &pattern.human_readable());
                         self.send("status", "Loaded an example");
                     }
@@ -174,6 +173,14 @@ impl Simulation for PlushieSimulation {
                 }
             }
             _ => log::error!("Unexpected msg: {msg}"),
+        }
+    }
+
+    fn clone(&self) -> Self {
+        PlushieSimulation {
+            controls: self.controls.clone(),
+            plushie: self.plushie.clone(),
+            messages: self.messages.clone(),
         }
     }
 }

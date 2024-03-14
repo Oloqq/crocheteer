@@ -3,6 +3,7 @@
 use stl_io::IndexedMesh;
 
 use super::{Shape, Slice};
+use crate::traits::plushie::PlushieTrait;
 use crate::{common::Point, plushie::Plushie};
 
 use std::error::Error;

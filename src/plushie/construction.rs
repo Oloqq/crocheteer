@@ -40,9 +40,9 @@ impl Plushie {
         })
     }
 
-    pub fn position_based_on(&mut self, _other: &Self) {
-        println!("TODO: Repositioning");
-    }
+    // pub fn position_based_on(&mut self, _other: &Self) {
+    //     println!("TODO: Repositioning");
+    // }
 
     pub fn from_genetic(genom: &Genom) -> Self {
         let pattern = Pattern::from_genom(&genom);

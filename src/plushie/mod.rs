@@ -5,7 +5,7 @@ use super::common::*;
 
 use serde_derive::Serialize;
 
-mod animation;
+pub mod animation;
 mod construction;
 mod conversions;
 pub mod examples;
@@ -47,13 +47,13 @@ impl Plushie {
         let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
         tension <= self.params.acceptable_tension
     }
-
-    pub fn get_points_vec(&self) -> &Vec<Point> {
-        self.nodes.as_vec()
-    }
 }
 
 impl PlushieTrait for Plushie {
+    fn to_plushie_1(self) -> self::Plushie {
+        self
+    }
+
     fn animate(&mut self) {
         for _ in 0..self.params.max_relaxing_iterations {
             let displacement = self.step(1.0);
@@ -73,5 +73,37 @@ impl PlushieTrait for Plushie {
 
     fn set_centroid_num(&mut self, num: usize) {
         self.centroids.set_centroid_num(num, &self.nodes)
+    }
+
+    fn get_points_vec(&self) -> &Vec<Point> {
+        self.nodes.as_vec()
+    }
+
+    fn get_centroids(&self) -> &Centroids {
+        &self.centroids
+    }
+
+    fn serialize(&self) -> serde_json::Value {
+        serde_json::json!(self)
+    }
+
+    fn step(&mut self, time: f32) {
+        self.step(time);
+    }
+
+    fn clone(&self) -> Box<dyn PlushieTrait> {
+        Box::new(Clone::clone(self))
+    }
+
+    fn params(&mut self) -> &mut Params {
+        &mut self.params
+    }
+
+    fn stuffing(&self) -> &Stuffing {
+        &self.stuffing
+    }
+
+    fn set_stuffing(&mut self, stuffing: Stuffing) {
+        self.stuffing = stuffing;
     }
 }
