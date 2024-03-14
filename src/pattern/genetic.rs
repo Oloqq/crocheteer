@@ -1,4 +1,6 @@
-use crate::{pattern::stitches::count_anchors_produced, plushie::legacy::params::Params};
+#![allow(unused)]
+
+use crate::{pattern::stitches::count_anchors_produced, plushie::params::Params};
 
 use super::{Pattern, Stitch};
 

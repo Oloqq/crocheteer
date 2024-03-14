@@ -3,10 +3,9 @@ mod construction;
 mod conversions;
 pub mod examples;
 mod nodes;
-pub mod params;
 
-use self::{animation::centroid::Centroids, nodes::Nodes, params::Params};
-use super::super::plushie::PlushieTrait;
+use self::{animation::centroid::Centroids, nodes::Nodes};
+use super::super::plushie::{Params, PlushieTrait};
 
 use crate::common::*;
 

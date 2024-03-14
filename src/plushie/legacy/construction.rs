@@ -1,4 +1,3 @@
-mod from_flow;
 mod graph;
 mod hook;
 
@@ -7,7 +6,6 @@ use std::f32::consts::PI;
 use super::animation::centroid::Centroids;
 use super::nodes::{Nodes, ROOT_INDEX};
 use crate::common::*;
-use crate::flow::Flow;
 // use crate::genetic::common::Program;
 use crate::pattern::genetic::Genom;
 use crate::pattern::stitches::count_anchors_produced;
@@ -15,15 +13,7 @@ use crate::pattern::{Pattern, Stitch};
 
 use super::Plushie;
 
-#[allow(unused)]
-use from_flow::from_flow;
-
 impl Plushie {
-    #[allow(unused)]
-    pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
-        from_flow(flow)
-    }
-
     pub fn parse_any_format(src: &str) -> Result<Self, String> {
         // Ok(match Program::deserialize(src) {
         //     Ok(program) => Plushie::from_genetic(&(6, &program.tokens)),
@@ -52,7 +42,7 @@ impl Plushie {
     //     println!("TODO: Repositioning");
     // }
 
-    pub fn from_genetic(genom: &Genom) -> Self {
+    pub fn _from_genetic(genom: &Genom) -> Self {
         let pattern = Pattern::from_genom(&genom);
         Self::from_pattern(&pattern)
     }
@@ -177,7 +167,7 @@ pub fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
 
 #[cfg(test)]
 mod tests {
-    use crate::plushie::legacy::params::Params;
+    use crate::plushie::params::Params;
 
     use super::*;
     use pretty_assertions::assert_eq;

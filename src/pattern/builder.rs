@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::{error::Error, fs};
 
-use crate::plushie::legacy::params::Params;
+use crate::plushie::params::Params;
 
 use super::{
     stitches::{count_anchors_consumed, count_anchors_produced},

@@ -1,4 +1,4 @@
-use crate::plushie::legacy::params::Params;
+use crate::plushie::params::Params;
 
 use super::{stitches::count_anchors_produced, Pattern, Stitch};
 use ParseErrorKind::*;
@@ -427,7 +427,7 @@ fn serialize_round_id(this_round: usize, repetition_start: Option<usize>) -> Str
 
 #[cfg(test)]
 mod tests {
-    use crate::{pattern::Stitch, plushie::legacy::params::CentroidParams};
+    use crate::{pattern::Stitch, plushie::params::CentroidParams};
     use pretty_assertions::assert_eq;
     use Stitch::*;
 

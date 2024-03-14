@@ -19,9 +19,8 @@ pub struct Params {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct CentroidParams {
-    /// Number of centroids that simulate the stuffing. More centroids = more internal pressure. Bigger shapes need more
+    /// Number of centroids that simulate the stuffing. More centroids = more internal pressure. Bigger shapes need more.
     pub number: usize,
-    /// TODO
     pub force: f32,
 }
 
