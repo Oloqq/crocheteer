@@ -2,8 +2,6 @@
 pub mod legacy;
 pub mod params;
 
-// TODO centroids = 0 === no stuffing, remove none variant
-use legacy::{animation::centroid::Centroids, Stuffing};
 use params::Params;
 
 use crate::common::*;
@@ -16,19 +14,16 @@ pub trait PlushieTrait: Send + 'static {
     /// Access parameters of the simulation
     fn params(&mut self) -> &mut Params;
 
+    // JSONs for frontend communication
+    fn nodes_to_json(&self) -> JSON;
+    fn centroids_to_json(&self) -> JSON;
+    fn whole_to_json(&self) -> JSON;
+
     fn set_point_position(&mut self, i: usize, pos: Point);
-    fn set_centroid_num(&mut self, num: usize);
-    fn set_stuffing(&mut self, stuffing: Stuffing);
+    // TODO auto handle setting via params
+    fn change_centroid_num(&mut self, num: usize);
 
-    fn get_points_vec(&self) -> &Vec<Point>;
-    fn get_centroids(&self) -> &Centroids;
-    fn stuffing(&self) -> &Stuffing;
-
-    // workarounds
-    //
     /// As far as I understand, Send and Clone are not compatible
     /// This is a workaround, types implementing the trait can just put Clone::clone() inside
     fn clone(&self) -> Box<dyn PlushieTrait>;
-    /// Same story as clone()
-    fn serialize(&self) -> serde_json::Value;
 }

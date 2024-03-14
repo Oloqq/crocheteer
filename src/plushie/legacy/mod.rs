@@ -14,12 +14,6 @@ use serde_derive::Serialize;
 type Edges = Vec<Vec<usize>>;
 
 #[derive(Clone, Serialize)]
-pub enum Stuffing {
-    None,
-    Centroids,
-}
-
-#[derive(Clone, Serialize)]
 pub struct Plushie {
     // keep in mind that those field names are important in the frontend in current communication
     nodes: Nodes,
@@ -27,13 +21,11 @@ pub struct Plushie {
     pub params: Params,
 
     pub centroids: Centroids,
-    pub stuffing: Stuffing,
 }
 
 impl Plushie {
     pub fn new(points: Nodes, edges: Edges, params: Params, centroids: Centroids) -> Self {
         Self {
-            stuffing: Stuffing::Centroids,
             nodes: points,
             edges,
             params,
@@ -66,19 +58,19 @@ impl PlushieTrait for Plushie {
         self.nodes[i] = pos;
     }
 
-    fn set_centroid_num(&mut self, num: usize) {
+    fn change_centroid_num(&mut self, num: usize) {
         self.centroids.set_centroid_num(num, &self.nodes)
     }
 
-    fn get_points_vec(&self) -> &Vec<Point> {
-        self.nodes.as_vec()
+    fn nodes_to_json(&self) -> JSON {
+        serde_json::json!(self.nodes.as_vec())
     }
 
-    fn get_centroids(&self) -> &Centroids {
-        &self.centroids
+    fn centroids_to_json(&self) -> JSON {
+        serde_json::json!(self.centroids)
     }
 
-    fn serialize(&self) -> serde_json::Value {
+    fn whole_to_json(&self) -> JSON {
         serde_json::json!(self)
     }
 
@@ -92,13 +84,5 @@ impl PlushieTrait for Plushie {
 
     fn params(&mut self) -> &mut Params {
         &mut self.params
-    }
-
-    fn stuffing(&self) -> &Stuffing {
-        &self.stuffing
-    }
-
-    fn set_stuffing(&mut self, stuffing: Stuffing) {
-        self.stuffing = stuffing;
     }
 }

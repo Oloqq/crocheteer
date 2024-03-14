@@ -1,14 +1,9 @@
-use std::sync::{Arc, Mutex};
-
-use crate::{
-    common::Point,
-    plushie::{
-        legacy::{Plushie, Stuffing},
-        PlushieTrait,
-    },
-};
-
 use super::sim::{Data, Simulation};
+use crate::common::*;
+use crate::plushie::legacy::Plushie;
+use crate::plushie::PlushieTrait;
+
+use std::sync::{Arc, Mutex};
 
 #[derive(Clone)]
 pub struct PlushieControls {
@@ -42,20 +37,20 @@ impl PlushieSimulation {
         }
     }
 
-    fn get_update_data(&self) -> serde_json::Value {
+    fn get_update_data(&self) -> JSON {
         serde_json::json!({
             "key": "upd",
             "dat": {
-                "points": serde_json::json!(&self.plushie.get_points_vec()),
-                "centroids": self.plushie.get_centroids()
+                "points": self.plushie.nodes_to_json(),
+                "centroids": self.plushie.centroids_to_json()
             }
         })
     }
 
-    fn get_init_data(&self) -> serde_json::Value {
+    fn get_init_data(&self) -> JSON {
         serde_json::json!({
             "key": "ini",
-            "dat": self.plushie.serialize()
+            "dat": self.plushie.whole_to_json()
         })
     }
 
@@ -142,24 +137,11 @@ impl Simulation for PlushieSimulation {
             "resume" => controls.paused = false,
             "advance" => controls.advance += 1,
             "gravity" => self.plushie.params().gravity = tokens.get(1).unwrap().parse().unwrap(),
-            "stuffing" => {
-                let name = tokens.get(1).unwrap();
-                if let Some(stuffing) = match *name {
-                    "None" => Some(Stuffing::None),
-                    "Centroids" => Some(Stuffing::Centroids),
-                    _ => {
-                        log::error!("Unexpected stuffing: {name}");
-                        None
-                    }
-                } {
-                    self.plushie.set_stuffing(stuffing);
-                };
-            }
+            "stuffing" => log::warn!("this should be removed from the frontend"),
             "centroid.amount" => {
-                if let Stuffing::Centroids = self.plushie.stuffing() {
-                    let num: usize = tokens.get(1).unwrap().parse().unwrap();
-                    self.plushie.set_centroid_num(num);
-                }
+                let num: usize = tokens.get(1).unwrap().parse().unwrap();
+                self.plushie.params().centroids.number = num;
+                self.plushie.change_centroid_num(num);
             }
             "load_example" => {
                 use crate::plushie::legacy::examples;

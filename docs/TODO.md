@@ -88,6 +88,7 @@
   - add a `<select>` with sample patterns instead of the text input
   - allow changing simulation speed (corresponds to time variable in step)
   - save pattern source on update
+  - stop panicks after moving a centroid
 
 - frontend
   - highlight points when cursor is on the text area

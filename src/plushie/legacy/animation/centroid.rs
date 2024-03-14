@@ -42,6 +42,11 @@ impl Centroids {
     }
 
     pub fn stuff(&mut self, force: f32, nodes: &Nodes, displacement: &mut Vec<V>) {
+        // TODO handle changing number here
+        if self.centroids.is_empty() {
+            return;
+        }
+
         let centroid2points = push_and_map(nodes.as_vec(), &self.centroids, force, displacement);
         recalculate_centroids(nodes.as_vec(), &mut self.centroids, centroid2points);
     }
@@ -53,7 +58,6 @@ fn push_and_map(
     centroid_force: f32,
     displacement: &mut Vec<V>,
 ) -> Vec<Vec<usize>> {
-    assert!(centroids.len() > 0);
     let mut centroid2points = vec![vec![]; centroids.len()];
     for (i_p, point) in nodes.iter().enumerate() {
         let mut closest_i = 0;

@@ -71,7 +71,7 @@ function main() {
   var _ = gui.addFolder('PerRound stuffing config');
 
   var centroids = gui.addFolder('Centroid stuffing config');
-  let amount = centroids.add(customGui.centroids, "amount", 1, 20, 1).onChange((val) => {
+  let amount = centroids.add(customGui.centroids, "amount", 0, 20, 1).onChange((val) => {
     simulator.send(`centroid.amount ${val}`);
     simulationWorld.setCentroidNum(val);
   })

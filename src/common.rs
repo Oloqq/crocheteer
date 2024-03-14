@@ -6,6 +6,8 @@ use std::fs::OpenOptions;
 use stl_io::{Normal, Triangle, Vertex};
 pub type Mesh = Vec<Triangle>;
 
+pub type JSON = serde_json::Value;
+
 pub fn coords(p: Point) -> [f32; 3] {
     [p.x, p.y, p.z]
 }
