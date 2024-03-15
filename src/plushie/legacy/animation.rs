@@ -36,7 +36,7 @@ impl Plushie {
 
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         self.centroids
-            .stuff(self.params.centroids.force, &self.nodes, displacement)
+            .stuff(&self.params.centroids, &self.nodes, displacement)
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {

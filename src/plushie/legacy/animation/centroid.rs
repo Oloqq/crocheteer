@@ -1,6 +1,6 @@
 use crate::{
     common::{Point, V},
-    plushie::legacy::nodes::Nodes,
+    plushie::{legacy::nodes::Nodes, params::CentroidParams},
 };
 
 use na::distance;
@@ -24,30 +24,28 @@ impl Centroids {
         Self { centroids }
     }
 
-    pub fn set_centroid_num(&mut self, num: usize, nodes: &Nodes) {
-        // FIXME adding to many centroids at once glitches the plushie irrecoverably
-        if self.centroids.len() == num {
-            return;
-        }
-
-        while self.centroids.len() > num {
-            self.centroids.pop();
-        }
-
-        while self.centroids.len() < num {
-            self.centroids.push(Point::new(0.0, 1.0, 0.0));
-            let centroid2points = map(&nodes.as_vec(), &self.centroids);
-            recalculate_centroids(&nodes.as_vec(), &mut self.centroids, centroid2points);
-        }
-    }
-
-    pub fn stuff(&mut self, force: f32, nodes: &Nodes, displacement: &mut Vec<V>) {
-        // TODO handle changing number here
+    pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
         if self.centroids.is_empty() {
             return;
         }
 
-        let centroid2points = push_and_map(nodes.as_vec(), &self.centroids, force, displacement);
+        if self.centroids.len() < params.number {
+            let new = if self.centroids.len() >= 2 {
+                let c0 = self.centroids[0];
+                let c1 = self.centroids[1];
+                Point::from((c0.coords + c1.coords) / 2.0)
+            } else {
+                Point::new(0.0, 1.0, 0.0)
+            };
+            self.centroids.push(new);
+        } else {
+            while self.centroids.len() > params.number {
+                self.centroids.pop();
+            }
+        }
+
+        let centroid2points =
+            push_and_map(nodes.as_vec(), &self.centroids, params.force, displacement);
         recalculate_centroids(nodes.as_vec(), &mut self.centroids, centroid2points);
     }
 }
@@ -68,23 +66,6 @@ fn push_and_map(
                 closest_i = i_c;
             }
             displacement[i_p] += push_away(point, centroid) * centroid_force;
-        }
-        centroid2points[closest_i].push(i_p);
-    }
-    centroid2points
-}
-
-fn map(nodes: &Vec<Point>, centroids: &Vec<Point>) -> Vec<Vec<usize>> {
-    assert!(centroids.len() > 0);
-    let mut centroid2points = vec![vec![]; centroids.len()];
-    for (i_p, point) in nodes.iter().enumerate() {
-        let mut closest_i = 0;
-        let mut closest = distance(point, &centroids[closest_i]);
-        for (i_c, centroid) in centroids.iter().enumerate() {
-            if distance(point, centroid) < closest {
-                closest = distance(point, centroid);
-                closest_i = i_c;
-            }
         }
         centroid2points[closest_i].push(i_p);
     }

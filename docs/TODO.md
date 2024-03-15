@@ -13,6 +13,7 @@
     - allow marking stitches for stuffing/no stuffing in the pattern
       - only for human-readable
       - genetic could have it working with
+      - detect nans during simulation
 
   - chains
   - allow starting from a chain

@@ -57,10 +57,6 @@ impl PlushieTrait for Plushie {
         self.nodes[i] = pos;
     }
 
-    fn change_centroid_num(&mut self, num: usize) {
-        self.centroids.set_centroid_num(num, &self.nodes)
-    }
-
     fn nodes_to_json(&self) -> JSON {
         serde_json::json!(self.nodes.as_vec())
     }

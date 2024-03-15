@@ -141,7 +141,6 @@ impl Simulation for PlushieSimulation {
             "centroid.amount" => {
                 let num: usize = tokens.get(1).unwrap().parse().unwrap();
                 self.plushie.params().centroids.number = num;
-                self.plushie.change_centroid_num(num);
             }
             "load_example" => {
                 use crate::plushie::examples;

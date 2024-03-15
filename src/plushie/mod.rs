@@ -25,8 +25,6 @@ pub trait PlushieTrait: Send + 'static {
     fn whole_to_json(&self) -> JSON;
 
     fn set_point_position(&mut self, i: usize, pos: Point);
-    // TODO auto handle setting via params
-    fn change_centroid_num(&mut self, num: usize);
 
     /// As far as I understand, Send and Clone are not compatible
     /// This is a workaround, types implementing the trait can just put Clone::clone() inside
