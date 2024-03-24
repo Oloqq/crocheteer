@@ -1,8 +1,11 @@
-// pub mod for_flows;
-pub mod legacy;
+pub mod examples;
 pub mod params;
 
-use params::Params;
+// mod for_flows;
+mod legacy;
+
+pub use legacy::Plushie as LegacyPlushie;
+pub use params::Params;
 
 use crate::common::*;
 

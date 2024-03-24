@@ -95,6 +95,7 @@
   - display line number in the text area + mby auto counting of rounds and stitch numbers
   - configure width and color of the edges
   - display a closed shape (mesh)
+  - adjust the GUI to the refactor
 
 - deployment
   - make rust serve the index.html

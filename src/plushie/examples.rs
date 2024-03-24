@@ -5,9 +5,9 @@ use crate::pattern::stitches::Stitch;
 use crate::pattern::Pattern;
 use Stitch::*;
 
-use super::Plushie;
+use super::LegacyPlushie;
 
-pub fn get(name: &str) -> Option<(Pattern, Plushie)> {
+pub fn get(name: &str) -> Option<(Pattern, LegacyPlushie)> {
     Some(match name {
         "pillar" => pillar(),
         "bigball" => bigball(),
@@ -19,13 +19,13 @@ pub fn get(name: &str) -> Option<(Pattern, Plushie)> {
     })
 }
 
-pub fn pillar() -> (Pattern, Plushie) {
+pub fn pillar() -> (Pattern, LegacyPlushie) {
     let pattern = PatternBuilder::new(6).full_rounds(4).fasten_off().unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }
 
-pub fn bigball() -> (Pattern, Plushie) {
+pub fn bigball() -> (Pattern, LegacyPlushie) {
     let pattern = PatternBuilder::new(6)
         .round_like(&vec![Inc])
         .round_like(&vec![Sc, Inc])
@@ -34,43 +34,43 @@ pub fn bigball() -> (Pattern, Plushie) {
         .round_like(&vec![Dec])
         .fasten_off()
         .unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }
 
-pub fn ball() -> (Pattern, Plushie) {
+pub fn ball() -> (Pattern, LegacyPlushie) {
     let pattern = PatternBuilder::new(6)
         .round_like(&vec![Inc])
         .full_rounds(1)
         .round_like(&vec![Dec])
         .fasten_off()
         .unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }
 
-pub fn bigpillar() -> (Pattern, Plushie) {
+pub fn bigpillar() -> (Pattern, LegacyPlushie) {
     let pattern = PatternBuilder::new(6)
         .round_like(&vec![Inc])
         .full_rounds(6)
         .round_like(&vec![Dec])
         .fasten_off()
         .unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }
 
-pub fn vase() -> (Pattern, Plushie) {
+pub fn vase() -> (Pattern, LegacyPlushie) {
     let pattern = PatternBuilder::new(6)
         .round_like(&vec![Inc])
         .full_rounds(6)
         .loose_end()
         .unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }
 
-pub fn bowl() -> (Pattern, Plushie) {
+pub fn bowl() -> (Pattern, LegacyPlushie) {
     let pattern = Pattern::from_human_readable(
         "@centroids = 6
     @floor = true
@@ -87,6 +87,6 @@ pub fn bowl() -> (Pattern, Plushie) {
     : [inc, 6 sc] x 6 (48)",
     )
     .unwrap();
-    let plushie = Plushie::from_pattern(&pattern);
+    let plushie = LegacyPlushie::from_pattern(&pattern);
     (pattern, plushie)
 }

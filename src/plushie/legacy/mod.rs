@@ -1,7 +1,6 @@
 pub mod animation;
 mod construction;
 mod conversions;
-pub mod examples;
 mod nodes;
 
 use self::{animation::centroid::Centroids, nodes::Nodes};

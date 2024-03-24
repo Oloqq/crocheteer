@@ -1,6 +1,6 @@
 use super::sim::{Data, Simulation};
 use crate::common::*;
-use crate::plushie::legacy::Plushie;
+use crate::plushie::LegacyPlushie;
 use crate::plushie::PlushieTrait;
 
 use std::sync::{Arc, Mutex};
@@ -60,7 +60,7 @@ impl PlushieSimulation {
             None => return Err("frontend fuckup".into()),
         };
         log::info!("Changing pattern...");
-        let new = Plushie::parse_any_format(pattern)?;
+        let new = LegacyPlushie::parse_any_format(pattern)?;
         // if soft {
         //     new.position_based_on(*self.plushie);
         // }
@@ -144,7 +144,7 @@ impl Simulation for PlushieSimulation {
                 self.plushie.change_centroid_num(num);
             }
             "load_example" => {
-                use crate::plushie::legacy::examples;
+                use crate::plushie::examples;
                 let name = tokens.get(1).unwrap();
                 match examples::get(name) {
                     Some((pattern, plushie)) => {

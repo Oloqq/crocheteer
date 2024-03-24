@@ -1,7 +1,7 @@
 #[allow(unused)]
 use crate::meshes_sandbox::*;
-use crate::plushie::legacy::examples;
-use crate::plushie::legacy::Plushie;
+use crate::plushie::examples;
+use crate::plushie::LegacyPlushie;
 use crate::plushie::PlushieTrait;
 use crate::{common::*, ws_sim::serve_websocket};
 
@@ -60,7 +60,7 @@ fn main() {
             } else {
                 Pattern::from_file(pattern).unwrap()
             };
-            let mut plushie = Plushie::from_pattern(&pattern);
+            let mut plushie = LegacyPlushie::from_pattern(&pattern);
 
             if stl.is_some() && ws || stl.is_none() && !ws {
                 unimplemented!("use either --stl or --ws");
@@ -79,7 +79,7 @@ fn main() {
 }
 
 fn exec_dev_action(num: usize) {
-    fn generate(name: &str, func: fn() -> (Pattern, Plushie)) {
+    fn generate(name: &str, func: fn() -> (Pattern, LegacyPlushie)) {
         let (_pat, mut plushie) = func();
         // println!(
         //     "{:?}",
