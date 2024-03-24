@@ -52,14 +52,11 @@ fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
 
 #[cfg(test)]
 mod tests {
-
+    use super::*;
     mod for_refactor {
+        use super::*;
         use crate::flow::actions::Action::*;
         use crate::flow::simple_flow::SimpleFlow;
-        use crate::{
-            for_flows::{params::Params, Plushie},
-            pattern::{Pattern, Stitch},
-        };
 
         use pretty_assertions::assert_eq;
         #[test]

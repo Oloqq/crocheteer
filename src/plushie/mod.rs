@@ -1,9 +1,11 @@
 pub mod examples;
 pub mod params;
 
-// mod for_flows;
+#[allow(unused)]
+mod for_flows;
 mod legacy;
 
+pub use for_flows::Plushie;
 pub use legacy::Plushie as LegacyPlushie;
 pub use params::Params;
 

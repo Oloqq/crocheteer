@@ -1,14 +1,12 @@
-use self::{animation::centroid::Centroids, nodes::Nodes, params::Params};
-use super::common::*;
-
-use serde_derive::Serialize;
-
 mod animation;
 mod construction;
 mod conversions;
-pub mod examples;
 mod nodes;
-pub mod params;
+
+use self::{animation::centroid::Centroids, nodes::Nodes};
+use super::Params;
+use crate::common::*;
+use serde_derive::Serialize;
 
 type Edges = Vec<Vec<usize>>;
 
