@@ -27,9 +27,9 @@ impl HookResult {
     pub fn from_hook(
         edges: Edges,
         peculiar: HashMap<usize, Peculiarity>,
-        round_starts: Vec<usize>,
+        round_spans: Vec<(usize, usize)>,
     ) -> Self {
-        let (nodes, highest) = make_nodes(round_starts);
+        let (nodes, highest) = make_nodes(round_spans);
         Self {
             edges,
             nodes,
@@ -39,20 +39,17 @@ impl HookResult {
     }
 }
 
-fn make_nodes(round_starts: Vec<usize>) -> (Nodes, f32) {
+fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
     // assumption: only one radial axis, how to handle shape of letter Y?
     let mut prev = 0;
     let mut y = 0.0;
     let mut nodes = vec![];
 
     // TODO what about the tip
-    for rstart in round_starts {
-        let count = rstart - prev;
-
+    for (from, to) in round_spans {
+        let count = to - from + 1;
         nodes.append(&mut ring(count, y, 1.0));
         y += 0.7;
-
-        prev = rstart;
     }
 
     (nodes, y)
@@ -81,12 +78,12 @@ mod tests {
 
     #[test]
     fn test_make_nodes() {
-        let round_starts = vec![4];
-        let (res, _) = make_nodes(round_starts);
-        assert_eq!(res.len(), 4);
+        let rounds_spans = vec![(0, 4)];
+        let (res, _) = make_nodes(rounds_spans);
+        assert_eq!(res.len(), 5);
 
-        let round_starts = vec![4, 8];
-        let (res, _) = make_nodes(round_starts);
-        assert_eq!(res.len(), 8);
+        let rounds_spans = vec![(0, 4), (5, 8)];
+        let (res, _) = make_nodes(rounds_spans);
+        assert_eq!(res.len(), 9);
     }
 }

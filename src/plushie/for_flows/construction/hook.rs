@@ -31,7 +31,8 @@ pub struct Hook {
     round_left: usize,
     anchor: usize,
     next: usize,
-    round_starts: Vec<usize>,
+    /// Constains first and last stitch of each round. Treated as a range, both extremes are inclusive
+    round_spans: Vec<(usize, usize)>,
 }
 
 impl Hook {
@@ -63,11 +64,11 @@ impl Hook {
                 Ok(Self {
                     edges,
                     peculiar,
-                    round_count: *x,
-                    round_left: 0,
+                    round_count: 0,
+                    round_left: *x,
                     anchor: 1,
                     next: x + 1, // + 1 because root takes index 0
-                    round_starts: vec![],
+                    round_spans: vec![(0, *x)],
                 })
             }
             _ => Err(BadStarter),
@@ -75,7 +76,7 @@ impl Hook {
     }
 
     fn finish(self) -> HookResult {
-        HookResult::from_hook(self.edges, self.peculiar, self.round_starts)
+        HookResult::from_hook(self.edges, self.peculiar, self.round_spans)
     }
 
     fn edge(&mut self, i: usize) -> &mut Vec<usize> {
@@ -88,31 +89,37 @@ impl Hook {
         &mut self.edges[i]
     }
 
+    fn handle_end_of_round(&mut self) {
+        if self.round_left == 0 {
+            self.round_spans
+                .push((self.next - self.round_count, self.next - 1));
+            self.round_left = self.round_count;
+            self.round_count = 0;
+        }
+    }
+
+    fn next_anchor(&mut self) {
+        self.anchor += 1;
+        self.round_left -= 1;
+        self.handle_end_of_round();
+    }
+
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
+        log::trace!("Performing {action:?}");
         match action {
             Sc => {
-                if self.round_left == 0 {
-                    self.round_starts.push(self.next);
-                    self.round_left = self.round_count;
-                    self.round_count = 0;
-                }
                 let this = self.next;
                 self.edge(self.anchor).push(this);
                 self.edge(this - 1).push(this);
                 self.edges.push(vec![]);
-                self.round_count += 1;
-                self.round_left -= 1;
                 self.next += 1;
-                self.anchor += 1;
+                self.round_count += 1;
+
+                self.next_anchor();
                 Ok(())
             }
             Inc => {
                 for _ in 0..2 {
-                    if self.round_left == 0 {
-                        self.round_starts.push(self.next);
-                        self.round_left = self.round_count;
-                        self.round_count = 0;
-                    }
                     let this = self.next;
                     self.edge(self.anchor).push(this);
                     self.edge(this - 1).push(this);
@@ -120,21 +127,14 @@ impl Hook {
                     self.round_count += 1;
                     self.next += 1;
                 }
-                self.round_left -= 1;
-                self.anchor += 1;
+                self.next_anchor();
                 Ok(())
             }
             Dec => {
                 let this = self.next;
                 for _ in 0..2 {
-                    if self.round_left == 0 {
-                        self.round_starts.push(self.next);
-                        self.round_left = self.round_count;
-                        self.round_count = 0;
-                    }
                     self.edge(self.anchor).push(this);
-                    self.round_left -= 1;
-                    self.anchor += 1;
+                    self.next_anchor();
                 }
                 self.edge(this - 1).push(this);
                 self.edges.push(vec![]);
@@ -154,11 +154,19 @@ impl Hook {
             FO => {
                 let this = self.next;
                 let i = self.next - 1;
-                for di in 0..self.round_count {
+                assert!(
+                    self.round_count == 0,
+                    "FO for incomplete rounds is not implemented"
+                );
+                let last_round_count = {
+                    let (start, end) = self.round_spans.last().unwrap();
+                    end - start + 1
+                };
+                for di in 0..last_round_count {
                     self.edge(i - di).push(this);
                 }
                 self.edges.push(vec![]);
-                self.round_starts.push(this + 1);
+                self.round_spans.push((this, this));
                 // TODO set self.next to Option::None
                 Ok(())
             }
@@ -176,9 +184,9 @@ mod tests {
         let h = Hook::start_with(&MR(3)).unwrap();
         q!(h.anchor, 1);
         q!(h.next, 4);
-        q!(h.round_count, 3);
-        q!(h.round_left, 0);
-        q!(h.round_starts.len(), 0);
+        q!(h.round_count, 0);
+        q!(h.round_left, 3);
+        q!(h.round_spans.len(), 1);
         q!(h.edges, vec![vec![1, 2, 3], vec![2], vec![3], vec![],]);
     }
 
@@ -190,31 +198,31 @@ mod tests {
         q!(h.next, 8);
         q!(h.round_count, 1);
         q!(h.round_left, 5);
-        q!(h.round_starts, vec![7]);
+        q!(h.round_spans, vec![(0, 6)]);
 
         h.perform(&Sc).unwrap();
         q!(h.anchor, 3);
         q!(h.next, 9);
         q!(h.round_count, 2);
         q!(h.round_left, 4);
-        q!(h.round_starts, vec![7]);
+        q!(h.round_spans, vec![(0, 6)]);
     }
 
     #[test]
     fn test_next_round() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.round_starts.len(), 0);
+        q!(h.round_spans.len(), 1);
         h.perform(&Sc).unwrap();
-        q!(h.round_starts, vec![4]);
+        q!(h.round_spans, vec![(0, 3)]);
         h.perform(&Sc).unwrap();
-        q!(h.round_starts, vec![4]);
+        q!(h.round_spans, vec![(0, 3)]);
         h.perform(&Sc).unwrap();
-        q!(h.round_starts, vec![4]);
-        q!(h.round_count, 3);
-        q!(h.round_left, 0);
+        q!(h.round_spans, vec![(0, 3), (4, 6)]);
+        q!(h.round_count, 0);
+        q!(h.round_left, 3);
 
         h.perform(&Sc).unwrap();
-        q!(h.round_starts, vec![4, 7]);
+        q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.round_count, 1);
         q!(h.round_left, 2);
     }
@@ -227,7 +235,7 @@ mod tests {
         q!(h.next, 6);
         q!(h.round_count, 2);
         q!(h.round_left, 2);
-        q!(h.round_starts, vec![4]);
+        q!(h.round_spans, vec![(0, 3)]);
     }
 
     #[test]
@@ -238,7 +246,7 @@ mod tests {
         q!(h.next, 5);
         q!(h.round_count, 1);
         q!(h.round_left, 1);
-        q!(h.round_starts, vec![4]);
+        q!(h.round_spans, vec![(0, 3)]);
     }
 
     #[test]
@@ -252,9 +260,9 @@ mod tests {
         h.perform(&Sc).unwrap();
         q!(h.anchor, 4);
         q!(h.next, 7);
-        q!(h.round_count, 3);
-        q!(h.round_left, 0);
-        q!(h.round_starts, vec![4]);
+        q!(h.round_count, 0);
+        q!(h.round_left, 3);
+        q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.edges.len(), 7);
         q!(
             h.edges,
@@ -282,7 +290,7 @@ mod tests {
                 vec![]         // 7
             ]
         );
-        q!(h.round_starts, vec![4, 8]);
+        q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
         // TODO assert next Sc won't succeed
     }
 
