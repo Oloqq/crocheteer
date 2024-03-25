@@ -25,10 +25,6 @@ impl Centroids {
     }
 
     pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
-        if self.centroids.is_empty() {
-            return;
-        }
-
         if self.centroids.len() < params.number {
             let new = if self.centroids.len() >= 2 {
                 let c0 = self.centroids[0];
@@ -44,9 +40,11 @@ impl Centroids {
             }
         }
 
-        let centroid2points =
-            push_and_map(nodes.as_vec(), &self.centroids, params.force, displacement);
-        recalculate_centroids(nodes.as_vec(), &mut self.centroids, centroid2points);
+        if !self.centroids.is_empty() {
+            let centroid2points =
+                push_and_map(nodes.as_vec(), &self.centroids, params.force, displacement);
+            recalculate_centroids(nodes.as_vec(), &mut self.centroids, centroid2points);
+        }
     }
 }
 
