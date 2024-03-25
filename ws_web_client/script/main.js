@@ -23,11 +23,12 @@ const loadExampleText = document.getElementById("example-txt");
 const status = document.getElementById("status");
 const commandButton = document.getElementById("command-btn");
 const commandText = document.getElementById("command-txt");
+const plushieVersion = "flow";
 
 function sendPattern() {
   let text = pattern.value;
   status.innerText = "sending pattern...";
-  simulator.send(`pattern ${text}`);
+  simulator.send(`pattern ${plushieVersion} ${text}`);
 }
 
 function softUpdate() {

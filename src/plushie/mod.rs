@@ -30,3 +30,15 @@ pub trait PlushieTrait: Send + 'static {
     /// This is a workaround, types implementing the trait can just put Clone::clone() inside
     fn clone(&self) -> Box<dyn PlushieTrait>;
 }
+
+pub fn parse_to_any_plushie(
+    selector: &str,
+    pattern: &str,
+) -> Result<Box<dyn PlushieTrait>, String> {
+    let inner: Box<dyn PlushieTrait> = match selector {
+        "legacy" => Box::new(LegacyPlushie::parse_any_format(pattern)?),
+        "flow" => Box::new(Plushie::parse(pattern)?),
+        _ => return Err(format!("unrecognized plushie version: {selector}")),
+    };
+    Ok(inner)
+}

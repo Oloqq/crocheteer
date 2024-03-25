@@ -1,6 +1,6 @@
 use super::sim::{Data, Simulation};
 use crate::common::*;
-use crate::plushie::LegacyPlushie;
+use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
 
 use std::sync::{Arc, Mutex};
@@ -55,16 +55,12 @@ impl PlushieSimulation {
     }
 
     fn change_pattern(&mut self, msg: &str, _soft: bool) -> Result<(), String> {
-        let (_, pattern) = match msg.split_once(" ") {
-            Some(x) => x,
-            None => return Err("frontend fuckup".into()),
-        };
         log::info!("Changing pattern...");
-        let new = LegacyPlushie::parse_any_format(pattern)?;
-        // if soft {
-        //     new.position_based_on(*self.plushie);
-        // }
-        self.plushie = Box::new(new);
+
+        let (_, version_pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
+        let (selector, pattern) = version_pattern.split_once(" ").ok_or("frontend fuckup")?;
+
+        self.plushie = parse_to_any_plushie(selector, pattern)?;
         Ok(())
     }
 
@@ -125,14 +121,15 @@ impl Simulation for PlushieSimulation {
                 let z: f32 = tokens[4].parse().unwrap();
                 self.plushie.set_point_position(id, Point::new(x, y, z));
             }
-            "pattern" | "soft_update" => {
-                if let Err(error) = self.change_pattern(msg, command == "soft_update") {
-                    self.send("status", format!("Couldn't parse: {}", error).as_str());
-                } else {
+            "pattern" | "soft_update" => match self.change_pattern(msg, command == "soft_update") {
+                Ok(_) => {
                     self.controls.need_init = true;
                     self.send("status", "Loaded the pattern");
                 }
-            }
+                Err(error) => {
+                    self.send("status", format!("Couldn't parse: {}", error).as_str());
+                }
+            },
             "pause" => controls.paused = true,
             "resume" => controls.paused = false,
             "advance" => controls.advance += 1,
