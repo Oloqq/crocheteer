@@ -34,8 +34,8 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket {} => {
-            let (_, plushie) = examples::vase_simple_flow();
-            // let (_, plushie) = examples::pillar_simple_flow();
+            // let (_, plushie) = examples::vase_simple_flow();
+            let (_, plushie) = examples::pillar_simple_flow();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }

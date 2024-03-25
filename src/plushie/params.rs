@@ -15,6 +15,12 @@ pub struct Params {
     pub desired_stitch_distance: f32,
     /// Configuration of centroid stuffing
     pub centroids: CentroidParams,
+    /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
+    /// not applicable to LegacyPlushie
+    pub keep_root_at_origin: bool,
+    /// if true, points will not be allowed to go below root
+    /// this plus gravity simulates the plushie sitting on a flat surface
+    pub sitting: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -34,6 +40,8 @@ impl Default for Params {
             desired_stitch_distance: 1.0,
             acceptable_tension: THIS_DEFAULT_IS_TRASH,
             max_relaxing_iterations: 100,
+            keep_root_at_origin: true,
+            sitting: true,
         }
     }
 }

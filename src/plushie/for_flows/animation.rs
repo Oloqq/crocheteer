@@ -18,13 +18,13 @@ impl Plushie {
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        let _total = self.nodes.apply_forces(&displacement, time);
+        let _total = self.nodes.apply_forces(&displacement, time, &self.params);
 
         displacement
     }
 
     fn add_link_forces(&self, displacement: &mut Vec<V>) {
-        for (i, point) in self.nodes.all() {
+        for (i, point) in self.nodes.points.iter().enumerate() {
             for neibi in &self.edges[i] {
                 let neib = &self.nodes[*neibi];
                 let diff: V = attract(point, neib, self.params.desired_stitch_distance);
@@ -40,7 +40,7 @@ impl Plushie {
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
-        for (i, _point) in self.nodes.all() {
+        for (i, _point) in self.nodes.points.iter().enumerate() {
             displacement[i].y -= self.params.gravity;
         }
     }

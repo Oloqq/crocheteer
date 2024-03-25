@@ -2,25 +2,22 @@ mod hook;
 mod hook_result;
 
 use self::hook::Hook;
+pub use self::hook_result::Peculiarity;
 use super::animation::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;
-use crate::common::*;
 use crate::flow::Flow;
 
 impl Plushie {
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
-        let fasten_off = false;
-
         let hook_result = Hook::parse(flow)?;
-
-        let constraints = match fasten_off {
-            true => vec![V::zeros(), V::new(0.1, 0.1, 0.1)],
-            false => vec![V::zeros()],
-        };
+        assert!(hook_result
+            .peculiarities
+            .get(&0)
+            .is_some_and(|x| *x == Peculiarity::Root));
 
         Ok(Plushie {
-            nodes: Nodes::new(hook_result.nodes, constraints),
+            nodes: Nodes::new(hook_result.nodes, hook_result.peculiarities),
             edges: hook_result.edges,
             params: Default::default(),
             centroids: Centroids::new(2, hook_result.approximate_height),

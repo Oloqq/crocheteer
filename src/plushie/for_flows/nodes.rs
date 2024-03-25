@@ -1,40 +1,24 @@
-use std::ops::{Index, IndexMut};
-
+use super::{construction::Peculiarity, Params};
+use crate::common::*;
 use serde_derive::Serialize;
-
-use crate::common::{Point, V};
+use std::{
+    collections::HashMap,
+    ops::{Index, IndexMut},
+};
 
 pub const ROOT_INDEX: usize = 0;
 
 #[derive(Clone, Serialize)]
 pub struct Nodes {
-    // TODO to params
-    /// Constraints of the first points. The calculated movement will be multiplied by them.
-    constraints: Vec<V>,
-    /// All points in the shape
     pub points: Vec<Point>,
-    // TODO to params
-    /// true => the whole shape will be translated by displacement applied to root, so that root stays at (0, 0, 0).
-    ///     `constrains[0]` is ignored
-    ///     keep in mind, `constraints[0]` still corresponds to root, and `constraints[1]` to the next one
-    /// false => the root is treated accordingly to `constraints`
-    keep_root_at_origin: bool,
+    pub peculiarities: HashMap<usize, Peculiarity>,
 }
 
 impl Nodes {
-    pub fn new(points: Vec<Point>, constraints: Vec<V>) -> Self {
-        let keep_root_at_origin = true;
-        if keep_root_at_origin {
-            assert!(
-                constraints.len() == 0 || constraints[0] == V::zeros(),
-                "Root's constraint should be 0 if it is to be kept at origin"
-            );
-        }
-
+    pub fn new(points: Vec<Point>, peculiarities: HashMap<usize, Peculiarity>) -> Self {
         Self {
-            constraints,
             points,
-            keep_root_at_origin,
+            peculiarities,
         }
     }
 
@@ -42,50 +26,26 @@ impl Nodes {
         &self.points
     }
 
-    pub fn all<'a>(&'a self) -> impl Iterator<Item = (usize, &'a Point)> {
-        self.points.iter().enumerate()
-    }
-
     pub fn len(&self) -> usize {
         self.points.len()
     }
 
-    fn freely_movable<'a>(&'a mut self) -> impl Iterator<Item = (usize, &'a mut Point)> {
-        self.points
-            .iter_mut()
-            .enumerate()
-            .skip(self.constraints.len())
-    }
-
-    pub fn apply_forces(&mut self, displacement: &Vec<V>, time: f32) -> V {
+    pub fn apply_forces(&mut self, displacement: &Vec<V>, time: f32, params: &Params) -> V {
         let mut total = V::zeros();
-        let root_move = match self.keep_root_at_origin {
+        let root_move = match params.keep_root_at_origin {
             true => displacement[ROOT_INDEX],
             false => V::zeros(),
         };
 
-        const SKIP_ROOT: usize = 1;
-        const SITTING: bool = true;
+        const SKIP_ROOT: usize = {
+            assert!(ROOT_INDEX == 0);
+            1
+        };
 
-        for ((i, point), constraint) in self
-            .points
-            .iter_mut()
-            .enumerate()
-            .zip(&self.constraints)
-            .skip(SKIP_ROOT)
-        {
-            let adjusted: V = displacement[i].component_mul(&constraint);
-            total += adjusted;
-            *point += (adjusted - root_move) * time;
-            if SITTING {
-                point.y = point.y.max(0.0);
-            }
-        }
-
-        for (i, point) in self.freely_movable() {
+        for (i, point) in self.points.iter_mut().enumerate().skip(SKIP_ROOT) {
             total += displacement[i];
             *point += (displacement[i] - root_move) * time;
-            if SITTING {
+            if params.sitting {
                 point.y = point.y.max(0.0);
             }
         }

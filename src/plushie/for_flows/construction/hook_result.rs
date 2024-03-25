@@ -1,3 +1,5 @@
+use serde_derive::Serialize;
+
 use crate::common::*;
 
 use std::{collections::HashMap, f32::consts::PI};
@@ -12,6 +14,7 @@ pub struct HookResult {
     pub approximate_height: f32,
 }
 
+#[derive(PartialEq, Clone, Serialize)]
 pub enum Peculiarity {
     Root,
     #[allow(unused)]
