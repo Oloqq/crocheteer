@@ -1,20 +1,13 @@
 mod animation;
 mod construction;
-mod conversions;
 mod nodes;
 
 use self::{animation::centroid::Centroids, nodes::Nodes};
-use super::Params;
+use super::{Params, PlushieTrait};
 use crate::common::*;
 use serde_derive::Serialize;
 
 type Edges = Vec<Vec<usize>>;
-
-#[derive(Clone, Serialize)]
-pub enum Stuffing {
-    None,
-    Centroids,
-}
 
 #[derive(Clone, Serialize)]
 pub struct Plushie {
@@ -24,27 +17,18 @@ pub struct Plushie {
     pub params: Params,
 
     pub centroids: Centroids,
-    pub stuffing: Stuffing,
 }
 
 impl Plushie {
-    pub fn new(points: Nodes, edges: Edges, params: Params, centroids: Centroids) -> Self {
-        Self {
-            stuffing: Stuffing::Centroids,
-            nodes: points,
-            edges,
-            params,
-            centroids,
-        }
-    }
-
     fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
         tension <= self.params.acceptable_tension
     }
+}
 
-    pub fn animate(&mut self) {
+impl PlushieTrait for Plushie {
+    fn animate(&mut self) {
         for _ in 0..self.params.max_relaxing_iterations {
             let displacement = self.step(1.0);
             if self.is_relaxed(&displacement) {
@@ -53,11 +37,27 @@ impl Plushie {
         }
     }
 
-    pub fn get_points_vec(&self) -> &Vec<Point> {
-        self.nodes.as_vec()
+    fn step(&mut self, time: f32) {
+        self.step(time);
     }
 
-    pub fn set_point_position(&mut self, i: usize, pos: Point) {
+    fn params(&mut self) -> &mut crate::plushie::Params {
+        &mut self.params
+    }
+
+    fn nodes_to_json(&self) -> JSON {
+        serde_json::json!(self.nodes.as_vec())
+    }
+
+    fn centroids_to_json(&self) -> JSON {
+        serde_json::json!(self.centroids)
+    }
+
+    fn whole_to_json(&self) -> JSON {
+        serde_json::json!(self)
+    }
+
+    fn set_point_position(&mut self, i: usize, pos: Point) {
         if i >= self.nodes.len() {
             // using websockets, this could theoretically happen with reloading and some network delays
             panic!("Point index greater than vector size");
@@ -65,7 +65,7 @@ impl Plushie {
         self.nodes[i] = pos;
     }
 
-    pub fn set_centroid_num(&mut self, num: usize) {
-        self.centroids.set_centroid_num(num, &self.nodes)
+    fn clone(&self) -> Box<dyn PlushieTrait> {
+        Box::new(Clone::clone(self))
     }
 }

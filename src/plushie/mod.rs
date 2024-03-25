@@ -1,7 +1,6 @@
 pub mod examples;
 pub mod params;
 
-#[allow(unused)]
 mod for_flows;
 mod legacy;
 

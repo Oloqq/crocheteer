@@ -1,63 +1,75 @@
 mod from_flow;
-mod graph;
 mod hook;
+mod hook_result;
 
-use std::f32::consts::PI;
-
-use crate::common::*;
 use crate::flow::Flow;
-use crate::plushie::PlushieTrait;
 
 use super::Plushie;
 
-#[allow(unused)]
 use from_flow::from_flow;
 
 impl Plushie {
-    #[allow(unused)]
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         from_flow(flow)
     }
 
-    pub fn parse(pattern: &str) -> Result<Self, String> {
+    pub fn parse(_pattern: &str) -> Result<Self, String> {
         todo!()
     }
 
-    pub fn position_based_on(&mut self, _other: &Self) {
-        println!("TODO: Repositioning");
-    }
-}
-
-impl PlushieTrait for Plushie {
-    fn animate(&mut self) {
-        todo!()
-    }
-
-    fn step(&mut self, time: f32) {
-        todo!()
-    }
-
-    fn params(&mut self) -> &mut crate::plushie::Params {
-        todo!()
-    }
-
-    fn nodes_to_json(&self) -> JSON {
-        todo!()
-    }
-
-    fn centroids_to_json(&self) -> JSON {
-        todo!()
-    }
-
-    fn whole_to_json(&self) -> JSON {
-        todo!()
-    }
-
-    fn set_point_position(&mut self, i: usize, pos: Point) {
-        todo!()
-    }
-
-    fn clone(&self) -> Box<dyn PlushieTrait> {
+    pub fn _position_based_on(&mut self, _other: &Self) {
         todo!()
     }
 }
+
+// fn make_nodes(round_starts: Vec<usize>) -> (Nodes, f32) {
+//     // assumption: only one radial axis, how to handle shape of letter Y?
+//     let mut prev = 0;
+//     let mut y = 0.0;
+//     let mut nodes = vec![];
+
+//     // TODO what about the tip
+//     for rstart in round_starts {
+//         let count = rstart - prev;
+
+//         nodes.append(&mut ring(count, y, 1.0));
+//         y += 0.7;
+
+//         prev = rstart;
+//     }
+
+//     (nodes, y)
+// }
+
+// fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
+//     let circumference = (nodes + 1) as f32 * desired_stitch_distance;
+//     let radius = circumference / (2.0 * PI) / 4.0;
+
+//     let interval = 2.0 * PI / nodes as f32;
+//     let mut result: Vec<Point> = vec![];
+
+//     for i in 0..nodes {
+//         let rads = interval * i as f32;
+//         let x = rads.cos() * radius;
+//         let z = rads.sin() * radius;
+//         let point = Point::new(x, y, z);
+//         result.push(point);
+//     }
+//     result
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn test_make_nodes() {
+//         let rs = vec![4];
+//         let (res, _) = make_nodes(rs);
+//         assert_eq!(res.len(), 4);
+
+//         let rs = vec![4, 8];
+//         let (res, _) = make_nodes(rs);
+//         assert_eq!(res.len(), 8);
+//     }
+// }

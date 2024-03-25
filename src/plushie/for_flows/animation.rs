@@ -2,7 +2,7 @@ pub mod centroid;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use super::{Plushie, Stuffing};
+use super::Plushie;
 use crate::common::*;
 
 impl Plushie {
@@ -35,13 +35,8 @@ impl Plushie {
     }
 
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
-        match &self.stuffing {
-            Stuffing::None => (),
-            Stuffing::Centroids => {
-                self.centroids
-                    .stuff(self.params.centroids.force, &self.nodes, displacement)
-            }
-        }
+        self.centroids
+            .stuff(&self.params.centroids, &self.nodes, displacement)
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {

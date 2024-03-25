@@ -1,11 +1,11 @@
 #![allow(unused)]
 
-use crate::pattern::builder::PatternBuilder;
 use crate::pattern::stitches::Stitch;
 use crate::pattern::Pattern;
+use crate::{flow::simple_flow::SimpleFlow, pattern::builder::PatternBuilder};
 use Stitch::*;
 
-use super::LegacyPlushie;
+use super::{LegacyPlushie, Params, Plushie};
 
 pub fn get(name: &str) -> Option<(Pattern, LegacyPlushie)> {
     Some(match name {
@@ -67,6 +67,51 @@ pub fn vase() -> (Pattern, LegacyPlushie) {
         .loose_end()
         .unwrap();
     let plushie = LegacyPlushie::from_pattern(&pattern);
+    (pattern, plushie)
+}
+
+pub fn vase_simple_flow() -> (Pattern, Plushie) {
+    let pattern = Pattern {
+        starting_circle: 4,
+        fasten_off: true,
+        rounds: vec![],
+        simulation_config: Params::default(),
+    };
+
+    use crate::flow::actions::Action;
+    use Action::*;
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    let full_round = vec![Sc; 12];
+    for _ in 0..6 {
+        actions.append(&mut full_round.clone());
+    }
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    (pattern, plushie)
+}
+
+pub fn pillar_simple_flow() -> (Pattern, Plushie) {
+    let pattern = Pattern {
+        starting_circle: 4,
+        fasten_off: true,
+        rounds: vec![],
+        simulation_config: Params::default(),
+    };
+
+    use crate::flow::actions::Action;
+    use Action::*;
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    let full_round = vec![Sc; 12];
+    for _ in 0..6 {
+        actions.append(&mut full_round.clone());
+    }
+    actions.push(FO);
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
     (pattern, plushie)
 }
 

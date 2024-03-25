@@ -24,6 +24,7 @@ const status = document.getElementById("status");
 const commandButton = document.getElementById("command-btn");
 const commandText = document.getElementById("command-txt");
 const plushieVersion = "flow";
+const sendPatternAtStart = false;
 
 function sendPattern() {
   let text = pattern.value;
@@ -81,7 +82,10 @@ function main() {
 
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);
   status.innerText = "Waiting for websocket connection...";
-  // initialSendPattern();
+
+  if (sendPatternAtStart) {
+    initialSendPattern();
+  }
 }
 
 function initialSendPattern() {

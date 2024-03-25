@@ -1,5 +1,5 @@
-use super::graph::{Edges, Graph, Peculiarity};
-use crate::flow::actions::Action;
+use super::hook_result::{Edges, HookResult, Peculiarity};
+use crate::flow::{actions::Action, Flow};
 use Action::*;
 use HookError::*;
 
@@ -7,6 +7,7 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub enum HookError {
+    Empty,
     BadStarter,
     StarterInTheMiddle,
     ChainStart,
@@ -34,7 +35,16 @@ pub struct Hook {
 }
 
 impl Hook {
-    pub fn start_with(action: &Action) -> Result<Self, HookError> {
+    pub fn parse(mut flow: impl Flow) -> Result<HookResult, HookError> {
+        let first = flow.next().ok_or(Empty)?;
+        let mut hook = Hook::start_with(&first)?;
+        while let Some(action) = flow.next() {
+            hook.perform(&action)?;
+        }
+        Ok(hook.finish())
+    }
+
+    fn start_with(action: &Action) -> Result<Self, HookError> {
         if !action.is_starter() {
             return Err(BadStarter);
         }
@@ -64,8 +74,8 @@ impl Hook {
         }
     }
 
-    pub fn finish(self) -> Graph {
-        Graph::from_hook(self.edges, self.peculiar, self.round_starts)
+    fn finish(self) -> HookResult {
+        HookResult::from_hook(self.edges, self.peculiar, self.round_starts)
     }
 
     fn edge(&mut self, i: usize) -> &mut Vec<usize> {

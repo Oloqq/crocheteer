@@ -6,7 +6,6 @@ pub struct SimpleFlow {
 }
 
 impl SimpleFlow {
-    #[allow(unused)]
     pub fn new(actions: Vec<Action>) -> Self {
         Self { actions, i: 0 }
     }

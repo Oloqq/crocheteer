@@ -8,15 +8,10 @@ use super::hook::Hook;
 type Error = String;
 
 // TODO make it return just nodes and edges
-pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
-    let fasten_off = true;
+pub fn from_flow(flow: impl Flow) -> Result<Plushie, Error> {
+    let fasten_off = false;
 
-    let first = flow.next().ok_or("Flow empty")?;
-    let mut hook = Hook::start_with(&first)?;
-    while let Some(action) = flow.next() {
-        hook.perform(&action)?;
-    }
-    let result = hook.finish();
+    let hook_result = Hook::parse(flow)?;
 
     let constraints = match fasten_off {
         true => vec![V::zeros(), V::new(0.1, 0.1, 0.1)],
@@ -24,11 +19,10 @@ pub fn from_flow(mut flow: impl Flow) -> Result<Plushie, Error> {
     };
 
     Ok(Plushie {
-        nodes: Nodes::new(result.nodes, constraints),
-        edges: result.edges,
+        nodes: Nodes::new(hook_result.nodes, constraints),
+        edges: hook_result.edges,
         params: Default::default(),
-        centroids: Centroids::new(2, result.approximate_height),
-        stuffing: super::super::Stuffing::Centroids,
+        centroids: Centroids::new(2, hook_result.approximate_height),
     })
 }
 
@@ -52,7 +46,37 @@ fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
 
 #[cfg(test)]
 mod tests {
+    use crate::flow::simple_flow::SimpleFlow;
+
     use super::*;
+
+    #[test]
+    fn test_closed_shape() {
+        use crate::flow::actions::Action;
+        use Action::*;
+        let mut actions: Vec<Action> = vec![MR(6)];
+        actions.append(&mut vec![Sc; 6]);
+
+        let flow = SimpleFlow::new(actions);
+        let plushie = Plushie::from_flow(flow).unwrap();
+
+        assert_eq!(plushie.nodes.len(), 13)
+    }
+
+    #[test]
+    fn test_open_shape() {
+        use crate::flow::actions::Action;
+        use Action::*;
+        let mut actions: Vec<Action> = vec![MR(6)];
+        actions.append(&mut vec![Sc; 6]);
+        actions.append(&mut vec![FO]);
+
+        let flow = SimpleFlow::new(actions);
+        let plushie = Plushie::from_flow(flow).unwrap();
+
+        assert_eq!(plushie.nodes.len(), 14)
+    }
+
     mod for_refactor {
         use super::*;
         use crate::flow::actions::Action::*;

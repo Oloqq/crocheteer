@@ -5,22 +5,24 @@ use std::{collections::HashMap, f32::consts::PI};
 pub type Edges = Vec<Vec<usize>>;
 pub type Nodes = Vec<Point>;
 
-pub struct Graph {
+pub struct HookResult {
     pub edges: Edges,
     pub nodes: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
     pub approximate_height: f32,
 }
 
-#[allow(unused)]
 pub enum Peculiarity {
     Root,
+    #[allow(unused)]
     BLO,
+    #[allow(unused)]
     FLO,
+    #[allow(unused)]
     Constrained,
 }
 
-impl Graph {
+impl HookResult {
     /// Creates and places points in initial positions
     pub fn from_hook(
         edges: Edges,
@@ -79,12 +81,12 @@ mod tests {
 
     #[test]
     fn test_make_nodes() {
-        let rs = vec![4];
-        let (res, _) = make_nodes(rs);
+        let round_starts = vec![4];
+        let (res, _) = make_nodes(round_starts);
         assert_eq!(res.len(), 4);
 
-        let rs = vec![4, 8];
-        let (res, _) = make_nodes(rs);
+        let round_starts = vec![4, 8];
+        let (res, _) = make_nodes(round_starts);
         assert_eq!(res.len(), 8);
     }
 }
