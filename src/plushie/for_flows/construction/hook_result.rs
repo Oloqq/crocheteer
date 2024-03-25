@@ -41,11 +41,9 @@ impl HookResult {
 
 fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
     // assumption: only one radial axis, how to handle shape of letter Y?
-    let mut prev = 0;
     let mut y = 0.0;
     let mut nodes = vec![];
 
-    // TODO what about the tip
     for (from, to) in round_spans {
         let count = to - from + 1;
         nodes.append(&mut ring(count, y, 1.0));
