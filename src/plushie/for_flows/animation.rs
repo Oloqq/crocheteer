@@ -33,20 +33,20 @@ impl Plushie {
                 displacement[*neibi] -= diff;
             }
         }
-        displacement.assert_no_nan("link forces");
+        displacement.sanity_assert_no_nan("link forces");
     }
 
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         self.centroids
             .stuff(&self.params.centroids, &self.nodes, displacement);
-        displacement.assert_no_nan("stuffing");
+        displacement.sanity_assert_no_nan("stuffing");
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
         for (i, _point) in self.nodes.points.iter().enumerate() {
             displacement[i].y -= self.params.gravity;
         }
-        displacement.assert_no_nan("gravity");
+        displacement.sanity_assert_no_nan("gravity");
     }
 }
 
@@ -57,6 +57,6 @@ fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
 
     let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
     let res = -diff.normalize() * fx;
-    res.assert_no_nan(format!("attract {this:?} to {other:?}").as_str());
+    res.sanity_assert_no_nan(format!("attract {this:?} to {other:?}").as_str());
     res
 }

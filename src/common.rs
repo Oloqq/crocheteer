@@ -5,11 +5,11 @@ pub type Point = na::Point3<f32>;
 pub const SANITY_CHECKS: bool = true;
 
 pub trait CheckNan {
-    fn assert_no_nan(&self, msg: &str);
+    fn sanity_assert_no_nan(&self, msg: &str);
 }
 
 impl CheckNan for V {
-    fn assert_no_nan(&self, msg: &str) {
+    fn sanity_assert_no_nan(&self, msg: &str) {
         if !SANITY_CHECKS {
             return;
         }
@@ -21,13 +21,13 @@ impl CheckNan for V {
 }
 
 impl CheckNan for Vec<V> {
-    fn assert_no_nan(&self, msg: &str) {
+    fn sanity_assert_no_nan(&self, msg: &str) {
         if !SANITY_CHECKS {
             return;
         }
 
         for (i, v) in self.iter().enumerate() {
-            v.assert_no_nan(format!("{} [{}]", msg, i).as_str());
+            v.sanity_assert_no_nan(format!("{} [{}]", msg, i).as_str());
         }
     }
 }
