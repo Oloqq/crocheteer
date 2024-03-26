@@ -7,14 +7,23 @@ pub enum Action {
     Inc,
     Dec,
     Ch(usize),
-    Attach(usize),
+    /// Pull yarn through a spot
+    Attach(Label),
+    /// Begin working in the other direction
     Reverse,
+    /// Front loop only
     FLO,
+    /// Back loop only
     BLO,
-    Both,
+    /// Both loops
+    BL,
+    /// Let go of the yarn, start working elsewhere
     Goto(Label),
+    /// Mark a spot that will be important later
     Mark(Label),
+    /// Magic ring
     MR(usize),
+    /// Fasten off
     FO,
 }
 

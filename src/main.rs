@@ -37,6 +37,7 @@ fn main() {
             // let plushie = examples::vase_simple_flow();
             // let plushie = examples::pillar_simple_flow();
             let plushie = examples::hat();
+            // let plushie = examples::brocolli();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }

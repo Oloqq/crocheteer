@@ -117,6 +117,42 @@ pub fn hat() -> Plushie {
     plushie
 }
 
+pub fn brocolli() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    let full_round = vec![Sc; 12];
+    for _ in 0..6 {
+        actions.append(&mut full_round.clone());
+    }
+    actions.push(Mark(0));
+    actions.push(BLO);
+    actions.append(&mut vec![Dec; 6]);
+    actions.push(Mark(1));
+    actions.push(FO);
+
+    actions.push(Goto(0));
+    actions.push(FLO);
+    actions.append(&mut vec![Inc; 12]);
+    actions.push(BL);
+    actions.append(&mut vec![Sc; 24]);
+    actions.append(&mut vec![Sc; 24]);
+    actions.append(&mut vec![Dec; 12]);
+
+    actions.push(Ch(2));
+    actions.push(Attach(1));
+    actions.append(&mut vec![Sc; 2]);
+
+    actions.append(&mut vec![Dec; 6]);
+    actions.push(FO);
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
 pub fn bowl() -> (Pattern, LegacyPlushie) {
     let pattern = Pattern::from_human_readable(
         "@centroids = 6

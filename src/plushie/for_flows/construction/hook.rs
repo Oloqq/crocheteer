@@ -166,7 +166,7 @@ impl Hook {
             Reverse => unimplemented!(),
             FLO => unimplemented!(),
             BLO => unimplemented!(),
-            Both => unimplemented!(),
+            BL => unimplemented!(),
             Goto(_) => unimplemented!(),
             Mark(_) => unimplemented!(),
             MR(_) => Err(StarterInTheMiddle),
