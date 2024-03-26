@@ -1,8 +1,38 @@
 pub type V = na::Vector3<f32>;
 pub type Point = na::Point3<f32>;
 
-use std::fs::OpenOptions;
+// TODO rewrite using a macro
+pub const SANITY_CHECKS: bool = true;
 
+pub trait CheckNan {
+    fn assert_no_nan(&self, msg: &str);
+}
+
+impl CheckNan for V {
+    fn assert_no_nan(&self, msg: &str) {
+        if !SANITY_CHECKS {
+            return;
+        }
+
+        assert!(!self.x.is_nan(), "NaN x: {}", msg);
+        assert!(!self.y.is_nan(), "NaN y: {}", msg);
+        assert!(!self.z.is_nan(), "NaN z: {}", msg);
+    }
+}
+
+impl CheckNan for Vec<V> {
+    fn assert_no_nan(&self, msg: &str) {
+        if !SANITY_CHECKS {
+            return;
+        }
+
+        for (i, v) in self.iter().enumerate() {
+            v.assert_no_nan(format!("{} [{}]", msg, i).as_str());
+        }
+    }
+}
+
+use std::fs::OpenOptions;
 use stl_io::{Normal, Triangle, Vertex};
 pub type Mesh = Vec<Triangle>;
 

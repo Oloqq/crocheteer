@@ -7,8 +7,9 @@ use crate::common::*;
 
 impl Plushie {
     pub fn step(&mut self, time: f32) -> V {
-        let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
         let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+        let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
+        log::debug!("Nodes: {:?}", self.nodes);
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);
@@ -32,17 +33,20 @@ impl Plushie {
                 displacement[*neibi] -= diff;
             }
         }
+        displacement.assert_no_nan("link forces");
     }
 
     fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
         self.centroids
-            .stuff(&self.params.centroids, &self.nodes, displacement)
+            .stuff(&self.params.centroids, &self.nodes, displacement);
+        displacement.assert_no_nan("stuffing");
     }
 
     fn add_gravity(&self, displacement: &mut Vec<V>) {
         for (i, _point) in self.nodes.points.iter().enumerate() {
             displacement[i].y -= self.params.gravity;
         }
+        displacement.assert_no_nan("gravity");
     }
 }
 
@@ -52,5 +56,7 @@ fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
     let d = desired_distance;
 
     let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
-    -diff.normalize() * fx
+    let res = -diff.normalize() * fx;
+    res.assert_no_nan(format!("attract {this:?} to {other:?}").as_str());
+    res
 }

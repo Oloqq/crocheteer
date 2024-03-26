@@ -6,7 +6,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-#[derive(Clone, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Nodes {
     pub points: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
@@ -14,10 +14,12 @@ pub struct Nodes {
 
 impl Nodes {
     pub fn new(points: Vec<Point>, peculiarities: HashMap<usize, Peculiarity>) -> Self {
-        Self {
+        let new = Self {
             points,
             peculiarities,
-        }
+        };
+        new.assert_no_nans();
+        new
     }
 
     pub fn as_vec(&self) -> &Vec<Point> {
@@ -26,6 +28,14 @@ impl Nodes {
 
     pub fn len(&self) -> usize {
         self.points.len()
+    }
+
+    pub fn assert_no_nans(&self) {
+        for p in &self.points {
+            assert!(!p.x.is_nan());
+            assert!(!p.y.is_nan());
+            assert!(!p.z.is_nan());
+        }
     }
 
     fn apply_peculiarities(&self, displacement: &mut Vec<V>, params: &Params) -> V {
@@ -56,7 +66,7 @@ impl Nodes {
 
         println!("disp1 {displacement:?}");
         let translation_by_root = self.apply_peculiarities(&mut displacement, params);
-        println!("disp2 {displacement:?}");
+        // println!("disp2 {displacement:?}");
 
         for (i, point) in self.points.iter_mut().enumerate() {
             total += displacement[i];

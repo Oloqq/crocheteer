@@ -1,16 +1,35 @@
 mod hook;
 mod hook_result;
 
+use std::collections::HashSet;
+
 use self::hook::Hook;
 pub use self::hook_result::Peculiarity;
 use super::animation::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;
+use crate::common::*;
 use crate::flow::Flow;
+
+fn is_uniq(vec: &Vec<Point>) -> bool {
+    let uniq = vec
+        .into_iter()
+        .map(|v| format!("{:?}", v.coords))
+        .collect::<HashSet<_>>();
+    uniq.len() == vec.len()
+}
 
 impl Plushie {
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         let hook_result = Hook::parse(flow)?;
+
+        if SANITY_CHECKS {
+            assert!(
+                is_uniq(&hook_result.nodes),
+                "hook created duplicate positions"
+            );
+        }
+        log::debug!("edges: {:?}", hook_result.edges);
 
         Ok(Plushie {
             nodes: Nodes::new(hook_result.nodes, hook_result.peculiarities),

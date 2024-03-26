@@ -39,6 +39,7 @@ impl PlushieTrait for Plushie {
 
     fn step(&mut self, time: f32) {
         self.step(time);
+        self.nodes.assert_no_nans();
     }
 
     fn params(&mut self) -> &mut crate::plushie::Params {

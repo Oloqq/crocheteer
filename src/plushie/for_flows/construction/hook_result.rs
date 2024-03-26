@@ -14,7 +14,7 @@ pub struct HookResult {
     pub approximate_height: f32,
 }
 
-#[derive(PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub enum Peculiarity {
     Root,
     #[allow(unused)]
