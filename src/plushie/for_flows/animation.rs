@@ -6,7 +6,7 @@ use super::Plushie;
 use crate::common::*;
 
 impl Plushie {
-    pub fn step(&mut self, time: f32) -> Vec<V> {
+    pub fn step(&mut self, time: f32) -> V {
         let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
         let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
 
@@ -18,9 +18,9 @@ impl Plushie {
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        let _total = self.nodes.apply_forces(&displacement, time, &self.params);
+        let total = self.nodes.apply_forces(displacement, time, &self.params);
 
-        displacement
+        total
     }
 
     fn add_link_forces(&self, displacement: &mut Vec<V>) {

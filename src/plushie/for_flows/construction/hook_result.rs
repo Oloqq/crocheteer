@@ -21,8 +21,7 @@ pub enum Peculiarity {
     BLO,
     #[allow(unused)]
     FLO,
-    #[allow(unused)]
-    Constrained,
+    Constrained(V),
 }
 
 impl HookResult {

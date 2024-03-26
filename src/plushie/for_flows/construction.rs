@@ -11,10 +11,6 @@ use crate::flow::Flow;
 impl Plushie {
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         let hook_result = Hook::parse(flow)?;
-        assert!(hook_result
-            .peculiarities
-            .get(&0)
-            .is_some_and(|x| *x == Peculiarity::Root));
 
         Ok(Plushie {
             nodes: Nodes::new(hook_result.nodes, hook_result.peculiarities),

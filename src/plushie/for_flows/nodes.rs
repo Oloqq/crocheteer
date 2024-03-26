@@ -6,8 +6,6 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-pub const ROOT_INDEX: usize = 0;
-
 #[derive(Clone, Serialize)]
 pub struct Nodes {
     pub points: Vec<Point>,
@@ -30,21 +28,39 @@ impl Nodes {
         self.points.len()
     }
 
-    pub fn apply_forces(&mut self, displacement: &Vec<V>, time: f32, params: &Params) -> V {
+    fn apply_peculiarities(&self, displacement: &mut Vec<V>, params: &Params) -> V {
+        let mut root_index = None;
+        for (i, peculiarity) in self.peculiarities.iter() {
+            use Peculiarity::*;
+            match peculiarity {
+                Root => {
+                    assert!(root_index.is_none());
+                    root_index = Some(i);
+                }
+                // Constrained(v) => displacement[*i].component_mul_assign(&v),
+                Constrained(_) => (),
+                _ => unimplemented!(),
+            }
+        }
+
+        match (params.keep_root_at_origin, root_index) {
+            (true, Some(i)) => displacement[*i],
+            // (true, None) => todo!("Keep plushies started from a chain in the middle somehow"),
+            (true, None) => V::zeros(),
+            (false, _) => V::zeros(),
+        }
+    }
+
+    pub fn apply_forces(&mut self, mut displacement: Vec<V>, time: f32, params: &Params) -> V {
         let mut total = V::zeros();
-        let root_move = match params.keep_root_at_origin {
-            true => displacement[ROOT_INDEX],
-            false => V::zeros(),
-        };
 
-        const SKIP_ROOT: usize = {
-            assert!(ROOT_INDEX == 0);
-            1
-        };
+        println!("disp1 {displacement:?}");
+        let translation_by_root = self.apply_peculiarities(&mut displacement, params);
+        println!("disp2 {displacement:?}");
 
-        for (i, point) in self.points.iter_mut().enumerate().skip(SKIP_ROOT) {
+        for (i, point) in self.points.iter_mut().enumerate() {
             total += displacement[i];
-            *point += (displacement[i] - root_move) * time;
+            *point += (displacement[i] - translation_by_root) * time;
             if params.sitting {
                 point.y = point.y.max(0.0);
             }

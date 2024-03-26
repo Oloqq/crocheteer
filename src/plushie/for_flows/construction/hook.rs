@@ -1,5 +1,8 @@
 use super::hook_result::{Edges, HookResult, Peculiarity};
-use crate::flow::{actions::Action, Flow};
+use crate::{
+    common::V,
+    flow::{actions::Action, Flow},
+};
 use Action::*;
 use HookError::*;
 
@@ -18,10 +21,6 @@ impl From<HookError> for String {
         format!("{value:?}")
     }
 }
-
-// chains shall be approximated as a line from start point to attachment point
-// how to avoid mutiple shoves of the nodes array during construction (e.g. with multiple FOs that should be placed at the beginning)
-// constraints need to stay alive, otherwise tips get fucked up
 
 /// Responsible for building the graph used in the simulation
 pub struct Hook {
@@ -46,10 +45,6 @@ impl Hook {
     }
 
     fn start_with(action: &Action) -> Result<Self, HookError> {
-        if !action.is_starter() {
-            return Err(BadStarter);
-        }
-
         match action {
             MR(x) => {
                 let edges: Vec<Vec<usize>> = {
@@ -69,6 +64,31 @@ impl Hook {
                     anchor: 1,     // 1 because root takes index 0
                     cursor: x + 1, // + 1 because root takes index 0
                     round_spans: vec![(0, *x)],
+                })
+            }
+            Ch(x) => {
+                let edges: Vec<Vec<usize>> = {
+                    let edges_from_root: Vec<usize> = vec![];
+                    let ring_edges = (1..*x).map(|i| vec![i]);
+                    let mut edges = vec![edges_from_root];
+                    edges.extend(ring_edges);
+                    edges.push(vec![]);
+                    edges
+                };
+
+                let mut peculiar = HashMap::new();
+                for i in 0..*x {
+                    peculiar.insert(i, Peculiarity::Constrained(V::new(0.0, 0.0, 0.0)));
+                }
+
+                Ok(Self {
+                    edges,
+                    peculiar,
+                    round_count: 0,
+                    round_left: *x,
+                    anchor: 0,
+                    cursor: *x,
+                    round_spans: vec![(0, *x - 1)],
                 })
             }
             _ => Err(BadStarter),

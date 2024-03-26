@@ -20,9 +20,9 @@ pub struct Plushie {
 }
 
 impl Plushie {
-    fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
+    fn is_relaxed(&self, displacement: &V) -> bool {
         // TODO: elbow method
-        let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
+        let tension: f32 = displacement.magnitude();
         tension <= self.params.acceptable_tension
     }
 }
@@ -30,8 +30,8 @@ impl Plushie {
 impl PlushieTrait for Plushie {
     fn animate(&mut self) {
         for _ in 0..self.params.max_relaxing_iterations {
-            let displacement = self.step(1.0);
-            if self.is_relaxed(&displacement) {
+            let total_displacement = self.step(1.0);
+            if self.is_relaxed(&total_displacement) {
                 break;
             }
         }
