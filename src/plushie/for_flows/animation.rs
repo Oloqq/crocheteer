@@ -9,7 +9,7 @@ impl Plushie {
     pub fn step(&mut self, time: f32) -> V {
         let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
         let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
-        log::debug!("Nodes: {:?}", self.nodes);
+        log::trace!("Nodes: {:?}", self.nodes);
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);

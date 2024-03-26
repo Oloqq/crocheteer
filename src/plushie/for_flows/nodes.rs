@@ -47,8 +47,7 @@ impl Nodes {
                     assert!(root_index.is_none());
                     root_index = Some(i);
                 }
-                // Constrained(v) => displacement[*i].component_mul_assign(&v),
-                Constrained(_) => (),
+                Constrained(v) => displacement[*i].component_mul_assign(&v),
                 _ => unimplemented!(),
             }
         }
@@ -64,9 +63,7 @@ impl Nodes {
     pub fn apply_forces(&mut self, mut displacement: Vec<V>, time: f32, params: &Params) -> V {
         let mut total = V::zeros();
 
-        println!("disp1 {displacement:?}");
         let translation_by_root = self.apply_peculiarities(&mut displacement, params);
-        // println!("disp2 {displacement:?}");
 
         for (i, point) in self.points.iter_mut().enumerate() {
             total += displacement[i];

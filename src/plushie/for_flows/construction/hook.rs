@@ -68,17 +68,14 @@ impl Hook {
             }
             Ch(x) => {
                 let edges: Vec<Vec<usize>> = {
-                    let edges_from_root: Vec<usize> = vec![];
-                    let ring_edges = (1..*x).map(|i| vec![i]);
-                    let mut edges = vec![edges_from_root];
-                    edges.extend(ring_edges);
+                    let mut edges: Vec<Vec<usize>> = (1..*x).map(|i| vec![i]).collect();
                     edges.push(vec![]);
                     edges
                 };
 
                 let mut peculiar = HashMap::new();
                 for i in 0..*x {
-                    peculiar.insert(i, Peculiarity::Constrained(V::new(0.0, 0.0, 0.0)));
+                    peculiar.insert(i, Peculiarity::Constrained(V::new(1.0, 0.0, 1.0)));
                 }
 
                 Ok(Self {
@@ -211,6 +208,17 @@ mod tests {
         q!(h.round_left, 3);
         q!(h.round_spans.len(), 1);
         q!(h.edges, vec![vec![1, 2, 3], vec![2], vec![3], vec![],]);
+    }
+
+    #[test]
+    fn test_start_with_chain() {
+        let h = Hook::start_with(&Ch(3)).unwrap();
+        q!(h.anchor, 0);
+        q!(h.cursor, 3);
+        q!(h.round_count, 0);
+        q!(h.round_left, 3);
+        q!(h.round_spans.len(), 1);
+        q!(h.edges, vec![vec![1], vec![2], vec![]]);
     }
 
     #[test]

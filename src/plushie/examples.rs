@@ -105,8 +105,7 @@ pub fn hat() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;
 
-    let mut actions: Vec<Action> = vec![Ch(6)];
-    actions.append(&mut vec![Inc; 6]);
+    let mut actions: Vec<Action> = vec![Ch(12)];
     let full_round = vec![Sc; 12];
     for _ in 0..6 {
         actions.append(&mut full_round.clone());
