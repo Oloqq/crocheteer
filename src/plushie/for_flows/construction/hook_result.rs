@@ -14,7 +14,7 @@ pub struct HookResult {
     pub approximate_height: f32,
 }
 
-type PointsOnPushPlane = (usize, usize, usize);
+pub type PointsOnPushPlane = (usize, usize, usize);
 
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub enum Peculiarity {

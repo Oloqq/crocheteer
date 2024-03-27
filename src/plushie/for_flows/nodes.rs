@@ -1,4 +1,7 @@
-use super::{construction::Peculiarity, Params};
+use super::{
+    construction::{Peculiarity, PointsOnPushPlane},
+    Params,
+};
 use crate::common::*;
 use serde_derive::Serialize;
 use std::{
@@ -38,6 +41,23 @@ impl Nodes {
         }
     }
 
+    fn apply_single_loop(&self, affected: &mut V, plane_spec: &PointsOnPushPlane, direction: f32) {
+        let (ia, ib, ic) = plane_spec;
+        let a = self.points[*ia];
+        let b = self.points[*ib];
+        let c = self.points[*ic];
+        let ab = b - a;
+        let ac = c - a;
+        let cross = ab.cross(&ac);
+        if cross.magnitude() != 0.0 {
+            let normal = cross.normalize() * direction;
+            const SINGLE_LOOP_FORCE: f32 = 0.05;
+            *affected += normal * SINGLE_LOOP_FORCE;
+        } else {
+            log::warn!("Colinear points prevent applying single loop force");
+        }
+    }
+
     fn apply_peculiarities(&self, displacement: &mut Vec<V>, params: &Params) -> V {
         let mut root_index = None;
         for (i, peculiarity) in self.peculiarities.iter() {
@@ -48,7 +68,8 @@ impl Nodes {
                     root_index = Some(i);
                 }
                 Constrained(v) => displacement[*i].component_mul_assign(&v),
-                _ => unimplemented!(),
+                BLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, 1.0),
+                FLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, -1.0),
             }
         }
 

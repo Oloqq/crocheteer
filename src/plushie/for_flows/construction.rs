@@ -4,7 +4,7 @@ mod hook_result;
 use std::collections::HashSet;
 
 use self::hook::Hook;
-pub use self::hook_result::Peculiarity;
+pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
 use super::animation::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;

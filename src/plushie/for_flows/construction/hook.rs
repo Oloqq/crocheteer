@@ -39,10 +39,12 @@ pub struct Hook {
     round_left: usize,
     anchor: usize,
     cursor: usize,
-    /// Constains first and last stitch of each round. Treated as a range, both extremes are inclusive
+    /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive
     round_spans: Vec<(usize, usize)>,
     fastened_off: bool,
     working_on: WorkingLoops,
+    /// Storage of index -> it's anchor
+    parents: Vec<Option<usize>>,
 }
 
 impl Hook {
@@ -66,6 +68,12 @@ impl Hook {
                     edges.push(vec![]);
                     edges
                 };
+                let parents: Vec<Option<usize>> = {
+                    let mut tmp = vec![None];
+                    tmp.append(&mut vec![Some(0); *x]);
+                    tmp
+                };
+
                 Ok(Self {
                     edges,
                     peculiar: HashMap::from([(0, Peculiarity::Root)]),
@@ -76,6 +84,7 @@ impl Hook {
                     round_spans: vec![(0, *x)],
                     fastened_off: false,
                     working_on: WorkingLoops::Both,
+                    parents,
                 })
             }
             Ch(x) => {
@@ -100,6 +109,7 @@ impl Hook {
                     round_spans: vec![(0, *x - 1)],
                     fastened_off: false,
                     working_on: WorkingLoops::Both,
+                    parents: vec![None; *x],
                 })
             }
             _ => Err(BadStarter),
@@ -142,7 +152,10 @@ impl Hook {
     }
 
     fn handle_working_loop(&mut self) {
-        let points_on_push_plane = (self.anchor - 1, self.anchor, self.anchor + 1);
+        let mother = self.anchor;
+        let father = self.anchor + 1;
+        let grandparent = self.parents[self.anchor].expect("No grandparent");
+        let points_on_push_plane = (father, mother, grandparent);
         match self.working_on {
             WorkingLoops::Both => (),
             WorkingLoops::Back => self
@@ -158,6 +171,7 @@ impl Hook {
 
     fn finish_stitch(&mut self) {
         self.edges.push(Vec::with_capacity(2));
+        self.parents.push(Some(self.anchor));
         self.handle_working_loop();
         self.cursor += 1;
         self.round_count += 1;
