@@ -14,6 +14,7 @@ pub enum HookError {
     BadStarter,
     StarterInTheMiddle,
     ChainStart,
+    TriedToWorkAfterFastenOff,
 }
 
 impl From<HookError> for String {
@@ -23,6 +24,7 @@ impl From<HookError> for String {
 }
 
 /// Responsible for building the graph used in the simulation
+#[derive(Clone)]
 pub struct Hook {
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
@@ -30,6 +32,7 @@ pub struct Hook {
     round_left: usize,
     anchor: usize,
     cursor: usize,
+    fastened_off: bool,
     /// Constains first and last stitch of each round. Treated as a range, both extremes are inclusive
     round_spans: Vec<(usize, usize)>,
 }
@@ -55,15 +58,15 @@ impl Hook {
                     edges.push(vec![]);
                     edges
                 };
-                let peculiar = HashMap::from([(0, Peculiarity::Root)]);
                 Ok(Self {
                     edges,
-                    peculiar,
+                    peculiar: HashMap::from([(0, Peculiarity::Root)]),
                     round_count: 0,
                     round_left: *x,
                     anchor: 1,     // 1 because root takes index 0
                     cursor: x + 1, // + 1 because root takes index 0
                     round_spans: vec![(0, *x)],
+                    fastened_off: false,
                 })
             }
             Ch(x) => {
@@ -86,6 +89,7 @@ impl Hook {
                     anchor: 0,
                     cursor: *x,
                     round_spans: vec![(0, *x - 1)],
+                    fastened_off: false,
                 })
             }
             _ => Err(BadStarter),
@@ -135,6 +139,11 @@ impl Hook {
 
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
         log::trace!("Performing {action:?}");
+
+        if self.fastened_off && !matches!(action, Goto(_)) {
+            return Err(TriedToWorkAfterFastenOff);
+        }
+
         match action {
             Sc => {
                 self.link_to_previous_stitch();
@@ -171,26 +180,31 @@ impl Hook {
             Mark(_) => unimplemented!(),
             MR(_) => Err(StarterInTheMiddle),
             FO => {
-                assert!(
-                    self.round_count == 0,
-                    "FO for incomplete rounds is not implemented"
-                );
-
-                let (start, end) = {
-                    let (start, end) = self.round_spans.last().unwrap();
-                    (*start, end + 1)
-                };
-
-                let tip = self.cursor;
-                for connected_to_tip in start..end {
-                    self.edge(connected_to_tip).push(tip);
-                }
-                self.edges.push(vec![]);
-                self.round_spans.push((tip, tip));
-                // TODO set self.next to Option::None
-                Ok(())
+                self.fastened_off = true;
+                self.fasten_off_with_tip()
             }
         }
+    }
+
+    fn fasten_off_with_tip(&mut self) -> Result<(), HookError> {
+        assert!(
+            self.round_count == 0,
+            "FO for incomplete rounds is not implemented"
+        );
+
+        let (start, end) = {
+            let (start, end) = self.round_spans.last().unwrap();
+            (*start, end + 1)
+        };
+
+        let tip = self.cursor;
+        for connected_to_tip in start..end {
+            self.edge(connected_to_tip).push(tip);
+        }
+
+        self.edges.push(vec![]);
+        self.round_spans.push((tip, tip));
+        Ok(())
     }
 }
 
@@ -322,22 +336,18 @@ mod tests {
             ]
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
-        // TODO assert next Sc won't succeed
     }
 
     #[test]
-    #[ignore = "not yet"]
-    fn test_perform_fo_after_unfinished_round() {
-        todo!()
+    fn test_error_on_stitch_after_fo() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        h.perform(&FO).unwrap();
+        h.clone().perform(&Sc).expect_err("Can't continue after FO");
+        h.clone()
+            .perform(&Inc)
+            .expect_err("Can't continue after FO");
+        h.clone()
+            .perform(&Dec)
+            .expect_err("Can't continue after FO");
     }
-
-    // #[test]
-    // fn test_adding_edges_with_inc() {
-    //     todo!()
-    // }
-
-    // #[test]
-    // fn test_adding_edges_with_dec() {
-    //     todo!()
-    // }
 }

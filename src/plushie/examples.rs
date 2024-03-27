@@ -117,7 +117,7 @@ pub fn hat() -> Plushie {
     plushie
 }
 
-pub fn brocolli() -> Plushie {
+pub fn lollipop() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;
 

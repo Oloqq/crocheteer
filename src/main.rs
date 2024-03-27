@@ -36,8 +36,8 @@ fn main() {
         WebSocket {} => {
             // let plushie = examples::vase_simple_flow();
             // let plushie = examples::pillar_simple_flow();
-            let plushie = examples::hat();
-            // let plushie = examples::brocolli();
+            // let plushie = examples::hat();
+            let plushie = examples::lollipop();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
