@@ -44,7 +44,7 @@ impl Nodes {
             use Peculiarity::*;
             match peculiarity {
                 Root => {
-                    assert!(root_index.is_none());
+                    assert!(root_index.is_none(), "Multiple nodes got marked as root");
                     root_index = Some(i);
                 }
                 Constrained(v) => displacement[*i].component_mul_assign(&v),

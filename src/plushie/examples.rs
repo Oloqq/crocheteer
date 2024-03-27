@@ -101,6 +101,30 @@ pub fn pillar_simple_flow() -> Plushie {
     plushie
 }
 
+pub fn pillar_blo() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    let full_round = vec![Sc; 12];
+    actions.append(&mut full_round.clone());
+    actions.append(&mut full_round.clone());
+
+    actions.push(BLO);
+    actions.append(&mut full_round.clone());
+    actions.push(BL);
+
+    actions.append(&mut full_round.clone());
+    actions.append(&mut full_round.clone());
+    actions.append(&mut full_round.clone());
+
+    actions.push(FO);
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
 pub fn hat() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;
@@ -111,6 +135,22 @@ pub fn hat() -> Plushie {
         actions.append(&mut full_round.clone());
     }
     actions.push(FO);
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
+pub fn flailer() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    for _ in 0..3 {
+        actions.append(&mut vec![Sc; 12]);
+    }
+    actions.push(Ch(6));
 
     let flow = SimpleFlow::new(actions);
     let plushie = Plushie::from_flow(flow).unwrap();

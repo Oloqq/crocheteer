@@ -175,3 +175,6 @@ Algorithm inspired by k-means
 
 ![](2024-03-11-14-35-16.png)
 *vase2 loaded from a human readable pattern*
+
+## Back loop only (BLO) / front loop only (FLO)
+

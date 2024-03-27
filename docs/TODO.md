@@ -24,10 +24,10 @@
       - B anchors on the previous round (stitch P1)
       - P1 itself is anchored on an earlier round to stitch P2
         - getting P2 would be non trivial and would involve a search either through all points, or storing round information and a search through one round
-      - P1 is attached to previous round in it's round (P0)
+      - P1 is attached to previous stitch in it's round (P0)
         - index(P0) = index(P1) - 1
-      - P1 attaches to the next point in it's round (P2)
-        - index(P2) = index(P2) + 1
+      - P1 attaches to the next stitch in it's round (P2)
+        - index(P2) = index(P1) + 1
       - create a plane through P0, P1, P2
         - take a normal to that plane, push B along the normal (+/- depending on back or front loop)
       - cross product

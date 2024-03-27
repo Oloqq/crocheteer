@@ -14,13 +14,13 @@ pub struct HookResult {
     pub approximate_height: f32,
 }
 
+type PointsOnPushPlane = (usize, usize, usize);
+
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub enum Peculiarity {
     Root,
-    #[allow(unused)]
-    BLO,
-    #[allow(unused)]
-    FLO,
+    BLO(PointsOnPushPlane),
+    FLO(PointsOnPushPlane),
     Constrained(V),
 }
 

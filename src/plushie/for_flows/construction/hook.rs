@@ -23,6 +23,13 @@ impl From<HookError> for String {
     }
 }
 
+#[derive(Clone)]
+enum WorkingLoops {
+    Both,
+    Back,
+    Front,
+}
+
 /// Responsible for building the graph used in the simulation
 #[derive(Clone)]
 pub struct Hook {
@@ -32,9 +39,10 @@ pub struct Hook {
     round_left: usize,
     anchor: usize,
     cursor: usize,
-    fastened_off: bool,
     /// Constains first and last stitch of each round. Treated as a range, both extremes are inclusive
     round_spans: Vec<(usize, usize)>,
+    fastened_off: bool,
+    working_on: WorkingLoops,
 }
 
 impl Hook {
@@ -67,6 +75,7 @@ impl Hook {
                     cursor: x + 1, // + 1 because root takes index 0
                     round_spans: vec![(0, *x)],
                     fastened_off: false,
+                    working_on: WorkingLoops::Both,
                 })
             }
             Ch(x) => {
@@ -90,6 +99,7 @@ impl Hook {
                     cursor: *x,
                     round_spans: vec![(0, *x - 1)],
                     fastened_off: false,
+                    working_on: WorkingLoops::Both,
                 })
             }
             _ => Err(BadStarter),
@@ -131,10 +141,26 @@ impl Hook {
         self.edge(current_node - 1).push(current_node);
     }
 
+    fn handle_working_loop(&mut self) {
+        let points_on_push_plane = (self.anchor - 1, self.anchor, self.anchor + 1);
+        match self.working_on {
+            WorkingLoops::Both => (),
+            WorkingLoops::Back => self
+                .peculiar
+                .insert(self.cursor, Peculiarity::BLO(points_on_push_plane))
+                .map_or((), |_| panic!("Multi-peculiarity")),
+            WorkingLoops::Front => self
+                .peculiar
+                .insert(self.cursor, Peculiarity::FLO(points_on_push_plane))
+                .map_or((), |_| panic!("Multi-peculiarity")),
+        };
+    }
+
     fn finish_stitch(&mut self) {
+        self.edges.push(Vec::with_capacity(2));
+        self.handle_working_loop();
         self.cursor += 1;
         self.round_count += 1;
-        self.edges.push(Vec::with_capacity(2));
     }
 
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
@@ -150,7 +176,6 @@ impl Hook {
                 self.link_to_previous_round();
                 self.finish_stitch();
                 self.next_anchor();
-                Ok(())
             }
             Inc => {
                 for _ in 0..2 {
@@ -159,7 +184,6 @@ impl Hook {
                     self.finish_stitch();
                 }
                 self.next_anchor();
-                Ok(())
             }
             Dec => {
                 for _ in 0..2 {
@@ -168,22 +192,22 @@ impl Hook {
                 }
                 self.link_to_previous_stitch();
                 self.finish_stitch();
-                Ok(())
             }
             Ch(_) => unimplemented!(),
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),
-            FLO => unimplemented!(),
-            BLO => unimplemented!(),
-            BL => unimplemented!(),
+            FLO => self.working_on = WorkingLoops::Front,
+            BLO => self.working_on = WorkingLoops::Back,
+            BL => self.working_on = WorkingLoops::Both,
             Goto(_) => unimplemented!(),
             Mark(_) => unimplemented!(),
-            MR(_) => Err(StarterInTheMiddle),
+            MR(_) => return Err(StarterInTheMiddle),
             FO => {
                 self.fastened_off = true;
-                self.fasten_off_with_tip()
+                self.fasten_off_with_tip()?
             }
-        }
+        };
+        Ok(())
     }
 
     fn fasten_off_with_tip(&mut self) -> Result<(), HookError> {
