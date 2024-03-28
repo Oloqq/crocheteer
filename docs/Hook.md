@@ -23,3 +23,4 @@ determining initial positions becomes a major problem
     - 1 link => take it's position, translate by a random vector
   - gotta assure referenced nodes already exist
 - centroids also gotta be added by Plushie itself along the way
+- this would require changing undelying storage of edges, so connections of a new stitch can be easily looked up
