@@ -168,12 +168,15 @@ pub fn grzib() -> Plushie {
         actions.append(&mut full_round.clone());
     }
     actions.push(Mark(0));
+    actions.push(BLO);
     actions.append(&mut vec![Dec; 6]);
     actions.push(FO);
 
     actions.push(Goto(0));
+    actions.push(FLO);
     actions.push(Color((255, 255, 0)));
     actions.append(&mut vec![Inc; 12]);
+    actions.push(BL);
     actions.append(&mut vec![Sc; 24]);
     actions.append(&mut vec![Sc; 24]);
     actions.append(&mut vec![Dec; 12]);

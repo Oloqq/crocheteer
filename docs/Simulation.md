@@ -176,6 +176,13 @@ Algorithm inspired by k-means
 ![](2024-03-11-14-35-16.png)
 *vase2 loaded from a human readable pattern*
 
-## Back loop only (BLO) / front loop only (FLO)
+## Change working position
+Grzib leveraging new capability to change working position
 
 ![](2024-03-28-16-35-09.png)
+
+## Back loop only (BLO) / front loop only (FLO)
+
+The same grzib also using BLO and FLO
+
+![](2024-03-28-16-50-45.png)
