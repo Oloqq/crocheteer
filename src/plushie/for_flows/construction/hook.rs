@@ -20,6 +20,7 @@ pub enum HookError {
     TriedToWorkAfterFastenOff,
     DuplicateLabel(Label),
     UnknownLabel(Label),
+    CantMarkAfterFO,
 }
 
 impl From<HookError> for String {
@@ -28,7 +29,7 @@ impl From<HookError> for String {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 enum WorkingLoops {
     Both,
     Back,
@@ -38,7 +39,7 @@ enum WorkingLoops {
 /// Span of a single generalized cylinder in the plushie
 type Part = (usize, usize);
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 struct Moment {
     anchor: usize,
     cursor: usize,
@@ -203,6 +204,24 @@ impl Hook {
         self.now.round_count += 1;
     }
 
+    fn restore(&mut self, label: Label) -> Result<(), HookError> {
+        let moment = self.labels.get(&label).ok_or(UnknownLabel(label))?;
+        self.now = moment.clone();
+        unimplemented!();
+        // Ok(())
+    }
+
+    fn save(&mut self, label: Label) -> Result<(), HookError> {
+        if self.fastened_off {
+            return Err(CantMarkAfterFO);
+        }
+        if let Some(_) = self.labels.insert(label, self.now.clone()) {
+            return Err(DuplicateLabel(label));
+        }
+        unimplemented!();
+        // Ok(())
+    }
+
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
         log::trace!("Performing {action:?}");
 
@@ -239,24 +258,8 @@ impl Hook {
             FLO => self.now.working_on = WorkingLoops::Front,
             BLO => self.now.working_on = WorkingLoops::Back,
             BL => self.now.working_on = WorkingLoops::Both,
-            Goto(label) => {
-                let destination = match self.labels.get(label) {
-                    Some(pos) => pos,
-                    None => return Err(UnknownLabel(*label)),
-                };
-                // TODO storing the cursor is not nearly enough information
-                // the hook should be storing just position information
-                // and build the graph directly in HookResult,
-                // so that Hooks can easily be cloned
-                // self.now.cursor = *destination;
-            }
-            Mark(label) => {
-                // TODO deny mark if is fastened off
-                // if let Some(_) = self.labels.insert(*label, self.now.cursor) {
-                //     return Err(DuplicateLabel(*label));
-                // }
-                ()
-            }
+            Goto(label) => self.restore(*label)?,
+            Mark(label) => self.save(*label)?,
             MR(_) => return Err(StarterInTheMiddle),
             FO => {
                 self.fastened_off = true;
@@ -431,4 +434,41 @@ mod tests {
             .perform(&Dec)
             .expect_err("Can't continue after FO");
     }
+
+    // #[test]
+    // fn test_perform_fo_after_full_round() {
+    //     let mut h = Hook::start_with(&MR(3)).unwrap();
+    //     h.per
+    //     h.perform(&Sc).unwrap();
+    //     h.perform(&Sc).unwrap();
+    //     h.perform(&Sc).unwrap();
+    //     q!(h.round_spans, vec![(0, 3), (4, 6)]);
+    //     q!(
+    //         h.edges,
+    //         vec![
+    //             vec![1, 2, 3], // 0
+    //             vec![2, 4],    // 1
+    //             vec![3, 5],    // 2
+    //             vec![4, 6],    // 3
+    //             vec![5],       // 4
+    //             vec![6],       // 5
+    //             vec![]         // 6
+    //         ]
+    //     );
+    //     h.perform(&FO).unwrap();
+    //     q!(
+    //         h.edges,
+    //         vec![
+    //             vec![1, 2, 3], // 0
+    //             vec![2, 4],    // 1
+    //             vec![3, 5],    // 2
+    //             vec![4, 6],    // 3
+    //             vec![5, 7],    // 4
+    //             vec![6, 7],    // 5
+    //             vec![7],       // 6
+    //             vec![]         // 7
+    //         ]
+    //     );
+    //     q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
+    // }
 }
