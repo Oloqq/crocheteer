@@ -1,3 +1,5 @@
+use crate::common::Color;
+
 pub type Label = usize;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -25,6 +27,8 @@ pub enum Action {
     MR(usize),
     /// Fasten off
     FO,
+    /// Change yarn color
+    Color(Color),
 }
 
 // #[cfg(test)]

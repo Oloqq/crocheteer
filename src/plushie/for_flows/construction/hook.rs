@@ -101,6 +101,7 @@ impl Hook {
                 self.fastened_off = true;
                 self.fasten_off_with_tip()?
             }
+            Color(c) => self.color = *c,
         };
         Ok(())
     }

@@ -172,6 +172,7 @@ pub fn grzib() -> Plushie {
     actions.push(FO);
 
     actions.push(Goto(0));
+    actions.push(Color((255, 255, 0)));
     actions.append(&mut vec![Inc; 12]);
     actions.append(&mut vec![Sc; 24]);
     actions.append(&mut vec![Sc; 24]);
