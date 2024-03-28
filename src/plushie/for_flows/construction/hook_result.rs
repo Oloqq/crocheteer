@@ -31,6 +31,7 @@ impl HookResult {
         peculiar: HashMap<usize, Peculiarity>,
         round_spans: Vec<(usize, usize)>,
     ) -> Self {
+        log::debug!("round spans: {:?}", round_spans);
         let (nodes, highest) = make_nodes(round_spans);
         Self {
             edges,

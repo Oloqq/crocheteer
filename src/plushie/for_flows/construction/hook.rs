@@ -62,6 +62,7 @@ pub struct Hook {
     part_start: usize,
     parts: Vec<Part>,
     labels: HashMap<Label, Moment>,
+    at_junction: bool,
 }
 
 impl Hook {
@@ -107,6 +108,7 @@ impl Hook {
                     part_start: 0,
                     parts: vec![],
                     labels: HashMap::new(),
+                    at_junction: false,
                 })
             }
             Ch(x) => {
@@ -137,6 +139,7 @@ impl Hook {
                     part_start: 0,
                     parts: vec![],
                     labels: HashMap::new(),
+                    at_junction: false,
                 })
             }
             _ => Err(BadStarter),
@@ -164,6 +167,10 @@ impl Hook {
             self.round_spans
                 .push((self.now.cursor - self.now.round_count, self.now.cursor - 1));
             self.now.round_left = self.now.round_count;
+            if self.at_junction {
+                self.now.anchor = self.now.cursor - self.now.round_count;
+                self.at_junction = false;
+            }
             self.now.round_count = 0;
         }
     }
@@ -179,12 +186,16 @@ impl Hook {
     }
 
     fn handle_working_loop(&mut self) {
+        if matches!(self.now.working_on, WorkingLoops::Both) {
+            return;
+        }
+
         let mother = self.now.anchor;
         let father = self.now.anchor + 1;
         let grandparent = self.parents[self.now.anchor].expect("Grandparent exists");
         let points_on_push_plane = (father, mother, grandparent);
         match self.now.working_on {
-            WorkingLoops::Both => (),
+            WorkingLoops::Both => unreachable!(),
             WorkingLoops::Back => self
                 .peculiar
                 .insert(self.now.cursor, Peculiarity::BLO(points_on_push_plane))
@@ -207,8 +218,8 @@ impl Hook {
     fn restore(&mut self, label: Label) -> Result<(), HookError> {
         let moment = self.labels.get(&label).ok_or(UnknownLabel(label))?;
         self.now = moment.clone();
-        unimplemented!();
-        // Ok(())
+        self.at_junction = true;
+        Ok(())
     }
 
     fn save(&mut self, label: Label) -> Result<(), HookError> {
@@ -218,8 +229,7 @@ impl Hook {
         if let Some(_) = self.labels.insert(label, self.now.clone()) {
             return Err(DuplicateLabel(label));
         }
-        unimplemented!();
-        // Ok(())
+        Ok(())
     }
 
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
@@ -245,12 +255,12 @@ impl Hook {
                 self.next_anchor();
             }
             Dec => {
-                for _ in 0..2 {
-                    self.link_to_previous_round();
-                    self.next_anchor();
-                }
+                self.link_to_previous_round();
+                self.next_anchor();
+                self.link_to_previous_round();
                 self.link_to_previous_stitch();
                 self.finish_stitch();
+                self.next_anchor();
             }
             Ch(_) => unimplemented!(),
             Attach(_) => unimplemented!(),
@@ -420,6 +430,14 @@ mod tests {
             ]
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
+    }
+
+    #[test]
+    fn test_round_spans_with_dec() {
+        let mut h = Hook::start_with(&MR(4)).unwrap();
+        h.perform(&Dec).unwrap();
+        h.perform(&Dec).unwrap();
+        assert_eq!(h.round_spans, vec![(0, 4), (5, 6)]);
     }
 
     #[test]

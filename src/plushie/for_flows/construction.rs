@@ -29,7 +29,12 @@ impl Plushie {
                 "hook created duplicate positions"
             );
         }
-        log::trace!("edges: {:?}", hook_result.edges);
+        log::debug!(
+            "edges: {:?}, len: {}",
+            hook_result.edges,
+            hook_result.edges.len()
+        );
+        log::debug!("nodes len: {}", hook_result.nodes.len());
 
         Ok(Plushie {
             nodes: Nodes::new(hook_result.nodes, hook_result.peculiarities),
