@@ -33,6 +33,15 @@ impl Flow for ErgoFlow {
             None
         }
     }
+
+    fn peek(&self) -> Option<Action> {
+        if self.i < self.actions.len() {
+            let got = self.actions[self.i];
+            Some(got)
+        } else {
+            None
+        }
+    }
 }
 
 impl Mul<usize> for Action {

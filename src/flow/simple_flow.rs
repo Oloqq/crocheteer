@@ -21,6 +21,15 @@ impl Flow for SimpleFlow {
             None
         }
     }
+
+    fn peek(&self) -> Option<Action> {
+        if self.i < self.actions.len() {
+            let got = self.actions[self.i];
+            Some(got)
+        } else {
+            None
+        }
+    }
 }
 
 #[cfg(test)]

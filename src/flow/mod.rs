@@ -8,4 +8,5 @@ use self::actions::Action;
 
 pub trait Flow {
     fn next(&mut self) -> Option<Action>;
+    fn peek(&self) -> Option<Action>;
 }

@@ -27,6 +27,9 @@ impl Plushie {
     fn add_link_forces(&self, displacement: &mut Vec<V>) {
         for (i, point) in self.nodes.points.iter().enumerate() {
             for neibi in &self.edges[i] {
+                if *neibi >= self.nodes.points.len() {
+                    continue;
+                }
                 let neib = &self.nodes[*neibi];
                 let diff: V = attract(point, neib, self.params.desired_stitch_distance);
                 displacement[i] += diff;
