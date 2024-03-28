@@ -54,7 +54,12 @@ impl Hook {
         Ok(hook.finish())
     }
 
-    fn finish(self) -> HookResult {
+    fn finish(mut self) -> HookResult {
+        if !self.fastened_off {
+            self.round_spans
+                .push((self.now.cursor - self.now.round_count, self.now.cursor - 1));
+        }
+
         HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 
@@ -88,7 +93,12 @@ impl Hook {
                 self.finish_stitch();
                 self.next_anchor();
             }
-            Ch(_) => unimplemented!(),
+            Ch(x) => {
+                for _ in 0..*x {
+                    self.link_to_previous_stitch();
+                    self.finish_stitch(); // FIXME parent, working loop, and round count is meaningless
+                }
+            }
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),
             FLO => self.now.working_on = WorkingLoops::Front,
