@@ -178,3 +178,4 @@ Algorithm inspired by k-means
 
 ## Back loop only (BLO) / front loop only (FLO)
 
+![](2024-03-28-16-35-09.png)

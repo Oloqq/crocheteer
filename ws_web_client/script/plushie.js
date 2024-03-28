@@ -61,10 +61,21 @@ export default class Plushie {
     this.links = [];
   }
 
+  linkColor(from, to) {
+    if (debugDisplay) {
+      return "red";
+    } else {
+      let [r, g, b] = this.nodeColors[to];
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+
   drawLinks() {
     for (let from = 0; from < this.edges.length; from++) {
       for (let to of this.edges[from]) {
-        let link = create.link(this.stitchPositions[from], this.stitchPositions[to], 0.02, "red")
+        let width = 0.05;
+        let color = this.linkColor(from, to);
+        let link = create.link(this.stitchPositions[from], this.stitchPositions[to], width, color)
         this.links.push(link);
       }
     }
@@ -135,12 +146,7 @@ export default class Plushie {
       this.stitchPositions.push(sph.position);
       this.stitchSpheres.push(sph);
     }
-    for (let from = 0; from < this.edges.length; from++) {
-      for (let to of this.edges[from]) {
-        let link = create.link(this.stitchPositions[from], this.stitchPositions[to], 0.02, "red")
-        this.links.push(link);
-      }
-    }
+    this.drawLinks();
 
     for (let sph of this.centroidSpheres) {
       if (sph.geometry) sph.geometry.dispose();
