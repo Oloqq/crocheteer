@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use crate::flow::ergoflow::ErgoFlow;
 use crate::pattern::stitches::Stitch;
 use crate::pattern::Pattern;
 use crate::{flow::simple_flow::SimpleFlow, pattern::builder::PatternBuilder};
@@ -184,6 +185,24 @@ pub fn grzib() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
+pub fn ergogrzib() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += 6 * Inc;
+    flow += 12 * 3 * Sc;
+    flow += Mark(0) + BLO;
+    flow += 6 * Dec + FO;
+    flow += Goto(0) + FLO + Color((255, 255, 0));
+    flow += 12 * Inc;
+    flow += BL + 24 * 2 * Sc;
+    flow += 12 * Dec + 6 * Dec + FO;
     let plushie = Plushie::from_flow(flow).unwrap();
     plushie
 }

@@ -1,4 +1,5 @@
 pub mod actions;
+pub mod ergoflow;
 pub mod human_flow;
 pub mod simple_flow;
 

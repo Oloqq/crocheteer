@@ -30,8 +30,3 @@ pub enum Action {
     /// Change yarn color
     Color(Color),
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-// }

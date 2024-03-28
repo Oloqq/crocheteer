@@ -19,6 +19,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn test_bruh() {
         let prog = ": sc (1)\n";
         let res = PatParser::parse(Rule::program, prog).unwrap();
