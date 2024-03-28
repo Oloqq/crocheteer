@@ -169,7 +169,7 @@ pub fn grzib() -> Plushie {
     }
     actions.push(Mark(0));
     actions.append(&mut vec![Dec; 6]);
-    // actions.push(FO);
+    actions.push(FO);
 
     actions.push(Goto(0));
     actions.append(&mut vec![Inc; 12]);
