@@ -13,13 +13,19 @@ use std::{
 pub struct Nodes {
     pub points: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
+    pub colors: Vec<Color>,
 }
 
 impl Nodes {
-    pub fn new(points: Vec<Point>, peculiarities: HashMap<usize, Peculiarity>) -> Self {
+    pub fn new(
+        points: Vec<Point>,
+        peculiarities: HashMap<usize, Peculiarity>,
+        colors: Vec<Color>,
+    ) -> Self {
         let new = Self {
             points,
             peculiarities,
+            colors,
         };
         new.assert_no_nans();
         new
@@ -67,6 +73,7 @@ impl Nodes {
                     assert!(root_index.is_none(), "Multiple nodes got marked as root");
                     root_index = Some(i);
                 }
+                Tip => (),
                 Constrained(v) => displacement[*i].component_mul_assign(&v),
                 BLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, 1.0),
                 FLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, -1.0),

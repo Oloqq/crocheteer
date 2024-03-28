@@ -68,6 +68,7 @@ impl Hook {
 
     pub fn finish_stitch(&mut self) {
         self.edges.push(Vec::with_capacity(2));
+        self.colors.push(self.color);
         self.parents.push(Some(self.now.anchor));
         self.handle_working_loop();
         self.now.cursor += 1;
@@ -111,8 +112,10 @@ impl Hook {
         }
 
         self.edges.push(vec![]);
+        self.peculiar.insert(tip, Peculiarity::Tip);
         self.round_spans.push((tip, tip));
         self.parts.push((self.part_start, tip));
+        self.colors.push(self.color);
         self.now.cursor += 1;
         Ok(())
     }

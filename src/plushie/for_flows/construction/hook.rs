@@ -40,6 +40,8 @@ pub struct Hook {
     labels: HashMap<Label, Moment>,
     at_junction: bool,
     override_previous_stitch: Option<usize>,
+    color: Color,
+    colors: Vec<Color>,
 }
 
 impl Hook {
@@ -53,7 +55,7 @@ impl Hook {
     }
 
     fn finish(self) -> HookResult {
-        HookResult::from_hook(self.edges, self.peculiar, self.round_spans)
+        HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {

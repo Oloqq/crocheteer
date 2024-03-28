@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
-use super::{utils::*, Hook, Moment};
+use super::{utils::*, Color, Hook, Moment};
 
 impl Hook {
     pub fn start_with(action: &Action) -> Result<Self, HookError> {
+        let color = (255, 0, 255);
         match action {
             MR(x) => {
                 let edges: Vec<Vec<usize>> = {
@@ -19,6 +20,7 @@ impl Hook {
                     tmp.append(&mut vec![Some(0); *x]);
                     tmp
                 };
+                let colors: Vec<Color> = (0..=*x).map(|_| color).collect();
 
                 Ok(Self {
                     edges,
@@ -38,6 +40,8 @@ impl Hook {
                     labels: HashMap::new(),
                     at_junction: false,
                     override_previous_stitch: None,
+                    color,
+                    colors,
                 })
             }
             Ch(x) => {
@@ -51,6 +55,7 @@ impl Hook {
                 for i in 0..*x {
                     peculiar.insert(i, Peculiarity::Constrained(V::new(1.0, 0.0, 1.0)));
                 }
+                let colors: Vec<Color> = (0..*x).map(|_| color).collect();
 
                 Ok(Self {
                     edges,
@@ -70,6 +75,8 @@ impl Hook {
                     labels: HashMap::new(),
                     at_junction: false,
                     override_previous_stitch: None,
+                    color,
+                    colors,
                 })
             }
             _ => Err(HookError::BadStarter),

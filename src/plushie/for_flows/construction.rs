@@ -37,7 +37,11 @@ impl Plushie {
         log::debug!("nodes len: {}", hook_result.nodes.len());
 
         Ok(Plushie {
-            nodes: Nodes::new(hook_result.nodes, hook_result.peculiarities),
+            nodes: Nodes::new(
+                hook_result.nodes,
+                hook_result.peculiarities,
+                hook_result.colors,
+            ),
             edges: hook_result.edges,
             params: Default::default(),
             centroids: Centroids::new(2, hook_result.approximate_height),

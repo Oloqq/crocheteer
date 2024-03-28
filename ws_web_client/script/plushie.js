@@ -1,6 +1,14 @@
 import * as create from "./lib/create";
 import * as simulation from "./lib/simulation";
 
+const peculiarityColors = {
+  "normal": 0x00ff00,
+  "centroid": 0xffa500,
+  "Tip": 0x0000ff,
+  "Root": 0x0000ff,
+}
+const debugDisplay = false;
+
 export default class Plushie {
   constructor(status, guiData, gui, pattern) {
     this.edges = [];
@@ -14,6 +22,9 @@ export default class Plushie {
     this.guiData = guiData;
     this.gui = gui;
     this.pattern = pattern;
+    this.peculiar = {};
+    this.nodeColors = [];
+    this.colors = peculiarityColors;
   }
 
   getId(obj) {
@@ -88,11 +99,22 @@ export default class Plushie {
     }
   }
 
+  nodeColor(i) {
+    if (debugDisplay) {
+      let colorKey = this.peculiar[i] ?? "normal";
+      return peculiarityColors[colorKey];
+    } else {
+      let [r, g, b] = this.nodeColors[i];
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+
   init(data) {
-    // console.log(data);
+    console.log(data);
     const nodes = data["nodes"];
     const points = nodes["points"];
-    const _fixedNum = nodes["fixed"];
+    this.peculiar = nodes["peculiarities"]
+    this.nodeColors = nodes["colors"];
     this.edges = data["edges"];
     this.guiData.stuffing = data["stuffing"];
     this.guiData.gravity = data["gravity"];
@@ -106,10 +128,10 @@ export default class Plushie {
       create.scene.remove(sph);
     }
     this.clearLinks();
-    this.stitchSpheres = [];
 
-    for (let point of points) {
-      let sph = create.sphere(point, 0.1);
+    this.stitchSpheres = [];
+    for (let [i, point] of points.entries()) {
+      let sph = create.sphere(point, 0.1, this.nodeColor(i));
       this.stitchPositions.push(sph.position);
       this.stitchSpheres.push(sph);
     }
@@ -128,7 +150,7 @@ export default class Plushie {
     this.centroidSpheres = [];
     const centroids = data["centroids"]["centroids"];
     for (let point of centroids) {
-      let sph = create.sphere(point, 0.1, 0xffa500);
+      let sph = create.sphere(point, 0.1, peculiarityColors.centroid);
       this.centroidSpheres.push(sph);
     }
   }

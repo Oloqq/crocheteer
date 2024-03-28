@@ -12,6 +12,7 @@ pub struct HookResult {
     pub nodes: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
     pub approximate_height: f32,
+    pub colors: Vec<Color>,
 }
 
 pub type PointsOnPushPlane = (usize, usize, usize);
@@ -19,6 +20,7 @@ pub type PointsOnPushPlane = (usize, usize, usize);
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub enum Peculiarity {
     Root,
+    Tip,
     BLO(PointsOnPushPlane),
     FLO(PointsOnPushPlane),
     Constrained(V),
@@ -30,6 +32,7 @@ impl HookResult {
         edges: Edges,
         peculiar: HashMap<usize, Peculiarity>,
         round_spans: Vec<(usize, usize)>,
+        colors: Vec<Color>,
     ) -> Self {
         log::debug!("round spans: {:?}", round_spans);
         let (nodes, highest) = make_nodes(round_spans);
@@ -38,6 +41,7 @@ impl HookResult {
             nodes,
             peculiarities: peculiar,
             approximate_height: highest,
+            colors,
         }
     }
 }

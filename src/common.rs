@@ -1,5 +1,6 @@
 pub type V = na::Vector3<f32>;
 pub type Point = na::Point3<f32>;
+pub type Color = (usize, usize, usize);
 
 // TODO rewrite using a macro
 pub const SANITY_CHECKS: bool = true;
