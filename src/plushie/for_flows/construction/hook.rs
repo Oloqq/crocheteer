@@ -63,6 +63,7 @@ pub struct Hook {
     parts: Vec<Part>,
     labels: HashMap<Label, Moment>,
     at_junction: bool,
+    override_previous_stitch: Option<usize>,
 }
 
 impl Hook {
@@ -109,6 +110,7 @@ impl Hook {
                     parts: vec![],
                     labels: HashMap::new(),
                     at_junction: false,
+                    override_previous_stitch: None,
                 })
             }
             Ch(x) => {
@@ -140,6 +142,7 @@ impl Hook {
                     parts: vec![],
                     labels: HashMap::new(),
                     at_junction: false,
+                    override_previous_stitch: None,
                 })
             }
             _ => Err(BadStarter),
@@ -181,8 +184,15 @@ impl Hook {
     }
 
     fn link_to_previous_stitch(&mut self) {
-        let current_node = self.now.cursor;
-        self.edge(current_node - 1).push(current_node);
+        let cursor_for_borrow_checker = self.now.cursor;
+        let previous_node = match self.override_previous_stitch {
+            Some(x) => {
+                self.override_previous_stitch = None;
+                x
+            }
+            None => self.now.cursor - 1,
+        };
+        self.edge(previous_node).push(cursor_for_borrow_checker);
     }
 
     fn handle_working_loop(&mut self) {
@@ -216,9 +226,12 @@ impl Hook {
     }
 
     fn restore(&mut self, label: Label) -> Result<(), HookError> {
-        let moment = self.labels.get(&label).ok_or(UnknownLabel(label))?;
-        self.now = moment.clone();
+        let mut moment = self.labels.get(&label).ok_or(UnknownLabel(label))?.clone();
+        self.override_previous_stitch = Some(moment.cursor - 1);
+        moment.cursor = self.now.cursor;
+        self.now = moment;
         self.at_junction = true;
+        self.fastened_off = false;
         Ok(())
     }
 
@@ -298,6 +311,7 @@ impl Hook {
         self.edges.push(vec![]);
         self.round_spans.push((tip, tip));
         self.parts.push((self.part_start, tip));
+        self.now.cursor += 1;
         Ok(())
     }
 }
@@ -453,40 +467,63 @@ mod tests {
             .expect_err("Can't continue after FO");
     }
 
-    // #[test]
-    // fn test_perform_fo_after_full_round() {
-    //     let mut h = Hook::start_with(&MR(3)).unwrap();
-    //     h.per
-    //     h.perform(&Sc).unwrap();
-    //     h.perform(&Sc).unwrap();
-    //     h.perform(&Sc).unwrap();
-    //     q!(h.round_spans, vec![(0, 3), (4, 6)]);
-    //     q!(
-    //         h.edges,
-    //         vec![
-    //             vec![1, 2, 3], // 0
-    //             vec![2, 4],    // 1
-    //             vec![3, 5],    // 2
-    //             vec![4, 6],    // 3
-    //             vec![5],       // 4
-    //             vec![6],       // 5
-    //             vec![]         // 6
-    //         ]
-    //     );
-    //     h.perform(&FO).unwrap();
-    //     q!(
-    //         h.edges,
-    //         vec![
-    //             vec![1, 2, 3], // 0
-    //             vec![2, 4],    // 1
-    //             vec![3, 5],    // 2
-    //             vec![4, 6],    // 3
-    //             vec![5, 7],    // 4
-    //             vec![6, 7],    // 5
-    //             vec![7],       // 6
-    //             vec![]         // 7
-    //         ]
-    //     );
-    //     q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
-    // }
+    #[test]
+    fn test_multipart() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        h.perform(&Mark(0)).unwrap();
+        h.perform(&Sc).unwrap();
+        h.perform(&Sc).unwrap();
+        h.perform(&Sc).unwrap();
+        q!(h.round_spans, vec![(0, 3), (4, 6)]);
+        q!(
+            h.edges,
+            vec![
+                vec![1, 2, 3], // 0
+                vec![2, 4],    // 1
+                vec![3, 5],    // 2
+                vec![4, 6],    // 3
+                vec![5],       // 4
+                vec![6],       // 5
+                vec![]         // 6
+            ]
+        );
+        h.perform(&FO).unwrap();
+        q!(
+            h.edges,
+            vec![
+                vec![1, 2, 3], // 0
+                vec![2, 4],    // 1
+                vec![3, 5],    // 2
+                vec![4, 6],    // 3
+                vec![5, 7],    // 4
+                vec![6, 7],    // 5
+                vec![7],       // 6
+                vec![]         // 7
+            ]
+        );
+        q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
+        h.perform(&Goto(0)).unwrap();
+        q!(h.now.cursor, 8);
+        q!(h.now.anchor, 1);
+        q!(h.override_previous_stitch, Some(3));
+        h.perform(&Sc).unwrap();
+        h.perform(&Sc).unwrap();
+        h.perform(&Sc).unwrap();
+        q!(
+            h.edges,
+            vec![
+                vec![1, 2, 3],     // 0 - root
+                vec![2, 4, 8],     // 1 - ring
+                vec![3, 5, 9],     // 2 - ring
+                vec![4, 6, 8, 10], // 3 - ring
+                vec![5, 7],        // 4 - sc
+                vec![6, 7],        // 5 - sc
+                vec![7],           // 6 - sc
+                vec![],            // 7 - tip 1
+                vec![9],           // 8 - sc
+                vec![10],          // 9 - sc
+                vec![],            // 10 - sc
+            ]
+        );
+    }
 }
