@@ -157,6 +157,34 @@ pub fn flailer() -> Plushie {
     plushie
 }
 
+pub fn grzib() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut actions: Vec<Action> = vec![MR(6)];
+    actions.append(&mut vec![Inc; 6]);
+    let full_round = vec![Sc; 12];
+    for _ in 0..3 {
+        actions.append(&mut full_round.clone());
+    }
+    actions.push(Mark(0));
+    actions.append(&mut vec![Dec; 6]);
+    actions.push(FO);
+
+    actions.push(Goto(0));
+    actions.append(&mut vec![Inc; 12]);
+    actions.push(BL);
+    actions.append(&mut vec![Sc; 24]);
+    actions.append(&mut vec![Sc; 24]);
+    actions.append(&mut vec![Dec; 12]);
+    actions.append(&mut vec![Dec; 6]);
+    actions.push(FO);
+
+    let flow = SimpleFlow::new(actions);
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
 pub fn lollipop() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;

@@ -1,7 +1,10 @@
 use super::hook_result::{Edges, HookResult, Peculiarity};
 use crate::{
     common::V,
-    flow::{actions::Action, Flow},
+    flow::{
+        actions::{Action, Label},
+        Flow,
+    },
 };
 use Action::*;
 use HookError::*;
@@ -15,6 +18,8 @@ pub enum HookError {
     StarterInTheMiddle,
     ChainStart,
     TriedToWorkAfterFastenOff,
+    DuplicateLabel(Label),
+    UnknownLabel(Label),
 }
 
 impl From<HookError> for String {
@@ -23,11 +28,23 @@ impl From<HookError> for String {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 enum WorkingLoops {
     Both,
     Back,
     Front,
+}
+
+/// Span of a single generalized cylinder in the plushie
+type Part = (usize, usize);
+
+#[derive(Clone, Copy, Debug)]
+struct Moment {
+    anchor: usize,
+    cursor: usize,
+    round_count: usize,
+    round_left: usize,
+    working_on: WorkingLoops,
 }
 
 /// Responsible for building the graph used in the simulation
@@ -35,16 +52,15 @@ enum WorkingLoops {
 pub struct Hook {
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
-    round_count: usize,
-    round_left: usize,
-    anchor: usize,
-    cursor: usize,
+    now: Moment,
     /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive
     round_spans: Vec<(usize, usize)>,
     fastened_off: bool,
-    working_on: WorkingLoops,
     /// Storage of index -> it's anchor
     parents: Vec<Option<usize>>,
+    part_start: usize,
+    parts: Vec<Part>,
+    labels: HashMap<Label, Moment>,
 }
 
 impl Hook {
@@ -77,14 +93,19 @@ impl Hook {
                 Ok(Self {
                     edges,
                     peculiar: HashMap::from([(0, Peculiarity::Root)]),
-                    round_count: 0,
-                    round_left: *x,
-                    anchor: 1,     // 1 because root takes index 0
-                    cursor: x + 1, // + 1 because root takes index 0
+                    now: Moment {
+                        round_count: 0,
+                        round_left: *x,
+                        anchor: 1,     // 1 because root takes index 0
+                        cursor: x + 1, // + 1 because root takes index 0
+                        working_on: WorkingLoops::Both,
+                    },
                     round_spans: vec![(0, *x)],
                     fastened_off: false,
-                    working_on: WorkingLoops::Both,
                     parents,
+                    part_start: 0,
+                    parts: vec![],
+                    labels: HashMap::new(),
                 })
             }
             Ch(x) => {
@@ -102,14 +123,19 @@ impl Hook {
                 Ok(Self {
                     edges,
                     peculiar,
-                    round_count: 0,
-                    round_left: *x,
-                    anchor: 0,
-                    cursor: *x,
+                    now: Moment {
+                        round_count: 0,
+                        round_left: *x,
+                        anchor: 0,
+                        cursor: *x,
+                        working_on: WorkingLoops::Both,
+                    },
                     round_spans: vec![(0, *x - 1)],
                     fastened_off: false,
-                    working_on: WorkingLoops::Both,
                     parents: vec![None; *x],
+                    part_start: 0,
+                    parts: vec![],
+                    labels: HashMap::new(),
                 })
             }
             _ => Err(BadStarter),
@@ -131,50 +157,50 @@ impl Hook {
     }
 
     fn next_anchor(&mut self) {
-        self.anchor += 1;
-        self.round_left -= 1;
-        if self.round_left == 0 {
+        self.now.anchor += 1;
+        self.now.round_left -= 1;
+        if self.now.round_left == 0 {
             self.round_spans
-                .push((self.cursor - self.round_count, self.cursor - 1));
-            self.round_left = self.round_count;
-            self.round_count = 0;
+                .push((self.now.cursor - self.now.round_count, self.now.cursor - 1));
+            self.now.round_left = self.now.round_count;
+            self.now.round_count = 0;
         }
     }
 
     fn link_to_previous_round(&mut self) {
-        let current_node = self.cursor;
-        self.edge(self.anchor).push(current_node);
+        let current_node = self.now.cursor;
+        self.edge(self.now.anchor).push(current_node);
     }
 
     fn link_to_previous_stitch(&mut self) {
-        let current_node = self.cursor;
+        let current_node = self.now.cursor;
         self.edge(current_node - 1).push(current_node);
     }
 
     fn handle_working_loop(&mut self) {
-        let mother = self.anchor;
-        let father = self.anchor + 1;
-        let grandparent = self.parents[self.anchor].expect("No grandparent");
+        let mother = self.now.anchor;
+        let father = self.now.anchor + 1;
+        let grandparent = self.parents[self.now.anchor].expect("Grandparent exists");
         let points_on_push_plane = (father, mother, grandparent);
-        match self.working_on {
+        match self.now.working_on {
             WorkingLoops::Both => (),
             WorkingLoops::Back => self
                 .peculiar
-                .insert(self.cursor, Peculiarity::BLO(points_on_push_plane))
+                .insert(self.now.cursor, Peculiarity::BLO(points_on_push_plane))
                 .map_or((), |_| panic!("Multi-peculiarity")),
             WorkingLoops::Front => self
                 .peculiar
-                .insert(self.cursor, Peculiarity::FLO(points_on_push_plane))
+                .insert(self.now.cursor, Peculiarity::FLO(points_on_push_plane))
                 .map_or((), |_| panic!("Multi-peculiarity")),
         };
     }
 
     fn finish_stitch(&mut self) {
         self.edges.push(Vec::with_capacity(2));
-        self.parents.push(Some(self.anchor));
+        self.parents.push(Some(self.now.anchor));
         self.handle_working_loop();
-        self.cursor += 1;
-        self.round_count += 1;
+        self.now.cursor += 1;
+        self.now.round_count += 1;
     }
 
     pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
@@ -210,11 +236,27 @@ impl Hook {
             Ch(_) => unimplemented!(),
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),
-            FLO => self.working_on = WorkingLoops::Front,
-            BLO => self.working_on = WorkingLoops::Back,
-            BL => self.working_on = WorkingLoops::Both,
-            Goto(_) => unimplemented!(),
-            Mark(_) => unimplemented!(),
+            FLO => self.now.working_on = WorkingLoops::Front,
+            BLO => self.now.working_on = WorkingLoops::Back,
+            BL => self.now.working_on = WorkingLoops::Both,
+            Goto(label) => {
+                let destination = match self.labels.get(label) {
+                    Some(pos) => pos,
+                    None => return Err(UnknownLabel(*label)),
+                };
+                // TODO storing the cursor is not nearly enough information
+                // the hook should be storing just position information
+                // and build the graph directly in HookResult,
+                // so that Hooks can easily be cloned
+                // self.now.cursor = *destination;
+            }
+            Mark(label) => {
+                // TODO deny mark if is fastened off
+                // if let Some(_) = self.labels.insert(*label, self.now.cursor) {
+                //     return Err(DuplicateLabel(*label));
+                // }
+                ()
+            }
             MR(_) => return Err(StarterInTheMiddle),
             FO => {
                 self.fastened_off = true;
@@ -226,7 +268,7 @@ impl Hook {
 
     fn fasten_off_with_tip(&mut self) -> Result<(), HookError> {
         assert!(
-            self.round_count == 0,
+            self.now.round_count == 0,
             "FO for incomplete rounds is not implemented"
         );
 
@@ -235,13 +277,14 @@ impl Hook {
             (*start, end + 1)
         };
 
-        let tip = self.cursor;
+        let tip = self.now.cursor;
         for connected_to_tip in start..end {
             self.edge(connected_to_tip).push(tip);
         }
 
         self.edges.push(vec![]);
         self.round_spans.push((tip, tip));
+        self.parts.push((self.part_start, tip));
         Ok(())
     }
 }
@@ -254,10 +297,10 @@ mod tests {
     #[test]
     fn test_start_with_magic_ring() {
         let h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.anchor, 1);
-        q!(h.cursor, 4);
-        q!(h.round_count, 0);
-        q!(h.round_left, 3);
+        q!(h.now.anchor, 1);
+        q!(h.now.cursor, 4);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
         q!(h.round_spans.len(), 1);
         q!(h.edges, vec![vec![1, 2, 3], vec![2], vec![3], vec![],]);
     }
@@ -265,10 +308,10 @@ mod tests {
     #[test]
     fn test_start_with_chain() {
         let h = Hook::start_with(&Ch(3)).unwrap();
-        q!(h.anchor, 0);
-        q!(h.cursor, 3);
-        q!(h.round_count, 0);
-        q!(h.round_left, 3);
+        q!(h.now.anchor, 0);
+        q!(h.now.cursor, 3);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
         q!(h.round_spans.len(), 1);
         q!(h.edges, vec![vec![1], vec![2], vec![]]);
     }
@@ -277,17 +320,17 @@ mod tests {
     fn test_perform_sc() {
         let mut h = Hook::start_with(&MR(6)).unwrap();
         h.perform(&Sc).unwrap();
-        q!(h.anchor, 2);
-        q!(h.cursor, 8);
-        q!(h.round_count, 1);
-        q!(h.round_left, 5);
+        q!(h.now.anchor, 2);
+        q!(h.now.cursor, 8);
+        q!(h.now.round_count, 1);
+        q!(h.now.round_left, 5);
         q!(h.round_spans, vec![(0, 6)]);
 
         h.perform(&Sc).unwrap();
-        q!(h.anchor, 3);
-        q!(h.cursor, 9);
-        q!(h.round_count, 2);
-        q!(h.round_left, 4);
+        q!(h.now.anchor, 3);
+        q!(h.now.cursor, 9);
+        q!(h.now.round_count, 2);
+        q!(h.now.round_left, 4);
         q!(h.round_spans, vec![(0, 6)]);
     }
 
@@ -301,23 +344,23 @@ mod tests {
         q!(h.round_spans, vec![(0, 3)]);
         h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
-        q!(h.round_count, 0);
-        q!(h.round_left, 3);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
 
         h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
-        q!(h.round_count, 1);
-        q!(h.round_left, 2);
+        q!(h.now.round_count, 1);
+        q!(h.now.round_left, 2);
     }
 
     #[test]
     fn test_perform_inc() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
         h.perform(&Inc).unwrap();
-        q!(h.anchor, 2);
-        q!(h.cursor, 6);
-        q!(h.round_count, 2);
-        q!(h.round_left, 2);
+        q!(h.now.anchor, 2);
+        q!(h.now.cursor, 6);
+        q!(h.now.round_count, 2);
+        q!(h.now.round_left, 2);
         q!(h.round_spans, vec![(0, 3)]);
     }
 
@@ -325,26 +368,26 @@ mod tests {
     fn test_perform_dec() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
         h.perform(&Dec).unwrap();
-        q!(h.anchor, 3);
-        q!(h.cursor, 5);
-        q!(h.round_count, 1);
-        q!(h.round_left, 1);
+        q!(h.now.anchor, 3);
+        q!(h.now.cursor, 5);
+        q!(h.now.round_count, 1);
+        q!(h.now.round_left, 1);
         q!(h.round_spans, vec![(0, 3)]);
     }
 
     #[test]
     fn test_perform_fo_after_full_round() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.anchor, 1);
-        q!(h.cursor, 4);
+        q!(h.now.anchor, 1);
+        q!(h.now.cursor, 4);
         q!(h.edges.len(), 4);
         h.perform(&Sc).unwrap();
         h.perform(&Sc).unwrap();
         h.perform(&Sc).unwrap();
-        q!(h.anchor, 4);
-        q!(h.cursor, 7);
-        q!(h.round_count, 0);
-        q!(h.round_left, 3);
+        q!(h.now.anchor, 4);
+        q!(h.now.cursor, 7);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.edges.len(), 7);
         q!(

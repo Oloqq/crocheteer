@@ -1,4 +1,4 @@
-type Label = usize;
+pub type Label = usize;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 #[allow(unused)]
