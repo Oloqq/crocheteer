@@ -51,6 +51,7 @@ fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
     let mut y = 0.0;
     let mut nodes = vec![];
 
+    println!("{:?}", round_spans);
     for (from, to) in round_spans {
         let count = to - from + 1;
         nodes.append(&mut ring(count, y, 1.0));

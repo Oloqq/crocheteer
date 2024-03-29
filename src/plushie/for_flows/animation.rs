@@ -31,7 +31,7 @@ impl Plushie {
     fn add_another_node(&mut self) {
         // let i = self.nodes.len();
         // let edges = self.edges[i];
-        unimplemented!()
+        unimplemented!("hook malformed the graph")
     }
 
     fn add_link_forces(&self, displacement: &mut Vec<V>) {

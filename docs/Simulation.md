@@ -186,3 +186,22 @@ Grzib leveraging new capability to change working position
 The same grzib also using BLO and FLO
 
 ![](2024-03-28-16-50-45.png)
+
+## Initial positions
+First approach:
+- keep track where rounds start
+- generate points from each round in a circle around Y axis
+  - set X, Z in such a way that points form a circle
+  - increment Y each round
+
+This breaks when plushies consist of more than one generalized cylinder.
+Additionaly, there is a need to track rounds, which is harder than expected.
+
+Solution:
+- continuously insert new points into the simulation, while the simulation is running
+- set initial position of node N based on position of node it connects to
+- refactor the implementation of Edges so that
+  - any slice starting from the beginning is a valid edges vector
+    - this means that nodes of index greater than edges.len() are not referenced in the vector
+  - in practice: edges[i] may contain only values x such that: x < i
+- centroids need to be smartly inserted as well

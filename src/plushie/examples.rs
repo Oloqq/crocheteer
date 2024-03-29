@@ -158,6 +158,19 @@ pub fn flailer() -> Plushie {
     plushie
 }
 
+pub fn fatflailer() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += 6 * Inc;
+    flow += 12 * 3 * Sc;
+    flow += Ch(6) + Sc * 6;
+    let plushie = Plushie::from_flow(flow).unwrap();
+    plushie
+}
+
 pub fn grzib() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;

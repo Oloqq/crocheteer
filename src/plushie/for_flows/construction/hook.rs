@@ -54,12 +54,7 @@ impl Hook {
         Ok(hook.finish())
     }
 
-    fn finish(mut self) -> HookResult {
-        if !self.fastened_off {
-            self.round_spans
-                .push((self.now.cursor - self.now.round_count, self.now.cursor - 1));
-        }
-
+    fn finish(self) -> HookResult {
         HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 
@@ -94,10 +89,12 @@ impl Hook {
                 self.next_anchor();
             }
             Ch(x) => {
+                let start = self.now.cursor;
                 for _ in 0..*x {
                     self.link_to_previous_stitch();
                     self.finish_stitch(); // FIXME parent, working loop, and round count is meaningless
                 }
+                self.round_spans.push((start, self.now.cursor - 1));
             }
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),
@@ -269,7 +266,7 @@ mod tests {
     }
 
     #[test]
-    fn test_multipart() {
+    fn test_goto_after_fo() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
         h.perform(&Mark(0)).unwrap();
         h.perform(&Sc).unwrap();
@@ -326,5 +323,23 @@ mod tests {
                 vec![],            // 10 - sc
             ]
         );
+    }
+
+    #[test]
+    fn test_chain_simple() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        h.perform(&Ch(3)).unwrap();
+        q!(
+            h.edges,
+            vec![
+                vec![1, 2, 3],
+                vec![2],
+                vec![3],
+                vec![4],
+                vec![5],
+                vec![6],
+                vec![]
+            ]
+        )
     }
 }

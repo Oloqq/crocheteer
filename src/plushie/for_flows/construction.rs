@@ -80,7 +80,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_closed_shape() {
+    fn test_open_shape() {
         use crate::flow::actions::Action;
         use Action::*;
         let mut actions: Vec<Action> = vec![MR(6)];
@@ -93,7 +93,7 @@ mod tests {
     }
 
     #[test]
-    fn test_open_shape() {
+    fn test_closed_shape() {
         use crate::flow::actions::Action;
         use Action::*;
         let mut actions: Vec<Action> = vec![MR(6)];
