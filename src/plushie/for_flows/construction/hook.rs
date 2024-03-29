@@ -127,7 +127,10 @@ mod tests {
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
         q!(h.round_spans.len(), 1);
-        q!(h.edges, vec![vec![1, 2, 3], vec![2], vec![3], vec![],]);
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+        );
     }
 
     #[test]
@@ -138,7 +141,11 @@ mod tests {
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
         q!(h.round_spans.len(), 1);
-        q!(h.edges, vec![vec![1], vec![2], vec![]]);
+        q!(h.edges, Edges::from(vec![vec![1], vec![2], vec![], vec![]]));
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![vec![], vec![0], vec![1], vec![]])
+        );
     }
 
     #[test]
@@ -205,7 +212,7 @@ mod tests {
         let mut h = Hook::start_with(&MR(3)).unwrap();
         q!(h.now.anchor, 1);
         q!(h.now.cursor, 4);
-        q!(h.edges.len(), 4);
+        q!(h.edges.len(), 5);
         h.perform(&Sc).unwrap();
         h.perform(&Sc).unwrap();
         h.perform(&Sc).unwrap();
@@ -214,23 +221,24 @@ mod tests {
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
-        q!(h.edges.len(), 7);
+        q!(h.edges.len(), 8);
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3], // 0
                 vec![2, 4],    // 1
                 vec![3, 5],    // 2
                 vec![4, 6],    // 3
                 vec![5],       // 4
                 vec![6],       // 5
-                vec![]         //6
-            ]
+                vec![],        //6
+                vec![]
+            ])
         );
         h.perform(&FO).unwrap();
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3], // 0
                 vec![2, 4],    // 1
                 vec![3, 5],    // 2
@@ -238,8 +246,9 @@ mod tests {
                 vec![5, 7],    // 4
                 vec![6, 7],    // 5
                 vec![7],       // 6
-                vec![]         // 7
-            ]
+                vec![],        // 7
+                vec![]
+            ])
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
     }
@@ -275,20 +284,21 @@ mod tests {
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3], // 0
                 vec![2, 4],    // 1
                 vec![3, 5],    // 2
                 vec![4, 6],    // 3
                 vec![5],       // 4
                 vec![6],       // 5
-                vec![]         // 6
-            ]
+                vec![],        // 6
+                vec![]
+            ])
         );
         h.perform(&FO).unwrap();
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3], // 0
                 vec![2, 4],    // 1
                 vec![3, 5],    // 2
@@ -296,8 +306,9 @@ mod tests {
                 vec![5, 7],    // 4
                 vec![6, 7],    // 5
                 vec![7],       // 6
-                vec![]         // 7
-            ]
+                vec![],        // 7
+                vec![]
+            ])
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
         h.perform(&Goto(0)).unwrap();
@@ -309,7 +320,7 @@ mod tests {
         h.perform(&Sc).unwrap();
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3],     // 0 - root
                 vec![2, 4, 8],     // 1 - ring
                 vec![3, 5, 9],     // 2 - ring
@@ -321,7 +332,8 @@ mod tests {
                 vec![9],           // 8 - sc
                 vec![10],          // 9 - sc
                 vec![],            // 10 - sc
-            ]
+                vec![],
+            ])
         );
     }
 
@@ -331,15 +343,16 @@ mod tests {
         h.perform(&Ch(3)).unwrap();
         q!(
             h.edges,
-            vec![
+            Edges::from(vec![
                 vec![1, 2, 3],
                 vec![2],
                 vec![3],
                 vec![4],
                 vec![5],
                 vec![6],
-                vec![]
-            ]
+                vec![],
+                vec![],
+            ])
         )
     }
 }

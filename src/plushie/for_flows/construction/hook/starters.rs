@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{utils::*, Color, Hook, Moment};
+use super::{utils::*, Color, Edges, Hook, Moment};
 
 impl Hook {
     pub fn start_with(action: &Action) -> Result<Self, HookError> {
@@ -13,6 +13,7 @@ impl Hook {
                     let mut edges = vec![edges_from_root];
                     edges.extend(ring_edges);
                     edges.push(vec![]);
+                    edges.push(vec![]);
                     edges
                 };
                 let parents: Vec<Option<usize>> = {
@@ -23,7 +24,7 @@ impl Hook {
                 let colors: Vec<Color> = (0..=*x).map(|_| color).collect();
 
                 Ok(Self {
-                    edges,
+                    edges: Edges::from(edges),
                     peculiar: HashMap::from([(0, Peculiarity::Root)]),
                     now: Moment {
                         round_count: 0,
@@ -48,6 +49,7 @@ impl Hook {
                 let edges: Vec<Vec<usize>> = {
                     let mut edges: Vec<Vec<usize>> = (1..*x).map(|i| vec![i]).collect();
                     edges.push(vec![]);
+                    edges.push(vec![]);
                     edges
                 };
 
@@ -58,7 +60,7 @@ impl Hook {
                 let colors: Vec<Color> = (0..*x).map(|_| color).collect();
 
                 Ok(Self {
-                    edges,
+                    edges: Edges::from(edges),
                     peculiar,
                     now: Moment {
                         round_count: 0,

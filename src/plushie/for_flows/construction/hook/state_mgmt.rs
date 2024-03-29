@@ -2,16 +2,6 @@ use super::{utils::*, Hook};
 use HookError::*;
 
 impl Hook {
-    pub fn edge(&mut self, i: usize) -> &mut Vec<usize> {
-        if i >= self.edges.len() {
-            panic!(
-                "Hook malformed it's edges/nodes: {i} > {}",
-                self.edges.len()
-            )
-        }
-        &mut self.edges[i]
-    }
-
     pub fn next_anchor(&mut self) {
         self.now.anchor += 1;
         self.now.round_left -= 1;
@@ -29,7 +19,7 @@ impl Hook {
 
     pub fn link_to_previous_round(&mut self) {
         let current_node = self.now.cursor;
-        self.edge(self.now.anchor).push(current_node);
+        self.edges.link(self.now.anchor, current_node);
     }
 
     pub fn link_to_previous_stitch(&mut self) {
@@ -41,7 +31,7 @@ impl Hook {
             }
             None => self.now.cursor - 1,
         };
-        self.edge(previous_node).push(cursor_for_borrow_checker);
+        self.edges.link(previous_node, cursor_for_borrow_checker);
     }
 
     pub fn handle_working_loop(&mut self) {
@@ -67,7 +57,7 @@ impl Hook {
     }
 
     pub fn finish_stitch(&mut self) {
-        self.edges.push(Vec::with_capacity(2));
+        self.edges.grow();
         self.colors.push(self.color);
         self.parents.push(Some(self.now.anchor));
         self.handle_working_loop();
@@ -108,10 +98,10 @@ impl Hook {
 
         let tip = self.now.cursor;
         for connected_to_tip in start..end {
-            self.edge(connected_to_tip).push(tip);
+            self.edges.link(connected_to_tip, tip);
         }
 
-        self.edges.push(vec![]);
+        self.edges.grow();
         self.peculiar.insert(tip, Peculiarity::Tip);
         self.round_spans.push((tip, tip));
         self.parts.push((self.part_start, tip));
