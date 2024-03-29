@@ -11,9 +11,6 @@ impl Plushie {
         let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
 
         log::trace!("Nodes: {:?}", self.nodes);
-        if self.nodes.len() < self.edges.len() {
-            self.add_another_node();
-        }
 
         self.add_link_forces(&mut displacement);
         self.add_stuffing_force(&mut displacement);
@@ -26,12 +23,6 @@ impl Plushie {
         let total = self.nodes.apply_forces(displacement, time, &self.params);
 
         total
-    }
-
-    fn add_another_node(&mut self) {
-        // let i = self.nodes.len();
-        // let edges = self.edges[i];
-        unimplemented!("hook malformed the graph")
     }
 
     fn add_link_forces(&self, displacement: &mut Vec<V>) {

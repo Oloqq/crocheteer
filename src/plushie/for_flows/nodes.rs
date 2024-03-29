@@ -67,6 +67,10 @@ impl Nodes {
     fn apply_peculiarities(&self, displacement: &mut Vec<V>, params: &Params) -> V {
         let mut root_index = None;
         for (i, peculiarity) in self.peculiarities.iter() {
+            if *i >= displacement.len() {
+                continue;
+            }
+
             use Peculiarity::*;
             match peculiarity {
                 Root => {

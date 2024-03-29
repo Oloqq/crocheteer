@@ -1,3 +1,5 @@
+params.sitting and params.floor are duplicates
+
 # Next
 - Pattern/Plushie refactor
   - Pattern

@@ -9,7 +9,6 @@ use super::animation::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;
 use crate::common::*;
-use crate::flow::actions::Action;
 use crate::flow::Flow;
 
 fn is_uniq(vec: &Vec<Point>) -> bool {
@@ -20,17 +19,8 @@ fn is_uniq(vec: &Vec<Point>) -> bool {
     uniq.len() == vec.len()
 }
 
-const USE_APPROXIMATE_POSITIONS: bool = true;
-
 impl Plushie {
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
-        let starting_stitches = {
-            match flow.peek() {
-                Some(Action::MR(x) | Action::Ch(x)) => x,
-                None => panic!("Empty flow?"),
-                _ => panic!("Wrong starter?"),
-            }
-        };
         let hook_result = Hook::parse(flow)?;
 
         if SANITY_CHECKS {
@@ -46,21 +36,16 @@ impl Plushie {
         );
         log::debug!("nodes len: {}", hook_result.nodes.len());
 
-        let initial_positions = if USE_APPROXIMATE_POSITIONS {
-            hook_result.nodes
-        } else {
-            hook_result.nodes[0..starting_stitches].to_owned()
-        };
-
         Ok(Plushie {
             nodes: Nodes::new(
-                initial_positions,
+                vec![Point::new(0.0, 0.0, 0.0)],
                 hook_result.peculiarities,
                 hook_result.colors,
             ),
-            edges: hook_result.edges.into(),
+            edges: vec![vec![]],
+            edges_goal: hook_result.edges.into(),
             params: Default::default(),
-            centroids: Centroids::new(2, hook_result.approximate_height),
+            centroids: Centroids::new(0, hook_result.approximate_height),
         })
     }
 

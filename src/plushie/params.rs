@@ -28,6 +28,24 @@ pub struct CentroidParams {
     /// Number of centroids that simulate the stuffing. More centroids = more internal pressure. Bigger shapes need more.
     pub number: usize,
     pub force: f32,
+    pub min_nodes_per_centroid: usize,
+}
+
+impl Params {
+    #[allow(unused)]
+    fn unconstrained() -> Self {
+        const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
+        Self {
+            centroids: Default::default(),
+            floor: false,
+            gravity: 0.0,
+            desired_stitch_distance: 1.0,
+            acceptable_tension: THIS_DEFAULT_IS_TRASH,
+            max_relaxing_iterations: 100,
+            keep_root_at_origin: false,
+            sitting: false,
+        }
+    }
 }
 
 impl Default for Params {
@@ -40,8 +58,8 @@ impl Default for Params {
             desired_stitch_distance: 1.0,
             acceptable_tension: THIS_DEFAULT_IS_TRASH,
             max_relaxing_iterations: 100,
-            keep_root_at_origin: true,
-            sitting: true,
+            keep_root_at_origin: false,
+            sitting: false,
         }
     }
 }
@@ -51,6 +69,7 @@ impl Default for CentroidParams {
         Self {
             number: 2,
             force: 0.05,
+            min_nodes_per_centroid: 10,
         }
     }
 }

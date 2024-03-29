@@ -73,6 +73,9 @@ export default class Plushie {
   drawLinks() {
     for (let from = 0; from < this.edges.length; from++) {
       for (let to of this.edges[from]) {
+        if (from >= this.stitchPositions.length || to >= this.stitchPositions.length) {
+          continue;
+        }
         let width = 0.05;
         let color = this.linkColor(from, to);
         let link = create.link(this.stitchPositions[from], this.stitchPositions[to], width, color)
@@ -162,8 +165,17 @@ export default class Plushie {
   }
 
   updateWallPoints(positions) {
-    if (positions.length != this.stitchSpheres.length) {
+    if (positions.length < this.stitchSpheres.length) {
       console.error("Position data got corrupted");
+    }
+
+    if (positions.length > this.stitchSpheres.length) {
+      for (let i = this.stitchSpheres.length; i < positions.length; i++) {
+        let point = positions[i];
+        let sph = create.sphere(point, 0.1, this.nodeColor(i));
+        this.stitchPositions.push(sph.position);
+        this.stitchSpheres.push(sph);
+      }
     }
 
     let id = undefined;
@@ -204,8 +216,10 @@ export default class Plushie {
   }
 
   updateCentroids(centroids) {
-    // console.log(this.centroidSpheres);
-    // console.log(centroids);
+    if (centroids.length != this.centroidSpheres.length) {
+      this.setCentroidNum(centroids.length);
+    }
+
     for (let i in centroids) {
       let centroid = centroids[i];
       let sph = this.centroidSpheres[i];

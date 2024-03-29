@@ -59,6 +59,11 @@ impl Edges {
     pub fn grow(&mut self) {
         self.edges.push(Vec::with_capacity(2));
     }
+
+    pub fn cleanup(&mut self) {
+        assert!(self.edges.last().unwrap().len() == 0);
+        self.edges.pop();
+    }
 }
 
 impl Into<Vec<Vec<usize>>> for Edges {

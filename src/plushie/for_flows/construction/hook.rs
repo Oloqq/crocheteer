@@ -54,7 +54,8 @@ impl Hook {
         Ok(hook.finish())
     }
 
-    fn finish(self) -> HookResult {
+    fn finish(mut self) -> HookResult {
+        self.edges.cleanup();
         HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 

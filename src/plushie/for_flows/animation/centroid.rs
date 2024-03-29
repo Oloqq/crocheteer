@@ -25,7 +25,9 @@ impl Centroids {
     }
 
     pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
-        if self.centroids.len() < params.number {
+        if self.centroids.len() < params.number
+            && nodes.len() >= params.min_nodes_per_centroid * self.centroids.len()
+        {
             let new = if self.centroids.len() >= 2 {
                 let c0 = self.centroids[0];
                 let c1 = self.centroids[1];
