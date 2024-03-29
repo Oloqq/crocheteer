@@ -21,7 +21,7 @@ pub trait PlushieTrait: Send + 'static {
     // JSONs for frontend communication
     fn nodes_to_json(&self) -> JSON;
     fn centroids_to_json(&self) -> JSON;
-    fn whole_to_json(&self) -> JSON;
+    fn init_data(&self) -> JSON;
 
     fn set_point_position(&mut self, i: usize, pos: Point);
 

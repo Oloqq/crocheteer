@@ -54,7 +54,7 @@ impl PlushieTrait for Plushie {
         serde_json::json!(self.centroids)
     }
 
-    fn whole_to_json(&self) -> JSON {
+    fn init_data(&self) -> JSON {
         serde_json::json!(self)
     }
 

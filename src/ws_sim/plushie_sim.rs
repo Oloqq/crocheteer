@@ -50,7 +50,7 @@ impl PlushieSimulation {
     fn get_init_data(&self) -> JSON {
         serde_json::json!({
             "key": "ini",
-            "dat": self.plushie.whole_to_json()
+            "dat": self.plushie.init_data()
         })
     }
 
