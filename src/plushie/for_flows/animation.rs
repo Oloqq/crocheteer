@@ -1,9 +1,6 @@
-pub mod centroid;
-
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use super::Plushie;
 use crate::common::*;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 impl Plushie {
     pub fn step(&mut self, time: f32) -> V {

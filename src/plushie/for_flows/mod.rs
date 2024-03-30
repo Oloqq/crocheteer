@@ -1,8 +1,9 @@
 mod animation;
+mod centroid;
 mod construction;
 mod nodes;
 
-use self::{animation::centroid::Centroids, nodes::Nodes};
+use self::{centroid::Centroids, nodes::Nodes};
 use super::{Params, PlushieTrait};
 use crate::common::*;
 use serde_derive::Serialize;

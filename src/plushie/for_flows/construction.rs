@@ -5,7 +5,7 @@ use std::collections::HashSet;
 
 use self::hook::Hook;
 pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
-use super::animation::centroid::Centroids;
+use super::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;
 use crate::common::*;
