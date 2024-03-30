@@ -35,13 +35,13 @@ impl Plushie {
     fn is_relaxed(&self, displacement: &Vec<V>) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.iter().map(|v| v.magnitude()).sum();
-        tension <= self.params.acceptable_tension
+        tension <= self.params.autostop.acceptable_tension
     }
 }
 
 impl PlushieTrait for Plushie {
     fn animate(&mut self) {
-        for _ in 0..self.params.max_relaxing_iterations {
+        for _ in 0..self.params.autostop.max_relaxing_iterations {
             let displacement = self.step(1.0);
             if self.is_relaxed(&displacement) {
                 break;

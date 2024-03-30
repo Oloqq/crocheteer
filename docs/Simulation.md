@@ -183,6 +183,22 @@ Grzib leveraging new capability to change working position
 
 ## Back loop only (BLO) / front loop only (FLO)
 
+- FLO/BLO
+  - creating a vertex B on the backloop:
+    - B anchors on the previous round (stitch P1)
+    - P1 itself is anchored on an earlier round to stitch P2
+      - getting P2 would be non trivial and would involve a search either through all points, or storing round information and a search through one round
+    - P1 is attached to previous stitch in it's round (P0)
+      - index(P0) = index(P1) - 1
+    - P1 attaches to the next stitch in it's round (P2)
+      - index(P2) = index(P1) + 1
+    - create a plane through P0, P1, P2
+      - take a normal to that plane, push B along the normal (+/- depending on back or front loop and working clockwise/counterclockwise)
+    - cross product
+      - let v1 = P0 -> P1
+      - let v2 = P1 -> P2
+      - v1 cross v2 gives a normal right?
+
 The same grzib also using BLO and FLO
 
 ![](2024-03-28-16-50-45.png)

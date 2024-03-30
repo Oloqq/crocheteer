@@ -26,15 +26,14 @@ impl Plushie {
     fn is_relaxed(&self, displacement: &V) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.magnitude();
-        tension <= self.params.acceptable_tension
+        tension <= self.params.autostop.acceptable_tension
     }
 }
 
 impl PlushieTrait for Plushie {
     fn animate(&mut self) {
-        const STD_TIMESTEP: f32 = 1.0;
-        for _ in 0..self.params.max_relaxing_iterations {
-            let total_displacement = self.step(STD_TIMESTEP);
+        for _ in 0..self.params.autostop.max_relaxing_iterations {
+            let total_displacement = self.step(self.params.timestep);
             if self.is_relaxed(&total_displacement) {
                 break;
             }
