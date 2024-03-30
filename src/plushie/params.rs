@@ -31,6 +31,11 @@ pub struct CentroidParams {
     pub min_nodes_per_centroid: usize,
 }
 
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub enum Initializer {
+    OneByOne,
+}
+
 impl Params {
     fn unconstrained_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
@@ -56,7 +61,6 @@ impl Params {
         }
     }
 
-    #[allow(unused)]
     fn floored() -> Self {
         Self {
             floor: true,

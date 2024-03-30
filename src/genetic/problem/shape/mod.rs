@@ -32,7 +32,7 @@ impl Shape {
         serde_lexpr::to_string(&self).unwrap()
     }
 
-    #[allow(unused)]
+    // #[allow(unused)]
     pub fn deserialize(s: &str) -> Self {
         serde_lexpr::from_str(s).unwrap()
     }

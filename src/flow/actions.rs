@@ -3,7 +3,6 @@ use crate::common::Color;
 pub type Label = usize;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-#[allow(unused)]
 pub enum Action {
     Sc,
     Inc,
