@@ -22,7 +22,8 @@ pub struct Params {
     /// I assume it has to do with working the plushie clockwise vs counterclockwise.
     /// It has yet to be investigated.
     pub single_loop_force: f32,
-    // pub acceptable_displacement_for_adding_new_node: f32,
+    /// Method for setting initial positions of stitches
+    pub initializer: Initializer,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -43,7 +44,17 @@ pub struct CentroidParams {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum Initializer {
-    OneByOne,
+    /// Start with a few stitches, and build the plushie while simulation is running.
+    OneByOne(OneByOneParams),
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
+pub struct OneByOneParams {
+    /// Plushie will wait with expansion until the previous node is stabilized.
+    /// Parameter sets the maximum displacement where the next node shall be added.
+    pub acceptable_displacement_for_expanding: f32,
+    /// If previous node cannot be stabilized, next one shall be added after set time.
+    pub force_expansion_after_time: f32,
 }
 
 impl Params {
@@ -57,6 +68,10 @@ impl Params {
             desired_stitch_distance: 1.0,
             keep_root_at_origin: false,
             single_loop_force: 0.05,
+            initializer: Initializer::OneByOne(OneByOneParams {
+                acceptable_displacement_for_expanding: 0.03,
+                force_expansion_after_time: 100.0,
+            }),
         }
     }
 

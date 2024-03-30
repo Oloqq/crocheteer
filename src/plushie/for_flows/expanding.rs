@@ -1,5 +1,5 @@
 use super::Plushie;
-use crate::common::*;
+use crate::{common::*, plushie::params::OneByOneParams};
 
 use std::mem;
 
@@ -38,20 +38,20 @@ impl Plushie {
         self.displacement.push(V::zeros());
     }
 
-    pub fn handle_adding_new_nodes(&mut self) {
+    pub fn handle_adding_new_nodes(&mut self, params: OneByOneParams, time: f32) {
         assert!(self.nodes.len() > 0, "Nodes don't even have a root?");
         let small_displacement = || -> bool {
             let last_index = self.nodes.len() - 1;
             let last_displacement = self.displacement[last_index];
-            last_displacement.magnitude() < 0.03
+            last_displacement.magnitude() < params.acceptable_displacement_for_expanding
         };
-        let force = self.force_node_construction_timer <= 0;
+        let force = self.force_node_construction_timer <= 0.0;
 
         if self.edges.len() < self.edges_goal.len() && (small_displacement() || force) {
             self.construct_next_node();
-            self.force_node_construction_timer = 100;
+            self.force_node_construction_timer = params.force_expansion_after_time;
         } else {
-            self.force_node_construction_timer -= 1;
+            self.force_node_construction_timer -= time;
         }
     }
 }

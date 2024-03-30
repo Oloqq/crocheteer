@@ -5,7 +5,7 @@ mod expanding;
 mod nodes;
 
 use self::{centroid::Centroids, nodes::Nodes};
-use super::{Params, PlushieTrait};
+use super::{params::Initializer, Params, PlushieTrait};
 use crate::common::*;
 use serde_derive::Serialize;
 
@@ -19,7 +19,7 @@ pub struct Plushie {
     pub params: Params,
     pub centroids: Centroids,
     displacement: Vec<V>,
-    force_node_construction_timer: i32,
+    force_node_construction_timer: f32,
 }
 
 impl Plushie {
@@ -41,7 +41,9 @@ impl PlushieTrait for Plushie {
     }
 
     fn step(&mut self, time: f32) {
-        self.handle_adding_new_nodes();
+        match self.params.initializer {
+            Initializer::OneByOne(obo_params) => self.handle_adding_new_nodes(obo_params, time),
+        }
         self.nodes.assert_no_nans(); // TODO macro
         self.step(time);
     }

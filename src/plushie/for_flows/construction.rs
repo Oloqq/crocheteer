@@ -35,7 +35,7 @@ impl Plushie {
             params: Default::default(),
             centroids: Centroids::new(0, approximate_height),
             displacement,
-            force_node_construction_timer: 0,
+            force_node_construction_timer: 0.0,
         }
     }
 
