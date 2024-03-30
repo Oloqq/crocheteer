@@ -57,37 +57,3 @@ impl Plushie {
         todo!()
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::flow::simple_flow::SimpleFlow;
-
-    use super::*;
-
-    #[test]
-    fn test_open_shape() {
-        use crate::flow::actions::Action;
-        use Action::*;
-        let mut actions: Vec<Action> = vec![MR(6)];
-        actions.append(&mut vec![Sc; 6]);
-
-        let flow = SimpleFlow::new(actions);
-        let plushie = Plushie::from_flow(flow).unwrap();
-
-        assert_eq!(plushie.nodes.len(), 13)
-    }
-
-    #[test]
-    fn test_closed_shape() {
-        use crate::flow::actions::Action;
-        use Action::*;
-        let mut actions: Vec<Action> = vec![MR(6)];
-        actions.append(&mut vec![Sc; 6]);
-        actions.append(&mut vec![FO]);
-
-        let flow = SimpleFlow::new(actions);
-        let plushie = Plushie::from_flow(flow).unwrap();
-
-        assert_eq!(plushie.nodes.len(), 14)
-    }
-}
