@@ -97,13 +97,13 @@ impl Nodes {
                 BLO(plane_spec) => self.apply_single_loop(
                     &mut displacement[*i],
                     plane_spec,
-                    -single_loop_constraint,
+                    single_loop_constraint,
                     params,
                 ),
                 FLO(plane_spec) => self.apply_single_loop(
                     &mut displacement[*i],
                     plane_spec,
-                    single_loop_constraint,
+                    -single_loop_constraint,
                     params,
                 ),
             }

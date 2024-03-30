@@ -46,6 +46,7 @@ pub struct CentroidParams {
 pub enum Initializer {
     /// Start with a few stitches, and build the plushie while simulation is running.
     OneByOne(OneByOneParams),
+    Cylinder,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
@@ -68,10 +69,11 @@ impl Params {
             desired_stitch_distance: 1.0,
             keep_root_at_origin: false,
             single_loop_force: 0.05,
-            initializer: Initializer::OneByOne(OneByOneParams {
-                acceptable_displacement_for_expanding: 0.03,
-                force_expansion_after_time: 100.0,
-            }),
+            initializer: Initializer::Cylinder,
+            // initializer: Initializer::OneByOne(OneByOneParams {
+            //     acceptable_displacement_for_expanding: 0.03,
+            //     force_expansion_after_time: 100.0,
+            // }),
         }
     }
 

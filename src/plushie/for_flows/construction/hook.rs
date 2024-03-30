@@ -10,7 +10,7 @@ use crate::flow::{
 use utils::*;
 use HookError::*;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// Span of a single generalized cylinder in the plushie
 type Part = (usize, usize);
@@ -44,6 +44,14 @@ pub struct Hook {
     colors: Vec<Color>,
 }
 
+fn is_uniq(vec: &Vec<Point>) -> bool {
+    let uniq = vec
+        .into_iter()
+        .map(|v| format!("{:?}", v.coords))
+        .collect::<HashSet<_>>();
+    uniq.len() == vec.len()
+}
+
 impl Hook {
     pub fn parse(mut flow: impl Flow) -> Result<HookResult, HookError> {
         let first = flow.next().ok_or(Empty)?;
@@ -51,7 +59,14 @@ impl Hook {
         while let Some(action) = flow.next() {
             hook.perform(&action)?;
         }
-        Ok(hook.finish())
+
+        let result = hook.finish();
+        if SANITY_CHECKS {
+            assert!(is_uniq(&result.nodes), "hook created duplicate positions");
+        }
+        log::debug!("edges: {:?}, len: {}", result.edges, result.edges.len());
+        log::debug!("nodes len: {}", result.nodes.len());
+        Ok(result)
     }
 
     fn finish(mut self) -> HookResult {

@@ -10,9 +10,9 @@ impl Plushie {
         if based_on.len() == 0 {
             panic!("Node should be attached to something");
         } else if self.nodes.points.len() == 1 {
-            Point::from(self.nodes.points[0] + V::new(0.0, dsd * 0.1, dsd))
+            Point::from(self.nodes.points[0] + V::new(dsd, dsd * 0.1, 0.0))
         } else if self.nodes.points.len() == 2 {
-            Point::from(self.nodes.points[0] + V::new(dsd, dsd * 0.2, 0.0))
+            Point::from(self.nodes.points[0] + V::new(0.0, dsd * 0.2, dsd))
         } else if based_on.len() == 1 {
             let base = self.nodes.points[based_on[0]];
             let coords = base.coords + V::new(0.0, dsd, 0.0);

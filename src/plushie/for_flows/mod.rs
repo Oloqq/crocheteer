@@ -41,8 +41,10 @@ impl PlushieTrait for Plushie {
     }
 
     fn step(&mut self, time: f32) {
+        use Initializer::*;
         match self.params.initializer {
-            Initializer::OneByOne(obo_params) => self.handle_adding_new_nodes(obo_params, time),
+            OneByOne(obo_params) => self.handle_adding_new_nodes(obo_params, time),
+            Cylinder => (),
         }
         self.nodes.assert_no_nans(); // TODO macro
         self.step(time);
