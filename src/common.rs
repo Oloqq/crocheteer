@@ -33,6 +33,30 @@ impl CheckNan for Vec<V> {
     }
 }
 
+impl CheckNan for Point {
+    fn sanity_assert_no_nan(&self, msg: &str) {
+        if !SANITY_CHECKS {
+            return;
+        }
+
+        assert!(!self.x.is_nan(), "NaN x: {}", msg);
+        assert!(!self.y.is_nan(), "NaN y: {}", msg);
+        assert!(!self.z.is_nan(), "NaN z: {}", msg);
+    }
+}
+
+impl CheckNan for Vec<Point> {
+    fn sanity_assert_no_nan(&self, msg: &str) {
+        if !SANITY_CHECKS {
+            return;
+        }
+
+        for (i, v) in self.iter().enumerate() {
+            v.sanity_assert_no_nan(format!("{} [{}]", msg, i).as_str());
+        }
+    }
+}
+
 use std::fs::OpenOptions;
 use stl_io::{Normal, Triangle, Vertex};
 pub type Mesh = Vec<Triangle>;

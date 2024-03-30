@@ -33,7 +33,7 @@ impl Plushie {
             panic!("Node should be attached to something");
         } else if based_on.len() == 1 {
             let base = self.nodes.points[based_on[0]];
-            let coords = base.coords + V::new(0.1, 0.1, 0.1);
+            let coords = base.coords + V::new(1.0, 0.1, 1.0);
             Point::from(coords)
         } else {
             let mut avg = V::zeros();
@@ -69,8 +69,8 @@ impl PlushieTrait for Plushie {
         if self.edges.len() < self.edges_goal.len() {
             self.construct_next();
         }
-        self.step(time);
         self.nodes.assert_no_nans();
+        self.step(time);
     }
 
     fn params(&mut self) -> &mut crate::plushie::Params {

@@ -1,5 +1,5 @@
 use crate::{
-    common::{Point, V},
+    common::{CheckNan, Point, V},
     plushie::{for_flows::nodes::Nodes, params::CentroidParams},
 };
 
@@ -24,23 +24,36 @@ impl Centroids {
         Self { centroids }
     }
 
-    pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
-        if self.centroids.len() < params.number
-            && nodes.len() >= params.min_nodes_per_centroid * self.centroids.len()
-        {
-            let new = if self.centroids.len() >= 2 {
-                let c0 = self.centroids[0];
-                let c1 = self.centroids[1];
-                Point::from((c0.coords + c1.coords) / 2.0)
-            } else {
-                Point::new(0.0, 1.0, 0.0)
-            };
-            self.centroids.push(new);
+    fn adjust_centroid_number(&mut self, params: &CentroidParams, nodes: &Nodes) {
+        let has_too_little = self.centroids.len() < params.number;
+        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * self.centroids.len();
+
+        if has_too_little {
+            if is_ready_to_add {
+                let new = if self.centroids.len() >= 2 {
+                    let c0 = self.centroids[0];
+                    let c1 = self.centroids[1];
+                    Point::from((c0.coords + c1.coords) / 2.0)
+                } else {
+                    nodes
+                        .points
+                        .last()
+                        .expect("Centroid logic running on empty nodes?")
+                        .clone()
+                };
+                self.centroids.push(new);
+            }
         } else {
             while self.centroids.len() > params.number {
                 self.centroids.pop();
             }
         }
+        self.centroids
+            .sanity_assert_no_nan("after adjusting number");
+    }
+
+    pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
+        self.adjust_centroid_number(params, nodes);
 
         if !self.centroids.is_empty() {
             let centroid2points =
@@ -80,15 +93,21 @@ fn recalculate_centroids(
     centroids.iter_mut().enumerate().for_each(|(i, centroid)| {
         let mut new_pos: V = V::zeros();
         let mut weight_sum = 0.0;
+        assert!(
+            centroid2points[i].len() > 0,
+            "Centroid [{i}] has no points assigned"
+        );
         for point_index in &centroid2points[i] {
             let point = nodes[*point_index];
             let w = weight(distance(&centroid, &point));
             new_pos += point.coords * w;
             weight_sum += w;
         }
+        assert!(weight_sum != 0.0, "About to divide by 0");
         let new_pos: Point = Point::from(new_pos / weight_sum);
         *centroid = new_pos
-    })
+    });
+    centroids.sanity_assert_no_nan("after recalculating centroids");
 }
 
 fn weight(dist: f32) -> f32 {
@@ -105,5 +124,11 @@ fn weight(dist: f32) -> f32 {
 
 fn push_away(point: &Point, repelant: &Point) -> V {
     let diff = point - repelant;
-    diff.normalize() * (1.0 / (diff.magnitude() + 0.5))
+    if diff.magnitude() != 0.0 {
+        let res = diff.normalize() * (1.0 / (diff.magnitude() + 0.5));
+        res.sanity_assert_no_nan("NaN while pushing");
+        res
+    } else {
+        V::zeros()
+    }
 }
