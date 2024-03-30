@@ -47,8 +47,13 @@ impl Nodes {
         }
     }
 
-    fn apply_single_loop(&self, affected: &mut V, plane_spec: &PointsOnPushPlane, direction: f32) {
-        return;
+    fn apply_single_loop(
+        &self,
+        affected: &mut V,
+        plane_spec: &PointsOnPushPlane,
+        direction: f32,
+        params: &Params,
+    ) {
         let (ia, ib, ic) = plane_spec;
         let a = self.points[*ia];
         let b = self.points[*ib];
@@ -58,8 +63,7 @@ impl Nodes {
         let cross = ab.cross(&ac);
         if cross.magnitude() != 0.0 {
             let normal = cross.normalize() * direction;
-            const SINGLE_LOOP_FORCE: f32 = 0.05;
-            *affected += normal * SINGLE_LOOP_FORCE;
+            *affected += normal * params.single_loop_force;
         } else {
             log::warn!("Colinear points prevent applying single loop force");
         }
@@ -67,10 +71,20 @@ impl Nodes {
 
     fn apply_peculiarities(&self, displacement: &mut Vec<V>, params: &Params) -> V {
         let mut root_index = None;
+        const FULL_SINGLE_LOOP_FORCE_AFTER: usize = 20;
         for (i, peculiarity) in self.peculiarities.iter() {
             if *i >= displacement.len() {
                 continue;
             }
+
+            let dist_from_end = displacement.len() - i;
+            let single_loop_constraint = if dist_from_end > FULL_SINGLE_LOOP_FORCE_AFTER {
+                // TODO or plushie already has all the points
+                1.0
+            } else {
+                // dist_from_end as f32 / FULL_SINGLE_LOOP_FORCE_AFTER as f32
+                0.0
+            };
 
             use Peculiarity::*;
             match peculiarity {
@@ -80,8 +94,18 @@ impl Nodes {
                 }
                 Tip => (),
                 Constrained(v) => displacement[*i].component_mul_assign(&v),
-                BLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, 1.0),
-                FLO(plane_spec) => self.apply_single_loop(&mut displacement[*i], plane_spec, -1.0),
+                BLO(plane_spec) => self.apply_single_loop(
+                    &mut displacement[*i],
+                    plane_spec,
+                    -single_loop_constraint,
+                    params,
+                ),
+                FLO(plane_spec) => self.apply_single_loop(
+                    &mut displacement[*i],
+                    plane_spec,
+                    single_loop_constraint,
+                    params,
+                ),
             }
         }
 

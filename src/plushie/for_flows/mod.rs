@@ -69,7 +69,7 @@ impl Plushie {
         let small_displacement = || -> bool {
             let last_index = self.nodes.len() - 1;
             let last_displacement = self.displacement[last_index];
-            last_displacement.magnitude() < 0.01
+            last_displacement.magnitude() < 0.03
         };
         let force = self.force_node_construction_timer <= 0;
 
