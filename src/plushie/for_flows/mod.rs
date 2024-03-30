@@ -20,6 +20,7 @@ pub struct Plushie {
     edges_goal: Vec<Vec<usize>>,
     pub params: Params,
     pub centroids: Centroids,
+    displacement: Vec<V>,
 }
 
 impl Plushie {
@@ -53,6 +54,7 @@ impl Plushie {
         swap(&mut self.edges[index], &mut self.edges_goal[index]);
         let node = self.construct_node(&self.edges[index]);
         self.nodes.points.push(node);
+        self.displacement.push(V::zeros());
     }
 }
 
@@ -70,7 +72,7 @@ impl PlushieTrait for Plushie {
         if self.edges.len() < self.edges_goal.len() {
             self.construct_next();
         }
-        self.nodes.assert_no_nans();
+        self.nodes.assert_no_nans(); // TODO macro
         self.step(time);
     }
 

@@ -1,7 +1,7 @@
 mod hook;
 mod hook_result;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use self::hook::Hook;
 pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
@@ -20,6 +20,24 @@ fn is_uniq(vec: &Vec<Point>) -> bool {
 }
 
 impl Plushie {
+    fn new(
+        peculiarities: HashMap<usize, Peculiarity>,
+        colors: Vec<Color>,
+        edges: Vec<Vec<usize>>,
+        approximate_height: f32,
+    ) -> Self {
+        let mut displacement = Vec::with_capacity(edges.len());
+        displacement.push(V::zeros());
+        Self {
+            nodes: Nodes::new(vec![Point::new(0.0, 0.0, 0.0)], peculiarities, colors),
+            edges: vec![vec![]],
+            edges_goal: edges,
+            params: Default::default(),
+            centroids: Centroids::new(0, approximate_height),
+            displacement,
+        }
+    }
+
     pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
         let hook_result = Hook::parse(flow)?;
 
@@ -36,17 +54,12 @@ impl Plushie {
         );
         log::debug!("nodes len: {}", hook_result.nodes.len());
 
-        Ok(Plushie {
-            nodes: Nodes::new(
-                vec![Point::new(0.0, 0.0, 0.0)],
-                hook_result.peculiarities,
-                hook_result.colors,
-            ),
-            edges: vec![vec![]],
-            edges_goal: hook_result.edges.into(),
-            params: Default::default(),
-            centroids: Centroids::new(0, hook_result.approximate_height),
-        })
+        Ok(Plushie::new(
+            hook_result.peculiarities,
+            hook_result.colors,
+            hook_result.edges.into(),
+            hook_result.approximate_height,
+        ))
     }
 
     pub fn parse(_pattern: &str) -> Result<Self, String> {

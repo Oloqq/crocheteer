@@ -92,15 +92,15 @@ impl Nodes {
         }
     }
 
-    pub fn apply_forces(&mut self, mut displacement: Vec<V>, time: f32, params: &Params) -> V {
+    pub fn apply_forces(&mut self, displacement: &mut Vec<V>, time: f32, params: &Params) -> V {
         let mut total = V::zeros();
 
-        let translation_by_root = self.apply_peculiarities(&mut displacement, params);
+        let translation_by_root = self.apply_peculiarities(displacement, params);
 
         for (i, point) in self.points.iter_mut().enumerate() {
             total += displacement[i];
             *point += (displacement[i] - translation_by_root) * time;
-            if params.sitting {
+            if params.floor {
                 point.y = point.y.max(0.0);
             }
         }

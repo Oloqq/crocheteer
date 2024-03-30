@@ -18,9 +18,6 @@ pub struct Params {
     /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
     /// not applicable to LegacyPlushie
     pub keep_root_at_origin: bool,
-    /// if true, points will not be allowed to go below root
-    /// this plus gravity simulates the plushie sitting on a flat surface
-    pub sitting: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -33,7 +30,7 @@ pub struct CentroidParams {
 
 impl Params {
     #[allow(unused)]
-    fn unconstrained() -> Self {
+    fn unconstrained_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
         Self {
             centroids: Default::default(),
@@ -43,24 +40,42 @@ impl Params {
             acceptable_tension: THIS_DEFAULT_IS_TRASH,
             max_relaxing_iterations: 100,
             keep_root_at_origin: false,
-            sitting: false,
+        }
+    }
+
+    #[allow(unused)]
+    fn rooted_floating() -> Self {
+        const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
+        Self {
+            centroids: Default::default(),
+            floor: false,
+            gravity: 0.0,
+            desired_stitch_distance: 1.0,
+            acceptable_tension: THIS_DEFAULT_IS_TRASH,
+            max_relaxing_iterations: 100,
+            keep_root_at_origin: true,
+        }
+    }
+
+    #[allow(unused)]
+    fn floored() -> Self {
+        const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
+        const THIS_DEFAULT_IS_TRASH_USIZE: usize = 100;
+        Self {
+            centroids: Default::default(),
+            floor: true,
+            gravity: 5e-4,
+            desired_stitch_distance: 1.0,
+            acceptable_tension: THIS_DEFAULT_IS_TRASH,
+            max_relaxing_iterations: THIS_DEFAULT_IS_TRASH_USIZE,
+            keep_root_at_origin: true,
         }
     }
 }
 
 impl Default for Params {
     fn default() -> Self {
-        const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
-        Self {
-            centroids: Default::default(),
-            floor: false,
-            gravity: 5e-4,
-            desired_stitch_distance: 1.0,
-            acceptable_tension: THIS_DEFAULT_IS_TRASH,
-            max_relaxing_iterations: 100,
-            keep_root_at_origin: false,
-            sitting: false,
-        }
+        Self::rooted_floating()
     }
 }
 

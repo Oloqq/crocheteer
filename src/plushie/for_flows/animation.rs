@@ -5,24 +5,25 @@ use std::time::{SystemTime, UNIX_EPOCH};
 impl Plushie {
     pub fn step(&mut self, time: f32) -> V {
         let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-        let mut displacement: Vec<V> = vec![V::zeros(); self.nodes.len()];
-
         log::trace!("Nodes: {:?}", self.nodes);
 
-        self.add_link_forces(&mut displacement);
-        self.add_stuffing_force(&mut displacement);
-        self.add_gravity(&mut displacement);
+        self.displacement.fill(V::zeros());
+        self.add_link_forces();
+        self.add_stuffing_force();
+        self.add_gravity();
 
         let end = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        let total = self.nodes.apply_forces(displacement, time, &self.params);
+        let total = self
+            .nodes
+            .apply_forces(&mut self.displacement, time, &self.params);
 
         total
     }
 
-    fn add_link_forces(&self, displacement: &mut Vec<V>) {
+    fn add_link_forces(&mut self) {
         for (i, point) in self.nodes.points.iter().enumerate() {
             for neibi in &self.edges[i] {
                 if *neibi >= self.nodes.points.len() {
@@ -30,24 +31,24 @@ impl Plushie {
                 }
                 let neib = &self.nodes[*neibi];
                 let diff: V = attract(point, neib, self.params.desired_stitch_distance);
-                displacement[i] += diff;
-                displacement[*neibi] -= diff;
+                self.displacement[i] += diff;
+                self.displacement[*neibi] -= diff;
             }
         }
-        displacement.sanity_assert_no_nan("link forces");
+        self.displacement.sanity_assert_no_nan("link forces");
     }
 
-    fn add_stuffing_force(&mut self, displacement: &mut Vec<V>) {
+    fn add_stuffing_force(&mut self) {
         self.centroids
-            .stuff(&self.params.centroids, &self.nodes, displacement);
-        displacement.sanity_assert_no_nan("stuffing");
+            .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
+        self.displacement.sanity_assert_no_nan("stuffing");
     }
 
-    fn add_gravity(&self, displacement: &mut Vec<V>) {
+    fn add_gravity(&mut self) {
         for (i, _point) in self.nodes.points.iter().enumerate() {
-            displacement[i].y -= self.params.gravity;
+            self.displacement[i].y -= self.params.gravity;
         }
-        displacement.sanity_assert_no_nan("gravity");
+        self.displacement.sanity_assert_no_nan("gravity");
     }
 }
 
