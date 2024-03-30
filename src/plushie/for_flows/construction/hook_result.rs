@@ -10,12 +10,12 @@ pub struct Edges {
 }
 
 impl Edges {
-    // #[allow(unused)]
+    #[allow(unused)]
     pub fn new() -> Self {
         Self { edges: vec![] }
     }
 
-    // #[allow(unused)] // used in tests
+    #[allow(unused)] // used in tests
     pub fn from_unchecked(ordered: Vec<Vec<usize>>) -> Self {
         Self { edges: ordered }
     }
