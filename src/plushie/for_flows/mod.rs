@@ -65,7 +65,7 @@ impl PlushieTrait for Plushie {
     fn init_data(&self) -> JSON {
         serde_json::json!({
             "nodes": serde_json::json!(self.nodes),
-            "edges": serde_json::json!(self.edges_goal),
+            "edges": serde_json::json!(self.edges_goal), // OneByOne initializer swaps memory, so multiple tries to init the same plushie will fail
             "centroids": serde_json::json!(self.centroids)
         })
     }
