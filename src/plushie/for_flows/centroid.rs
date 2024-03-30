@@ -26,7 +26,7 @@ impl Centroids {
 
     fn adjust_centroid_number(&mut self, params: &CentroidParams, nodes: &Nodes) {
         let has_too_little = self.centroids.len() < params.number;
-        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * self.centroids.len();
+        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * (self.centroids.len());
 
         if has_too_little {
             if is_ready_to_add {

@@ -75,16 +75,16 @@ impl Params {
 
 impl Default for Params {
     fn default() -> Self {
-        Self::rooted_floating()
+        Self::floored()
     }
 }
 
 impl Default for CentroidParams {
     fn default() -> Self {
         Self {
-            number: 2,
+            number: 1,
             force: 0.05,
-            min_nodes_per_centroid: 10,
+            min_nodes_per_centroid: 60,
         }
     }
 }

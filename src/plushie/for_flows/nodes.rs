@@ -48,6 +48,7 @@ impl Nodes {
     }
 
     fn apply_single_loop(&self, affected: &mut V, plane_spec: &PointsOnPushPlane, direction: f32) {
+        return;
         let (ia, ib, ic) = plane_spec;
         let a = self.points[*ia];
         let b = self.points[*ib];

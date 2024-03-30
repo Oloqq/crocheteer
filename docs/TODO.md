@@ -74,6 +74,8 @@ params.sitting and params.floor are duplicates
 
 # Backlog
 
+- add option to force aligment in the Y axis via calculating center of mass, then rotating points around origin
+
 - complex patterns
   - working the back or the front loop only (BLO/FLO), with possibility to switch mid round
   - switching "working position" like working the front loop, then going back and working the back loop
