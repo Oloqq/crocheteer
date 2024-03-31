@@ -90,28 +90,31 @@ impl Hook {
 
         match action {
             Sc => {
-                self = Stitch::linger(self).pull_through().pull_over().finish();
+                self = Stitch::linger(self)?
+                    .pull_through()?
+                    .pull_over()?
+                    .finish()?;
             }
             Inc => {
-                self = Stitch::linger(self)
-                    .pull_through()
-                    .pull_over()
-                    .pull_through()
-                    .pull_over()
-                    .finish();
+                self = Stitch::linger(self)?
+                    .pull_through()?
+                    .pull_over()?
+                    .pull_through()?
+                    .pull_over()?
+                    .finish()?;
             }
             Dec => {
-                self = Stitch::linger(self)
-                    .pull_through()
-                    .next_anchor()
-                    .pull_through()
-                    .pull_over()
-                    .finish();
+                self = Stitch::linger(self)?
+                    .pull_through()?
+                    .next_anchor()?
+                    .pull_through()?
+                    .pull_over()?
+                    .finish()?;
             }
             Ch(x) => {
                 let start = self.now.cursor;
                 for _ in 0..*x {
-                    self = Stitch::linger(self).pull_over().finish();
+                    self = Stitch::linger(self)?.pull_over()?.finish()?;
                 }
                 self.round_spans.push((start, self.now.cursor - 1));
             }

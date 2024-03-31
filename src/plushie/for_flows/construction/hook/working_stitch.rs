@@ -1,4 +1,4 @@
-use super::utils::{Peculiarity, WorkingLoops};
+use super::utils::{HookError, Peculiarity, WorkingLoops};
 use super::Hook;
 
 pub struct Stitch {
@@ -6,31 +6,32 @@ pub struct Stitch {
     anchored: Option<usize>,
 }
 
+type Progress = Result<Stitch, HookError>;
+
 impl Stitch {
-    pub fn linger(mut hook: Hook) -> Self {
-        let previous_node = match hook.override_previous_stitch {
-            Some(x) => {
-                hook.override_previous_stitch = None;
-                x
-            }
-            None => hook.now.cursor - 1,
-        };
-        hook.edges.link(previous_node, hook.now.cursor);
-        Self {
+    pub fn linger(mut hook: Hook) -> Progress {
+        let prev = previous_stitch(&mut hook);
+        hook.edges.link(prev, hook.now.cursor);
+        Ok(Self {
             hook,
             anchored: None,
-        }
+        })
     }
 
-    pub fn pull_through(mut self) -> Self {
+    pub fn pull_through(mut self) -> Progress {
         let hook = &mut self.hook;
         let anchor = *hook.now.anchors.front().expect("there is an anchor");
         hook.edges.link(anchor, hook.now.cursor);
         self.anchored = Some(anchor);
-        self
+        use WorkingLoops::*;
+        match self.hook.now.working_on {
+            Both => (),
+            Back | Front => self.register_single_loop(),
+        }
+        Ok(self)
     }
 
-    pub fn next_anchor(mut self) -> Self {
+    pub fn next_anchor(mut self) -> Progress {
         let hook = &mut self.hook;
         hook.now.anchors.pop_front().expect("there was an anchor");
         hook.now.round_left -= 1;
@@ -45,27 +46,21 @@ impl Stitch {
             }
             hook.now.round_count = 0;
         }
-        self
+        Ok(self)
     }
 
-    pub fn pull_over(mut self) -> Self {
+    pub fn pull_over(mut self) -> Progress {
         self.hook.edges.grow();
         self.hook.colors.push(self.hook.color);
         self.hook.parents.push(self.anchored);
-        use WorkingLoops::*;
-        match self.hook.now.working_on {
-            // TODO move to pull through
-            Both => (),
-            Back | Front => self.register_single_loop(),
-        }
         self.hook.now.anchors.push_back(self.hook.now.cursor);
         self.hook.now.cursor += 1;
         self.hook.now.round_count += 1;
-        self
+        Ok(self)
     }
 
-    pub fn finish(self) -> Hook {
-        self.next_anchor().hook
+    pub fn finish(self) -> Result<Hook, HookError> {
+        Ok(self.next_anchor()?.hook)
     }
 
     pub fn fasten_off_with_tip(mut hook: Hook) -> Hook {
@@ -99,5 +94,15 @@ impl Stitch {
         // hook.peculiar
         //     .insert(hook.now.cursor, peculiarity)
         //     .map_or((), |_| panic!("BLO/FLO point is already peculiar"))
+    }
+}
+
+fn previous_stitch(hook: &mut Hook) -> usize {
+    match hook.override_previous_stitch {
+        Some(x) => {
+            hook.override_previous_stitch = None;
+            x
+        }
+        None => hook.now.cursor - 1,
     }
 }
