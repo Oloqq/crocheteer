@@ -3,6 +3,7 @@ use super::Hook;
 
 pub struct Stitch {
     hook: Hook,
+    anchored: Option<usize>,
 }
 
 impl Stitch {
@@ -15,26 +16,32 @@ impl Stitch {
             None => hook.now.cursor - 1,
         };
         hook.edges.link(previous_node, hook.now.cursor);
-        Self { hook }
+        Self {
+            hook,
+            anchored: None,
+        }
     }
 
     pub fn pull_through(mut self) -> Self {
         let hook = &mut self.hook;
-        hook.edges.link(hook.now.anchor, hook.now.cursor);
+        let anchor = *hook.now.anchors.front().expect("there is an anchor");
+        hook.edges.link(anchor, hook.now.cursor);
+        self.anchored = Some(anchor);
         self
     }
 
     pub fn next_anchor(mut self) -> Self {
         let hook = &mut self.hook;
-        hook.now.anchor += 1;
+        hook.now.anchors.pop_front().expect("there was an anchor");
         hook.now.round_left -= 1;
         if hook.now.round_left == 0 {
             hook.round_spans
                 .push((hook.now.cursor - hook.now.round_count, hook.now.cursor - 1));
             hook.now.round_left = hook.now.round_count;
             if hook.at_junction {
-                hook.now.anchor = hook.now.cursor - hook.now.round_count;
-                hook.at_junction = false;
+                todo!()
+                // hook.now.anchor = hook.now.cursor - hook.now.round_count;
+                // hook.at_junction = false;
             }
             hook.now.round_count = 0;
         }
@@ -44,12 +51,14 @@ impl Stitch {
     pub fn pull_over(mut self) -> Self {
         self.hook.edges.grow();
         self.hook.colors.push(self.hook.color);
-        self.hook.parents.push(Some(self.hook.now.anchor));
+        self.hook.parents.push(self.anchored);
         use WorkingLoops::*;
         match self.hook.now.working_on {
+            // TODO move to pull through
             Both => (),
             Back | Front => self.register_single_loop(),
         }
+        self.hook.now.anchors.push_back(self.hook.now.cursor);
         self.hook.now.cursor += 1;
         self.hook.now.round_count += 1;
         self
@@ -59,19 +68,36 @@ impl Stitch {
         self.next_anchor().hook
     }
 
+    pub fn fasten_off_with_tip(mut hook: Hook) -> Hook {
+        assert!(hook.now.anchors.len() > 0, "FO with empty queue");
+        let tip = hook.now.cursor;
+        while let Some(anchor) = hook.now.anchors.pop_front() {
+            hook.edges.link(anchor, tip);
+        }
+
+        hook.edges.grow();
+        hook.peculiar.insert(tip, Peculiarity::Tip);
+        hook.round_spans.push((tip, tip));
+        hook.parts.push((hook.part_start, tip));
+        hook.colors.push(hook.color);
+        hook.now.cursor += 1;
+        hook
+    }
+
     fn register_single_loop(&mut self) {
-        let hook = &mut self.hook;
-        let mother = hook.now.anchor;
-        let father = hook.now.anchor + 1;
-        let grandparent = hook.parents[hook.now.anchor].expect("Grandparent exists");
-        let points_on_push_plane = (father, mother, grandparent);
-        let peculiarity = match hook.now.working_on {
-            WorkingLoops::Both => unreachable!(),
-            WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
-            WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
-        };
-        hook.peculiar
-            .insert(hook.now.cursor, peculiarity)
-            .map_or((), |_| panic!("BLO/FLO point is already peculiar"))
+        todo!()
+        // let hook = &mut self.hook;
+        // let mother = hook.now.anchors.front().expect("There is an anchor")
+        // let father = hook.now.anchor + 1;
+        // let grandparent = hook.parents[hook.now.anchor].expect("Grandparent exists");
+        // let points_on_push_plane = (father, mother, grandparent);
+        // let peculiarity = match hook.now.working_on {
+        //     WorkingLoops::Both => unreachable!(),
+        //     WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
+        //     WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
+        // };
+        // hook.peculiar
+        //     .insert(hook.now.cursor, peculiarity)
+        //     .map_or((), |_| panic!("BLO/FLO point is already peculiar"))
     }
 }

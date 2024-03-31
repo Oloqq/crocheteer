@@ -3,7 +3,9 @@ mod state_mgmt;
 mod utils;
 mod working_stitch;
 
+use self::utils::*;
 use self::working_stitch::Stitch;
+use self::HookError::*;
 use super::hook_result::{Edges, HookResult};
 use crate::{
     flow::{
@@ -12,18 +14,15 @@ use crate::{
     },
     sanity,
 };
-use utils::*;
-use HookError::*;
-
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque as Queue};
 
 /// Span of a single generalized cylinder in the plushie
 type Part = (usize, usize);
 
 #[derive(Clone, Debug)]
 struct Moment {
-    anchor: usize,
     cursor: usize,
+    anchors: Queue<usize>,
     round_count: usize,
     round_left: usize,
     working_on: WorkingLoops,
@@ -36,6 +35,8 @@ pub struct Hook {
     peculiar: HashMap<usize, Peculiarity>,
     now: Moment,
     /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive
+    /// When chains are introduced, round_spans acts merely as data for Initializer::Cylinder,
+    /// and it's content may not be connected to what a human would consider a working round
     round_spans: Vec<(usize, usize)>,
     fastened_off: bool,
     /// Storage of index -> it's anchor
@@ -124,7 +125,7 @@ impl Hook {
             MR(_) => return Err(StarterInTheMiddle),
             FO => {
                 self.fastened_off = true;
-                self.fasten_off_with_tip()?
+                self = Stitch::fasten_off_with_tip(self)
             }
             Color(c) => self.color = *c,
         };
@@ -140,7 +141,7 @@ mod tests {
     #[test]
     fn test_start_with_magic_ring() {
         let h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.now.anchor, 1);
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
@@ -154,7 +155,7 @@ mod tests {
     #[test]
     fn test_start_with_chain() {
         let h = Hook::start_with(&Ch(3)).unwrap();
-        q!(h.now.anchor, 0);
+        q!(h.now.anchors, Queue::from([0, 1, 2]));
         q!(h.now.cursor, 3);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
@@ -169,15 +170,16 @@ mod tests {
     #[test]
     fn test_perform_sc() {
         let mut h = Hook::start_with(&MR(6)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
         h = h.perform(&Sc).unwrap();
-        q!(h.now.anchor, 2);
+        q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6, 7]));
         q!(h.now.cursor, 8);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 5);
         q!(h.round_spans, vec![(0, 6)]);
 
         h = h.perform(&Sc).unwrap();
-        q!(h.now.anchor, 3);
+        q!(h.now.anchors, Queue::from([3, 4, 5, 6, 7, 8]));
         q!(h.now.cursor, 9);
         q!(h.now.round_count, 2);
         q!(h.now.round_left, 4);
@@ -206,8 +208,9 @@ mod tests {
     #[test]
     fn test_perform_inc() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Inc).unwrap();
-        q!(h.now.anchor, 2);
+        q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
         q!(h.now.cursor, 6);
         q!(h.now.round_count, 2);
         q!(h.now.round_left, 2);
@@ -217,8 +220,9 @@ mod tests {
     #[test]
     fn test_perform_dec() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Dec).unwrap();
-        q!(h.now.anchor, 3);
+        q!(h.now.anchors, Queue::from([3, 4]));
         q!(h.now.cursor, 5);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 1);
@@ -228,13 +232,13 @@ mod tests {
     #[test]
     fn test_perform_fo_after_full_round() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.now.anchor, 1);
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.edges.len(), 5);
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();
-        q!(h.now.anchor, 4);
+        q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.now.cursor, 7);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
@@ -254,6 +258,7 @@ mod tests {
             ])
         );
         h = h.perform(&FO).unwrap();
+        q!(h.now.anchors, Queue::from([]));
         q!(
             h.edges,
             Edges::from(vec![
@@ -295,10 +300,12 @@ mod tests {
     #[test]
     fn test_goto_after_fo() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Mark(0)).unwrap();
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();
+        q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(
             h.edges,
@@ -329,9 +336,10 @@ mod tests {
             ])
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
+        q!(h.now.anchors, Queue::from([]));
         h = h.perform(&Goto(0)).unwrap();
         q!(h.now.cursor, 8);
-        q!(h.now.anchor, 1);
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.override_previous_stitch, Some(3));
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();

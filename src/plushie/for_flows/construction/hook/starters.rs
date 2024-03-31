@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{utils::*, Color, Edges, Hook, Moment};
+use super::{utils::*, Color, Edges, Hook, Moment, Queue};
 
 impl Hook {
     pub fn start_with(action: &Action) -> Result<Self, HookError> {
@@ -29,8 +29,8 @@ impl Hook {
                     now: Moment {
                         round_count: 0,
                         round_left: *x,
-                        anchor: 1,     // 1 because root takes index 0
-                        cursor: x + 1, // + 1 because root takes index 0
+                        anchors: Queue::from_iter(1..=*x), // 1 because root takes index 0
+                        cursor: x + 1,                     // + 1 because root takes index 0
                         working_on: WorkingLoops::Both,
                     },
                     round_spans: vec![(0, *x)],
@@ -65,7 +65,7 @@ impl Hook {
                     now: Moment {
                         round_count: 0,
                         round_left: *x,
-                        anchor: 0,
+                        anchors: Queue::from_iter(0..*x),
                         cursor: *x,
                         working_on: WorkingLoops::Both,
                     },
