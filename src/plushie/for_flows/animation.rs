@@ -1,5 +1,5 @@
 use super::Plushie;
-use crate::common::*;
+use crate::{common::*, sanity};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 impl Plushie {
@@ -35,20 +35,20 @@ impl Plushie {
                 self.displacement[*neibi] -= diff;
             }
         }
-        self.displacement.sanity_assert_no_nan("link forces");
+        sanity!(self.displacement.assert_no_nan("link forces"));
     }
 
     fn add_stuffing_force(&mut self) {
         self.centroids
             .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
-        self.displacement.sanity_assert_no_nan("stuffing");
+        sanity!(self.displacement.assert_no_nan("stuffing"));
     }
 
     fn add_gravity(&mut self) {
         for (i, _point) in self.nodes.points.iter().enumerate() {
             self.displacement[i].y -= self.params.gravity;
         }
-        self.displacement.sanity_assert_no_nan("gravity");
+        sanity!(self.displacement.assert_no_nan("gravity"));
     }
 }
 
@@ -59,6 +59,6 @@ fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
 
     let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
     let res = -diff.normalize() * fx;
-    res.sanity_assert_no_nan(format!("attract {this:?} to {other:?}").as_str());
+    sanity!(res.assert_no_nan(format!("attract {this:?} to {other:?}").as_str()));
     res
 }

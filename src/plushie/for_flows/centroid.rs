@@ -1,6 +1,7 @@
 use crate::{
     common::{CheckNan, Point, V},
     plushie::{for_flows::nodes::Nodes, params::CentroidParams},
+    sanity,
 };
 
 use na::distance;
@@ -48,8 +49,7 @@ impl Centroids {
                 self.centroids.pop();
             }
         }
-        self.centroids
-            .sanity_assert_no_nan("after adjusting number");
+        sanity!(self.centroids.assert_no_nan("after adjusting number"));
     }
 
     pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
@@ -107,7 +107,7 @@ fn recalculate_centroids(
         let new_pos: Point = Point::from(new_pos / weight_sum);
         *centroid = new_pos
     });
-    centroids.sanity_assert_no_nan("after recalculating centroids");
+    sanity!(centroids.assert_no_nan("after recalculating centroids"));
 }
 
 fn weight(dist: f32) -> f32 {
@@ -126,7 +126,7 @@ fn push_away(point: &Point, repelant: &Point) -> V {
     let diff = point - repelant;
     if diff.magnitude() != 0.0 {
         let res = diff.normalize() * (1.0 / (diff.magnitude() + 0.5));
-        res.sanity_assert_no_nan("NaN while pushing");
+        sanity!(res.assert_no_nan("NaN while pushing"));
         res
     } else {
         V::zeros()

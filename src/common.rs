@@ -2,19 +2,26 @@ pub type V = na::Vector3<f32>;
 pub type Point = na::Point3<f32>;
 pub type Color = (usize, usize, usize);
 
-// TODO rewrite using a macro
-pub const SANITY_CHECKS: bool = true;
+#[cfg(feature = "sanity")]
+#[macro_export]
+macro_rules! sanity {
+    ($e:expr) => {
+        $e
+    };
+}
+
+#[cfg(not(feature = "sanity"))]
+#[macro_export]
+macro_rules! sanity {
+    ($e:expr) => {};
+}
 
 pub trait CheckNan {
-    fn sanity_assert_no_nan(&self, msg: &str);
+    fn assert_no_nan(&self, msg: &str);
 }
 
 impl CheckNan for V {
-    fn sanity_assert_no_nan(&self, msg: &str) {
-        if !SANITY_CHECKS {
-            return;
-        }
-
+    fn assert_no_nan(&self, msg: &str) {
         assert!(!self.x.is_nan(), "NaN x: {}", msg);
         assert!(!self.y.is_nan(), "NaN y: {}", msg);
         assert!(!self.z.is_nan(), "NaN z: {}", msg);
@@ -22,23 +29,15 @@ impl CheckNan for V {
 }
 
 impl CheckNan for Vec<V> {
-    fn sanity_assert_no_nan(&self, msg: &str) {
-        if !SANITY_CHECKS {
-            return;
-        }
-
+    fn assert_no_nan(&self, msg: &str) {
         for (i, v) in self.iter().enumerate() {
-            v.sanity_assert_no_nan(format!("{} [{}]", msg, i).as_str());
+            v.assert_no_nan(format!("{} [{}]", msg, i).as_str());
         }
     }
 }
 
 impl CheckNan for Point {
-    fn sanity_assert_no_nan(&self, msg: &str) {
-        if !SANITY_CHECKS {
-            return;
-        }
-
+    fn assert_no_nan(&self, msg: &str) {
         assert!(!self.x.is_nan(), "NaN x: {}", msg);
         assert!(!self.y.is_nan(), "NaN y: {}", msg);
         assert!(!self.z.is_nan(), "NaN z: {}", msg);
@@ -46,13 +45,9 @@ impl CheckNan for Point {
 }
 
 impl CheckNan for Vec<Point> {
-    fn sanity_assert_no_nan(&self, msg: &str) {
-        if !SANITY_CHECKS {
-            return;
-        }
-
+    fn assert_no_nan(&self, msg: &str) {
         for (i, v) in self.iter().enumerate() {
-            v.sanity_assert_no_nan(format!("{} [{}]", msg, i).as_str());
+            v.assert_no_nan(format!("{} [{}]", msg, i).as_str());
         }
     }
 }

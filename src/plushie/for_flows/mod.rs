@@ -6,7 +6,7 @@ mod nodes;
 
 use self::{centroid::Centroids, nodes::Nodes};
 use super::{params::Initializer, Params, PlushieTrait};
-use crate::common::*;
+use crate::{common::*, sanity};
 use serde_derive::Serialize;
 
 type Edges = Vec<Vec<usize>>;
@@ -46,7 +46,7 @@ impl PlushieTrait for Plushie {
             OneByOne(obo_params) => self.handle_adding_new_nodes(obo_params, time),
             Cylinder => (),
         }
-        self.nodes.assert_no_nans(); // TODO macro
+        sanity!(self.nodes.assert_no_nans());
         self.step(time);
     }
 

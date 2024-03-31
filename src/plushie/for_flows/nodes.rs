@@ -2,7 +2,7 @@ use super::{
     construction::{Peculiarity, PointsOnPushPlane},
     Params,
 };
-use crate::common::*;
+use crate::{common::*, sanity};
 use serde_derive::Serialize;
 use std::{
     collections::HashMap,
@@ -27,7 +27,7 @@ impl Nodes {
             peculiarities,
             colors,
         };
-        new.assert_no_nans();
+        sanity!(new.assert_no_nans());
         new
     }
 

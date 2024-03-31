@@ -3,9 +3,12 @@ mod state_mgmt;
 mod utils;
 
 use super::hook_result::{Edges, HookResult};
-use crate::flow::{
-    actions::{Action, Label},
-    Flow,
+use crate::{
+    flow::{
+        actions::{Action, Label},
+        Flow,
+    },
+    sanity,
 };
 use utils::*;
 use HookError::*;
@@ -61,9 +64,10 @@ impl Hook {
         }
 
         let result = hook.finish();
-        if SANITY_CHECKS {
-            assert!(is_uniq(&result.nodes), "hook created duplicate positions");
-        }
+        sanity!(assert!(
+            is_uniq(&result.nodes),
+            "hook created duplicate positions"
+        ));
         log::debug!("edges: {:?}, len: {}", result.edges, result.edges.len());
         log::debug!("nodes len: {}", result.nodes.len());
         Ok(result)
