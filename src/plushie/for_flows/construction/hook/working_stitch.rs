@@ -28,7 +28,7 @@ impl Stitch {
         use WorkingLoops::*;
         match self.hook.now.working_on {
             Both => (),
-            Back | Front => self.register_single_loop(),
+            Back | Front => self.register_single_loop()?,
         }
         Ok(self)
     }
@@ -84,21 +84,21 @@ impl Stitch {
         Ok(hook)
     }
 
-    fn register_single_loop(&mut self) {
-        todo!()
-        // let hook = &mut self.hook;
-        // let mother = hook.now.anchors.front().expect("There is an anchor")
-        // let father = hook.now.anchor + 1;
-        // let grandparent = hook.parents[hook.now.anchor].expect("Grandparent exists");
-        // let points_on_push_plane = (father, mother, grandparent);
-        // let peculiarity = match hook.now.working_on {
-        //     WorkingLoops::Both => unreachable!(),
-        //     WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
-        //     WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
-        // };
-        // hook.peculiar
-        //     .insert(hook.now.cursor, peculiarity)
-        //     .map_or((), |_| panic!("BLO/FLO point is already peculiar"))
+    fn register_single_loop(&mut self) -> Result<(), HookError> {
+        let hook = &mut self.hook;
+        let mother = self.anchored.ok_or(SingleLoopOnNonAnchored)?;
+        let father = mother + 1;
+        let grandparent = hook.parents[mother].ok_or(SingleLoopNoGrandparent)?;
+        let points_on_push_plane = (father, mother, grandparent);
+        let peculiarity = match hook.now.working_on {
+            WorkingLoops::Both => unreachable!(),
+            WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
+            WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
+        };
+        hook.peculiar
+            .insert(hook.now.cursor, peculiarity)
+            .map_or((), |_| panic!("BLO/FLO point is already peculiar"));
+        Ok(())
     }
 }
 
@@ -120,4 +120,6 @@ mod tests {
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
     // test work after FO causes NoAnchorToPullThrough
+    // test interaction of single-loop and chains (chains are not anchored)
+    // test parents and grandparents around single-loop
 }

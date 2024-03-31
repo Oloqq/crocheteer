@@ -17,6 +17,8 @@ pub enum HookError {
     UselessMark,
     NoAnchorToPullThrough,
     FORequires2Anchors,
+    SingleLoopOnNonAnchored,
+    SingleLoopNoGrandparent,
 }
 
 impl From<HookError> for String {
