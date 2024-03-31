@@ -25,11 +25,6 @@ impl Stitch {
         let anchor = *hook.now.anchors.front().ok_or(NoAnchorToPullThrough)?;
         hook.edges.link(anchor, hook.now.cursor);
         self.anchored = Some(anchor);
-        use WorkingLoops::*;
-        match self.hook.now.working_on {
-            Both => (),
-            Back | Front => self.register_single_loop()?,
-        }
         Ok(self)
     }
 
@@ -41,17 +36,17 @@ impl Stitch {
             hook.round_spans
                 .push((hook.now.cursor - hook.now.round_count, hook.now.cursor - 1));
             hook.now.round_left = hook.now.round_count;
-            if hook.at_junction {
-                todo!()
-                // hook.now.anchor = hook.now.cursor - hook.now.round_count;
-                // hook.at_junction = false;
-            }
             hook.now.round_count = 0;
         }
         Ok(self)
     }
 
     pub fn pull_over(mut self) -> Progress {
+        use WorkingLoops::*;
+        match self.hook.now.working_on {
+            Both => (),
+            Back | Front => self.register_single_loop()?,
+        }
         self.hook.edges.grow();
         self.hook.colors.push(self.hook.color);
         self.hook.parents.push(self.anchored);
@@ -96,8 +91,10 @@ impl Stitch {
             WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
         };
         hook.peculiar
-            .insert(hook.now.cursor, peculiarity)
-            .map_or((), |_| panic!("BLO/FLO point is already peculiar"));
+            .insert(hook.now.cursor, peculiarity.clone())
+            .map_or((), |prev| {
+                panic!("BLO/FLO point is already peculiar. was: {prev:?} new: {peculiarity:?}")
+            });
         Ok(())
     }
 }
@@ -114,12 +111,34 @@ fn previous_stitch(hook: &mut Hook) -> usize {
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
-    // use pretty_assertions::assert_eq as q;
+    use super::super::utils::*;
+
+    use super::*;
+    use pretty_assertions::assert_eq as q;
 
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
     // test work after FO causes NoAnchorToPullThrough
     // test interaction of single-loop and chains (chains are not anchored)
     // test parents and grandparents around single-loop
+
+    #[test]
+    fn test_goto_without_fo() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        h = h.perform(&Mark(0)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        q!(h.now.anchors, Queue::from([4, 5, 6]));
+        q!(h.now.cursor, 7);
+        h = h.perform(&Goto(0)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        q!(h.now.cursor, 7);
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        q!(h.now.anchors, Queue::from([7, 8, 9]));
+    }
 }

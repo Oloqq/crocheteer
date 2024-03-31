@@ -14,7 +14,7 @@ use crate::{
     },
     sanity,
 };
-use std::collections::{HashMap, HashSet, VecDeque as Queue};
+use std::collections::{HashMap, HashSet};
 
 /// Span of a single generalized cylinder in the plushie
 type Part = (usize, usize);
