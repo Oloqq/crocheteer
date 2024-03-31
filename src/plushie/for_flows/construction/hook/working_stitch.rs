@@ -116,6 +116,7 @@ fn previous_stitch(hook: &mut Hook) -> usize {
 
 #[cfg(test)]
 mod tests {
+    use super::super::super::hook_result::Edges;
     use super::super::utils::*;
 
     use super::*;
@@ -127,10 +128,23 @@ mod tests {
     // test interaction of single-loop and chains (chains are not anchored)
     // test parents and grandparents around single-loop
 
+    fn mr3() -> Hook {
+        let h = Hook::start_with(&MR(3)).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        q!(h.now.cursor, 4);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
+        q!(h.round_spans.len(), 1);
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+        );
+        h
+    }
+
     #[test]
     fn test_goto_without_fo() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        let mut h = mr3();
         h = h.perform(&Mark(0)).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Sc).unwrap();
@@ -146,4 +160,13 @@ mod tests {
         h = h.perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([7, 8, 9]));
     }
+
+    #[test]
+    fn test_chain() {
+        let mut h = mr3();
+        h = h.perform(&Ch(3)).unwrap();
+        q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6]));
+    }
+
+    //fn test_sc_after_chain() {}
 }

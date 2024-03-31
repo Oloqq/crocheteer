@@ -10,8 +10,6 @@ pub enum HookError {
     Empty,
     BadStarter,
     StarterInTheMiddle,
-    ChainStart,
-    TriedToWorkAfterFastenOff,
     DuplicateLabel(Label),
     UnknownLabel(Label),
     /// Tried to mark at a place where no anchors are available
@@ -20,6 +18,7 @@ pub enum HookError {
     FORequires2Anchors,
     SingleLoopOnNonAnchored,
     SingleLoopNoGrandparent,
+    ChainOfZero,
 }
 
 impl From<HookError> for String {

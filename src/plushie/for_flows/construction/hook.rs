@@ -112,10 +112,15 @@ impl Hook {
                     .finish()?;
             }
             Ch(x) => {
-                let start = self.now.cursor;
-                for _ in 0..*x {
-                    self = Stitch::linger(self)?.pull_over()?.finish()?;
+                if *x == 0 {
+                    return Err(ChainOfZero);
                 }
+                let start = self.now.cursor;
+                let mut stitch = Stitch::linger(self)?;
+                for _ in 0..*x {
+                    stitch = stitch.pull_over()?;
+                }
+                self = stitch.finish()?;
                 self.round_spans.push((start, self.now.cursor - 1));
             }
             Attach(_) => unimplemented!(),

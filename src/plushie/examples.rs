@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use crate::common::*;
 use crate::flow::ergoflow::ErgoFlow;
 use crate::pattern::stitches::Stitch;
 use crate::pattern::Pattern;
@@ -166,7 +167,7 @@ pub fn fatflailer() -> Plushie {
     flow += MR(6);
     flow += 6 * Inc;
     flow += 12 * 3 * Sc;
-    flow += Ch(6) + Sc * 6;
+    flow += Color(RED) + Ch(6) + Color(GREEN) + Sc * 4;
     let plushie = Plushie::from_flow(flow).unwrap();
     plushie
 }
