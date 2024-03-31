@@ -38,7 +38,6 @@ pub struct Hook {
     /// When chains are introduced, round_spans acts merely as data for Initializer::Cylinder,
     /// and it's content may not be connected to what a human would consider a working round
     round_spans: Vec<(usize, usize)>,
-    fastened_off: bool,
     /// Storage of index -> it's anchor
     parents: Vec<Option<usize>>,
     part_start: usize,
@@ -84,16 +83,12 @@ impl Hook {
     pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
         log::trace!("Performing {action:?}");
 
-        if self.fastened_off && !matches!(action, Goto(_)) {
-            return Err(TriedToWorkAfterFastenOff);
-        }
-
         match action {
             Sc => {
                 self = Stitch::linger(self)?
                     .pull_through()?
                     .pull_over()?
-                    .finish()?;
+                    .finish()?
             }
             Inc => {
                 self = Stitch::linger(self)?
@@ -126,10 +121,7 @@ impl Hook {
             Goto(label) => self.restore(*label)?,
             Mark(label) => self.save(*label)?,
             MR(_) => return Err(StarterInTheMiddle),
-            FO => {
-                self.fastened_off = true;
-                self = Stitch::fasten_off_with_tip(self)?;
-            }
+            FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
         Ok(self)

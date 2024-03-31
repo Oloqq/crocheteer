@@ -8,13 +8,12 @@ impl Hook {
         moment.cursor = self.now.cursor;
         self.now = moment;
         self.at_junction = true;
-        self.fastened_off = false;
         Ok(())
     }
 
     pub fn save(&mut self, label: Label) -> Result<(), HookError> {
-        if self.fastened_off {
-            return Err(CantMarkAfterFO);
+        if self.now.anchors.len() == 0 {
+            return Err(UselessMark);
         }
         if let Some(_) = self.labels.insert(label, self.now.clone()) {
             return Err(DuplicateLabel(label));

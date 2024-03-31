@@ -13,7 +13,8 @@ pub enum HookError {
     TriedToWorkAfterFastenOff,
     DuplicateLabel(Label),
     UnknownLabel(Label),
-    CantMarkAfterFO,
+    /// Tried to mark at a place where no anchors are available
+    UselessMark,
     NoAnchorToPullThrough,
     FORequires2Anchors,
 }

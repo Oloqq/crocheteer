@@ -119,4 +119,5 @@ mod tests {
 
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
+    // test work after FO causes NoAnchorToPullThrough
 }
