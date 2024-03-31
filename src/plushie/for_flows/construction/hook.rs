@@ -52,6 +52,7 @@ pub struct Hook {
     part_start: usize,
     parts: Vec<Part>,
     at_junction: bool,
+    last: Option<Action>,
 }
 
 fn is_uniq(vec: &Vec<Point>) -> bool {
@@ -112,15 +113,11 @@ impl Hook {
                     .finish()?;
             }
             Ch(x) => {
-                if *x == 0 {
-                    return Err(ChainOfZero);
+                if matches!(self.last, Some(Ch(_))) {
+                    return Err(ChainAfterChain);
                 }
                 let start = self.now.cursor;
-                let mut stitch = Stitch::linger(self)?;
-                for _ in 0..*x {
-                    stitch = stitch.pull_over()?;
-                }
-                self = stitch.finish()?;
+                self = Stitch::linger(self)?.chain(*x)?;
                 self.round_spans.push((start, self.now.cursor - 1));
             }
             Attach(_) => unimplemented!(),
@@ -134,6 +131,12 @@ impl Hook {
             FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
+
+        match action {
+            Reverse | FLO | BLO | BL | Goto(_) | Mark(_) | FO | Action::Color(_) => (),
+            _ => self.last = Some(*action),
+        }
+
         Ok(self)
     }
 }

@@ -41,28 +41,59 @@ impl Stitch {
         Ok(self)
     }
 
-    pub fn pull_over(mut self) -> Progress {
-        if self.lingering {
-            let prev = previous_stitch(&mut self.hook);
-            self.hook.edges.link(prev, self.hook.now.cursor);
-        }
-
-        use WorkingLoops::*;
-        match self.hook.now.working_on {
-            Both => (),
-            Back | Front => self.register_single_loop()?,
-        }
+    fn register_stitch(mut self) -> Progress {
         self.hook.edges.grow();
         self.hook.colors.push(self.hook.color);
         self.hook.parents.push(self.anchored);
-        self.hook.now.anchors.push_back(self.hook.now.cursor);
         self.hook.now.cursor += 1;
         self.hook.now.round_count += 1;
         Ok(self)
     }
 
-    pub fn finish(self) -> Result<Hook, HookError> {
-        Ok(self.next_anchor()?.hook)
+    fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress {
+        if self.lingering {
+            let prev = previous_stitch(&mut self.hook);
+            self.hook.edges.link(prev, self.hook.now.cursor);
+        }
+
+        if accept_single_loop {
+            use WorkingLoops::*;
+            match self.hook.now.working_on {
+                Both => (),
+                Back | Front => self.register_single_loop()?,
+            }
+        }
+
+        Ok(self.register_stitch()?)
+    }
+
+    pub fn pull_over(mut self) -> Progress {
+        self.hook.now.anchors.push_back(self.hook.now.cursor);
+        Ok(self.pull_over_without_registering_anchor(true)?)
+    }
+
+    pub fn finish(mut self) -> Result<Hook, HookError> {
+        if self.anchored.is_some() {
+            self = self.next_anchor()?
+        }
+        Ok(self.hook)
+    }
+
+    pub fn chain(mut self, stitches: usize) -> Result<Hook, HookError> {
+        if stitches == 0 {
+            return Err(ChainOfZero);
+        }
+
+        self.hook.now.anchors.push_front(self.hook.now.cursor);
+        self = self.pull_over_without_registering_anchor(true)?;
+
+        // skip first and last
+        for _ in 2..stitches {
+            self.hook.now.anchors.push_front(self.hook.now.cursor);
+            self = self.pull_over_without_registering_anchor(false)?;
+        }
+        self = self.pull_over_without_registering_anchor(false)?;
+        self.finish()
     }
 
     pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
@@ -161,12 +192,50 @@ mod tests {
         q!(h.now.anchors, Queue::from([7, 8, 9]));
     }
 
-    #[test]
-    fn test_chain() {
+    fn chain() -> Hook {
         let mut h = mr3();
         h = h.perform(&Ch(3)).unwrap();
-        q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6]));
+        q!(h.now.anchors, Queue::from([5, 4, 1, 2, 3]));
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![
+                //mr
+                vec![],
+                vec![0],
+                vec![0, 1],
+                vec![0, 2],
+                // chain
+                vec![3],
+                vec![4],
+                vec![5],
+                vec![]
+            ])
+        );
+        h
     }
 
-    //fn test_sc_after_chain() {}
+    #[test]
+    fn test_sc_after_chain() {
+        let mut h = chain();
+        h = h.perform(&Sc).unwrap();
+        q!(h.now.anchors, Queue::from([4, 1, 2, 3, 7]));
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![
+                //mr
+                vec![],
+                vec![0],
+                vec![0, 1],
+                vec![0, 2],
+                // chain
+                vec![3],
+                vec![4],
+                vec![5],
+                // sc
+                vec![6, 5],
+                vec![]
+            ])
+        );
+        // h
+    }
 }

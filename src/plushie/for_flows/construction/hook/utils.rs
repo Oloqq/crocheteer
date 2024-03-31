@@ -19,6 +19,8 @@ pub enum HookError {
     SingleLoopOnNonAnchored,
     SingleLoopNoGrandparent,
     ChainOfZero,
+    /// Chains are finished with some custom logic, chains one after another is currently not supported
+    ChainAfterChain,
 }
 
 impl From<HookError> for String {

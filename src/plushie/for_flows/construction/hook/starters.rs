@@ -42,6 +42,7 @@ impl Hook {
                     override_previous_stitch: None,
                     color,
                     colors,
+                    last: None,
                 })
             }
             Ch(x) => {
@@ -77,6 +78,7 @@ impl Hook {
                     override_previous_stitch: None,
                     color,
                     colors,
+                    last: None,
                 })
             }
             _ => Err(HookError::BadStarter),
