@@ -2,6 +2,7 @@ mod hook;
 mod hook_result;
 
 use self::hook::Hook;
+use self::hook_result::HookResult;
 pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
 use super::centroid::Centroids;
 use super::nodes::Nodes;
@@ -17,7 +18,6 @@ impl Plushie {
         peculiarities: HashMap<usize, Peculiarity>,
         colors: Vec<Color>,
         edges: Vec<Vec<usize>>,
-        approximate_height: f32,
     ) -> Self {
         let mut displacement = Vec::with_capacity(edges.len());
         displacement.push(V::zeros());
@@ -26,23 +26,24 @@ impl Plushie {
             edges: vec![vec![]],
             edges_goal: edges,
             params,
-            centroids: Centroids::new(0, approximate_height),
+            centroids: Centroids::new(0, 0.0),
             displacement,
             force_node_construction_timer: 0.0,
         }
     }
 
-    fn with_initial_positions(
-        params: Params,
-        nodes: Nodes,
-        edges: Vec<Vec<usize>>,
-        approximate_height: f32,
-    ) -> Self {
+    fn with_initial_positions(params: Params, hook_result: HookResult) -> Self {
+        let edges: Vec<Vec<usize>> = hook_result.edges.into();
+        let nodes = Nodes::new(
+            hook_result.nodes,
+            hook_result.peculiarities,
+            hook_result.colors,
+        );
         Self {
             displacement: vec![V::zeros(); edges.len()],
             edges_goal: edges.clone(),
             edges,
-            centroids: Centroids::new(params.centroids.number, approximate_height),
+            centroids: Centroids::new(params.centroids.number, hook_result.approximate_height),
             params,
             nodes,
             force_node_construction_timer: 0.0,
@@ -59,21 +60,8 @@ impl Plushie {
                 hook_result.peculiarities,
                 hook_result.colors,
                 hook_result.edges.into(),
-                hook_result.approximate_height,
             ),
-            Initializer::Cylinder => {
-                let nodes = Nodes::new(
-                    hook_result.nodes,
-                    hook_result.peculiarities,
-                    hook_result.colors,
-                );
-                Plushie::with_initial_positions(
-                    params,
-                    nodes,
-                    hook_result.edges.into(),
-                    hook_result.approximate_height,
-                )
-            }
+            Initializer::Cylinder => Plushie::with_initial_positions(params, hook_result),
         })
     }
 

@@ -1,6 +1,5 @@
 # Next
 
-- use proper macro for sanity assertions
 - Chains
 
 # Backlog

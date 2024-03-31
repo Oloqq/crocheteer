@@ -1,7 +1,9 @@
 mod starters;
 mod state_mgmt;
 mod utils;
+mod working_stitch;
 
+use self::working_stitch::Stitch;
 use super::hook_result::{Edges, HookResult};
 use crate::{
     flow::{
@@ -28,7 +30,7 @@ struct Moment {
 }
 
 /// Responsible for building the graph used in the simulation
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Hook {
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
@@ -60,7 +62,7 @@ impl Hook {
         let first = flow.next().ok_or(Empty)?;
         let mut hook = Hook::start_with(&first)?;
         while let Some(action) = flow.next() {
-            hook.perform(&action)?;
+            hook = hook.perform(&action)?;
         }
 
         let result = hook.finish();
@@ -78,7 +80,7 @@ impl Hook {
         HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 
-    pub fn perform(&mut self, action: &Action) -> Result<(), HookError> {
+    pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
         log::trace!("Performing {action:?}");
 
         if self.fastened_off && !matches!(action, Goto(_)) {
@@ -87,32 +89,28 @@ impl Hook {
 
         match action {
             Sc => {
-                self.link_to_previous_stitch();
-                self.link_to_previous_round();
-                self.finish_stitch();
-                self.next_anchor();
+                self = Stitch::linger(self).pull_through().pull_over().finish();
             }
             Inc => {
-                for _ in 0..2 {
-                    self.link_to_previous_stitch();
-                    self.link_to_previous_round();
-                    self.finish_stitch();
-                }
-                self.next_anchor();
+                self = Stitch::linger(self)
+                    .pull_through()
+                    .pull_over()
+                    .pull_through()
+                    .pull_over()
+                    .finish();
             }
             Dec => {
-                self.link_to_previous_round();
-                self.next_anchor();
-                self.link_to_previous_round();
-                self.link_to_previous_stitch();
-                self.finish_stitch();
-                self.next_anchor();
+                self = Stitch::linger(self)
+                    .pull_through()
+                    .next_anchor()
+                    .pull_through()
+                    .pull_over()
+                    .finish();
             }
             Ch(x) => {
                 let start = self.now.cursor;
                 for _ in 0..*x {
-                    self.link_to_previous_stitch();
-                    self.finish_stitch(); // FIXME parent, working loop, and round count is meaningless
+                    self = Stitch::linger(self).pull_over().finish();
                 }
                 self.round_spans.push((start, self.now.cursor - 1));
             }
@@ -130,7 +128,7 @@ impl Hook {
             }
             Color(c) => self.color = *c,
         };
-        Ok(())
+        Ok(self)
     }
 }
 
@@ -171,14 +169,14 @@ mod tests {
     #[test]
     fn test_perform_sc() {
         let mut h = Hook::start_with(&MR(6)).unwrap();
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.now.anchor, 2);
         q!(h.now.cursor, 8);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 5);
         q!(h.round_spans, vec![(0, 6)]);
 
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.now.anchor, 3);
         q!(h.now.cursor, 9);
         q!(h.now.round_count, 2);
@@ -190,16 +188,16 @@ mod tests {
     fn test_next_round() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
         q!(h.round_spans.len(), 1);
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3)]);
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3)]);
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
 
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 2);
@@ -208,7 +206,7 @@ mod tests {
     #[test]
     fn test_perform_inc() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        h.perform(&Inc).unwrap();
+        h = h.perform(&Inc).unwrap();
         q!(h.now.anchor, 2);
         q!(h.now.cursor, 6);
         q!(h.now.round_count, 2);
@@ -219,7 +217,7 @@ mod tests {
     #[test]
     fn test_perform_dec() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        h.perform(&Dec).unwrap();
+        h = h.perform(&Dec).unwrap();
         q!(h.now.anchor, 3);
         q!(h.now.cursor, 5);
         q!(h.now.round_count, 1);
@@ -233,9 +231,9 @@ mod tests {
         q!(h.now.anchor, 1);
         q!(h.now.cursor, 4);
         q!(h.edges.len(), 5);
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.now.anchor, 4);
         q!(h.now.cursor, 7);
         q!(h.now.round_count, 0);
@@ -255,7 +253,7 @@ mod tests {
                 vec![]
             ])
         );
-        h.perform(&FO).unwrap();
+        h = h.perform(&FO).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -276,15 +274,15 @@ mod tests {
     #[test]
     fn test_round_spans_with_dec() {
         let mut h = Hook::start_with(&MR(4)).unwrap();
-        h.perform(&Dec).unwrap();
-        h.perform(&Dec).unwrap();
+        h = h.perform(&Dec).unwrap();
+        h = h.perform(&Dec).unwrap();
         assert_eq!(h.round_spans, vec![(0, 4), (5, 6)]);
     }
 
     #[test]
     fn test_error_on_stitch_after_fo() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        h.perform(&FO).unwrap();
+        h = h.perform(&FO).unwrap();
         h.clone().perform(&Sc).expect_err("Can't continue after FO");
         h.clone()
             .perform(&Inc)
@@ -297,10 +295,10 @@ mod tests {
     #[test]
     fn test_goto_after_fo() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        h.perform(&Mark(0)).unwrap();
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Mark(0)).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(
             h.edges,
@@ -315,7 +313,7 @@ mod tests {
                 vec![]
             ])
         );
-        h.perform(&FO).unwrap();
+        h = h.perform(&FO).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -331,13 +329,13 @@ mod tests {
             ])
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
-        h.perform(&Goto(0)).unwrap();
+        h = h.perform(&Goto(0)).unwrap();
         q!(h.now.cursor, 8);
         q!(h.now.anchor, 1);
         q!(h.override_previous_stitch, Some(3));
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
-        h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -360,7 +358,7 @@ mod tests {
     #[test]
     fn test_chain_simple() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        h.perform(&Ch(3)).unwrap();
+        h = h.perform(&Ch(3)).unwrap();
         q!(
             h.edges,
             Edges::from(vec![

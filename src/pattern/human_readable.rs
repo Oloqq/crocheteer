@@ -555,7 +555,7 @@ R6: 3 sc, inc, dec (6)
                     number: 3,
                     ..Default::default()
                 },
-                floor: false,
+                floor: true,
                 ..Default::default()
             },
         };
