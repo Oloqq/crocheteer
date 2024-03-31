@@ -6,17 +6,17 @@ use HookError::*;
 pub struct Stitch {
     hook: Hook,
     anchored: Option<usize>,
+    lingering: bool,
 }
 
 type Progress = Result<Stitch, HookError>;
 
 impl Stitch {
-    pub fn linger(mut hook: Hook) -> Progress {
-        let prev = previous_stitch(&mut hook);
-        hook.edges.link(prev, hook.now.cursor);
+    pub fn linger(hook: Hook) -> Progress {
         Ok(Self {
             hook,
             anchored: None,
+            lingering: true,
         })
     }
 
@@ -42,6 +42,11 @@ impl Stitch {
     }
 
     pub fn pull_over(mut self) -> Progress {
+        if self.lingering {
+            let prev = previous_stitch(&mut self.hook);
+            self.hook.edges.link(prev, self.hook.now.cursor);
+        }
+
         use WorkingLoops::*;
         match self.hook.now.working_on {
             Both => (),

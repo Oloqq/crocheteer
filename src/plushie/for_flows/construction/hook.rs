@@ -208,13 +208,24 @@ mod tests {
     #[test]
     fn test_perform_inc() {
         let mut h = Hook::start_with(&MR(3)).unwrap();
-        q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Inc).unwrap();
         q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
         q!(h.now.cursor, 6);
         q!(h.now.round_count, 2);
         q!(h.now.round_left, 2);
         q!(h.round_spans, vec![(0, 3)]);
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![
+                vec![],
+                vec![0],
+                vec![0, 1],
+                vec![0, 2],
+                vec![3, 1],
+                vec![4, 1],
+                vec![]
+            ])
+        )
     }
 
     #[test]
