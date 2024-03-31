@@ -38,15 +38,20 @@ pub struct Hook {
     /// When chains are introduced, round_spans acts merely as data for Initializer::Cylinder,
     /// and it's content may not be connected to what a human would consider a working round
     round_spans: Vec<(usize, usize)>,
-    /// Storage of index -> it's anchor
+    /// Storage of index -> it's anchor, used for single loop forces
     parents: Vec<Option<usize>>,
+    /// Storage of spots for Mark and Goto
+    labels: HashMap<Label, Moment>,
+    /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.
+    color: Color,
+    /// Storage of index -> it's color. todo: use less memory by storing changes
+    colors: Vec<Color>,
+    // Previous stitch might need to be overwritten after a Goto
+    override_previous_stitch: Option<usize>,
+
     part_start: usize,
     parts: Vec<Part>,
-    labels: HashMap<Label, Moment>,
     at_junction: bool,
-    override_previous_stitch: Option<usize>,
-    color: Color,
-    colors: Vec<Color>,
 }
 
 fn is_uniq(vec: &Vec<Point>) -> bool {
