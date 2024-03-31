@@ -128,7 +128,7 @@ impl Hook {
             MR(_) => return Err(StarterInTheMiddle),
             FO => {
                 self.fastened_off = true;
-                self = Stitch::fasten_off_with_tip(self)
+                self = Stitch::fasten_off_with_tip(self)?;
             }
             Color(c) => self.color = *c,
         };

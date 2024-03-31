@@ -14,6 +14,8 @@ pub enum HookError {
     DuplicateLabel(Label),
     UnknownLabel(Label),
     CantMarkAfterFO,
+    NoAnchorToPullThrough,
+    FORequires2Anchors,
 }
 
 impl From<HookError> for String {

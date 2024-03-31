@@ -1,6 +1,8 @@
 use super::utils::{HookError, Peculiarity, WorkingLoops};
 use super::Hook;
 
+use HookError::*;
+
 pub struct Stitch {
     hook: Hook,
     anchored: Option<usize>,
@@ -20,7 +22,7 @@ impl Stitch {
 
     pub fn pull_through(mut self) -> Progress {
         let hook = &mut self.hook;
-        let anchor = *hook.now.anchors.front().expect("there is an anchor");
+        let anchor = *hook.now.anchors.front().ok_or(NoAnchorToPullThrough)?;
         hook.edges.link(anchor, hook.now.cursor);
         self.anchored = Some(anchor);
         use WorkingLoops::*;
@@ -63,8 +65,11 @@ impl Stitch {
         Ok(self.next_anchor()?.hook)
     }
 
-    pub fn fasten_off_with_tip(mut hook: Hook) -> Hook {
-        assert!(hook.now.anchors.len() > 0, "FO with empty queue");
+    pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
+        if hook.now.anchors.len() < 2 {
+            return Err(FORequires2Anchors);
+        }
+
         let tip = hook.now.cursor;
         while let Some(anchor) = hook.now.anchors.pop_front() {
             hook.edges.link(anchor, tip);
@@ -76,7 +81,7 @@ impl Stitch {
         hook.parts.push((hook.part_start, tip));
         hook.colors.push(hook.color);
         hook.now.cursor += 1;
-        hook
+        Ok(hook)
     }
 
     fn register_single_loop(&mut self) {
@@ -105,4 +110,13 @@ fn previous_stitch(hook: &mut Hook) -> usize {
         }
         None => hook.now.cursor - 1,
     }
+}
+
+#[cfg(test)]
+mod tests {
+    // use super::*;
+    // use pretty_assertions::assert_eq as q;
+
+    // test magic ring lower and upper limit
+    // test starting with short chain (e.g. Ch(1))
 }
