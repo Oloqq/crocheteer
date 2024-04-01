@@ -5,20 +5,51 @@ use crate::flow::actions::Action;
 use pest::iterators::{Pair, Pairs};
 
 #[derive(Debug)]
-pub enum Error {
+pub struct Error {
+    code: ErrorCode,
+    #[allow(unused)] // used in Debug (and therefore in Display)
+    line: usize,
+    #[allow(unused)] // used in Debug (and therefore in Display)
+    col: usize,
+}
+
+#[derive(Debug)]
+pub enum ErrorCode {
     Lexer(pest::error::Error<Rule>),
     UnknownStitch(String),
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
 }
 
-impl Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self:?}")
+impl Error {
+    pub fn lexer(e: pest::error::Error<Rule>) -> Self {
+        Self {
+            code: ErrorCode::Lexer(e),
+            line: 0,
+            col: 0,
+        }
     }
 }
 
-use Error::*;
+fn error(code: ErrorCode, pair: &Pair<Rule>) -> Error {
+    let (line, col) = pair.line_col();
+    Error { code, line, col }
+}
+
+fn err(code: ErrorCode, pair: &Pair<Rule>) -> Result<(), Error> {
+    Err(error(code, pair))
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.code {
+            Lexer(e) => write!(f, "{e}"),
+            _ => write!(f, "{self:?}"),
+        }
+    }
+}
+
+use ErrorCode::*;
 
 impl Pattern {
     pub fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
@@ -41,7 +72,7 @@ impl Pattern {
                         let n1 = r_to_usize(r1);
                         let n2 = r_to_usize(r2);
                         if n2 <= n1 {
-                            return Err(RoundRangeOutOfOrder(s.to_string()));
+                            return err(RoundRangeOutOfOrder(s.to_string()), &inner);
                         }
                         n2 - n1 + 1
                     }
@@ -71,7 +102,7 @@ impl Pattern {
                 Rule::NUMBER => {
                     let number = integer(&first)?;
                     let action = Action::parse(sequence.next().unwrap().as_str())
-                        .ok_or(UnknownStitch(first.as_str().to_string()))?;
+                        .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
 
                     actions.reserve(number);
                     for _ in 0..number {
@@ -79,8 +110,9 @@ impl Pattern {
                     }
                 }
                 Rule::KW_STITCH => {
+                    // println!("{}", first.as_str());
                     let action = Action::parse(first.as_str())
-                        .ok_or(UnknownStitch(first.as_str().to_string()))?;
+                        .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
                     actions.push(action);
                 }
                 Rule::repetition => todo!(),
@@ -99,5 +131,5 @@ fn integer(rule: &Pair<Rule>) -> Result<usize, Error> {
     Ok(rule
         .as_str()
         .parse()
-        .map_err(|_| ExpectedInteger(rule.to_string()))?)
+        .map_err(|_| error(ExpectedInteger(rule.to_string()), rule))?)
 }

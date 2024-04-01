@@ -26,7 +26,7 @@ pub fn program_to_flow(program: &str) -> Result<SimpleFlow, Error> {
 
 pub fn load(program: &str) -> Result<Pattern, Error> {
     let mut p = Pattern::new();
-    let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::Lexer(e))?;
+    let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
     for line_pair in line_pairs {
         for pair in line_pair.into_inner() {
             match pair.as_rule() {
@@ -57,8 +57,8 @@ mod tests {
 : sc, sc (_)
 ";
         match load(prog) {
-            Err(Error::Lexer(e)) => {
-                println!("{e}")
+            Err(e) => {
+                println!("{e}");
             }
             _ => (),
         };

@@ -25,7 +25,8 @@ not_newline = _{
 }
 
 LINEEND     =  { NEWLINE | comment | EOI }
-KW_STITCH    =  { "sc" | "inc" | "dec" | "MR" ~ NUMBER }
+KW_STITCH   =  { "sc" | "inc" | "dec" | KW_MR }
+KW_MR       = @{ ("MR " ~ NUMBER)| ("MR" ~ NUMBER) }
 KW_CONTROL  =  { "FO" }
 PLACEHOLDER =  { "_" }
 R           =  { "R" }

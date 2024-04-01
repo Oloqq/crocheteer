@@ -64,10 +64,6 @@ fn main() {
                 let content = fs::read_to_string(&pattern).unwrap();
                 match program_to_flow(&content) {
                     Ok(val) => val,
-                    Err(Error::Lexer(e)) => {
-                        println!("{e}");
-                        return;
-                    }
                     Err(e) => panic!("{e}"),
                 }
             };

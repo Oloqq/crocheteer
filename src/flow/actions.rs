@@ -31,10 +31,13 @@ pub enum Action {
 }
 
 impl Action {
-    pub fn parse(x: &str) -> Option<Self> {
+    pub fn parse(src: &str) -> Option<Self> {
         use Action::*;
+        // println!("{src}");
+        let mut tokens = src.split(" ");
+        let first = tokens.next().unwrap();
 
-        Some(match x {
+        Some(match first {
             "sc" => Sc,
             "inc," => Inc,
             "dec," => Dec,
@@ -46,7 +49,16 @@ impl Action {
             // "bl," => BL,
             // "goto(Label)," => Goto,
             // "mark(Label)," => Mark,
-            // "mr(usize)," => MR,
+            "MR" => {
+                let num: usize = match tokens.next() {
+                    Some(x) => match x.parse() {
+                        Ok(x) => x,
+                        Err(_) => return None,
+                    },
+                    None => return None,
+                };
+                MR(num)
+            }
             // "fo," => FO,
             // "color(Color)," => Color,
             _ => return None,
