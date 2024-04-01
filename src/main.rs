@@ -1,27 +1,20 @@
 mod args;
 mod common;
 mod flow;
-mod meshes_sandbox;
 mod pattern;
 mod plushie;
 mod ws_sim;
 extern crate nalgebra as na;
 
-// use crate::flow::simple_flow::SimpleFlow;
-#[allow(unused)]
-use crate::meshes_sandbox::*;
+use self::args::*;
+use self::ws_sim::plushie_sim::PlushieSimulation;
 use crate::pattern::pest_parser::Pattern;
 use crate::plushie::examples;
 use crate::plushie::Params;
-use crate::plushie::PlushieTrait;
-use crate::plushie::{LegacyPlushie, Plushie};
-use crate::{common::*, ws_sim::serve_websocket};
-
-use args::*;
-use pattern::Pattern as LegacyPattern;
+use crate::plushie::Plushie;
+use crate::ws_sim::serve_websocket;
 use std::fs;
 use std::io::Write;
-use ws_sim::plushie_sim::PlushieSimulation;
 
 fn main() {
     env_logger::Builder::from_default_env()
@@ -32,31 +25,19 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket {} => {
-            // let plushie = examples::vase_simple_flow();
-            // let plushie = examples::pillar_blo();
-            // let plushie = examples::pillar_simple_flow();
-            // let plushie = examples::hat();
-            // let plushie = examples::ergogrzib();
-            let plushie = examples::fatflailer();
+            let plushie = examples::ergogrzib();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
-        Dev { num } => exec_dev_action(num),
+        Dev { num: _ } => println!(":)"),
         Genetic(genetic) => {
             let suite = &genetic.suite;
             println!("Selected suite: {suite}");
             unimplemented!();
             // run_benchmark(&suite, &genetic);
         }
-        FromPattern {
-            is_string,
-            pattern,
-            stl,
-            ws,
-        } => {
-            let pattern = if is_string {
-                unimplemented!()
-            } else {
+        FromPattern { pattern, stl, ws } => {
+            let pattern = {
                 let content = fs::read_to_string(&pattern).unwrap();
                 match Pattern::parse(&content) {
                     Ok(val) => val,
@@ -68,11 +49,11 @@ fn main() {
             };
             let mut params: Params = Default::default();
             params.update(&pattern.meta);
-
             let plushie = Plushie::from_flow(pattern, params).unwrap();
 
             if stl.is_some() && ws || stl.is_none() && !ws {
-                unimplemented!("use either --stl or --ws");
+                println!("use either --stl or --ws");
+                return;
             }
 
             if let Some(_stl_path) = stl {
@@ -84,30 +65,5 @@ fn main() {
                 serve_websocket(sim);
             }
         }
-        FromProtoPattern { protopat: _ } => todo!(),
-    }
-}
-
-fn exec_dev_action(num: usize) {
-    fn generate(name: &str, func: fn() -> (LegacyPattern, LegacyPlushie)) {
-        let (_pat, mut plushie) = func();
-        // println!(
-        //     "{:?}",
-        //     plushie.points.iter().map(|a| a.y).collect::<Vec<_>>()
-        // );
-        plushie.animate();
-        // println!(
-        //     "{:?}",
-        //     plushie.points.iter().map(|a| a.y).collect::<Vec<_>>()
-        // );
-        save_mesh(name, plushie.to_mesh());
-    }
-
-    println!("dev action {num}");
-    match num {
-        2 => generate("generated/pillar.stl", examples::pillar),
-        3 => generate("generated/ball.stl", examples::ball),
-        4 => generate("generated/bigball.stl", examples::bigball),
-        _ => println!("no such action"),
     }
 }

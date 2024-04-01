@@ -71,6 +71,7 @@ pub fn coords(p: Point) -> [f32; 3] {
     [p.x, p.y, p.z]
 }
 
+#[allow(unused)]
 pub fn make_triangle(p1: Point, p2: Point, p3: Point) -> Triangle {
     Triangle {
         // this is fine as long as I only care about seeing the wireframe
@@ -83,6 +84,7 @@ pub fn make_triangle(p1: Point, p2: Point, p3: Point) -> Triangle {
     }
 }
 
+#[allow(unused)]
 pub fn save_mesh(name: &str, mesh: Mesh) {
     let mut file = OpenOptions::new()
         .write(true)

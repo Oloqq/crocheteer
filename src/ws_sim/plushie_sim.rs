@@ -140,17 +140,18 @@ impl Simulation for PlushieSimulation {
                 self.plushie.params().centroids.number = num;
             }
             "load_example" => {
-                use crate::plushie::examples;
-                let name = tokens.get(1).unwrap();
-                match examples::get(name) {
-                    Some((pattern, plushie)) => {
-                        self.controls.need_init = true;
-                        self.plushie = Box::new(plushie);
-                        self.send("pattern_update", &pattern.human_readable());
-                        self.send("status", "Loaded an example");
-                    }
-                    None => self.send("status", "no such example"),
-                }
+                self.send("status", "examples are temporarily not available");
+                log::warn!("examples are temporarily not available");
+                // let name = tokens.get(1).unwrap();
+                // match examples::get(name) {
+                //     Some((pattern, plushie)) => {
+                //         self.controls.need_init = true;
+                //         self.plushie = Box::new(plushie);
+                //         self.send("pattern_update", &pattern.human_readable());
+                //         self.send("status", "Loaded an example");
+                //     }
+                //     None => self.send("status", "no such example"),
+                // }
             }
             _ => log::error!("Unexpected msg: {msg}"),
         }

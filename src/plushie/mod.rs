@@ -2,10 +2,8 @@ pub mod examples;
 pub mod params;
 
 mod for_flows;
-mod legacy;
 
 pub use for_flows::Plushie;
-pub use legacy::Plushie as LegacyPlushie;
 pub use params::Params;
 
 use crate::common::*;
@@ -35,7 +33,6 @@ pub fn parse_to_any_plushie(
     pattern: &str,
 ) -> Result<Box<dyn PlushieTrait>, String> {
     let inner: Box<dyn PlushieTrait> = match selector {
-        "legacy" => Box::new(LegacyPlushie::parse_any_format(pattern)?),
         "flow" => Box::new(Plushie::parse(pattern)?),
         _ => return Err(format!("unrecognized plushie version: {selector}")),
     };

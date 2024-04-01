@@ -20,22 +20,14 @@ pub enum Command {
         about = "Transformations starting from a pattern file"
     )]
     FromPattern {
-        #[structopt(short, long)]
-        is_string: bool,
-
         pattern: PathBuf,
 
+        #[structopt(short, long)]
         stl: Option<PathBuf>,
 
         #[structopt(short, long)]
         ws: bool,
     },
-
-    #[structopt(
-        aliases = &["ffp", "proto"],
-        about = "Transformations starting from a proto pattern file"
-    )]
-    FromProtoPattern { protopat: Option<PathBuf> },
 }
 
 #[derive(StructOpt, Debug)]
