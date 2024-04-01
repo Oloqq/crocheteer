@@ -1,10 +1,11 @@
 # Next
 - update documentation relating to hook and plushie
+- allow all control sequences in the human readable pattern
 
 # Backlog
+
 - documentation
   - clean up images (into a folder)
-
 
 - plushie
   - investigate plushie rotating
