@@ -16,7 +16,7 @@ use crate::plushie::{LegacyPlushie, Plushie};
 use crate::{common::*, ws_sim::serve_websocket};
 
 use args::*;
-use pattern::pest_parser::{program_to_flow, Error};
+use pattern::pest_parser::program_to_flow;
 use pattern::Pattern as LegacyPattern;
 use std::fs;
 use std::io::Write;

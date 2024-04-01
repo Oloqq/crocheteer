@@ -3,7 +3,7 @@ program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI }
 meta    = { "@" ~ metakey ~ "=" ~ NUMBER ~ NEWLINE }
 metakey = { "centroids" }
 
-round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND }
+round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND } // TODO make round_end optional
 roundspec   = {
     round_range
   | round_index
@@ -14,10 +14,25 @@ round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
 round_end   =  { "(" ~ (NUMBER | PLACEHOLDER) ~ ")" }
 
 stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
-stitch_sequence  = { (NUMBER ~ KW_STITCH) | KW_STITCH | repetition }
+stitch_sequence  = {
+      (NUMBER ~ KW_STITCH)
+    | KW_STITCH
+    | interstitchable_operations
+    | repetition }
 repetition = { "[" ~ stitches ~ "]" ~ "x" ~ #times = NUMBER }
 
-control = { KW_CONTROL ~ LINEEND }
+control = { operation_sequence ~ LINEEND }
+operation_sequence = { operation ~ ("," ~ operation)* }
+arg_int = { "(" ~ NUMBER ~ ")" }
+operation = {
+      (MR ~ arg_int)
+    |  FO
+}
+interstitchable_operations = {
+    "TODO"
+}
+MR = { "MR" }
+FO = { "FO" }
 
 comment     = _{ "#" ~ not_newline* ~ NEWLINE }
 not_newline = _{
@@ -25,9 +40,7 @@ not_newline = _{
 }
 
 LINEEND     =  { NEWLINE | comment | EOI }
-KW_STITCH   =  { "sc" | "inc" | "dec" | KW_MR }
-KW_MR       = @{ ("MR " ~ NUMBER)| ("MR" ~ NUMBER) }
-KW_CONTROL  =  { "FO" }
+KW_STITCH   =  { "sc" | "inc" | "dec" }
 PLACEHOLDER =  { "_" }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }

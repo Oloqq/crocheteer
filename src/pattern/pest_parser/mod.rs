@@ -21,15 +21,13 @@ pub fn program_to_flow(program: &str) -> Result<SimpleFlow, Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pretty_assertions::assert_eq;
-    use Action::*;
+    // use pretty_assertions::assert_eq;
+    // use Action::*;
 
     #[test]
     #[ignore]
     fn test_bruh() {
-        let prog = ": sc, 2 sc (_)
-: sc, sc (_)
-";
+        let prog = "MR ( 6 )";
         match Pattern::parse(prog) {
             Err(e) => {
                 println!("{e}");

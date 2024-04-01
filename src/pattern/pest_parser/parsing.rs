@@ -67,8 +67,8 @@ impl Pattern {
                 match pair.as_rule() {
                     Rule::round => p.round(pair.into_inner())?,
                     Rule::comment => (),
-                    Rule::meta => (),
-                    Rule::control => (),
+                    Rule::meta => todo!(),
+                    Rule::control => p.control(pair.into_inner().next().unwrap().into_inner())?,
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
@@ -145,13 +145,31 @@ impl Pattern {
         }
         Ok(actions)
     }
+
+    fn control(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
+        for pair in pairs {
+            assert!(matches!(pair.as_rule(), Rule::operation));
+            let mut tokens = pair.into_inner();
+            let opcode = tokens.next().unwrap();
+            match opcode.as_rule() {
+                Rule::MR => {
+                    let num = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
+                    self.actions.push(Action::MR(num));
+                }
+                Rule::FO => self.actions.push(Action::FO),
+                Rule::EOI => (),
+                _ => unreachable!(),
+            }
+        }
+        Ok(())
+    }
 }
 
-fn integer(rule: &Pair<Rule>) -> Result<usize, Error> {
-    Ok(rule
+fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
+    Ok(pair
         .as_str()
         .parse()
-        .map_err(|_| error(ExpectedInteger(rule.to_string()), rule))?)
+        .map_err(|_| error(ExpectedInteger(pair.as_str().to_string()), pair))?)
 }
 
 #[cfg(test)]
@@ -201,6 +219,30 @@ mod tests {
         let prog = "R2-R4: sc (1)\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+    }
+
+    #[test]
+    fn test_mr() {
+        let prog = "MR(6)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![MR(6)]);
+        let prog = "MR(6)\n: sc (1)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![MR(6), Sc]);
+    }
+
+    #[test]
+    fn test_fo() {
+        let prog = ": sc (1)\nFO";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, FO]);
+    }
+
+    #[test]
+    fn test_control_sequence() {
+        let prog = "MR(3), FO";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![MR(3), FO]);
     }
 
     // test: deny repetition of goto etc.
