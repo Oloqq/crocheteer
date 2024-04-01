@@ -32,5 +32,6 @@
 
 - deployment
   - make rust serve the index.html
+    - provide a binary on github
   - heroku https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust
   - should be $5 per month
