@@ -1,15 +1,7 @@
-use super::Pattern;
+use super::{Pattern, Rule};
 use crate::flow::actions::Action;
-use pest::{
-    iterators::{Pair, Pairs},
-    Parser,
-};
-use pest_derive::Parser;
+use pest::iterators::{Pair, Pairs};
 use std::fmt::Display;
-
-#[derive(Parser)]
-#[grammar = "pattern/pest_parser/pat.pest"]
-struct PatParser;
 
 #[derive(Debug)]
 pub struct Error {
@@ -59,22 +51,22 @@ impl Display for Error {
 use ErrorCode::*;
 
 impl Pattern {
-    pub fn parse(program: &str) -> Result<Pattern, Error> {
-        let mut p = Pattern::new();
-        let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
-        for line_pair in line_pairs {
+    pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
+        for line_pair in pairs {
             for pair in line_pair.into_inner() {
                 match pair.as_rule() {
-                    Rule::round => p.round(pair.into_inner())?,
+                    Rule::round => self.round(pair.into_inner())?,
                     Rule::comment => (),
                     Rule::meta => todo!(),
-                    Rule::control => p.control(pair.into_inner().next().unwrap().into_inner())?,
+                    Rule::control => {
+                        self.control(pair.into_inner().next().unwrap().into_inner())?
+                    }
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
             }
         }
-        Ok(p)
+        Ok(())
     }
 
     fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {

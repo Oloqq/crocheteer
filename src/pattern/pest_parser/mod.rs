@@ -1,15 +1,31 @@
 mod parsing;
 
+use std::collections::HashMap;
+
 pub use self::parsing::Error;
 use crate::flow::{actions::Action, simple_flow::SimpleFlow};
+use pest::Parser;
+use pest_derive::Parser;
+
+#[derive(Parser)]
+#[grammar = "pattern/pest_parser/pat.pest"]
+struct PatParser;
 
 pub struct Pattern {
     actions: Vec<Action>,
+    #[allow(unused)]
+    meta: HashMap<String, String>,
 }
 
 impl Pattern {
-    pub fn new() -> Self {
-        Self { actions: vec![] }
+    pub fn parse(program: &str) -> Result<Pattern, Error> {
+        let mut p = Self {
+            actions: vec![],
+            meta: HashMap::new(),
+        };
+        let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
+        p.program(line_pairs)?;
+        Ok(p)
     }
 }
 

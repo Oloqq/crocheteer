@@ -1,7 +1,6 @@
 program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI }
 
-meta    = { "@" ~ metakey ~ "=" ~ NUMBER ~ NEWLINE }
-metakey = { "centroids" }
+meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ NEWLINE }
 
 round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND } // TODO make round_end optional
 roundspec   = {
@@ -44,6 +43,7 @@ KW_STITCH   =  { "sc" | "inc" | "dec" }
 PLACEHOLDER =  { "_" }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
+IDENT       = @{ (ALPHA | DIGIT | "_")+ }
 NUMBER      = @{ NONZERO ~ DIGIT* }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
