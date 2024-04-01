@@ -1,9 +1,9 @@
 pub mod examples;
 pub mod params;
 
-mod for_flows;
+mod flowing;
 
-pub use for_flows::Plushie;
+pub use flowing::Plushie;
 pub use params::Params;
 
 use crate::common::*;

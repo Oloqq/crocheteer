@@ -1,6 +1,6 @@
 use crate::{
     common::{CheckNan, Point, V},
-    plushie::{for_flows::nodes::Nodes, params::CentroidParams},
+    plushie::{flowing::nodes::Nodes, params::CentroidParams},
     sanity,
 };
 
