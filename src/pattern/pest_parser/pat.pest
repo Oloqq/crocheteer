@@ -16,9 +16,9 @@ stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
 stitch_sequence  = {
       (NUMBER ~ KW_STITCH)
     | KW_STITCH
-    | interstitchable_operations
+    | interstitchable_operation
     | repetition }
-repetition = { "[" ~ stitches ~ "]" ~ "x" ~ #times = NUMBER }
+repetition = { "[" ~ stitches ~ "]" ~ "x" ~ NUMBER }
 
 control = { operation_sequence ~ LINEEND }
 operation_sequence = { operation ~ ("," ~ operation)* }
@@ -27,8 +27,8 @@ operation = {
       (MR ~ arg_int)
     |  FO
 }
-interstitchable_operations = {
-    "TODO"
+interstitchable_operation = {
+    "TODOaaaa"
 }
 MR = { "MR" }
 FO = { "FO" }

@@ -19,6 +19,7 @@ pub enum ErrorCode {
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
     DuplicateMeta(String),
+    RepetitionTimes0,
 }
 
 impl Error {
@@ -138,8 +139,30 @@ impl Pattern {
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
                     actions.push(action);
                 }
-                Rule::repetition => todo!(),
-                _ => unreachable!(),
+                Rule::repetition => {
+                    let mut repetition = first.into_inner();
+
+                    let stitches = {
+                        let stitches_pair = repetition.next().unwrap();
+                        self.stitches(stitches_pair.into_inner())?
+                    };
+
+                    let times = {
+                        let times_pair = repetition.next().unwrap();
+                        let times = integer(&times_pair)?;
+                        if times == 0 {
+                            return Err(error(RepetitionTimes0, &times_pair));
+                        }
+                        times
+                    };
+
+                    actions.reserve(stitches.len() * times);
+                    for _ in 0..times {
+                        actions.append(&mut stitches.clone());
+                    }
+                }
+                Rule::interstitchable_operation => todo!(),
+                _ => unreachable!("{}", first),
             }
         }
         Ok(actions)
@@ -201,22 +224,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
-    fn test_repetition() {
-        let prog = ": [2 sc] x 2 (4)\n";
-        let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.actions, vec![Sc; 4]);
-    }
-
-    #[test]
-    #[ignore]
-    fn test_repetition_nested() {
-        let prog = ": [[2 sc] x 2] x 3 (12)\n";
-        let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.actions, vec![Sc; 12]);
-    }
-
-    #[test]
     fn test_round_repeat_with_number() {
         let prog = "3: sc (1)\n";
         let pat = Pattern::parse(prog).unwrap();
@@ -254,5 +261,17 @@ mod tests {
         assert_eq!(pat.actions, vec![MR(3), FO]);
     }
 
-    // test: deny repetition of goto etc.
+    #[test]
+    fn test_repetition_simple() {
+        let prog = ": [sc, sc] x 2 (_)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc; 4]);
+    }
+
+    #[test]
+    fn test_repetition_nested() {
+        let prog = ": [[sc, sc] x 2] x 3 (_)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc; 12]);
+    }
 }

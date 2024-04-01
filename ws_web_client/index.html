@@ -51,9 +51,6 @@
 # - pause it again at any convenient time
 # - if the plushie is wrinkled (has not enough stuffing),
 #   - increase the number of centroids under "Centroid stuffing config/amount"
-#   - add up to 2 then run the simulation for a second
-#   - otherwise the simulation may glitch irrecoverably
-# - I do not recommend playing with gravity at the moment
 
 # Camera:
 # left click + drag: rotate
@@ -62,8 +59,9 @@
 # there's also a button to reset camera to the starting point
 
 # The following syntax let's you set parameters of the simulation inside the pattern
-# For example this sets the centroid number
+# For example this one sets the amount of centroids.
 @centroids = 6
+# Each parameter can only be set once per pattern.
 
 # This is a sample pattern
 # Keep in mind, if you reload the page, changes are lost
@@ -73,20 +71,27 @@
 MR(4)
 
 # Pattern is worked in rounds, one round per line.
-R2: sc, inc, sc, inc (6)
 # ':' denotes start of the round, there is no need to specify round numbers.
+: sc, inc, sc, inc (6)
+# Number in parentheses denotes the number of stitches produced by the round.
 : 6 sc (6)
+# For convenience, you can put a placeholder '_' instead.
+: 6 sc (_)
 
-# If you wish to label your rounds, they have to be labeled with 'R' + number
+# If you wish to label your rounds, they have to be labeled with 'R' + number.
+# The parser does not care about actual round numbers.
 R4: 6 sc (6)
 # Putting just a number at the front means "repeat this round X times"
 2: 6 sc (6) # repeated rounds are denoted with a number
 # You can also specify round repetition with round numbers:
 R2-R3: 6 sc (6)
 
-: [sc, inc] x 2, 2 sc (8) # subpatterns are supported
-: [inc, [sc,] x 3,] x 2 (10) # but nested subpatterns have some issues so comma before closing bracket is mandatory when nesting
-R6: dec, 3 sc, [,[inc] x 2,] x 1, 3 sc (11) # similarly, two opening brackets have to be separated, I'll fix it one day
+# Subpatterns are supported.
+: [sc, inc] x 2, 2 sc (8)
+# And they can be nested!
+: [inc, [sc] x 3] x 2 (10)
+
+R6: dec, 3 sc, [[inc] x 2] x 1, 3 sc (11)
 R7: dec, 4 sc, inc, inc, 3 sc (12)
 R8: dec, 4 sc, inc, inc, 2 sc, dec (12)
 R9: 5 sc, inc, 2 sc, inc, 3 sc (14)
