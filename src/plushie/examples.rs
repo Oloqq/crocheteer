@@ -83,7 +83,7 @@ pub fn vase_simple_flow() -> Plushie {
     }
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -99,7 +99,7 @@ pub fn pillar_simple_flow() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -123,7 +123,7 @@ pub fn pillar_blo() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -139,7 +139,7 @@ pub fn hat() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -155,7 +155,7 @@ pub fn flailer() -> Plushie {
     actions.push(Ch(6));
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -169,7 +169,7 @@ pub fn fatflailer() -> Plushie {
     flow += 12 * 3 * Sc;
     flow += Color(RED) + Ch(6) + Color(GREEN) + Sc * 6;
     flow += Sc * 8;
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -200,7 +200,7 @@ pub fn grzib() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -218,7 +218,7 @@ pub fn ergogrzib() -> Plushie {
     flow += 12 * Inc;
     flow += BL + 24 * 2 * Sc;
     flow += 12 * Dec + 6 * Dec + FO;
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 
@@ -254,7 +254,7 @@ pub fn lollipop() -> Plushie {
     actions.push(FO);
 
     let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow).unwrap();
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
 

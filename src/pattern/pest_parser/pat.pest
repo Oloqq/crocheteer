@@ -1,6 +1,6 @@
 program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI }
 
-meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ NEWLINE }
+meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
 
 round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND } // TODO make round_end optional
 roundspec   = {

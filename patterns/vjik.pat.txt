@@ -1,3 +1,5 @@
+@centroids = 4
+@bruh = yes
 MR(6)
 R2: 6 inc (12)
 R3: 6 inc, 6 sc (18)

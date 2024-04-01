@@ -18,6 +18,7 @@ pub enum ErrorCode {
     UnknownStitch(String),
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
+    DuplicateMeta(String),
 }
 
 impl Error {
@@ -57,7 +58,7 @@ impl Pattern {
                 match pair.as_rule() {
                     Rule::round => self.round(pair.into_inner())?,
                     Rule::comment => (),
-                    Rule::meta => todo!(),
+                    Rule::meta => self.meta(pair.into_inner())?,
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
@@ -154,6 +155,16 @@ impl Pattern {
             }
         }
         Ok(())
+    }
+
+    fn meta(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+        let key_pair = pairs.next().unwrap();
+        let key = key_pair.as_str();
+        let val = pairs.next().unwrap().as_str();
+        match self.meta.insert(key.to_string(), val.to_string()) {
+            Some(_) => err(DuplicateMeta(key.to_string()), &key_pair),
+            None => Ok(()),
+        }
     }
 }
 

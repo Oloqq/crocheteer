@@ -1,3 +1,5 @@
+use std::{collections::HashMap, error::Error};
+
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -59,7 +61,7 @@ pub struct OneByOneParams {
 }
 
 impl Params {
-    fn unconstrained_floating() -> Self {
+    pub fn unconstrained_floating() -> Self {
         Self {
             timestep: 1.0,
             autostop: Default::default(),
@@ -78,7 +80,7 @@ impl Params {
     }
 
     #[allow(unused)]
-    fn rooted_floating() -> Self {
+    pub fn rooted_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
         Self {
             keep_root_at_origin: true,
@@ -86,13 +88,33 @@ impl Params {
         }
     }
 
-    fn floored() -> Self {
+    pub fn floored() -> Self {
         Self {
             floor: true,
             gravity: 5e-4,
             keep_root_at_origin: true,
             ..Self::unconstrained_floating()
         }
+    }
+
+    fn update_one(&mut self, key: &str, val: &str) -> Result<(), Box<dyn Error>> {
+        match key {
+            "centroids" => self.centroids.number = val.parse()?,
+            _ => return Ok(()),
+        }
+        return Ok(());
+    }
+
+    pub fn update(&mut self, src: &HashMap<String, String>) -> Vec<String> {
+        let mut _unknown = vec![];
+        for (key, val) in src {
+            match self.update_one(key, val) {
+                Ok(_) => (),
+                Err(_) => (),
+                // unknown.push(key.clone());
+            }
+        }
+        _unknown
     }
 }
 

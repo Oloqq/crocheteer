@@ -10,13 +10,14 @@ extern crate nalgebra as na;
 // use crate::flow::simple_flow::SimpleFlow;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
+use crate::pattern::pest_parser::Pattern;
 use crate::plushie::examples;
+use crate::plushie::Params;
 use crate::plushie::PlushieTrait;
 use crate::plushie::{LegacyPlushie, Plushie};
 use crate::{common::*, ws_sim::serve_websocket};
 
 use args::*;
-use pattern::pest_parser::program_to_flow;
 use pattern::Pattern as LegacyPattern;
 use std::fs;
 use std::io::Write;
@@ -55,21 +56,20 @@ fn main() {
         } => {
             let pattern = if is_string {
                 unimplemented!()
-                // let tokens = Program::deserialize(pattern.to_str().unwrap())
-                //     .unwrap()
-                //     .tokens;
-                // Pattern::from_genom(&(6, &tokens))
             } else {
-                // LegacyPattern::from_file(pattern).unwrap()
                 let content = fs::read_to_string(&pattern).unwrap();
-                match program_to_flow(&content) {
+                match Pattern::parse(&content) {
                     Ok(val) => val,
-                    Err(e) => panic!("{e}"),
+                    Err(e) => {
+                        println!("{e}");
+                        return;
+                    }
                 }
             };
-            // let flow = SimpleFlow::from_legacy_pattern(pattern);
-            let flow = pattern;
-            let plushie = Plushie::from_flow(flow).unwrap();
+            let mut params: Params = Default::default();
+            params.update(&pattern.meta);
+
+            let plushie = Plushie::from_flow(pattern, params).unwrap();
 
             if stl.is_some() && ws || stl.is_none() && !ws {
                 unimplemented!("use either --stl or --ws");

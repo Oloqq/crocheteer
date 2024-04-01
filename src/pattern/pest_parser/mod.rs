@@ -3,7 +3,7 @@ mod parsing;
 use std::collections::HashMap;
 
 pub use self::parsing::Error;
-use crate::flow::{actions::Action, simple_flow::SimpleFlow};
+use crate::flow::{actions::Action, Flow};
 use pest::Parser;
 use pest_derive::Parser;
 
@@ -13,8 +13,8 @@ struct PatParser;
 
 pub struct Pattern {
     actions: Vec<Action>,
-    #[allow(unused)]
-    meta: HashMap<String, String>,
+    cursor: usize,
+    pub meta: HashMap<String, String>,
 }
 
 impl Pattern {
@@ -22,6 +22,7 @@ impl Pattern {
         let mut p = Self {
             actions: vec![],
             meta: HashMap::new(),
+            cursor: 0,
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
         p.program(line_pairs)?;
@@ -29,9 +30,25 @@ impl Pattern {
     }
 }
 
-pub fn program_to_flow(program: &str) -> Result<SimpleFlow, Error> {
-    let p = Pattern::parse(program)?;
-    Ok(SimpleFlow::new(p.actions))
+impl Flow for Pattern {
+    fn next(&mut self) -> Option<Action> {
+        if self.cursor < self.actions.len() {
+            let got = self.actions[self.cursor];
+            self.cursor += 1;
+            Some(got)
+        } else {
+            None
+        }
+    }
+
+    fn peek(&self) -> Option<Action> {
+        if self.cursor < self.actions.len() {
+            let got = self.actions[self.cursor];
+            Some(got)
+        } else {
+            None
+        }
+    }
 }
 
 #[cfg(test)]

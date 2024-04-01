@@ -50,9 +50,8 @@ impl Plushie {
         }
     }
 
-    pub fn from_flow(flow: impl Flow) -> Result<Self, String> {
+    pub fn from_flow(flow: impl Flow, params: Params) -> Result<Self, String> {
         let hook_result = Hook::parse(flow)?;
-        let params: Params = Default::default();
 
         Ok(match params.initializer {
             Initializer::OneByOne(_) => Plushie::for_one_by_one(
