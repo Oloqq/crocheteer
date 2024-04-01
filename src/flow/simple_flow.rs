@@ -11,7 +11,7 @@ impl SimpleFlow {
         Self { actions, i: 0 }
     }
 
-    pub fn from_legacy_pattern(pattern: LegacyPattern) -> Self {
+    pub fn _from_legacy_pattern(pattern: LegacyPattern) -> Self {
         use crate::pattern::Stitch;
         use Action::*;
         let mut actions = vec![];

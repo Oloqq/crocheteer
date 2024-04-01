@@ -1,7 +1,7 @@
 pub mod builder;
 pub mod genetic;
 pub mod human_readable;
-mod pest_parser;
+pub mod pest_parser;
 pub mod protopattern;
 pub mod stitches;
 

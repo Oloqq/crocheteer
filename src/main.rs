@@ -1,18 +1,3 @@
-use crate::flow::simple_flow::SimpleFlow;
-#[allow(unused)]
-use crate::meshes_sandbox::*;
-use crate::plushie::examples;
-use crate::plushie::PlushieTrait;
-use crate::plushie::{LegacyPlushie, Plushie};
-use crate::{common::*, ws_sim::serve_websocket};
-
-extern crate nalgebra as na;
-
-// mod benchmark;
-// use crate::benchmark::run_benchmark;
-// mod genetic;
-// use crate::genetic::common::Program;
-
 mod args;
 mod common;
 mod flow;
@@ -20,9 +5,20 @@ mod meshes_sandbox;
 mod pattern;
 mod plushie;
 mod ws_sim;
+extern crate nalgebra as na;
+
+// use crate::flow::simple_flow::SimpleFlow;
+#[allow(unused)]
+use crate::meshes_sandbox::*;
+use crate::plushie::examples;
+use crate::plushie::PlushieTrait;
+use crate::plushie::{LegacyPlushie, Plushie};
+use crate::{common::*, ws_sim::serve_websocket};
 
 use args::*;
-use pattern::Pattern;
+use pattern::pest_parser::program_to_flow;
+use pattern::Pattern as LegacyPattern;
+use std::fs;
 use std::io::Write;
 use ws_sim::plushie_sim::PlushieSimulation;
 
@@ -64,9 +60,12 @@ fn main() {
                 //     .tokens;
                 // Pattern::from_genom(&(6, &tokens))
             } else {
-                Pattern::from_file(pattern).unwrap()
+                // LegacyPattern::from_file(pattern).unwrap()
+                let content = fs::read_to_string(&pattern).unwrap();
+                program_to_flow(&content).unwrap()
             };
-            let flow = SimpleFlow::from_legacy_pattern(pattern);
+            // let flow = SimpleFlow::from_legacy_pattern(pattern);
+            let flow = pattern;
             let plushie = Plushie::from_flow(flow).unwrap();
 
             if stl.is_some() && ws || stl.is_none() && !ws {
@@ -87,7 +86,7 @@ fn main() {
 }
 
 fn exec_dev_action(num: usize) {
-    fn generate(name: &str, func: fn() -> (Pattern, LegacyPlushie)) {
+    fn generate(name: &str, func: fn() -> (LegacyPattern, LegacyPlushie)) {
         let (_pat, mut plushie) = func();
         // println!(
         //     "{:?}",

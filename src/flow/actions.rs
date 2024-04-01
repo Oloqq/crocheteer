@@ -29,3 +29,27 @@ pub enum Action {
     /// Change yarn color
     Color(Color),
 }
+
+impl Action {
+    pub fn parse(x: &str) -> Option<Self> {
+        use Action::*;
+
+        Some(match x {
+            "sc" => Sc,
+            "inc," => Inc,
+            "dec," => Dec,
+            // "ch(usize)," => Ch,
+            // "attach(Label)," => Attach,
+            // "reverse," => Reverse,
+            // "flo," => FLO,
+            // "blo," => BLO,
+            // "bl," => BL,
+            // "goto(Label)," => Goto,
+            // "mark(Label)," => Mark,
+            // "mr(usize)," => MR,
+            // "fo," => FO,
+            // "color(Color)," => Color,
+            _ => return None,
+        })
+    }
+}
