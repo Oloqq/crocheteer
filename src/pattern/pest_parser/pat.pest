@@ -3,7 +3,7 @@ program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI }
 meta    = { "@" ~ metakey ~ "=" ~ NUMBER ~ NEWLINE }
 metakey = { "centroids" }
 
-round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ (comment | NEWLINE) }
+round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND }
 roundspec   = {
     round_range
   | round_index
@@ -17,13 +17,14 @@ stitches   = { sequence ~ ("," ~ sequence)* }
 sequence  = { (NUMBER ~ STITCH) | STITCH | repetition }
 repetition = { "[" ~ stitches ~ "]" ~ "x" ~ #times = NUMBER }
 
-control = { CONTROL_KW ~ (comment | NEWLINE) }
+control = { CONTROL_KW ~ LINEEND }
 
 comment     = _{ "#" ~ not_newline* ~ NEWLINE }
 not_newline = _{
     !(NEWLINE) ~ ANY
 }
 
+LINEEND     =  { NEWLINE | comment | EOI }
 STITCH      =  { "sc" | "inc" | "dec" }
 CONTROL_KW  =  { "FO" }
 PLACEHOLDER =  { "_" }

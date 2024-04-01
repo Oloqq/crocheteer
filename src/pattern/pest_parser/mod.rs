@@ -51,9 +51,17 @@ mod tests {
     use Action::*;
 
     #[test]
+    // #[ignore]
     fn test_bruh() {
-        let prog = ": sc, 2 sc (_)\n";
-        load(prog).unwrap();
+        let prog = ": sc, 2 sc (_)
+: sc, sc (_)
+";
+        match load(prog) {
+            Err(Error::Lexer(e)) => {
+                println!("{e}")
+            }
+            _ => (),
+        };
         println!();
         assert!(false);
     }
@@ -89,7 +97,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_round_repeat_with_number() {
         let prog = "3: sc (1)\n";
         let pat = load(prog).unwrap();
@@ -97,7 +104,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_round_repeat_with_span() {
         let prog = "R2-R4: sc (1)\n";
         let pat = load(prog).unwrap();
