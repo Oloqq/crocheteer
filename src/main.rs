@@ -1,14 +1,13 @@
 mod args;
 mod common;
 mod flow;
-mod pattern;
 mod plushie;
 mod ws_sim;
 extern crate nalgebra as na;
 
 use self::args::*;
 use self::ws_sim::plushie_sim::PlushieSimulation;
-use crate::pattern::pest_parser::Pattern;
+use crate::flow::pest_parser::Pattern;
 use crate::plushie::examples;
 use crate::plushie::Params;
 use crate::plushie::Plushie;

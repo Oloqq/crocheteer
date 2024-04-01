@@ -1,6 +1,6 @@
 pub mod actions;
 pub mod ergoflow;
-pub mod human_flow;
+pub mod pest_parser;
 pub mod simple_flow;
 
 use self::actions::Action;

@@ -9,8 +9,8 @@ use super::nodes::Nodes;
 use super::Plushie;
 use super::{Initializer, Params};
 use crate::common::*;
+use crate::flow::pest_parser::Pattern;
 use crate::flow::Flow;
-use crate::pattern::pest_parser::Pattern;
 use std::collections::HashMap;
 
 impl Plushie {
