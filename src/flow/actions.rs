@@ -39,8 +39,8 @@ impl Action {
 
         Some(match first {
             "sc" => Sc,
-            "inc," => Inc,
-            "dec," => Dec,
+            "inc" => Inc,
+            "dec" => Dec,
             // "ch(usize)," => Ch,
             // "attach(Label)," => Attach,
             // "reverse," => Reverse,

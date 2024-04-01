@@ -77,7 +77,7 @@ impl Pattern {
         Ok(p)
     }
 
-    pub fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+    fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
         let first = pairs.next().unwrap();
         let (repetitions, stitches) = match first.as_rule() {
             Rule::stitches => (1, first),
@@ -118,7 +118,7 @@ impl Pattern {
         Ok(())
     }
 
-    pub fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<Vec<Action>, Error> {
+    fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<Vec<Action>, Error> {
         let mut actions = vec![];
         for pair in sequences {
             let mut sequence = pair.into_inner();
@@ -135,7 +135,6 @@ impl Pattern {
                     }
                 }
                 Rule::KW_STITCH => {
-                    // println!("{}", first.as_str());
                     let action = Action::parse(first.as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
                     actions.push(action);
@@ -143,10 +142,6 @@ impl Pattern {
                 Rule::repetition => todo!(),
                 _ => unreachable!(),
             }
-            println!("pair {sequence:?}");
-            // match pair.as_rule() {
-            //     Rule::N
-            // }
         }
         Ok(actions)
     }
