@@ -1,8 +1,15 @@
+use super::Pattern;
+use crate::flow::actions::Action;
+use pest::{
+    iterators::{Pair, Pairs},
+    Parser,
+};
+use pest_derive::Parser;
 use std::fmt::Display;
 
-use super::{Pattern, Rule};
-use crate::flow::actions::Action;
-use pest::iterators::{Pair, Pairs};
+#[derive(Parser)]
+#[grammar = "pattern/pest_parser/pat.pest"]
+struct PatParser;
 
 #[derive(Debug)]
 pub struct Error {
@@ -52,6 +59,24 @@ impl Display for Error {
 use ErrorCode::*;
 
 impl Pattern {
+    pub fn parse(program: &str) -> Result<Pattern, Error> {
+        let mut p = Pattern::new();
+        let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
+        for line_pair in line_pairs {
+            for pair in line_pair.into_inner() {
+                match pair.as_rule() {
+                    Rule::round => p.round(pair.into_inner())?,
+                    Rule::comment => (),
+                    Rule::meta => (),
+                    Rule::control => (),
+                    Rule::EOI => (),
+                    _ => unreachable!("{:?}", pair.as_rule()),
+                };
+            }
+        }
+        Ok(p)
+    }
+
     pub fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
         let first = pairs.next().unwrap();
         let (repetitions, stitches) = match first.as_rule() {
@@ -132,4 +157,56 @@ fn integer(rule: &Pair<Rule>) -> Result<usize, Error> {
         .as_str()
         .parse()
         .map_err(|_| error(ExpectedInteger(rule.to_string()), rule))?)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+    use Action::*;
+    #[test]
+    fn test_sc() {
+        let prog = ": sc (1)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc]);
+    }
+
+    #[test]
+    fn test_numstitch() {
+        let prog = ": 2 sc (2)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, Sc]);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_repetition() {
+        let prog = ": [2 sc] x 2 (4)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc; 4]);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_repetition_nested() {
+        let prog = ": [[2 sc] x 2] x 3 (12)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc; 12]);
+    }
+
+    #[test]
+    fn test_round_repeat_with_number() {
+        let prog = "3: sc (1)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+    }
+
+    #[test]
+    fn test_round_repeat_with_span() {
+        let prog = "R2-R4: sc (1)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+    }
+
+    // test: deny repetition of goto etc.
 }
