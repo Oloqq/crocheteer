@@ -61,21 +61,29 @@
 # scroll wheel/middle click: zoom
 # there's also a button to reset camera to the starting point
 
-# This syntax lets you specify the centroid amount in the simulation.
-# This number roughly translates to amount of stuffing you put inside the plushie.
-# Has to be set before starting round.
+# The following syntax let's you set parameters of the simulation inside the pattern
+# For example this sets the centroid number
 @centroids = 6
 
 # This is a sample pattern
 # Keep in mind, if you reload the page, changes are lost
-# Whitespaces are important, this is an early version of a parser
-R1: MR 4 (4) # pattern must start with a MagicRing in round one
-R2: sc, inc, sc, inc (6) # each line must end with a number of stitches produced,
-# like "(6)" in the line above
-: 6 sc (6) # round numbers are actually optional (useful for prototyping)
-: 6 sc (6) # colons are mandatory though
+
+# Pattern must start with a magic ring (MR(x)) or a chain (Ch(x)) of x stitches.
+# Notice that the syntax does not include ':'.
+MR(4)
+
+# Pattern is worked in rounds, one round per line.
+R2: sc, inc, sc, inc (6)
+# ':' denotes start of the round, there is no need to specify round numbers.
+: 6 sc (6)
+
+# If you wish to label your rounds, they have to be labeled with 'R' + number
+R4: 6 sc (6)
+# Putting just a number at the front means "repeat this round X times"
 2: 6 sc (6) # repeated rounds are denoted with a number
-R0-R1: 6 sc (6) # but if you want to number your repeating rounds, you can!
+# You can also specify round repetition with round numbers:
+R2-R3: 6 sc (6)
+
 : [sc, inc] x 2, 2 sc (8) # subpatterns are supported
 : [inc, [sc,] x 3,] x 2 (10) # but nested subpatterns have some issues so comma before closing bracket is mandatory when nesting
 R6: dec, 3 sc, [,[inc] x 2,] x 1, 3 sc (11) # similarly, two opening brackets have to be separated, I'll fix it one day
@@ -97,8 +105,8 @@ R23: 10 sc, inc, 5 sc, inc, 5 sc, inc, 5 sc, inc, 5 sc, 6 sc (44)
 3: 44 sc (44)
 R27: 22 dec (22)
 R28: 11 dec (11)
-FO # remember to fasten-off if you want a closed shape
-# The parser stops after end of file or FO
+# Fasten off to close the shape
+FO
 </textarea><br>
             <button id="update-btn">Update</button>
             <button id="soft-update-btn">Soft update</button>

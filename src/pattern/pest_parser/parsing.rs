@@ -49,6 +49,12 @@ impl Display for Error {
     }
 }
 
+impl From<Error> for String {
+    fn from(value: Error) -> Self {
+        format!("{value}")
+    }
+}
+
 use ErrorCode::*;
 
 impl Pattern {

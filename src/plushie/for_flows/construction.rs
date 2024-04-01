@@ -10,6 +10,7 @@ use super::Plushie;
 use super::{Initializer, Params};
 use crate::common::*;
 use crate::flow::Flow;
+use crate::pattern::pest_parser::Pattern;
 use std::collections::HashMap;
 
 impl Plushie {
@@ -64,8 +65,11 @@ impl Plushie {
         })
     }
 
-    pub fn parse(_pattern: &str) -> Result<Self, String> {
-        todo!()
+    pub fn parse(src: &str) -> Result<Self, String> {
+        let pattern = Pattern::parse(src)?;
+        let mut params = Params::default();
+        params.update(&pattern.meta);
+        Ok(Self::from_flow(pattern, params)?)
     }
 
     pub fn _position_based_on(&mut self, _other: &Self) {
