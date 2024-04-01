@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use super::{Pattern, Rule};
 use crate::flow::actions::Action;
 use pest::iterators::{Pair, Pairs};
@@ -9,6 +11,13 @@ pub enum Error {
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
 }
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
+}
+
 use Error::*;
 
 impl Pattern {
@@ -44,7 +53,7 @@ impl Pattern {
             _ => unreachable!(),
         };
 
-        let actions = self.stitches(stitches.into_inner()).unwrap();
+        let actions = self.stitches(stitches.into_inner())?;
         for _ in 0..repetitions {
             self.actions.append(&mut actions.clone());
         }
@@ -62,7 +71,7 @@ impl Pattern {
                 Rule::NUMBER => {
                     let number = integer(&first)?;
                     let action = Action::parse(sequence.next().unwrap().as_str())
-                        .ok_or(UnknownStitch(first.to_string()))?;
+                        .ok_or(UnknownStitch(first.as_str().to_string()))?;
 
                     actions.reserve(number);
                     for _ in 0..number {
@@ -70,8 +79,8 @@ impl Pattern {
                     }
                 }
                 Rule::KW_STITCH => {
-                    let action =
-                        Action::parse(first.as_str()).ok_or(UnknownStitch(first.to_string()))?;
+                    let action = Action::parse(first.as_str())
+                        .ok_or(UnknownStitch(first.as_str().to_string()))?;
                     actions.push(action);
                 }
                 Rule::repetition => todo!(),

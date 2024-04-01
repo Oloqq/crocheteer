@@ -68,7 +68,7 @@ fn main() {
                         println!("{e}");
                         return;
                     }
-                    Err(e) => panic!("{e:?}"),
+                    Err(e) => panic!("{e}"),
                 }
             };
             // let flow = SimpleFlow::from_legacy_pattern(pattern);
