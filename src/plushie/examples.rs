@@ -2,15 +2,12 @@
 
 use super::{Params, Plushie};
 use crate::common::*;
+use crate::flow::actions::Action;
 use crate::flow::ergoflow::ErgoFlow;
-use crate::pattern::stitches::Stitch;
-use crate::pattern::Pattern;
-use crate::{flow::simple_flow::SimpleFlow, pattern::builder::PatternBuilder};
-use Stitch::*;
+use crate::flow::simple_flow::SimpleFlow;
+use Action::*;
 
 pub fn vase_simple_flow() -> Plushie {
-    use crate::flow::actions::Action;
-    use Action::*;
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
     let full_round = vec![Sc; 12];

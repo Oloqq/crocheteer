@@ -50,24 +50,3 @@ impl Flow for Pattern {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    // use pretty_assertions::assert_eq;
-    // use Action::*;
-
-    #[test]
-    #[ignore]
-    fn test_bruh() {
-        let prog = "MR ( 6 )";
-        match Pattern::parse(prog) {
-            Err(e) => {
-                println!("{e}");
-            }
-            _ => (),
-        };
-        println!();
-        assert!(false);
-    }
-}
