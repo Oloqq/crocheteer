@@ -113,16 +113,27 @@ pub enum Peculiarity {
     Constrained(V),
 }
 
+fn fill_round_span(edges: &Edges, round_spans: &mut Vec<(usize, usize)>) {
+    let nodenum = edges.len();
+    let lastspan = round_spans.last().unwrap();
+    let end = lastspan.1;
+    if end < nodenum - 1 {
+        round_spans.push((end + 1, nodenum - 1));
+    }
+}
+
 impl HookResult {
     /// Creates and places points in initial positions
     pub fn from_hook(
         edges: Edges,
         peculiar: HashMap<usize, Peculiarity>,
-        round_spans: Vec<(usize, usize)>,
+        mut round_spans: Vec<(usize, usize)>,
         colors: Vec<Color>,
     ) -> Self {
         log::debug!("round spans: {:?}", round_spans);
+        fill_round_span(&edges, &mut round_spans);
         let (nodes, highest) = make_nodes(round_spans);
+
         Self {
             edges,
             nodes,
@@ -138,7 +149,6 @@ fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
     let mut y = 0.0;
     let mut nodes = vec![];
 
-    println!("{:?}", round_spans);
     for (from, to) in round_spans {
         let count = to - from + 1;
         nodes.append(&mut ring(count, y, 1.0));
