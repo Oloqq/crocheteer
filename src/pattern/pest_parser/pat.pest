@@ -13,11 +13,11 @@ round_index = @{ R ~ NUMBER }
 round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
 round_end   =  { "(" ~ (NUMBER | PLACEHOLDER) ~ ")" }
 
-stitches   = { sequence ~ ("," ~ sequence)* }
-sequence  = { (NUMBER ~ STITCH) | STITCH | repetition }
+stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
+stitch_sequence  = { (NUMBER ~ KW_STITCH) | KW_STITCH | repetition }
 repetition = { "[" ~ stitches ~ "]" ~ "x" ~ #times = NUMBER }
 
-control = { CONTROL_KW ~ LINEEND }
+control = { KW_CONTROL ~ LINEEND }
 
 comment     = _{ "#" ~ not_newline* ~ NEWLINE }
 not_newline = _{
@@ -25,8 +25,8 @@ not_newline = _{
 }
 
 LINEEND     =  { NEWLINE | comment | EOI }
-STITCH      =  { "sc" | "inc" | "dec" }
-CONTROL_KW  =  { "FO" }
+KW_STITCH    =  { "sc" | "inc" | "dec" }
+KW_CONTROL  =  { "FO" }
 PLACEHOLDER =  { "_" }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }

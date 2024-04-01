@@ -1,6 +1,6 @@
 mod parsing;
 
-use self::parsing::*;
+pub use self::parsing::Error;
 use crate::flow::{actions::Action, simple_flow::SimpleFlow};
 use pest::Parser;
 use pest_derive::Parser;

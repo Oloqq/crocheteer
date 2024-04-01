@@ -16,7 +16,7 @@ use crate::plushie::{LegacyPlushie, Plushie};
 use crate::{common::*, ws_sim::serve_websocket};
 
 use args::*;
-use pattern::pest_parser::program_to_flow;
+use pattern::pest_parser::{program_to_flow, Error};
 use pattern::Pattern as LegacyPattern;
 use std::fs;
 use std::io::Write;
@@ -62,7 +62,14 @@ fn main() {
             } else {
                 // LegacyPattern::from_file(pattern).unwrap()
                 let content = fs::read_to_string(&pattern).unwrap();
-                program_to_flow(&content).unwrap()
+                match program_to_flow(&content) {
+                    Ok(val) => val,
+                    Err(Error::Lexer(e)) => {
+                        println!("{e}");
+                        return;
+                    }
+                    Err(e) => panic!("{e:?}"),
+                }
             };
             // let flow = SimpleFlow::from_legacy_pattern(pattern);
             let flow = pattern;

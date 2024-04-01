@@ -69,7 +69,7 @@ impl Pattern {
                         actions.push(action);
                     }
                 }
-                Rule::STITCH => {
+                Rule::KW_STITCH => {
                     let action =
                         Action::parse(first.as_str()).ok_or(UnknownStitch(first.to_string()))?;
                     actions.push(action);
