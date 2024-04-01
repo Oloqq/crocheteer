@@ -1,8 +1,9 @@
+use crate::flow::simple_flow::SimpleFlow;
 #[allow(unused)]
 use crate::meshes_sandbox::*;
 use crate::plushie::examples;
-use crate::plushie::LegacyPlushie;
 use crate::plushie::PlushieTrait;
+use crate::plushie::{LegacyPlushie, Plushie};
 use crate::{common::*, ws_sim::serve_websocket};
 
 extern crate nalgebra as na;
@@ -65,15 +66,17 @@ fn main() {
             } else {
                 Pattern::from_file(pattern).unwrap()
             };
-            let mut plushie = LegacyPlushie::from_pattern(&pattern);
+            let flow = SimpleFlow::from_legacy_pattern(pattern);
+            let plushie = Plushie::from_flow(flow).unwrap();
 
             if stl.is_some() && ws || stl.is_none() && !ws {
                 unimplemented!("use either --stl or --ws");
             }
 
-            if let Some(stl_path) = stl {
-                plushie.animate();
-                save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
+            if let Some(_stl_path) = stl {
+                unimplemented!()
+                // plushie.animate();
+                // save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
             } else if ws {
                 let sim = PlushieSimulation::from(plushie);
                 serve_websocket(sim);
