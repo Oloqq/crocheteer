@@ -9,11 +9,11 @@
   - [x] patterns with or without FO (fasten off)
   - [x] basic stitches: sc, inc, dec
   - [ ] stuffing only on parts of the shape
-  - [ ] patterns starting from a chain instead of a magic ring
-  - [ ] working on FLO/BLO (front loop only / back loop only)
+  - [x] patterns starting from a chain instead of a magic ring
+  - [x] working on FLO/BLO (front loop only / back loop only)
     - [ ] inserting hook into arbitrary stitch instead of the next one
     - [ ] include yarn changes in the grammar
-  - [ ] chains as part of the shape
+  - [x] chains as part of the shape
 
 See more in [docs](./docs/Concept.md)
 
