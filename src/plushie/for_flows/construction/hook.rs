@@ -116,9 +116,7 @@ impl Hook {
                 if matches!(self.last, Some(Ch(_))) {
                     return Err(ChainAfterChain);
                 }
-                let start = self.now.cursor;
                 self = Stitch::linger(self)?.chain(*x)?;
-                self.round_spans.push((start, self.now.cursor - 1));
             }
             Attach(_) => unimplemented!(),
             Reverse => unimplemented!(),

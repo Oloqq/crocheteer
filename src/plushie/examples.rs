@@ -167,7 +167,8 @@ pub fn fatflailer() -> Plushie {
     flow += MR(6);
     flow += 6 * Inc;
     flow += 12 * 3 * Sc;
-    flow += Color(RED) + Ch(6) + Color(GREEN) + Sc * 4;
+    flow += Color(RED) + Ch(6) + Color(GREEN) + Sc * 6;
+    flow += Sc * 8;
     let plushie = Plushie::from_flow(flow).unwrap();
     plushie
 }
