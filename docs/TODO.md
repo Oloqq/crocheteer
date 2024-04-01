@@ -1,29 +1,24 @@
 # Next
-
-- Chains
+- update documentation relating to hook and plushie
 
 # Backlog
+- documentation
+  - clean up images (into a folder)
 
-- investigate plushie rotating
 
-- add option to force aligment in the Y axis via calculating center of mass, then rotating points around origin
-
-- complex patterns
-  - working the back or the front loop only (BLO/FLO), with possibility to switch mid round
-  - switching "working position" like working the front loop, then going back and working the back loop
-  - chains
+- plushie
+  - investigate plushie rotating
   - attaching a chain to a set point
+  - add option to force aligment in the Y axis via calculating center of mass, then rotating points around origin
 
 - genetics
   - stl to shape conversion
     - shape refactor using kd trees
 
-- human readable pattern
-  - refactor parser so weird subpattern shit is fixed
-
 - websocket server/client
   - add a `<select>` with sample patterns instead of the text input
   - allow changing simulation speed (corresponds to time variable in step)
+    - also include other parameters in the gui
   - save pattern source on update
   - stop panicks after moving a centroid
 
