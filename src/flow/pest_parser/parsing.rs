@@ -1,4 +1,4 @@
-use super::errors::*;
+use super::{errors::*, CurrentLoop};
 use super::{Pattern, Rule};
 use crate::flow::actions::Action;
 use pest::iterators::{Pair, Pairs};
@@ -23,6 +23,14 @@ impl Pattern {
     }
 
     fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+        match self.current_loop {
+            CurrentLoop::Back | CurrentLoop::Front => {
+                self.actions.push(Action::BL);
+                self.current_loop = CurrentLoop::Both;
+            }
+            CurrentLoop::Both => (),
+        }
+
         let first = pairs.next().unwrap();
         let (repetitions, stitches) = match first.as_rule() {
             Rule::stitches => (1, first),
@@ -116,7 +124,9 @@ impl Pattern {
                         actions.append(&mut stitches.clone());
                     }
                 }
-                Rule::interstitchable_operation => todo!(),
+                Rule::interstitchable_operation => {
+                    actions.append(&mut self.interstitchable_operation(first.into_inner())?);
+                }
                 _ => unreachable!("{}", first),
             }
         }
@@ -129,16 +139,70 @@ impl Pattern {
             let mut tokens = pair.into_inner();
             let opcode = tokens.next().unwrap();
             match opcode.as_rule() {
-                Rule::MR => {
+                Rule::KW_MR => {
                     let num = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
                     self.actions.push(Action::MR(num));
                 }
-                Rule::FO => self.actions.push(Action::FO),
+                Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),
-                _ => unreachable!(),
+                Rule::interstitchable_operation => {
+                    let mut new = self.interstitchable_operation(opcode.into_inner())?;
+                    self.actions.append(&mut new);
+                }
+                _ => unreachable!("{opcode}"),
             }
         }
         Ok(())
+    }
+
+    fn interstitchable_operation(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
+        let first = tokens.next().unwrap();
+        match first.as_rule() {
+            Rule::KW_MARK => {
+                let label_pair = tokens.next().unwrap();
+                let label = ident(label_pair.clone())?;
+                if let Some(x) = self.labels.insert(label.clone(), self.label_cursor) {
+                    err(
+                        DuplicateLabel {
+                            label,
+                            first_defined: x,
+                        },
+                        &label_pair,
+                    )?;
+                }
+                let result = Action::Mark(self.label_cursor);
+                self.label_cursor += 1;
+                Ok(vec![result])
+            }
+            Rule::KW_GOTO => {
+                let label_pair = tokens.next().unwrap();
+                let label = ident(label_pair.clone())?;
+                let index = self
+                    .labels
+                    .get(&label)
+                    .ok_or(error(UndefinedLabel(label), &label_pair))?;
+                Ok(vec![Action::Goto(*index)])
+            }
+            Rule::KW_FLO => {
+                self.current_loop = CurrentLoop::Front;
+                Ok(vec![Action::FLO])
+            }
+            Rule::KW_BLO => {
+                self.current_loop = CurrentLoop::Back;
+                Ok(vec![Action::BLO])
+            }
+            Rule::KW_BL => {
+                self.current_loop = CurrentLoop::Both;
+                Ok(vec![Action::BL])
+            }
+            Rule::KW_COLOR => {
+                let r = integer(&tokens.next().unwrap())?;
+                let g = integer(&tokens.next().unwrap())?;
+                let b = integer(&tokens.next().unwrap())?;
+                Ok(vec![Action::Color((r, g, b))])
+            }
+            _ => unreachable!(),
+        }
     }
 
     fn meta(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
@@ -157,6 +221,10 @@ fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
         .as_str()
         .parse()
         .map_err(|_| error(ExpectedInteger(pair.as_str().to_string()), pair))?)
+}
+
+fn ident(pair: Pair<Rule>) -> Result<String, Error> {
+    Ok(pair.into_inner().as_str().to_owned())
 }
 
 #[cfg(test)]

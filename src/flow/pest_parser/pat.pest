@@ -1,4 +1,4 @@
-program = { SOI ~ (round | comment | meta | control | NEWLINE)+ }
+program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI}
 
 meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
 
@@ -22,16 +22,34 @@ repetition = { "[" ~ stitches ~ "]" ~ "x" ~ NUMBER }
 
 control = { operation_sequence ~ LINEEND }
 operation_sequence = { operation ~ ("," ~ operation)* }
-arg_int = { "(" ~ NUMBER ~ ")" }
+arg_int   =  { "(" ~ NUMBER ~ ")" }
+arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
+arg_ident =  { "(" ~ IDENT ~ ")" }
+
+
 operation = {
-      (MR ~ arg_int)
-    |  FO
+      interstitchable_operation
+    | (KW_MR ~ arg_int)
+    |  KW_FO
 }
 interstitchable_operation = {
-    "TODOaaaa"
+      KW_BLO
+    | KW_FLO
+    | KW_BL
+    | (KW_MARK ~ arg_ident)
+    | (KW_GOTO ~ arg_ident)
+    | (KW_COLOR ~ arg_int_3)
 }
-MR = { "MR" }
-FO = { "FO" }
+
+KW_MR       = { "MR" }
+KW_FO       = { "FO" }
+KW_MARK     = { "mark" }
+KW_GOTO     = { "goto" }
+KW_FLO      = { "FLO" }
+KW_BLO      = { "BLO" }
+KW_BL       = { "BL" }
+KW_COLOR      = { "color" }
+KW_STITCH   =  { "sc" | "inc" | "dec" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{
@@ -39,12 +57,11 @@ not_newline = _{
 }
 
 LINEEND     =  { NEWLINE | comment | EOI }
-KW_STITCH   =  { "sc" | "inc" | "dec" }
 PLACEHOLDER =  { "_" }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
 IDENT       = @{ (ALPHA | DIGIT | "_")+ }
-NUMBER      = @{ NONZERO ~ DIGIT* }
+NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
 WHITESPACE  = _{ " " }

@@ -1,7 +1,7 @@
 mod errors;
 mod parsing;
 
-pub use self::errors::Error;
+pub use self::errors::{Error, ErrorCode};
 use crate::flow::{actions::Action, Flow};
 use pest::Parser;
 use pest_derive::Parser;
@@ -12,19 +12,31 @@ use std::collections::HashMap;
 struct PatParser;
 
 pub struct Pattern {
-    actions: Vec<Action>,
-    cursor: usize,
     pub meta: HashMap<String, String>,
     pub annotated_round_counts: Vec<Option<usize>>,
+    labels: HashMap<String, usize>,
+    label_cursor: usize,
+    actions: Vec<Action>,
+    cursor: usize,
+    current_loop: CurrentLoop,
+}
+
+enum CurrentLoop {
+    Back,
+    Front,
+    Both,
 }
 
 impl Pattern {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
         let mut p = Self {
-            actions: vec![],
             meta: HashMap::new(),
-            cursor: 0,
             annotated_round_counts: vec![],
+            labels: HashMap::new(),
+            label_cursor: 0,
+            actions: vec![],
+            cursor: 0,
+            current_loop: CurrentLoop::Both,
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
         p.program(line_pairs)?;

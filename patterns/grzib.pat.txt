@@ -1,6 +1,7 @@
-: MR(6) (6)
+MR(6)
 : 6 inc (12)
-3: 12 sc, mark(cap_start) (12)
+3: 12 sc (12)
+mark(cap_start)
 : BLO, 6 dec (6)
 FO
 

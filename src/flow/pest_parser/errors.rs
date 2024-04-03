@@ -6,7 +6,7 @@ pub use ErrorCode::*;
 
 #[derive(Debug)]
 pub struct Error {
-    code: ErrorCode,
+    pub code: ErrorCode,
     #[allow(unused)] // used in Debug (and therefore in Display)
     line: usize,
     #[allow(unused)] // used in Debug (and therefore in Display)
@@ -21,6 +21,8 @@ pub enum ErrorCode {
     RoundRangeOutOfOrder(String),
     DuplicateMeta(String),
     RepetitionTimes0,
+    DuplicateLabel { label: String, first_defined: usize },
+    UndefinedLabel(String),
 }
 
 impl Error {

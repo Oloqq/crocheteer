@@ -2,6 +2,7 @@ use super::{actions::Action, Flow};
 
 use std::ops::{Add, AddAssign, Mul};
 
+#[derive(Clone)]
 pub struct ErgoFlow {
     actions: Vec<Action>,
     i: usize,
