@@ -1,8 +1,8 @@
-program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI }
+program = { SOI ~ (round | comment | meta | control | NEWLINE)+ }
 
 meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
 
-round       =  { roundspec? ~ ":" ~ stitches ~ round_end ~ LINEEND } // TODO make round_end optional
+round       =  { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
 roundspec   = {
     round_range
   | round_index
@@ -10,7 +10,7 @@ roundspec   = {
 }
 round_index = @{ R ~ NUMBER }
 round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
-round_end   =  { "(" ~ (NUMBER | PLACEHOLDER) ~ ")" }
+round_end   =  { "(" ~ NUMBER ~ ")" }
 
 stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
 stitch_sequence  = {
@@ -33,7 +33,7 @@ interstitchable_operation = {
 MR = { "MR" }
 FO = { "FO" }
 
-comment     = _{ "#" ~ not_newline* ~ NEWLINE }
+comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{
     !(NEWLINE) ~ ANY
 }

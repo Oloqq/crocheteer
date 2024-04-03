@@ -1,62 +1,7 @@
+use super::errors::*;
 use super::{Pattern, Rule};
 use crate::flow::actions::Action;
 use pest::iterators::{Pair, Pairs};
-use std::fmt::Display;
-
-#[derive(Debug)]
-pub struct Error {
-    code: ErrorCode,
-    #[allow(unused)] // used in Debug (and therefore in Display)
-    line: usize,
-    #[allow(unused)] // used in Debug (and therefore in Display)
-    col: usize,
-}
-
-#[derive(Debug)]
-pub enum ErrorCode {
-    Lexer(pest::error::Error<Rule>),
-    UnknownStitch(String),
-    ExpectedInteger(String),
-    RoundRangeOutOfOrder(String),
-    DuplicateMeta(String),
-    RepetitionTimes0,
-}
-
-impl Error {
-    pub fn lexer(e: pest::error::Error<Rule>) -> Self {
-        Self {
-            code: ErrorCode::Lexer(e),
-            line: 0,
-            col: 0,
-        }
-    }
-}
-
-fn error(code: ErrorCode, pair: &Pair<Rule>) -> Error {
-    let (line, col) = pair.line_col();
-    Error { code, line, col }
-}
-
-fn err(code: ErrorCode, pair: &Pair<Rule>) -> Result<(), Error> {
-    Err(error(code, pair))
-}
-
-impl Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.code {
-            Lexer(e) => write!(f, "{e}"),
-            _ => write!(f, "{self:?}"),
-        }
-    }
-}
-
-impl From<Error> for String {
-    fn from(value: Error) -> Self {
-        format!("{value}")
-    }
-}
-
-use ErrorCode::*;
 
 impl Pattern {
     pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
@@ -114,7 +59,17 @@ impl Pattern {
             self.actions.append(&mut actions.clone());
         }
 
-        let _round_end = pairs.next().unwrap();
+        self.annotated_round_counts.push({
+            let mby_round_end = pairs.peek().unwrap();
+            if let Rule::round_end = mby_round_end.as_rule() {
+                let round_end_pair = pairs.next().unwrap();
+                let count = integer(&round_end_pair.into_inner().next().unwrap())?;
+                Some(count)
+            } else {
+                None
+            }
+        });
+
         Ok(())
     }
 
@@ -211,28 +166,59 @@ mod tests {
     use Action::*;
     #[test]
     fn test_sc() {
-        let prog = ": sc (1)\n";
+        let prog = ": sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc]);
     }
 
     #[test]
+    fn test_round_end_omitted() {
+        let prog = ": sc\n: sc";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, Sc]);
+        assert_eq!(pat.annotated_round_counts, vec![None, None]);
+        let prog = ": sc";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc]);
+        assert_eq!(pat.annotated_round_counts, vec![None]);
+        let prog = ": sc # bruh\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc]);
+        assert_eq!(pat.annotated_round_counts, vec![None]);
+    }
+
+    #[test]
+    #[allow(non_snake_case)]
+    fn test_comment_followed_by_EOI() {
+        Pattern::parse(": sc # bruh\n").unwrap();
+        Pattern::parse(": sc # bruh").unwrap();
+    }
+
+    #[test]
+    fn test_round_end_present() {
+        let prog = ": sc (1)\n: sc, sc (2)\n";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+        assert_eq!(pat.annotated_round_counts, vec![Some(1), Some(2)]);
+    }
+
+    #[test]
     fn test_numstitch() {
-        let prog = ": 2 sc (2)\n";
+        let prog = ": 2 sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc]);
     }
 
     #[test]
     fn test_round_repeat_with_number() {
-        let prog = "3: sc (1)\n";
+        let prog = "3: sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
     }
 
     #[test]
     fn test_round_repeat_with_span() {
-        let prog = "R2-R4: sc (1)\n";
+        let prog = "R2-R4: sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
     }
@@ -242,14 +228,14 @@ mod tests {
         let prog = "MR(6)";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6)]);
-        let prog = "MR(6)\n: sc (1)";
+        let prog = "MR(6)\n: sc";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6), Sc]);
     }
 
     #[test]
     fn test_fo() {
-        let prog = ": sc (1)\nFO";
+        let prog = ": sc\nFO";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, FO]);
     }
@@ -263,14 +249,14 @@ mod tests {
 
     #[test]
     fn test_repetition_simple() {
-        let prog = ": [sc, sc] x 2 (_)";
+        let prog = ": [sc, sc] x 2";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 4]);
     }
 
     #[test]
     fn test_repetition_nested() {
-        let prog = ": [[sc, sc] x 2] x 3 (_)";
+        let prog = ": [[sc, sc] x 2] x 3";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
     }
