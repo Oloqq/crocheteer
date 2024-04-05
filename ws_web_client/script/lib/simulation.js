@@ -17,5 +17,6 @@ export function init() {
 export function connect(address, world) {
   app.world = world;
   controlViaWebsocket(address, world);
+  app.status.innerText = "Connected";
   animate();
 }

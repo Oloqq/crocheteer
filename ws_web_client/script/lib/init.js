@@ -13,7 +13,7 @@ export const app = {
   controls: new OrbitControls(camera, renderer.domElement),
   gui: new dat.GUI(),
   world: null,
-
+  status: null,
   init: function () {
     initScene();
     initGui();

@@ -57,6 +57,7 @@ commandButton.addEventListener("click", () => {
 function main() {
   const app = simulator.init();
   const gui = app.gui;
+  app.status = status;
 
   const simulationWorld = new Plushie(status, customGui, gui, pattern);
   world = simulationWorld;
@@ -83,8 +84,8 @@ function main() {
   amount.domElement.children[1].style.pointerEvents = "none";
   centroids.open();
 
-  simulator.connect("ws://127.0.0.1:8080", simulationWorld);
   status.innerText = "Waiting for websocket connection...";
+  simulator.connect("ws://127.0.0.1:8080", simulationWorld);
 
   if (sendPatternAtStart) {
     initialSendPattern();
