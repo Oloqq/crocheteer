@@ -52,6 +52,10 @@ export default class Plushie {
       this.drawLinks();
   }
 
+  onAdvance() {
+    this.clearLinks();
+  }
+
   clearLinks() {
     for (let link of this.links) {
       if (link.geometry) link.geometry.dispose();

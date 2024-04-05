@@ -3,10 +3,12 @@ import "./lib/interaction";
 
 import * as simulator from "./lib/simulation";
 
+let world = undefined;
 const customGui = {
   edgesVisible: true,
   gravity: 5e-4,
   advance: function () {
+    world.onAdvance();
     simulator.send("advance");
   },
   stuffing: 'PerRound',
@@ -57,6 +59,7 @@ function main() {
   const gui = app.gui;
 
   const simulationWorld = new Plushie(status, customGui, gui, pattern);
+  world = simulationWorld;
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {

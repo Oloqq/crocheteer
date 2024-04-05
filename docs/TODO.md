@@ -1,6 +1,5 @@
 # Next
 - update documentation relating to hook and plushie
-- make sure all patterns in /patterns work
 - fix status messages on the frontend (waiting for websocket connection)
 - refactor configuration sharing between front and backend
 
