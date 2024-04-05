@@ -1,4 +1,4 @@
-R1: MR 4 (4)
+MR(4)
 R2: sc, inc, sc, inc (6)
 R3: 6 sc (6)
 R4: 2 sc, 2 inc, 2 sc (8)

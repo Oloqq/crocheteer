@@ -1,7 +1,7 @@
 # Next
 - update documentation relating to hook and plushie
-- allow all control sequences in the human readable pattern
 - make sure all patterns in /patterns work
+- fix status messages on the frontend (waiting for websocket connection)
 
 # Backlog
 

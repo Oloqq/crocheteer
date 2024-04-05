@@ -1,1 +1,27 @@
-
+@centroids = 6
+@floor = true
+MR(6)
+: 6 inc (12)
+: [inc, sc] x 6 (18)
+: [inc, 2 sc] x 6 (24)
+: [inc, 3 sc] x 6 (30)
+: [inc, 4 sc] x 6 (36)
+: 36 sc (36) # BLO
+: 36 sc (36)
+: [inc, 5 sc] x 6 (42)
+2: 42 sc (42)
+: [inc, 6 sc] x 6 (48)
+2: 48 sc (48)
+: [inc, 7 sc] x 6 (54)
+5: 54 sc (54)
+: [dec, 7 sc] x 6 (48)
+: 48 sc (48)
+: [dec, 6 sc] x 6 (42)
+: [dec, 5 sc] x 6 (36)
+: [dec, 4 sc] x 6 (30)
+: 30 sc (30) # FLO
+2: 30 sc (30)
+: [inc, 5 sc] x 5 (35)
+: [inc, 6 sc] x 5 (40)
+: [inc, 7 sc] x 5 (45)
+2: 45 sc (45)
