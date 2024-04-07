@@ -1,6 +1,5 @@
 # Next
 - update documentation relating to hook and plushie
-- fix status messages on the frontend (waiting for websocket connection)
 - refactor configuration sharing between front and backend
 
 # Backlog

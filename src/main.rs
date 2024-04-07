@@ -28,7 +28,15 @@ fn main() {
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
-        Dev { num: _ } => println!(":)"),
+        Dev { num } => {
+            if num == 1 {
+                let d = Params::default();
+                let s = serde_json::to_string_pretty(&d).unwrap();
+                println!("{s}");
+            }
+            println!(":)");
+            println!(":)");
+        }
         Genetic(genetic) => {
             let suite = &genetic.suite;
             println!("Selected suite: {suite}");

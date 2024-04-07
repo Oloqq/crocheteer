@@ -4,6 +4,26 @@ import "./lib/interaction";
 import * as simulator from "./lib/simulation";
 
 let world = undefined;
+
+const simulationParams = {
+  "timestep": 1.0,
+  "floor": true,
+  "gravity": 0.0005,
+  "desired_stitch_distance": 1.0,
+  "centroids": {
+    "number": 2,
+    "force": 0.05,
+    "min_nodes_per_centroid": 60
+  },
+  "autostop": {
+    "acceptable_tension": 0.02,
+    "max_relaxing_iterations": 100
+  },
+  "keep_root_at_origin": true,
+  "single_loop_force": 0.05,
+  "initializer": "Cylinder"
+}
+
 const customGui = {
   edgesVisible: true,
   gravity: 5e-4,
@@ -11,7 +31,6 @@ const customGui = {
     world.onAdvance();
     simulator.send("advance");
   },
-  stuffing: 'PerRound',
   centroids: {
     amount: 1
   }
@@ -68,10 +87,6 @@ function main() {
   });
   gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
     simulator.send(`gravity ${value}`)
-  });
-  gui.add(customGui, 'stuffing', { None: 'None', Centroids: 'Centroids' }).onChange((val) => {
-    simulator.send(`stuffing ${val}`);
-    simulator.send(`centroid.amount ${customGui.centroids.amount}`);
   });
 
   var _ = gui.addFolder('PerRound stuffing config');
