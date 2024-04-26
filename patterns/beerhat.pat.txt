@@ -1,0 +1,16 @@
+ch(18)
+color(255, 211, 0)
+6: 18 sc
+
+mark(glass_top)
+: BLO, [sc, dec] x 6 (12)
+: 6 dec (6)
+FO
+
+goto(glass_top), color(255, 255, 255)
+: FLO, [sc, inc] x 9 (27)
+3: 27 sc
+: [sc, dec] x 9 (18)
+: [sc, dec] x 6 (12)
+: 6 dec (6)
+FO

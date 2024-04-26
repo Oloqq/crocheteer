@@ -201,6 +201,10 @@ impl Pattern {
                 let b = integer(&tokens.next().unwrap())?;
                 Ok(vec![Action::Color((r, g, b))])
             }
+            Rule::KW_CH => {
+                let count = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
+                Ok(vec![Action::Ch(count)])
+            }
             _ => unreachable!(),
         }
     }
