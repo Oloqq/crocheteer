@@ -1,7 +1,8 @@
 use super::sim::{Data, Simulation};
-use crate::common::*;
+use super::tokens::Tokens;
 use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
+use crate::{common::*, token_args};
 
 use std::sync::{Arc, Mutex};
 
@@ -73,6 +74,54 @@ impl PlushieSimulation {
             .to_string(),
         )
     }
+
+    fn react_internal(&mut self, msg: &str) -> Result<(), super::tokens::Error> {
+        let tokens = Tokens::from(msg)?;
+        log::trace!("Message tokens: {tokens:?}");
+        let command: &str = tokens.get(0)?;
+        let controls = &mut self.controls;
+
+        match command {
+            "pos" => {
+                let (id, x, y, z) = token_args!(tokens, usize, f32, f32, f32);
+                self.plushie.set_point_position(id, Point::new(x, y, z));
+            }
+            "pattern" | "soft_update" => match self.change_pattern(msg, command == "soft_update") {
+                Ok(_) => {
+                    self.controls.need_init = true;
+                    self.send("status", "Loaded the pattern");
+                }
+                Err(error) => {
+                    self.send("status", format!("Couldn't parse: {}", error).as_str());
+                }
+            },
+            "pause" => controls.paused = true,
+            "resume" => controls.paused = false,
+            "advance" => controls.advance += 1,
+            "gravity" => self.plushie.params().gravity = tokens.get(1).unwrap().parse().unwrap(),
+            "stuffing" => log::warn!("this should be removed from the frontend"),
+            "centroid.amount" => {
+                let num: usize = tokens.parse(1)?;
+                self.plushie.params().centroids.number = num;
+            }
+            "load_example" => {
+                self.send("status", "examples are temporarily not available");
+                log::warn!("examples are temporarily not available");
+                // let name = tokens.get(1).unwrap();
+                // match examples::get(name) {
+                //     Some((pattern, plushie)) => {
+                //         self.controls.need_init = true;
+                //         self.plushie = Box::new(plushie);
+                //         self.send("pattern_update", &pattern.human_readable());
+                //         self.send("status", "Loaded an example");
+                //     }
+                //     None => self.send("status", "no such example"),
+                // }
+            }
+            _ => log::error!("Unexpected msg: {msg}"),
+        };
+        Ok(())
+    }
 }
 
 impl Simulation for PlushieSimulation {
@@ -101,60 +150,10 @@ impl Simulation for PlushieSimulation {
     }
 
     fn react(&mut self, msg: &str) {
-        let controls = &mut self.controls;
-        let tokens: Vec<&str> = msg.split(" ").collect();
-        let command = *match tokens.get(0) {
-            Some(command) => command,
-            None => {
-                log::error!("Unexpected msg: {msg}");
-                return;
-            }
+        match self.react_internal(msg) {
+            Ok(_) => (),
+            Err(e) => log::warn!("Message parsing error: {e:?} on message: {msg}"),
         };
-
-        log::info!("Message: {tokens:?}");
-        match command {
-            "pos" => {
-                assert!(tokens.len() == 5);
-                let id: usize = tokens[1].parse().unwrap();
-                let x: f32 = tokens[2].parse().unwrap();
-                let y: f32 = tokens[3].parse().unwrap();
-                let z: f32 = tokens[4].parse().unwrap();
-                self.plushie.set_point_position(id, Point::new(x, y, z));
-            }
-            "pattern" | "soft_update" => match self.change_pattern(msg, command == "soft_update") {
-                Ok(_) => {
-                    self.controls.need_init = true;
-                    self.send("status", "Loaded the pattern");
-                }
-                Err(error) => {
-                    self.send("status", format!("Couldn't parse: {}", error).as_str());
-                }
-            },
-            "pause" => controls.paused = true,
-            "resume" => controls.paused = false,
-            "advance" => controls.advance += 1,
-            "gravity" => self.plushie.params().gravity = tokens.get(1).unwrap().parse().unwrap(),
-            "stuffing" => log::warn!("this should be removed from the frontend"),
-            "centroid.amount" => {
-                let num: usize = tokens.get(1).unwrap().parse().unwrap();
-                self.plushie.params().centroids.number = num;
-            }
-            "load_example" => {
-                self.send("status", "examples are temporarily not available");
-                log::warn!("examples are temporarily not available");
-                // let name = tokens.get(1).unwrap();
-                // match examples::get(name) {
-                //     Some((pattern, plushie)) => {
-                //         self.controls.need_init = true;
-                //         self.plushie = Box::new(plushie);
-                //         self.send("pattern_update", &pattern.human_readable());
-                //         self.send("status", "Loaded an example");
-                //     }
-                //     None => self.send("status", "no such example"),
-                // }
-            }
-            _ => log::error!("Unexpected msg: {msg}"),
-        }
     }
 
     fn clone(&self) -> Self {
