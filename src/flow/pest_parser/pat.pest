@@ -39,6 +39,7 @@ interstitchable_operation = {
     | (KW_MARK ~ arg_ident)
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
+    | (KW_CH ~ arg_int)
 }
 
 KW_MR       = { "MR" }
@@ -48,6 +49,7 @@ KW_GOTO     = { "goto" }
 KW_FLO      = { "FLO" }
 KW_BLO      = { "BLO" }
 KW_BL       = { "BL" }
+KW_CH       = { "ch" | "Ch" }
 KW_COLOR      = { "color" }
 KW_STITCH   =  { "sc" | "inc" | "dec" }
 

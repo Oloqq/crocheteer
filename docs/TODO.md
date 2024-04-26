@@ -1,6 +1,8 @@
 # Next
 - update documentation relating to hook and plushie
+- allow color before starter
 - refactor configuration sharing between front and backend
+- foam proves the coloring is wrong now
 
 # Backlog
 
