@@ -71,7 +71,8 @@ function initParamsGui(gui, world) {
   folder.add(p, "floor").name("Floored").onChange(sendParams);
   folder.add(p, "keep_root_at_origin").name("Rooted").onChange(sendParams);
   folder.add(p, "single_loop_force", 0).name("SLF").onChange(sendParams);
-  // folder.add(p, "timestep").name("Timestep").onChange(sendParams);
+  // Reversing time does not work in this simulation
+  folder.add(p, "timestep", 0.1, 1.7).name("Timestep").onChange(sendParams);
 
   var centroids = folder.addFolder("Centroid stuffing");
   centroids.open();

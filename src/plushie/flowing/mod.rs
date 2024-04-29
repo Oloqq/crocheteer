@@ -47,7 +47,7 @@ impl PlushieTrait for Plushie {
             Cylinder => (),
         }
         sanity!(self.nodes.assert_no_nans());
-        self.step(time);
+        self.step(time * self.params.timestep);
     }
 
     fn params(&mut self) -> &mut crate::plushie::Params {
