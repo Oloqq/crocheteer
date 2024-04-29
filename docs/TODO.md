@@ -3,6 +3,7 @@
 - allow color before starter
 - refactor configuration sharing between front and backend
 - foam proves the coloring is wrong now
+- display requested vs actual centroids in the gui
 
 # Backlog
 

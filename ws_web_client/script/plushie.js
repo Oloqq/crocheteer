@@ -11,7 +11,7 @@ const peculiarityColors = {
 const debugDisplay = false;
 
 export default class Plushie {
-  constructor(status, guiData, gui, pattern) {
+  constructor(status, gui, pattern) {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
@@ -20,13 +20,15 @@ export default class Plushie {
     this.dragged = null;
     this.displayEdges = true;
     this.status = status;
-    this.guiData = guiData;
     this.gui = gui;
     this.pattern = pattern;
     this.peculiar = {};
     this.nodeColors = [];
     this.colors = peculiarityColors;
+    // those will be immediately overwritten with serialized params from the server
+    // those have to be initialized here so gui can be constructed
     this.params = {
+      "gravity": 0,
       "centroids": {
         "number": 0
       },
@@ -139,15 +141,12 @@ export default class Plushie {
   }
 
   init(data) {
-    console.log(data);
+    console.log("init:", data);
     const nodes = data["nodes"];
     const points = nodes["points"];
     this.peculiar = nodes["peculiarities"]
     this.nodeColors = nodes["colors"];
     this.edges = data["edges"];
-    this.guiData.stuffing = data["stuffing"];
-    this.guiData.gravity = data["gravity"];
-    this.guiData.centroids.amount = data["centroids"].length;
     this.gui.updateDisplay();
 
     this.stitchPositions = [];
@@ -218,7 +217,6 @@ export default class Plushie {
   }
 
   setCentroidNum(num) {
-    // console.log(this.centroidSpheres.length, num)
     while (this.centroidSpheres.length < num) {
       let sph = create.sphere([0, 0, 0], 0.1, 0xffa500);
       this.centroidSpheres.push(sph);

@@ -7,14 +7,10 @@ let world = undefined;
 
 const customGui = {
   edgesVisible: true,
-  gravity: 5e-4,
   advance: function () {
     world.onAdvance();
     simulator.send("advance");
   },
-  centroids: {
-    number: 1
-  }
 }
 
 const pattern = document.getElementById("pattern");
@@ -54,35 +50,45 @@ commandButton.addEventListener("click", () => {
   simulator.send(`${text}`);
 });
 
+function initParamsGui(gui, world) {
+  const sendParams = () => {
+    console.log("sending params: ", world.params);
+    simulator.send(`setparams ${JSON.stringify(world.params)}`);
+  }
+  const removeSlider = (numberInput) => {
+    numberInput.domElement.children[1].style.pointerEvents = "none";
+  }
+  const p = world.params;
+
+  // gui.add(p, "gravity").name("Gravity").onChange((value) => {
+  //   simulator.send(`gravity ${value}`)
+  //   sendParams();
+  // });
+
+  var centroids = gui.addFolder("Centroid stuffing");
+  {
+    removeSlider(centroids.add(p.centroids, "number", 0, 20, 1).onChange((val) => {
+      world.setCentroidNum(val);
+      sendParams();
+    }));
+    centroids.open();
+  }
+}
+
 function main() {
   const app = simulator.init();
   const gui = app.gui;
   app.status = status;
 
-  const simulationWorld = new Plushie(status, customGui, gui, pattern);
+  const simulationWorld = new Plushie(status, gui, pattern);
   world = simulationWorld;
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
     simulationWorld.toggleLinks();
   });
-  gui.add(customGui, 'gravity').name("Gravity").onChange((value) => {
-    simulator.send(`gravity ${value}`)
-  });
 
-  var _ = gui.addFolder('PerRound stuffing config');
-
-  var centroids = gui.addFolder('Centroid stuffing config');
-  {
-    centroids.add(world.params.centroids, "number", 0, 20, 1).onChange((val) => {
-      simulator.send(`centroid.amount ${val}`);
-      const newParams = world.params;
-      console.log("new params: ", newParams);
-      simulationWorld.setCentroidNum(val);
-      simulator.send(`setparams ${JSON.stringify(world.params)}`);
-    }).domElement.children[1].style.pointerEvents = "none";
-    centroids.open();
-  }
+  initParamsGui(gui, world);
 
   status.innerText = "Waiting for websocket connection...";
   simulator.connect("ws://127.0.0.1:8080", simulationWorld);

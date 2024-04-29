@@ -100,10 +100,6 @@ impl PlushieSimulation {
             "advance" => controls.advance += 1,
             "gravity" => self.plushie.params().gravity = tokens.get(1).unwrap().parse().unwrap(),
             "stuffing" => log::warn!("this should be removed from the frontend"),
-            "centroid.amount" => {
-                let num: usize = tokens.parse(1)?;
-                self.plushie.params().centroids.number = num;
-            }
             "setparams" => {
                 let serialized = tokens.get(1)?;
                 let deserd = serde_json::from_str(serialized)
