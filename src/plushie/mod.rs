@@ -15,6 +15,8 @@ pub trait PlushieTrait: Send + 'static {
     fn step(&mut self, time: f32);
     /// Access parameters of the simulation
     fn params(&mut self) -> &mut Params;
+    /// Overwrite params
+    fn set_params(&mut self, params: Params);
 
     // JSONs for frontend communication
     fn nodes_to_json(&self) -> JSON;

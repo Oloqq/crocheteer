@@ -1,5 +1,6 @@
 import * as create from "./lib/create";
 import * as simulation from "./lib/simulation";
+import "./jquery";
 
 const peculiarityColors = {
   "normal": 0x00ff00,
@@ -25,6 +26,11 @@ export default class Plushie {
     this.peculiar = {};
     this.nodeColors = [];
     this.colors = peculiarityColors;
+    this.params = {
+      "centroids": {
+        "number": 0
+      },
+    };
   }
 
   getId(obj) {
@@ -112,8 +118,13 @@ export default class Plushie {
         console.log("new pattern");
         this.pattern.value = data;
         break;
+      case "params":
+        const RECURSIVE = true;
+        jQuery.extend(RECURSIVE, this.params, JSON.parse(data))
+        console.log("got params: ", this.params);
+        break;
       default:
-        console.error(`Unrecognized key: ${dict["key"]}`);
+        console.error(`Unrecognized key: ${key}`);
     }
   }
 

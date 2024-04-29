@@ -2,7 +2,8 @@
 pub enum Error {
     EmptyMessage,
     OutOfBounds,
-    CantParse,
+    CantParseTokens,
+    CantParseParams,
 }
 use std::str::FromStr;
 
@@ -42,7 +43,7 @@ impl<'a> Tokens<'a> {
         if i >= self.tokens.len() {
             return Err(OutOfBounds);
         }
-        let parsed = self.tokens[i].parse().map_err(|_| CantParse)?;
+        let parsed = self.tokens[i].parse().map_err(|_| CantParseTokens)?;
         Ok(parsed)
     }
 }

@@ -104,6 +104,16 @@ impl PlushieSimulation {
                 let num: usize = tokens.parse(1)?;
                 self.plushie.params().centroids.number = num;
             }
+            "setparams" => {
+                let serialized = tokens.get(1)?;
+                let deserd = serde_json::from_str(serialized)
+                    .map_err(|_| super::tokens::Error::CantParseParams)?;
+                self.plushie.set_params(deserd);
+            }
+            "getparams" => {
+                let serialized = serde_json::to_string(self.plushie.params()).unwrap();
+                self.send("params", &serialized);
+            }
             "load_example" => {
                 self.send("status", "examples are temporarily not available");
                 log::warn!("examples are temporarily not available");

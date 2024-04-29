@@ -54,6 +54,10 @@ impl PlushieTrait for Plushie {
         &mut self.params
     }
 
+    fn set_params(&mut self, params: Params) {
+        self.params = params;
+    }
+
     fn nodes_to_json(&self) -> JSON {
         serde_json::json!(self.nodes.as_vec())
     }

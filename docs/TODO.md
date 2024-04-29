@@ -4,7 +4,6 @@
 - refactor configuration sharing between front and backend
 - foam proves the coloring is wrong now
 
-
 # Backlog
 
 - adding some inertia/weight to a point after it is moved by a user would make nudging actually useful (possible with mutable Constraints)
