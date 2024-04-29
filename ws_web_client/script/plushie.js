@@ -26,12 +26,19 @@ export default class Plushie {
     this.nodeColors = [];
     this.colors = peculiarityColors;
     // those will be immediately overwritten with serialized params from the server
-    // those have to be initialized here so gui can be constructed
+    // but they have to be initialized here so gui can be constructed
     this.params = {
-      "gravity": 0,
       "centroids": {
-        "number": 0
+        "force": 0.1,
+        "min_nodes_per_centroid": 0,
+        "number": 0,
       },
+      "desired_stitch_distance": 0.1, // decimal point here enables displaying decimal points later
+      "floor": false,
+      "gravity": 0.1,
+      "keep_root_at_origin": false,
+      "single_loop_force": 0.1,
+      "timestep": 1.1,
     };
   }
 

@@ -1,11 +1,16 @@
 # Next
 - update documentation relating to hook and plushie
 - allow color before starter
-- refactor configuration sharing between front and backend
 - foam proves the coloring is wrong now
-- display requested vs actual centroids in the gui
 
 # Backlog
+- display requested vs actual centroids in the gui
+- jump the creation to root when rooted changes values from false to true
+- bugs:
+  - `rooted` fully disables gravity
+  - timestep has no effect
+  - there is no real reason why plushie should be unable to recover from this ![](images/2024-04-29-22-22-27.png)
+  - single loop force is the thing causing rotation
 
 - adding some inertia/weight to a point after it is moved by a user would make nudging actually useful (possible with mutable Constraints)
 

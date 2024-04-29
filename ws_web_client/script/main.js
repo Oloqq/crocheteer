@@ -59,19 +59,30 @@ function initParamsGui(gui, world) {
     numberInput.domElement.children[1].style.pointerEvents = "none";
   }
   const p = world.params;
+  const folder = gui.addFolder("Params");
+  folder.open();
 
-  // gui.add(p, "gravity").name("Gravity").onChange((value) => {
-  //   simulator.send(`gravity ${value}`)
-  //   sendParams();
-  // });
+  folder.add(p, "gravity").name("Gravity").onChange((value) => {
+    simulator.send(`gravity ${value}`)
+    sendParams();
+  });
 
-  var centroids = gui.addFolder("Centroid stuffing");
+  folder.add(p, "desired_stitch_distance").name("DSD").onChange(sendParams);
+  folder.add(p, "floor").name("Floored").onChange(sendParams);
+  folder.add(p, "keep_root_at_origin").name("Rooted").onChange(sendParams);
+  folder.add(p, "single_loop_force", 0).name("SLF").onChange(sendParams);
+  // folder.add(p, "timestep").name("Timestep").onChange(sendParams);
+
+  var centroids = folder.addFolder("Centroid stuffing");
+  centroids.open();
   {
+    centroids.add(p.centroids, "force", 0).name("Force").onChange(sendParams);
+    centroids.add(p.centroids, "min_nodes_per_centroid", 0).name("Nodes per centroid").onChange(sendParams);
     removeSlider(centroids.add(p.centroids, "number", 0, 20, 1).onChange((val) => {
       world.setCentroidNum(val);
       sendParams();
     }));
-    centroids.open();
+
   }
 }
 
