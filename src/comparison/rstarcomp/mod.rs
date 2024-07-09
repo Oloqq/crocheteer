@@ -8,12 +8,12 @@ struct RstarComparator {
     tree: RTree<[f32; 3]>,
 }
 
-fn array(v: &V) -> [f32; 3] {
+fn array(v: &Point) -> [f32; 3] {
     [v[0], v[1], v[2]]
 }
 
 impl Comparator for RstarComparator {
-    fn with_basis(nodes: &Vec<V>) -> Self {
+    fn with_basis(nodes: &Vec<Point>) -> Self {
         assert!(nodes.len() > 0);
         let mut tree = RTree::new();
         for node in nodes {
@@ -22,12 +22,12 @@ impl Comparator for RstarComparator {
         Self { tree }
     }
 
-    fn judge(&self, nodes: &Vec<V>) -> f32 {
+    fn judge(&self, nodes: &Vec<Point>) -> f32 {
         let mut sum = 0.0;
         for node in nodes {
             let nearest = self.tree.nearest_neighbor(&array(node)).unwrap();
             let found: V = V::new(nearest[0], nearest[1], nearest[2]);
-            sum -= node.metric_distance(&found);
+            sum -= node.coords.metric_distance(&found)
         }
         sum
     }
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn test_same_shape_has_fitness_0() {
-        let basis: Vec<V> = serde_json::from_str(SHAPE_INIT).unwrap();
+        let basis: Vec<Point> = serde_json::from_str(SHAPE_INIT).unwrap();
         let cmp = RstarComparator::with_basis(&basis);
         let res = cmp.judge(&basis);
         assert_eq!(res, 0.0);
@@ -51,9 +51,9 @@ mod tests {
 
     #[test]
     fn test_closer_shapes_have_better_fitness() {
-        let init: Vec<V> = serde_json::from_str(SHAPE_INIT).unwrap();
-        let middle: Vec<V> = serde_json::from_str(SHAPE_MIDDLE).unwrap();
-        let done: Vec<V> = serde_json::from_str(SHAPE_DONE).unwrap();
+        let init: Vec<Point> = serde_json::from_str(SHAPE_INIT).unwrap();
+        let middle: Vec<Point> = serde_json::from_str(SHAPE_MIDDLE).unwrap();
+        let done: Vec<Point> = serde_json::from_str(SHAPE_DONE).unwrap();
         let cmp = RstarComparator::with_basis(&done);
         let res_init = cmp.judge(&init);
         let res_middle = cmp.judge(&middle);

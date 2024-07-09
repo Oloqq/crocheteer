@@ -1,4 +1,5 @@
 # Next
+- wtf is edges_goal in Plushie
 - update documentation relating to hook and plushie
 - allow color before starter
 - foam proves the coloring is wrong now

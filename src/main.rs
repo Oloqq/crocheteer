@@ -25,7 +25,8 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket {} => {
-            let plushie = examples::ergogrzib();
+            // let plushie = examples::ergogrzib();
+            let plushie = Plushie::dummy_from_stl("models/grzib40.stl");
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
