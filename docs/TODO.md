@@ -4,6 +4,7 @@
 - foam proves the coloring is wrong now
 
 # Backlog
+- R*Tree project uses https://github.com/sebcrozet/kiss3d, which seems nice for a visualization client
 - display requested vs actual centroids in the gui
 - jump the creation to root when rooted changes values from false to true
 - bugs:
