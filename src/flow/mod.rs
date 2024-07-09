@@ -1,3 +1,6 @@
+/// Flow is an iterator over stitches.
+/// Specific implemetations are designed to handle various pattern formats,
+/// or creating patterns in Rust code directly
 pub mod actions;
 pub mod ergoflow;
 pub mod pest_parser;

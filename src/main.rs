@@ -1,5 +1,6 @@
 mod args;
 mod common;
+mod comparison;
 mod flow;
 mod plushie;
 mod ws_sim;

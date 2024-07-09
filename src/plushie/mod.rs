@@ -1,3 +1,5 @@
+/// Plushie provides functionality to animate a set of points
+/// and visualize display the process
 pub mod examples;
 pub mod params;
 
