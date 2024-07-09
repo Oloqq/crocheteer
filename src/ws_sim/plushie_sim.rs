@@ -4,6 +4,7 @@ use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
 use crate::{common::*, token_args};
 
+use std::fs;
 use std::sync::{Arc, Mutex};
 
 #[derive(Clone)]
@@ -122,6 +123,17 @@ impl PlushieSimulation {
                 //     }
                 //     None => self.send("status", "no such example"),
                 // }
+            }
+            "save" => {
+                if let Ok(name) = tokens.get(1) {
+                    fs::write(
+                        format!("generated/nodes/{name}.json").as_str(),
+                        serde_json::to_string(&self.plushie.nodes_to_json()).unwrap(),
+                    )
+                    .unwrap();
+                } else {
+                    self.send("status", "provide a name");
+                }
             }
             _ => log::error!("Unexpected msg: {msg}"),
         };
