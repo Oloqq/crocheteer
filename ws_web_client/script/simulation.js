@@ -29,7 +29,14 @@ export default class Simulation {
         break;
       case "ini":
         this.mainPlushie.init(data);
-        this.gui.updateDisplay();
+        break;
+      case "ini2":
+        if (data.length != 2) {
+          this.status.innerText = "error 3423";
+          console.error(`tried to initialize ${data.length} plushies`);
+        }
+        this.mainPlushie.init(data[0]);
+        this.plushies[0].init(data[1]);
         break;
       case "multiini":
         break;
@@ -45,6 +52,7 @@ export default class Simulation {
         const RECURSIVE = true;
         jQuery.extend(RECURSIVE, this.params, JSON.parse(data))
         console.log("got params: ", this.params);
+        this.gui.updateDisplay();
         break;
       default:
         console.error(`Unrecognized key: ${key}`);

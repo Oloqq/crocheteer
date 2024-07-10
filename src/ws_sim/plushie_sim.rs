@@ -58,10 +58,17 @@ impl PlushieSimulation {
     }
 
     fn get_init_data(&self) -> JSON {
-        serde_json::json!({
-            "key": "ini",
-            "dat": self.plushie.init_data()
-        })
+        if let Some(p) = &self.secondary_plushie {
+            serde_json::json!({
+                "key": "ini2",
+                "dat": serde_json::json!([self.plushie.init_data(), p.init_data()]),
+            })
+        } else {
+            serde_json::json!({
+                "key": "ini",
+                "dat": self.plushie.init_data(),
+            })
+        }
     }
 
     fn change_pattern(&mut self, msg: &str, _soft: bool) -> Result<(), String> {
