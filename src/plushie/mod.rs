@@ -31,7 +31,7 @@ pub trait PlushieTrait: Send + 'static {
 
     /// As far as I understand, Send and Clone are not compatible
     /// This is a workaround, types implementing the trait can just put Clone::clone() inside
-    fn clone(&self) -> Box<dyn PlushieTrait>;
+    fn clonebox(&self) -> Box<dyn PlushieTrait>;
 }
 
 pub fn parse_to_any_plushie(

@@ -27,6 +27,7 @@ impl PlushieControls {
 pub struct PlushieSimulation {
     controls: PlushieControls,
     plushie: Box<dyn PlushieTrait>,
+    secondary_plushie: Option<Box<dyn PlushieTrait>>,
     messages: Arc<Mutex<Vec<String>>>,
 }
 
@@ -35,8 +36,15 @@ impl PlushieSimulation {
         Self {
             controls: PlushieControls::new(),
             plushie: Box::new(plushie),
+            secondary_plushie: None,
             messages: Arc::new(Mutex::new(vec![])),
         }
+    }
+
+    pub fn with_secondary(plushie: impl PlushieTrait, secondary: impl PlushieTrait) -> Self {
+        let mut res = Self::from(plushie);
+        res.secondary_plushie = Some(Box::new(secondary));
+        res
     }
 
     fn get_update_data(&self) -> JSON {
@@ -174,10 +182,17 @@ impl Simulation for PlushieSimulation {
     }
 
     fn clone(&self) -> Self {
+        let secondary_plushie: Option<Box<dyn PlushieTrait>> =
+            if let Some(refbox) = &self.secondary_plushie {
+                Some(refbox.clonebox())
+            } else {
+                None
+            };
         PlushieSimulation {
             controls: self.controls.clone(),
-            plushie: self.plushie.clone(),
+            plushie: self.plushie.clonebox(),
             messages: self.messages.clone(),
+            secondary_plushie,
         }
     }
 }

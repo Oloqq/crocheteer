@@ -51,6 +51,12 @@ fn main() {
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim);
                 }
+                5 => {
+                    let primary = examples::ergogrzib();
+                    let secondary = Pointcloud::from_points("models/grzib5cloud1000.json");
+                    let sim = PlushieSimulation::with_secondary(primary, secondary);
+                    serve_websocket(sim);
+                }
                 _ => {}
             }
             println!(":)");

@@ -11,7 +11,7 @@ const peculiarityColors = {
 const debugDisplay = false;
 
 export default class Plushie {
-  constructor(status, gui, pattern) {
+  constructor(status, gui, pattern, primary) {
     this.edges = [];
     this.stitchSpheres = [];
     this.stitchPositions = [];
@@ -19,27 +19,11 @@ export default class Plushie {
     this.links = [];
     this.dragged = null;
     this.displayEdges = true;
-    this.status = status;
-    this.gui = gui;
-    this.pattern = pattern;
+    this.primary = primary;
+    this.visible = true;
     this.peculiar = {};
     this.nodeColors = [];
     this.colors = peculiarityColors;
-    // those will be immediately overwritten with serialized params from the server
-    // but they have to be initialized here so gui can be constructed
-    this.params = {
-      "centroids": {
-        "force": 0.1,
-        "min_nodes_per_centroid": 0,
-        "number": 0,
-      },
-      "desired_stitch_distance": 0.1, // decimal point here enables displaying decimal points later
-      "floor": false,
-      "gravity": 0.1,
-      "keep_root_at_origin": false,
-      "single_loop_force": 0.1,
-      "timestep": 1.1,
-    };
   }
 
   getId(obj) {
@@ -58,6 +42,10 @@ export default class Plushie {
 
   mouseUp(obj) {
     this.drag(obj);
+  }
+
+  toggleVisibility() {
+
   }
 
   toggleLinks() {
@@ -111,32 +99,6 @@ export default class Plushie {
     this.drawLinks();
   }
 
-  parseMessage(key, data) {
-    switch (key) {
-      case "upd":
-        this.update(data);
-        break;
-      case "ini":
-        this.init(data);
-        break;
-      case "status":
-        console.log("response", data);
-        this.status.innerText = data;
-        break;
-      case "pattern_update":
-        console.log("new pattern");
-        this.pattern.value = data;
-        break;
-      case "params":
-        const RECURSIVE = true;
-        jQuery.extend(RECURSIVE, this.params, JSON.parse(data))
-        console.log("got params: ", this.params);
-        break;
-      default:
-        console.error(`Unrecognized key: ${key}`);
-    }
-  }
-
   nodeColor(i) {
     if (debugDisplay) {
       let colorKey = this.peculiar[i] ?? "normal";
@@ -154,7 +116,6 @@ export default class Plushie {
     this.peculiar = nodes["peculiarities"]
     this.nodeColors = nodes["colors"];
     this.edges = data["edges"];
-    this.gui.updateDisplay();
 
     this.stitchPositions = [];
     for (let sph of this.stitchSpheres) {

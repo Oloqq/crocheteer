@@ -82,7 +82,7 @@ impl PlushieTrait for Pointcloud {
 
     fn set_point_position(&mut self, _i: usize, _pos: super::Point) {}
 
-    fn clone(&self) -> Box<dyn PlushieTrait> {
+    fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
     }
 }

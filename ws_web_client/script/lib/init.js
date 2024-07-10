@@ -65,10 +65,10 @@ function initGui() {
   gui.add(guiControls, 'paused').name('Pause').onChange((value) => {
     if (value) {
       send("pause");
-      app.world.updateLinks();
+      app.world.onPause();
     } else {
       send("resume");
-      app.world.clearLinks();
+      app.world.onResume();
     }
   });
   gui.add({ resetCamera }, 'resetCamera').name('Reset camera');

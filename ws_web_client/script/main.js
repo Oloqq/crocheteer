@@ -2,11 +2,13 @@ import Plushie from './plushie';
 import "./lib/interaction";
 
 import * as simulator from "./lib/simulation";
+import Simulation from './simulation';
 
 let world = undefined;
 
 const customGui = {
   edgesVisible: true,
+  secondaryVisible: false,
   advance: function () {
     world.onAdvance();
     simulator.send("advance");
@@ -62,11 +64,6 @@ function initParamsGui(gui, world) {
   const folder = gui.addFolder("Params");
   folder.open();
 
-  folder.add(p, "gravity").name("Gravity").onChange((value) => {
-    simulator.send(`gravity ${value}`)
-    sendParams();
-  });
-
   folder.add(p, "desired_stitch_distance").name("DSD").onChange(sendParams);
   folder.add(p, "floor").name("Floored").onChange(sendParams);
   folder.add(p, "keep_root_at_origin").name("Rooted").onChange(sendParams);
@@ -92,18 +89,23 @@ function main() {
   const gui = app.gui;
   app.status = status;
 
-  const simulationWorld = new Plushie(status, gui, pattern);
-  world = simulationWorld;
+  const mainPlushie = new Plushie(status, gui, pattern, true);
+  const plushie2 = new Plushie(status, gui, pattern, false);
+  const simulation = new Simulation(status, gui, pattern, mainPlushie, [plushie2]);
+  world = simulation;
 
   gui.add(customGui, 'advance').name("Advance 1 step");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
-    simulationWorld.toggleLinks();
+    mainPlushie.toggleLinks();
+  });
+  gui.add(customGui, 'secondaryVisible').name("Show secondary").onChange((_value) => {
+    secondaryWorld.toggleVisibility()
   });
 
   initParamsGui(gui, world);
 
   status.innerText = "Waiting for websocket connection...";
-  simulator.connect("ws://127.0.0.1:8080", simulationWorld);
+  simulator.connect("ws://127.0.0.1:8080", simulation);
 
   if (sendPatternAtStart) {
     initialSendPattern();
