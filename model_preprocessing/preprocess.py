@@ -26,10 +26,11 @@ def interactive_visualization(cloud):
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print("provide input file")
-    cloud = create_pointcloud(sys.argv[1])
+    cloud = create_pointcloud(sys.argv[1], number_of_points=1000)
     points = np.asarray(cloud.points)
     # interactive_visualization(cloud)
 
+    points = points / 8
     points = [list(p) for p in list(points)]
 
     with open("pointcloud.json", "w") as f:

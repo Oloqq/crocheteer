@@ -47,7 +47,7 @@ fn main() {
                     serve_websocket(sim);
                 }
                 4 => {
-                    let plushie = Pointcloud::from_points("models/grzib40cloud.json");
+                    let plushie = Pointcloud::from_points("models/grzib5cloud1000.json");
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim);
                 }
