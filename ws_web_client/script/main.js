@@ -8,7 +8,7 @@ let world = undefined;
 
 const customGui = {
   edgesVisible: true,
-  secondaryVisible: false,
+  secondaryVisible: true,
   advance: function () {
     world.onAdvance();
     simulator.send("advance");

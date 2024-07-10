@@ -30,7 +30,7 @@ if __name__ == "__main__":
     points = np.asarray(cloud.points)
     # interactive_visualization(cloud)
 
-    points = points / 8
+    points = points / 4 + np.array([0.8, 0, 0])
     points = [list(p) for p in list(points)]
 
     with open("pointcloud.json", "w") as f:
