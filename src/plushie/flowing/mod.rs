@@ -4,8 +4,6 @@ mod construction;
 mod expanding;
 mod nodes;
 
-use std::{collections::HashMap, default, error::Error, fs::OpenOptions, hash::Hash};
-
 use self::{centroid::Centroids, nodes::Nodes};
 use super::{params::Initializer, Params, PlushieTrait};
 use crate::{common::*, sanity};
@@ -24,32 +22,7 @@ pub struct Plushie {
     force_node_construction_timer: f32,
 }
 
-fn load_stl(filepath: &str) -> Result<Vec<Point>, Box<dyn Error>> {
-    let mut file = OpenOptions::new().read(true).open(filepath)?;
-    let stl = stl_io::read_stl(&mut file).unwrap();
-    let points = stl
-        .vertices
-        .iter()
-        .map(|v| Point::new(v[0], v[2], v[1]))
-        .collect();
-    Ok(points)
-}
-
 impl Plushie {
-    pub fn dummy_from_stl(path: &str) -> Self {
-        let points = load_stl(path).unwrap();
-        let l = points.len();
-        Self {
-            nodes: Nodes::new(points, HashMap::new(), vec![(255, 255, 255); l]),
-            edges: vec![vec![], vec![0]],
-            edges_goal: vec![vec![], vec![0]],
-            params: Params::default(),
-            centroids: Centroids::new(0, 10.0),
-            displacement: vec![],
-            force_node_construction_timer: 0.0,
-        }
-    }
-
     fn is_relaxed(&self, displacement: &V) -> bool {
         // TODO: elbow method
         let tension: f32 = displacement.magnitude();

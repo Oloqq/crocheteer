@@ -11,7 +11,7 @@ use self::ws_sim::plushie_sim::PlushieSimulation;
 use crate::flow::pest_parser::Pattern;
 use crate::plushie::examples;
 use crate::plushie::Params;
-use crate::plushie::Plushie;
+use crate::plushie::{Plushie, Pointcloud};
 use crate::ws_sim::serve_websocket;
 use std::fs;
 use std::io::Write;
@@ -25,16 +25,33 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket {} => {
-            // let plushie = examples::ergogrzib();
-            let plushie = Plushie::dummy_from_stl("models/grzib40.stl");
+            let plushie = examples::ergogrzib();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim);
         }
         Dev { num } => {
-            if num == 1 {
-                let d = Params::default();
-                let s = serde_json::to_string_pretty(&d).unwrap();
-                println!("{s}");
+            match num {
+                1 => {
+                    let d = Params::default();
+                    let s = serde_json::to_string_pretty(&d).unwrap();
+                    println!("{s}");
+                }
+                2 => {
+                    let plushie = examples::ergogrzib();
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim);
+                }
+                3 => {
+                    let plushie = Pointcloud::from_stl("models/grzib40.stl");
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim);
+                }
+                4 => {
+                    let plushie = Pointcloud::from_points("models/grzib40cloud.json");
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim);
+                }
+                _ => {}
             }
             println!(":)");
             println!(":)");

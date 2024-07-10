@@ -4,9 +4,11 @@ pub mod examples;
 pub mod params;
 
 mod flowing;
+mod pointcloud;
 
 pub use flowing::Plushie;
 pub use params::Params;
+pub use pointcloud::Pointcloud;
 
 use crate::common::*;
 
