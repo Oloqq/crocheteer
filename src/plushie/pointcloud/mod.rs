@@ -62,7 +62,7 @@ impl PlushieTrait for Pointcloud {
     }
 
     fn centroids_to_json(&self) -> super::JSON {
-        serde_json::json!([])
+        serde_json::json!({"centroids": []})
     }
 
     fn init_data(&self) -> super::JSON {

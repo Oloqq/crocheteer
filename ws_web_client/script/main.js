@@ -99,7 +99,7 @@ function main() {
     mainPlushie.toggleLinks();
   });
   gui.add(customGui, 'secondaryVisible').name("Show secondary").onChange((_value) => {
-    secondaryWorld.toggleVisibility()
+    plushie2.toggleVisibility()
   });
 
   initParamsGui(gui, world);

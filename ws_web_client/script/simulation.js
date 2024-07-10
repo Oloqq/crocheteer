@@ -25,6 +25,7 @@ export default class Simulation {
   parseMessage(key, data) {
     switch (key) {
       case "upd":
+        console.log(data);
         this.mainPlushie.update(data);
         break;
       case "ini":

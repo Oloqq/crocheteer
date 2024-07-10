@@ -45,7 +45,9 @@ export default class Plushie {
   }
 
   toggleVisibility() {
-
+    for (let sph of this.stitchSpheres) {
+      sph.visible = !sph.visible;
+    }
   }
 
   toggleLinks() {
