@@ -1,3 +1,21 @@
+function download(data, filename, type) {
+  var file = new Blob([data], { type: type });
+  if (window.navigator.msSaveOrOpenBlob) // IE10+
+    window.navigator.msSaveOrOpenBlob(file, filename);
+  else { // Others
+    var a = document.createElement("a"),
+      url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 0);
+  }
+}
+
 export default class Simulation {
   constructor(status, gui, pattern, mainPlushie, plushies) {
     this.status = status;
@@ -39,8 +57,6 @@ export default class Simulation {
         this.mainPlushie.init(data[0]);
         this.plushies[0].init(data[1]);
         break;
-      case "multiini":
-        break;
       case "status":
         console.log("response", data);
         this.status.innerText = data;
@@ -54,6 +70,10 @@ export default class Simulation {
         jQuery.extend(RECURSIVE, this.params, JSON.parse(data))
         console.log("got params: ", this.params);
         this.gui.updateDisplay();
+        break;
+      case "export":
+        console.log("exporting the plushie")
+        download(data, "plushie.json", "json")
         break;
       default:
         console.error(`Unrecognized key: ${key}`);

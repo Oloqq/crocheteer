@@ -150,6 +150,7 @@ impl PlushieSimulation {
                     self.send("status", "provide a name");
                 }
             }
+            "export" => self.send("export", &self.plushie.nodes_to_json().to_string()),
             _ => log::error!("Unexpected msg: {msg}"),
         };
         Ok(())

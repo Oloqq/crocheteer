@@ -23,6 +23,8 @@ const loadExampleText = document.getElementById("example-txt");
 const status = document.getElementById("status");
 const commandButton = document.getElementById("command-btn");
 const commandText = document.getElementById("command-txt");
+const exportButton = document.getElementById("export-btn");
+const importButton = document.getElementById("import-btn");
 const plushieVersion = "flow";
 const sendPatternAtStart = false;
 
@@ -50,6 +52,14 @@ commandButton.addEventListener("click", () => {
   let text = commandText.value;
   status.innerText = `sending command... ${text}`;
   simulator.send(`${text}`);
+});
+
+exportButton.addEventListener("click", () => {
+  simulator.send(`export`);
+});
+
+importButton.addEventListener("click", () => {
+  // simulator.send(`export`);
 });
 
 function initParamsGui(gui, world) {
