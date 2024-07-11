@@ -150,7 +150,13 @@ impl PlushieSimulation {
                     self.send("status", "provide a name");
                 }
             }
-            "export" => self.send("export", &self.plushie.nodes_to_json().to_string()),
+            "export-pointcloud" => self.send("export", &self.plushie.nodes_to_json().to_string()),
+            "import-pointcloud" => {
+                let plushie = crate::plushie::Pointcloud::from_points_str(tokens.get(1).unwrap());
+                self.plushie = Box::new(plushie);
+                self.controls.need_init = true;
+                self.send("status", "loaded pointcloud");
+            }
             _ => log::error!("Unexpected msg: {msg}"),
         };
         Ok(())

@@ -33,14 +33,18 @@ impl Pointcloud {
         }
     }
 
-    pub fn from_points(path: &str) -> Self {
-        let str = fs::read_to_string(path).unwrap();
-        let points: Vec<Point> = serde_json::from_str(&str).unwrap();
+    pub fn from_points_str(content: &str) -> Self {
+        let points: Vec<Point> = serde_json::from_str(content).unwrap();
         let points = points.iter().map(|p| Point::from(p.xzy())).collect();
         Self {
             points,
             params: Params::default(),
         }
+    }
+
+    pub fn from_points_file(path: &str) -> Self {
+        let str = fs::read_to_string(path).unwrap();
+        Self::from_points_str(&str)
     }
 }
 
