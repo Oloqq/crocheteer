@@ -21,20 +21,20 @@ where
 - d: desired distance between nodes
 - positive $f(x)$ means attraction, negative means repulsion
 
-![](2024-02-14-07-22-51.png)
+![](images/2024-02-14-07-22-51.png)
 *attraction function for d=1*
 
 ## Stuffing
 
 ### Omnidirectional stuffing
 Calculating center of mass, then pushing away from it would be trivial, however it would fail for certain concave shapes, as well as shapes with limbs.
-![](2024-03-01-19-58-02.png)
+![](images/2024-03-01-19-58-02.png)
 
 What we actually need is a [skeleton](https://scikit-image.org/docs/stable/auto_examples/edges/plot_skeleton.html) that will repel walls
-![](2024-03-01-20-02-37.png)
+![](images/2024-03-01-20-02-37.png)
 
 The pushing part could be simplified by sampling points along the skeleton
-![](2024-03-02-18-57-18.png)
+![](images/2024-03-02-18-57-18.png)
 
 Problem: the plushie is a point cloud, a radically different data structure than 2D images for which skeletonization is defined
 
@@ -134,7 +134,7 @@ Now we must add a skeleton to the process.
     - update bone positions based on total voxel movement of it's points
 - There is no volumetric representation involved, so fitness must work on point clouds here
 
-![](2024-03-03-19-10-01.png)
+![](images/2024-03-03-19-10-01.png)
 *the same ball using early version of kmeans based approach. Effect is stable in time, even with gravity. The spiral building a plushie is clearly visible, which is a great improvement.*
 
 Initial tests show that point cloud based vertical stuffing is approximately 2 times slower
@@ -158,28 +158,28 @@ Algorithm inspired by k-means
     - set the new position of the centroid to the calculated average
 
 
-![](2024-03-03-21-34-51.png)
+![](images/2024-03-03-21-34-51.png)
 *pushing force function*
 
-![](2024-03-03-21-35-21.png)
+![](images/2024-03-03-21-35-21.png)
 *weight function*
 
-![](2024-03-03-21-38-11.png)
+![](images/2024-03-03-21-38-11.png)
 *a bean generated with centroid stuffing*
 
-![](2024-03-03-21-38-57.png)
+![](images/2024-03-03-21-38-57.png)
 *a bean generated with per-round stuffing*
 
-![](2024-03-04-16-04-54.png)
+![](images/2024-03-04-16-04-54.png)
 *another more complex shape, that's part of a multipiece toy*
 
-![](2024-03-11-14-35-16.png)
+![](images/2024-03-11-14-35-16.png)
 *vase2 loaded from a human readable pattern*
 
 ## Change working position
 Grzib leveraging new capability to change working position
 
-![](2024-03-28-16-35-09.png)
+![](images/2024-03-28-16-35-09.png)
 
 ## Back loop only (BLO) / front loop only (FLO)
 
@@ -201,7 +201,7 @@ Grzib leveraging new capability to change working position
 
 The same grzib also using BLO and FLO
 
-![](2024-03-28-16-50-45.png)
+![](images/2024-03-28-16-50-45.png)
 
 ## Initial positions
 First approach:

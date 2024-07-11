@@ -20,13 +20,13 @@ Center of a round is calculated as the average of positions of points.
   - too_close = desired_radius - actual_distance
   - push = diff.normalize() * (too_close / 4.0).powi(2)
 
-![](2024-02-17-23-50-01.png)
+![](images/2024-02-17-23-50-01.png)
 *ball generated with attraction + per-round stuffing*
 
-![](2024-03-01-19-47-51.png)
+![](images/2024-03-01-19-47-51.png)
 *addition of gravity makes the shape more realistic, but it will eventually collapse without vertical stuffing. This may seem useful for simulations, but there is no clear point of stopping, and such is necessary for fitness functions*
 
-![](2024-03-01-19-49-37.png)
+![](images/2024-03-01-19-49-37.png)
 *gravity + time*
 
 ### Need for vertical stuffing
@@ -38,11 +38,11 @@ Gravity can be generally turned off for regular plushies, but is necessary for:
 - if a plushie has limbs, they could go to weird places
 
 Vertical stuffing will also be required for plushies with "limbs"
-![](2024-03-01-19-09-47.png)
+![](images/2024-03-01-19-09-47.png)
 - red: per-round stuffing force
 - blue and green: link forces
 
 if there is nothing counteracting the blue link force, the region where limb is connected to body may malform, and it certainly will collapse if gravity is on. With gravity it may collapse all the way to the ground, as there is no force between disconnected nodes.
 
 Furthermore, the force in per-round stuffing may even work like this, depending on stitches used
-![](2024-03-01-19-13-27.png)
+![](images/2024-03-01-19-13-27.png)
