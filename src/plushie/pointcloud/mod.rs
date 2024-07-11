@@ -35,7 +35,6 @@ impl Pointcloud {
 
     pub fn from_points_str(content: &str) -> Self {
         let points: Vec<Point> = serde_json::from_str(content).unwrap();
-        let points = points.iter().map(|p| Point::from(p.xzy())).collect();
         Self {
             points,
             params: Params::default(),
@@ -44,7 +43,13 @@ impl Pointcloud {
 
     pub fn from_points_file(path: &str) -> Self {
         let str = fs::read_to_string(path).unwrap();
-        Self::from_points_str(&str)
+        let mut plushie = Self::from_points_str(&str);
+        plushie.swap_yz();
+        plushie
+    }
+
+    pub fn swap_yz(&mut self) {
+        self.points = self.points.iter().map(|p| Point::from(p.xzy())).collect();
     }
 }
 
