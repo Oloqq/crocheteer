@@ -1,4 +1,3 @@
-pub mod ball_sim;
 pub mod plushie_sim;
 mod sim;
 mod tokens;
@@ -16,10 +15,10 @@ use tokio_tungstenite::{accept_async, WebSocketStream};
 use self::sim::*;
 
 #[tokio::main]
-pub async fn serve_websocket(sim: impl Simulation) {
-    let try_socket = TcpListener::bind("127.0.0.1:8080").await;
+pub async fn serve_websocket(sim: impl Simulation, url: &str) {
+    let try_socket = TcpListener::bind(url).await;
     let listener = try_socket.expect("Failed to bind");
-    println!("Listening on: ws://127.0.0.1:8080");
+    println!("Listening on: ws://{url}");
 
     while let Ok((stream, _)) = listener.accept().await {
         tokio::spawn(handle_connection(stream, sim.clone()));

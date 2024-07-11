@@ -24,10 +24,10 @@ fn main() {
     let args = Args::from_args();
     use Command::*;
     match args.cmd {
-        WebSocket {} => {
+        WebSocket(args) => {
             let plushie = examples::ergogrzib();
             let sim = PlushieSimulation::from(plushie);
-            serve_websocket(sim);
+            serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
         Dev { num } => {
             match num {
@@ -39,28 +39,28 @@ fn main() {
                 2 => {
                     let plushie = examples::ergogrzib();
                     let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim);
+                    serve_websocket(sim, "127.0.0.1:8080");
                 }
                 3 => {
                     let plushie = Pointcloud::from_stl("models/grzib40.stl");
                     let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim);
+                    serve_websocket(sim, "127.0.0.1:8080");
                 }
                 4 => {
                     let plushie = Pointcloud::from_points("models/grzib5cloud1000.json");
                     let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim);
+                    serve_websocket(sim, "127.0.0.1:8080");
                 }
                 5 => {
                     let primary = examples::ergogrzib();
                     let secondary = Pointcloud::from_points("models/grzib10cloud1000.json");
                     let sim = PlushieSimulation::with_secondary(primary, secondary);
-                    serve_websocket(sim);
+                    serve_websocket(sim, "127.0.0.1:8080");
                 }
                 6 => {
                     let plushie = Pointcloud::from_points("model_preprocessing/pointcloud.json");
                     let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim);
+                    serve_websocket(sim, "127.0.0.1:8080");
                 }
                 _ => {}
             }
@@ -99,7 +99,7 @@ fn main() {
                 // save_mesh(stl_path.to_str().unwrap(), plushie.to_mesh());
             } else if ws {
                 let sim = PlushieSimulation::from(plushie);
-                serve_websocket(sim);
+                serve_websocket(sim, "127.0.0.1:8080");
             }
         }
     }

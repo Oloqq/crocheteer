@@ -7,7 +7,7 @@ pub enum Command {
     Dev { num: usize },
 
     #[structopt(alias = "ws", about = "Run a WebSocket server for visualization")]
-    WebSocket {},
+    WebSocket(WebsocketArgs),
 
     #[structopt(
         alias = "gen",
@@ -28,6 +28,12 @@ pub enum Command {
         #[structopt(short, long)]
         ws: bool,
     },
+}
+
+#[derive(StructOpt, Debug)]
+pub struct WebsocketArgs {
+    #[structopt(short, long, default_value = "8080")]
+    pub port: u16,
 }
 
 #[derive(StructOpt, Debug)]
