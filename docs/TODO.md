@@ -1,10 +1,9 @@
 # Next
-- wtf is edges_goal in Plushie
+
+# Backlog
 - update documentation relating to hook and plushie
 - allow color before starter
 - foam proves the coloring is wrong now
-
-# Backlog
 - R*Tree project uses https://github.com/sebcrozet/kiss3d, which seems nice for a visualization client
 - display requested vs actual centroids in the gui
 - jump the creation to root when rooted changes values from false to true
@@ -12,17 +11,16 @@
   - `rooted` fully disables gravity
   - timestep has no effect
   - there is no real reason why plushie should be unable to recover from this ![](images/2024-04-29-22-22-27.png)
-  - single loop force is the thing causing rotation
 
 - adding some inertia/weight to a point after it is moved by a user would make nudging actually useful (possible with mutable Constraints)
 
 - rewrite token_args macro as procedural
 
-- documentation
-  - clean up images (into a folder)
-
 - plushie
-  - investigate plushie rotating
+  - single loop force is the thing causing rotation
+    - anchoring at least one more point next to root should fix that
+      - how to determine when it should become stationary?
+    - can this be fixed somehow by playing with vectors?
   - attaching a chain to a set point
   - add option to force aligment in the Y axis via calculating center of mass, then rotating points around origin
 
