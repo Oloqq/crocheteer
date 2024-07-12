@@ -94,4 +94,8 @@ impl PlushieTrait for Pointcloud {
     fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
     }
+
+    fn is_relaxed(&self) -> bool {
+        true
+    }
 }

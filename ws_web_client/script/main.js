@@ -13,6 +13,10 @@ const customGui = {
     world.onAdvance();
     simulator.send("advance");
   },
+  animate: function () {
+    world.onAdvance();
+    simulator.send("animate");
+  }
 }
 
 const pattern = document.getElementById("pattern");
@@ -126,6 +130,7 @@ function main() {
   world = simulation;
 
   gui.add(customGui, 'advance').name("Advance 1 step");
+  gui.add(customGui, 'animate').name("Animate");
   gui.add(customGui, 'edgesVisible').name("Display edges (expensive)").onChange((_value) => {
     mainPlushie.toggleLinks();
   });

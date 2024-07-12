@@ -30,6 +30,8 @@ impl Plushie {
             centroids: Centroids::new(0, 0.0),
             displacement,
             force_node_construction_timer: 0.0,
+            // initializing with INF so it won't come as relaxed before first step by accident
+            last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
         }
     }
 
@@ -48,6 +50,8 @@ impl Plushie {
             params,
             nodes,
             force_node_construction_timer: 0.0,
+            // initializing with INF so it won't come as relaxed before first step by accident
+            last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
         }
     }
 

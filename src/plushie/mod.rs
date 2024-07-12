@@ -13,6 +13,7 @@ pub use pointcloud::Pointcloud;
 use crate::common::*;
 
 pub trait PlushieTrait: Send + 'static {
+    fn is_relaxed(&self) -> bool;
     /// Run the simulation until it is considered finished (relaxed)
     fn animate(&mut self);
     /// Run the simulation for one step

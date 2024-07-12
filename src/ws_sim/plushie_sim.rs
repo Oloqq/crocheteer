@@ -8,18 +8,24 @@ use std::fs;
 use std::sync::{Arc, Mutex};
 
 #[derive(Clone)]
+pub enum RunState {
+    Paused,
+    Running,
+    RunningFor(usize),
+    RunningUntilRelaxedOrMax(usize),
+}
+
+#[derive(Clone)]
 pub struct PlushieControls {
-    paused: bool,
-    advance: usize,
     need_init: bool,
+    run_state: RunState,
 }
 
 impl PlushieControls {
     fn new() -> Self {
         Self {
-            paused: true,
-            advance: 0,
             need_init: true,
+            run_state: RunState::Paused,
         }
     }
 }
@@ -111,9 +117,16 @@ impl PlushieSimulation {
                     self.send("status", format!("Couldn't parse: {}", error).as_str());
                 }
             },
-            "pause" => controls.paused = true,
-            "resume" => controls.paused = false,
-            "advance" => controls.advance += 1,
+            "pause" => controls.run_state = RunState::Paused,
+            "resume" => controls.run_state = RunState::Running,
+            "advance" => {
+                controls.run_state = match controls.run_state {
+                    RunState::RunningFor(steps) => RunState::RunningFor(steps + 1),
+                    RunState::Paused => RunState::RunningFor(1),
+                    RunState::Running => RunState::RunningFor(1),
+                    RunState::RunningUntilRelaxedOrMax(_) => RunState::RunningFor(1),
+                }
+            }
             "stuffing" => log::warn!("this should be removed from the frontend"),
             "setparams" => {
                 let serialized = tokens.get(1)?;
@@ -157,6 +170,11 @@ impl PlushieSimulation {
                 self.controls.need_init = true;
                 self.send("status", "loaded pointcloud");
             }
+            "animate" => {
+                controls.run_state = RunState::RunningUntilRelaxedOrMax(
+                    self.plushie.params().autostop.max_relaxing_iterations,
+                )
+            }
             _ => log::error!("Unexpected msg: {msg}"),
         };
         Ok(())
@@ -174,18 +192,41 @@ impl Simulation for PlushieSimulation {
             return Some(self.get_init_data().to_string());
         }
 
-        if self.controls.paused && self.controls.advance == 0 {
-            None
-        } else {
-            if self.controls.advance > 0 {
-                self.controls.advance -= 1;
+        let data = match self.controls.run_state {
+            RunState::Paused => None,
+            RunState::Running | RunState::RunningFor(_) | RunState::RunningUntilRelaxedOrMax(_) => {
+                self.plushie.step(dt);
+                Some(self.get_update_data().to_string())
             }
+        };
 
-            self.plushie.step(dt);
+        self.controls.run_state = match self.controls.run_state {
+            RunState::Paused => RunState::Paused,
+            RunState::Running => RunState::Running,
+            RunState::RunningFor(steps) => {
+                if steps == 1 {
+                    RunState::Paused
+                } else {
+                    RunState::RunningFor(steps - 1)
+                }
+            }
+            RunState::RunningUntilRelaxedOrMax(mut steps_left) => {
+                steps_left -= 1;
+                if self.plushie.is_relaxed() || steps_left == 0 {
+                    let iterations =
+                        self.plushie.params().autostop.max_relaxing_iterations - steps_left;
+                    self.send(
+                        "status",
+                        &format!("relaxing stopped after {} iterations", iterations),
+                    );
+                    RunState::Paused
+                } else {
+                    RunState::RunningUntilRelaxedOrMax(steps_left)
+                }
+            }
+        };
 
-            let serialized = self.get_update_data().to_string();
-            Some(serialized)
-        }
+        data
     }
 
     fn react(&mut self, msg: &str) {

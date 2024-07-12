@@ -16,11 +16,11 @@ impl Plushie {
         let elapsed = end - start;
         log::trace!("Elapsed: {}", elapsed.as_nanos());
 
-        let total = self
-            .nodes
-            .apply_forces(&mut self.displacement, time, &self.params);
+        self.last_total_displacement =
+            self.nodes
+                .apply_forces(&mut self.displacement, time, &self.params);
 
-        total
+        self.last_total_displacement
     }
 
     fn add_link_forces(&mut self) {

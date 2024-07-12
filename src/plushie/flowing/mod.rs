@@ -20,21 +20,14 @@ pub struct Plushie {
     pub centroids: Centroids,
     displacement: Vec<V>,
     force_node_construction_timer: f32,
-}
-
-impl Plushie {
-    fn is_relaxed(&self, displacement: &V) -> bool {
-        // TODO: elbow method
-        let tension: f32 = displacement.magnitude();
-        tension <= self.params.autostop.acceptable_tension
-    }
+    last_total_displacement: V,
 }
 
 impl PlushieTrait for Plushie {
     fn animate(&mut self) {
         for _ in 0..self.params.autostop.max_relaxing_iterations {
-            let total_displacement = self.step(self.params.timestep);
-            if self.is_relaxed(&total_displacement) {
+            self.step(self.params.timestep);
+            if self.is_relaxed() {
                 break;
             }
         }
@@ -84,5 +77,10 @@ impl PlushieTrait for Plushie {
 
     fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
+    }
+
+    fn is_relaxed(&self) -> bool {
+        let tension: f32 = self.last_total_displacement.magnitude();
+        tension <= self.params.autostop.acceptable_tension
     }
 }
