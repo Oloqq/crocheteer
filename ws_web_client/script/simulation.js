@@ -35,6 +35,10 @@ export default class Simulation {
       "keep_root_at_origin": false,
       "single_loop_force": 0.1,
       "timestep": 1.1,
+      "autostop": {
+        "max_relaxing_iterations": 50,
+        "acceptable_tension": 0.1
+      }
     };
     this.mainPlushie = mainPlushie;
     this.plushies = plushies;
@@ -74,6 +78,9 @@ export default class Simulation {
       case "export":
         console.log("exporting the plushie")
         download(data, "plushie.json", "json")
+        break;
+      case "relax ended":
+        this.mainPlushie.drawLinks();
         break;
       default:
         console.error(`Unrecognized key: ${key}`);

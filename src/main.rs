@@ -63,6 +63,12 @@ fn main() {
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
+                7 => {
+                    let mut plushie = examples::ergogrzib();
+                    plushie.params = Params::handpicked_for_grzib();
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim, "127.0.0.1:8080");
+                }
                 _ => {}
             }
             println!(":)");

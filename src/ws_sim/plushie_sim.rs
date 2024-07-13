@@ -99,7 +99,7 @@ impl PlushieSimulation {
 
     fn react_internal(&mut self, msg: &str) -> Result<(), super::tokens::Error> {
         let tokens = Tokens::from(msg)?;
-        log::trace!("Message tokens: {tokens:?}");
+        log::info!("Message tokens: {tokens:?}");
         let command: &str = tokens.get(0)?;
         let controls = &mut self.controls;
 
@@ -219,6 +219,7 @@ impl Simulation for PlushieSimulation {
                         "status",
                         &format!("relaxing stopped after {} iterations", iterations),
                     );
+                    self.send("relax ended", "");
                     RunState::Paused
                 } else {
                     RunState::RunningUntilRelaxedOrMax(steps_left)

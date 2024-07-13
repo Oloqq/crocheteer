@@ -79,6 +79,17 @@ impl Params {
         }
     }
 
+    pub fn handpicked_for_grzib() -> Self {
+        Self {
+            autostop: AutoStoppingParams {
+                // relaxes in 172 iterations
+                acceptable_tension: 0.1,
+                max_relaxing_iterations: 300,
+            },
+            ..Self::floored()
+        }
+    }
+
     #[allow(unused)]
     pub fn rooted_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;

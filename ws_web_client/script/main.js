@@ -106,16 +106,22 @@ function initParamsGui(gui, world) {
   // Reversing time does not work in this simulation
   folder.add(p, "timestep", 0.1, 1.7).name("Timestep").onChange(sendParams);
 
-  var centroids = folder.addFolder("Centroid stuffing");
+  const centroids = folder.addFolder("Centroid stuffing");
   centroids.open();
   {
     centroids.add(p.centroids, "force", 0).name("Force").onChange(sendParams);
     centroids.add(p.centroids, "min_nodes_per_centroid", 0).name("Nodes per centroid").onChange(sendParams);
     removeSlider(centroids.add(p.centroids, "number", 0, 20, 1).onChange((val) => {
-      world.setCentroidNum(val);
+      world.mainPlushie.setCentroidNum(val);
       sendParams();
     }));
+  }
 
+  const autostop = folder.addFolder("Autostop");
+  autostop.open();
+  {
+    autostop.add(p.autostop, "max_relaxing_iterations").name("Max iterations").onChange(sendParams);
+    autostop.add(p.autostop, "acceptable_tension").name("Max tension").onChange(sendParams);
   }
 }
 
