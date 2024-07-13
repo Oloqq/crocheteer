@@ -1,10 +1,11 @@
-# actions_for_grzib = 135
-
 from . import genetic
 from deap import tools
 
+ACTIONS_NUM_FOR_GRZIB = 135
+
 def main():
-    tb = genetic.init_toolbox()
-    population = genetic.solve(tb)
-    top10 = tools.selBest(population, k=10)
-    print(top10[0])
+    tb = genetic.init()
+    genetic.specimen_initializer(tb, genom_size=ACTIONS_NUM_FOR_GRZIB)
+    population = genetic.solve(tb, generations_num=1, population_initializer=3)
+    top3 = tools.selBest(population, k=3)
+    print(top3[0])

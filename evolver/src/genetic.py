@@ -2,15 +2,11 @@ from .communication import fitness, batch_fitness
 import random
 from deap import creator, base, tools, algorithms
 
-def init_toolbox():
+def init():
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
-
-    toolbox.register("attr_bool", random.randint, 0, 1)
-    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, n=100)
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
     toolbox.register("evaluate", fitness)
     toolbox.register("mate", tools.cxTwoPoint)
@@ -19,11 +15,22 @@ def init_toolbox():
 
     return toolbox
 
-def solve(toolbox):
-    population = toolbox.population(n=300)
 
-    NGEN=40
-    for gen in range(NGEN):
+def specimen_initializer(toolbox, genom_size):
+    toolbox.register("action", random.randint, 0, 1)
+    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.action, n=genom_size)
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+
+def solve(toolbox, generations_num, population_initializer):
+    if isinstance(population_initializer, int):
+        population = toolbox.population(n=population_initializer)
+    elif isinstance(population_initializer, str):
+        # add capability to load from file
+        raise NotImplementedError
+
+    for gen in range(generations_num):
+        print(f"Generation {gen+1}/{generations_num}...")
         offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
         # fits = toolbox.map(toolbox.evaluate, offspring)
         fits = batch_fitness(offspring)
