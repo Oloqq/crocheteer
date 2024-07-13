@@ -9,7 +9,7 @@ use std::error::Error;
 use std::fs::OpenOptions;
 use stl_io::IndexedMesh;
 
-trait Comparator {
+pub trait Comparator {
     fn with_basis(nodes: &Vec<Point>) -> Self;
     fn judge(&self, nodes: &Vec<Point>) -> f32;
 }
@@ -23,16 +23,4 @@ fn load_stl(filepath: &str) -> Result<Vec<Point>, Box<dyn Error>> {
         .map(|v| Point::new(v[0], v[2], v[1]))
         .collect();
     Ok(points)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_loading_stl() {
-        let points = load_stl("models/grzib40.stl");
-        println!("{:?}", points);
-        assert!(false);
-    }
 }

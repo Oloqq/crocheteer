@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # interactive_visualization(cloud)
 
     points = points / 4 + np.array([0.8, 0, 0])
-    points = [list(p) for p in list(points)]
+    points = [[p[0], p[2], p[1]] for p in list(points)] # y and z are swapped in this open3d
 
     with open("pointcloud.json", "w") as f:
         json.dump(points, f)

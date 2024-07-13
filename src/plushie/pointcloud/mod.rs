@@ -41,15 +41,10 @@ impl Pointcloud {
         }
     }
 
+    /// height shall be the second value in position vectors
     pub fn from_points_file(path: &str) -> Self {
         let str = fs::read_to_string(path).unwrap();
-        let mut plushie = Self::from_points_str(&str);
-        plushie.swap_yz();
-        plushie
-    }
-
-    pub fn swap_yz(&mut self) {
-        self.points = self.points.iter().map(|p| Point::from(p.xzy())).collect();
+        Self::from_points_str(&str)
     }
 }
 
