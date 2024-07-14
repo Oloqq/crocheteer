@@ -155,6 +155,24 @@ pub fn ergogrzib() -> Plushie {
     plushie
 }
 
+pub fn ergogrzob() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += 6 * Inc;
+    flow += 12 * 3 * Sc;
+    flow += Mark(0);
+    flow += 6 * Dec + FO;
+    flow += Goto(0) + Color((255, 255, 0));
+    flow += 12 * Inc;
+    flow += BL + 24 * 2 * Sc;
+    flow += 12 * Dec + 6 * Dec + FO;
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
+    plushie
+}
+
 pub fn lollipop() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;

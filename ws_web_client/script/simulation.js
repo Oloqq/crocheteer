@@ -35,6 +35,7 @@ export default class Simulation {
       "keep_root_at_origin": false,
       "single_loop_force": 0.1,
       "timestep": 1.1,
+      "minimum_displacement": 0.001,
       "autostop": {
         "max_relaxing_iterations": 50,
         "acceptable_tension": 0.1

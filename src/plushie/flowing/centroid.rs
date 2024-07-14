@@ -125,7 +125,9 @@ fn weight(dist: f32) -> f32 {
 fn push_away(point: &Point, repelant: &Point) -> V {
     let diff = point - repelant;
     if diff.magnitude() != 0.0 {
-        let res = diff.normalize() * (1.0 / (diff.magnitude() + 0.5));
+        // let res = diff.normalize() * (1.0 / (diff.magnitude() + 0.5));
+        let factor = 1.0;
+        let res = diff.normalize() * (factor / diff.magnitude_squared()).min(1000.0);
         sanity!(res.assert_no_nan("NaN while pushing"));
         res
     } else {

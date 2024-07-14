@@ -33,7 +33,8 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket(args) => {
-            let plushie = examples::ergogrzib();
+            let mut plushie = examples::ergogrzib();
+            plushie.params = Params::handpicked_for_grzib();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
@@ -122,6 +123,12 @@ fn main() {
                     let actions = flow::genetic::v1::express_genes(genome);
                     let flow = SimpleFlow::new(actions);
                     let plushie = Plushie::from_flow(flow, Params::handpicked_for_grzob()).unwrap();
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim, "127.0.0.1:8080");
+                }
+                11 => {
+                    let mut plushie = examples::ergogrzob();
+                    plushie.params = Params::handpicked_for_grzob();
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }

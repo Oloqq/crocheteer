@@ -26,6 +26,8 @@ pub struct Params {
     pub single_loop_force: f32,
     /// Method for setting initial positions of stitches
     pub initializer: Initializer,
+    /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
+    pub minimum_displacement: f32,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -72,6 +74,7 @@ impl Params {
             keep_root_at_origin: false,
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
+            minimum_displacement: 0.001,
             // initializer: Initializer::OneByOne(OneByOneParams {
             //     acceptable_displacement_for_expanding: 0.03,
             //     force_expansion_after_time: 100.0,
@@ -86,6 +89,11 @@ impl Params {
                 acceptable_tension: 0.1,
                 max_relaxing_iterations: 300,
             },
+            centroids: CentroidParams {
+                force: 0.2,
+                number: 3,
+                ..Default::default()
+            },
             ..Self::floored()
         }
     }
@@ -98,8 +106,10 @@ impl Params {
                 max_relaxing_iterations: 300,
             },
             gravity: 0.0,
+            single_loop_force: 0.0,
             centroids: CentroidParams {
                 force: 0.2,
+                number: 3,
                 ..Default::default()
             },
             ..Self::floored()

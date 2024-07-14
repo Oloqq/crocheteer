@@ -105,6 +105,7 @@ function initParamsGui(gui, world) {
   folder.add(p, "single_loop_force", 0).name("SLF").onChange(sendParams);
   // Reversing time does not work in this simulation
   folder.add(p, "timestep", 0.1, 1.7).name("Timestep").onChange(sendParams);
+  folder.add(p, "minimum_displacement").name("Min displacement").onChange(sendParams);
 
   const centroids = folder.addFolder("Centroid stuffing");
   centroids.open();
