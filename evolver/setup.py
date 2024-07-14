@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'evo = src.main:main',
+            'train = src.main:train',
+            'get_best = src.main:get_best'
         ],
     },
 )

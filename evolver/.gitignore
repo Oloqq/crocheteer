@@ -1,3 +1,5 @@
 venv
 *egg-info
 __pycache__
+population/*
+!population/interesting

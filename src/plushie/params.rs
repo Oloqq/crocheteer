@@ -90,6 +90,22 @@ impl Params {
         }
     }
 
+    pub fn handpicked_for_grzob() -> Self {
+        Self {
+            autostop: AutoStoppingParams {
+                // relaxes in 172 iterations
+                acceptable_tension: 0.1,
+                max_relaxing_iterations: 300,
+            },
+            gravity: 0.0,
+            centroids: CentroidParams {
+                force: 0.2,
+                ..Default::default()
+            },
+            ..Self::floored()
+        }
+    }
+
     #[allow(unused)]
     pub fn rooted_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;

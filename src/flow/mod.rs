@@ -3,6 +3,7 @@
 /// or creating patterns in Rust code directly
 pub mod actions;
 pub mod ergoflow;
+pub mod genetic;
 pub mod pest_parser;
 pub mod simple_flow;
 

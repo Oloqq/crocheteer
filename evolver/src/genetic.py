@@ -1,6 +1,8 @@
 from .communication import fitness, batch_fitness
 import random
+import json
 from deap import creator, base, tools, algorithms
+import os
 
 def init():
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -16,7 +18,7 @@ def init():
     return toolbox
 
 def fresh_specimen(genom_size):
-    supported = ["sc", "inc", "dec", "FLO", "BLO"]
+    supported = ["sc", "inc", "dec"]
     return creator.Individual([random.randint(0, len(supported) - 1) for _ in range(genom_size)])
 
 
@@ -25,9 +27,18 @@ def fresh_population(size, genom_size):
 
 
 def solve(toolbox, generations_num, population):
+    path = "population/experiment"
+    files = os.listdir(path)
+    for file in files:
+        file_path = os.path.join(path, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
     for gen in range(generations_num):
         print(f"Generation {gen+1}/{generations_num}...")
         offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
+        with open(f"{path}/generation{gen}.json", "w") as f:
+            json.dump(offspring, f)
         fits = batch_fitness(offspring)
         for fit, ind in zip(fits, offspring):
             ind.fitness.values = fit
