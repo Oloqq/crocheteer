@@ -10,32 +10,30 @@ def init():
 
     toolbox.register("evaluate", fitness)
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
+    toolbox.register("mutate", tools.mutUniformInt, low=0, up=4, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
 
     return toolbox
 
-
-def specimen_initializer(toolbox, genom_size):
-    toolbox.register("action", random.randint, 0, 1)
-    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.action, n=genom_size)
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+def fresh_specimen(genom_size):
+    supported = ["sc", "inc", "dec", "FLO", "BLO"]
+    return creator.Individual([random.randint(0, len(supported) - 1) for _ in range(genom_size)])
 
 
-def solve(toolbox, generations_num, population_initializer):
-    if isinstance(population_initializer, int):
-        population = toolbox.population(n=population_initializer)
-    elif isinstance(population_initializer, str):
-        # add capability to load from file
-        raise NotImplementedError
+def fresh_population(size, genom_size):
+    return [fresh_specimen(genom_size) for _ in range(size)]
 
+
+def solve(toolbox, generations_num, population):
     for gen in range(generations_num):
         print(f"Generation {gen+1}/{generations_num}...")
         offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
-        # fits = toolbox.map(toolbox.evaluate, offspring)
         fits = batch_fitness(offspring)
         for fit, ind in zip(fits, offspring):
             ind.fitness.values = fit
         population = toolbox.select(offspring, k=len(population))
+
+        unwrapped_fits = [fit[0] for fit in fits]
+        print(f"best fitness: {max(unwrapped_fits)}")
 
     return population

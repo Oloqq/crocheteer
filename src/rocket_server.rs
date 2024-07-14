@@ -1,3 +1,5 @@
+mod rank;
+
 use crate::common::*;
 use crate::comparison::rstarcomp::RstarComparator;
 use crate::comparison::Comparator;
@@ -5,14 +7,25 @@ use rocket::serde::{json::Json, Deserialize};
 use rocket::State;
 
 #[derive(Deserialize)]
-struct JudgeData {
-    points: Vec<Point>,
+struct GenomData {
+    genome: Vec<u8>,
 }
 
-#[post("/fitness", data = "<specimen>")]
-fn fitness(judge: &State<RstarComparator>, specimen: Json<JudgeData>) -> String {
-    let rating = judge.judge(&specimen.points);
-    format!("{}", rating)
+#[post("/batch_fitness", data = "<population>")]
+fn batch_fitness(
+    judge: &State<RstarComparator>,
+    population: Json<Vec<GenomData>>,
+) -> Json<Vec<f32>> {
+    let cmp: &RstarComparator = &judge;
+    let ratings: Vec<f32> = population
+        .iter()
+        .enumerate()
+        .map(|(i, specimen)| {
+            println!("Rating {}/{}...", i + 1, population.len());
+            rank::rank(&specimen.genome, cmp)
+        })
+        .collect();
+    Json(ratings)
 }
 
 #[derive(Deserialize)]
@@ -42,7 +55,7 @@ pub async fn main() {
     let basis: Vec<Point> = serde_json::from_str(GRZIB_10_CLOUD_1000).unwrap();
     let _ = rocket::build()
         .manage(RstarComparator::with_basis(&basis))
-        .mount("/", routes![fitness, fitness_sum, batch_fitness_sum])
+        .mount("/", routes![batch_fitness, fitness_sum, batch_fitness_sum])
         .launch()
         .await;
 }

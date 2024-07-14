@@ -9,6 +9,9 @@ extern crate nalgebra as na;
 #[macro_use]
 extern crate rocket;
 
+use flow::actions::Action;
+use flow::ergoflow::ErgoFlow;
+
 use self::args::*;
 use self::ws_sim::plushie_sim::PlushieSimulation;
 use crate::flow::pest_parser::Pattern;
@@ -77,6 +80,33 @@ fn main() {
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
                 8 => rocket_server::main(),
+                9 => {
+                    fn genome_to_actions(genome: &Vec<u8>) -> Vec<Action> {
+                        use Action::*;
+                        let mut result = vec![MR(6)];
+
+                        for gene in genome {
+                            result.push(match *gene {
+                                0 => Sc,
+                                1 => Inc,
+                                2 => Dec,
+                                3 => FLO,
+                                4 => BLO,
+                                _ => panic!("Unrecognized gene: {}", gene),
+                            });
+                        }
+
+                        result.push(FO);
+                        result
+                    }
+                    let genome: Vec<u8> = serde_json::from_str("[3, 1, 1, 3, 4, 1, 0, 4, 3, 2, 1, 4, 0, 0, 4, 3, 0, 2, 4, 2, 1, 0, 0, 0, 3, 0, 0, 2, 0, 2, 4, 3, 3, 3, 0, 1, 1, 1, 4, 2, 4, 0, 1, 3, 2, 4, 4, 3, 2, 3, 4, 3, 4, 1, 4, 3, 4, 4, 3, 1, 2, 4, 4, 4, 1, 3, 0, 4, 4, 3, 2, 0, 3, 1, 3, 4, 0, 0, 4, 1, 0, 0, 3, 1, 3, 3, 2, 2, 1, 3, 2, 0, 2, 0, 1, 0, 1, 0, 3, 4, 3, 0, 1, 1, 0, 1, 4, 4, 2, 2, 3, 1, 1, 0, 3, 4, 1, 1, 4, 0, 0, 3, 0, 3, 4, 0, 3, 1, 2, 1, 0, 1, 2]").unwrap();
+                    let actions = genome_to_actions(&genome);
+                    let plushie =
+                        Plushie::from_flow(ErgoFlow::from(actions), Params::handpicked_for_grzib())
+                            .unwrap();
+                    let sim = PlushieSimulation::from(plushie);
+                    serve_websocket(sim, "127.0.0.1:8080");
+                }
                 _ => {}
             }
             println!(":)");
