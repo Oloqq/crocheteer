@@ -4,7 +4,6 @@ mod comparison;
 mod flow;
 mod plushie;
 mod rocket_server;
-mod visualization;
 mod ws_sim;
 extern crate nalgebra as na;
 #[macro_use]
@@ -125,17 +124,6 @@ fn main() {
                     let plushie = Plushie::from_flow(flow, Params::handpicked_for_grzob()).unwrap();
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
-                }
-                11 => {
-                    // kiss
-                    // let plushie = examples::ergogrzib();
-                    visualization::bruh();
-                }
-                12 => {
-                    let plushie = examples::ergogrzib();
-                    let mut window = kiss3d::window::Window::new("Kiss3d: lines");
-                    window.set_light(kiss3d::light::Light::StickToCamera);
-                    plushie.display(&mut window);
                 }
                 _ => {}
             }
