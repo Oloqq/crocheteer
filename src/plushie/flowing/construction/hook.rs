@@ -67,7 +67,10 @@ impl Hook {
     pub fn parse(mut flow: impl Flow) -> Result<HookResult, HookError> {
         let first = flow.next().ok_or(Empty)?;
         let mut hook = Hook::start_with(&first)?;
+        let mut i: u32 = 0;
         while let Some(action) = flow.next() {
+            log::trace!("Performing [{i}] {action:?}");
+            i += 1;
             hook = hook.perform(&action)?;
         }
 
@@ -76,8 +79,6 @@ impl Hook {
             is_uniq(&result.nodes),
             "hook created duplicate positions"
         ));
-        log::debug!("edges: {:?}, len: {}", result.edges, result.edges.len());
-        log::debug!("nodes len: {}", result.nodes.len());
         Ok(result)
     }
 
@@ -87,8 +88,6 @@ impl Hook {
     }
 
     pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
-        log::trace!("Performing {action:?}");
-
         match action {
             Sc => {
                 self = Stitch::linger(self)?
@@ -396,6 +395,9 @@ mod tests {
                 vec![],
                 vec![],
             ])
-        )
+        );
     }
+
+    // #[test]
+    // fn test_
 }

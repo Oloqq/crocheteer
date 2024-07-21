@@ -1,3 +1,4 @@
+use log::{log_enabled, Level};
 use serde_derive::Serialize;
 
 use crate::common::*;
@@ -131,9 +132,23 @@ impl HookResult {
         mut round_spans: Vec<(usize, usize)>,
         colors: Vec<Color>,
     ) -> Self {
-        log::debug!("round spans: {:?}", round_spans);
+        log::trace!("round spans: {:?}", round_spans);
         fill_round_span(&edges, &mut round_spans);
         let (nodes, highest) = make_nodes(round_spans);
+
+        if log_enabled!(Level::Warn) {
+            let edgelen = edges.len();
+            let nodelen = nodes.len();
+            log::debug!("edges: {:?}, len: {}", edges, edgelen);
+            log::debug!("nodes len: {}", nodelen);
+            if edgelen != nodelen {
+                log::warn!(
+                    "nodes and edges vecs came out with unequal length ({} vs {})",
+                    nodelen,
+                    edgelen
+                );
+            }
+        }
 
         Self {
             edges,
