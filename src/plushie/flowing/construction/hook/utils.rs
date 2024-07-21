@@ -21,6 +21,8 @@ pub enum HookError {
     ChainOfZero,
     /// Chains are finished with some custom logic, chains one after another is currently not supported
     ChainAfterChain,
+    /// Simulation can't handle a node with too many links
+    TooManyAnchorsForFO,
 }
 
 impl From<HookError> for String {

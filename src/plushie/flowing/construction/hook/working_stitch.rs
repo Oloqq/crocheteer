@@ -105,6 +105,15 @@ impl Stitch {
         }
 
         let tip = hook.now.cursor;
+        let anchors_num = hook.now.anchors.len();
+        const ANCHORS_FOR_FO_LIMIT: usize = 12;
+        if anchors_num > ANCHORS_FOR_FO_LIMIT {
+            log::debug!(
+                "Too many anchors for FO (limit: {ANCHORS_FOR_FO_LIMIT}, got: {anchors_num})"
+            );
+            return Err(TooManyAnchorsForFO);
+        }
+
         while let Some(anchor) = hook.now.anchors.pop_front() {
             hook.edges.link(anchor, tip);
         }
