@@ -11,13 +11,15 @@ use self::actions::Action;
 
 pub trait Flow {
     fn next(&mut self) -> Option<Action>;
+    #[allow(unused)]
     fn peek(&self) -> Option<Action>;
 }
 
 #[cfg(test)]
 mod tests {
     use super::ergoflow::ErgoFlow;
-    use super::pest_parser::{ErrorCode, Pattern};
+    use super::pest_parser::errors::ErrorCode;
+    use super::pest_parser::Pattern;
     use super::simple_flow::SimpleFlow;
     use super::*;
     use pretty_assertions::assert_eq;

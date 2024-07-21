@@ -37,6 +37,7 @@ pub struct WebsocketArgs {
 }
 
 #[derive(StructOpt, Debug)]
+#[allow(unused)]
 pub struct GeneticArgs {
     #[structopt(long)]
     pub stdout: bool,

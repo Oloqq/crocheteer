@@ -1,4 +1,4 @@
-use crate::common::Color;
+use crate::common::colors;
 
 pub type Label = usize;
 
@@ -27,7 +27,7 @@ pub enum Action {
     /// Fasten off
     FO,
     /// Change yarn color
-    Color(Color),
+    Color(colors::Color),
 }
 
 impl Action {

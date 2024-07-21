@@ -93,6 +93,7 @@ pub fn flailer() -> Plushie {
 }
 
 pub fn fatflailer() -> Plushie {
+    use crate::common::colors::*;
     use crate::flow::actions::Action;
     use Action::*;
 

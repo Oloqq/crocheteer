@@ -126,7 +126,8 @@ impl Stitch {
             WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
             WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
         };
-        hook.peculiar
+        let _ = hook
+            .peculiar
             .insert(hook.now.cursor, peculiarity.clone())
             .map_or((), |prev| {
                 panic!("BLO/FLO point is already peculiar. was: {prev:?} new: {peculiarity:?}")

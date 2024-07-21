@@ -2,14 +2,13 @@ pub type V = na::Vector3<f32>;
 pub type Point = na::Point3<f32>;
 
 #[allow(unused)]
-mod colors {
+pub mod colors {
     pub type Color = (usize, usize, usize);
     pub const RED: Color = (255, 0, 0);
     pub const GREEN: Color = (0, 255, 0);
     pub const BLUE: Color = (0, 0, 255);
     pub const WHITE: Color = (255, 255, 255);
 }
-pub use colors::*;
 
 #[cfg(feature = "sanity")]
 #[macro_export]

@@ -1,7 +1,7 @@
-mod errors;
+pub mod errors;
 mod parsing;
 
-pub use self::errors::{Error, ErrorCode};
+pub use self::errors::Error;
 use crate::flow::{actions::Action, Flow};
 use pest::Parser;
 use pest_derive::Parser;

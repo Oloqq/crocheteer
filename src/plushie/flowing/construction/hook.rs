@@ -43,9 +43,9 @@ pub struct Hook {
     /// Storage of spots for Mark and Goto
     labels: HashMap<Label, Moment>,
     /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.
-    color: Color,
+    color: colors::Color,
     /// Storage of index -> it's color. todo: use less memory by storing changes
-    colors: Vec<Color>,
+    colors: Vec<colors::Color>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_stitch: Option<usize>,
 

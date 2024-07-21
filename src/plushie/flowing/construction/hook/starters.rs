@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use super::{utils::*, Color, Edges, Hook, Moment, Queue};
+use super::{utils::*, Edges, Hook, Moment, Queue};
+use colors::Color;
 
 impl Hook {
     pub fn start_with(action: &Action) -> Result<Self, HookError> {

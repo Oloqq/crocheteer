@@ -2,7 +2,7 @@ use super::{
     construction::{Peculiarity, PointsOnPushPlane},
     Params,
 };
-use crate::{common::*, sanity};
+use crate::{common::colors::*, common::*, sanity};
 use serde_derive::Serialize;
 use std::{
     collections::HashMap,

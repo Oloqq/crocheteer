@@ -11,6 +11,7 @@ use super::{Initializer, Params};
 use crate::common::*;
 use crate::flow::pest_parser::Pattern;
 use crate::flow::Flow;
+use colors::Color;
 use std::collections::HashMap;
 
 impl Plushie {
