@@ -9,6 +9,9 @@ pub enum Command {
     #[structopt(alias = "ws", about = "Run a WebSocket server for visualization")]
     WebSocket(WebsocketArgs),
 
+    #[structopt(alias = "ins", about = "Inspect a population")]
+    Inspect(InspectArgs),
+
     #[structopt(
         alias = "gen",
         about = "Run a specified benchmark for genetic algorithms"
@@ -59,6 +62,12 @@ pub struct GeneticArgs {
     pub debug: bool,
 
     pub suite: String,
+}
+
+#[derive(StructOpt, Debug)]
+pub struct InspectArgs {
+    pub popfile: String,
+    pub index: usize,
 }
 
 #[derive(StructOpt, Debug)]

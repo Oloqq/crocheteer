@@ -93,10 +93,10 @@ fn recalculate_centroids(
     centroids.iter_mut().enumerate().for_each(|(i, centroid)| {
         let mut new_pos: V = V::zeros();
         let mut weight_sum = 0.0;
-        assert!(
-            centroid2points[i].len() > 0,
-            "Centroid [{i}] has no points assigned"
-        );
+        if centroid2points[i].len() == 0 {
+            log::warn!("No points assigned to centroid");
+            return;
+        }
         for point_index in &centroid2points[i] {
             let point = nodes[*point_index];
             let w = weight(distance(&centroid, &point));

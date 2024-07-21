@@ -23,8 +23,8 @@ def init():
     return toolbox
 
 def fresh_specimen(genom_size):
-    # return creator.Individual([random.randint(MIN_GENE, MAX_GENE) for _ in range(genom_size)])
-    return creator.Individual([0 for _ in range(genom_size)])
+    return creator.Individual([random.randint(MIN_GENE, MAX_GENE) for _ in range(genom_size)])
+    # return creator.Individual([0 for _ in range(genom_size)])
 
 
 def fresh_population(size, genom_size):

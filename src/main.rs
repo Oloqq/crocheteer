@@ -37,6 +37,19 @@ fn main() {
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
+        Inspect(args) => {
+            // inspect population
+            let population_file = args.popfile;
+            let content = fs::read_to_string(population_file).unwrap();
+            let genomes: Vec<Vec<u8>> = serde_json::from_str(&content).unwrap();
+            let index = args.index;
+            let genome = &genomes[index];
+            let actions = flow::genetic::v1::express_genes(genome);
+            let flow = SimpleFlow::new(actions);
+            let plushie = Plushie::from_flow(flow, Params::handpicked_for_grzob()).unwrap();
+            let sim = PlushieSimulation::from(plushie);
+            serve_websocket(sim, "127.0.0.1:8080");
+        }
         Dev { num } => {
             match num {
                 1 => {
@@ -110,21 +123,7 @@ fn main() {
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
-                10 => {
-                    // examine population
-                    let populations_dir = "evolver/population/interesting";
-                    let population_file =
-                        format!("{populations_dir}/causes_centroid_has_no_points_assigned.json");
-                    let content = fs::read_to_string(population_file).unwrap();
-                    let genomes: Vec<Vec<u8>> = serde_json::from_str(&content).unwrap();
-                    let index = 4;
-                    let genome = &genomes[index];
-                    let actions = flow::genetic::v1::express_genes(genome);
-                    let flow = SimpleFlow::new(actions);
-                    let plushie = Plushie::from_flow(flow, Params::handpicked_for_grzob()).unwrap();
-                    let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim, "127.0.0.1:8080");
-                }
+                10 => {}
                 11 => {
                     let mut plushie = examples::ergogrzob();
                     plushie.params = Params::handpicked_for_grzob();
