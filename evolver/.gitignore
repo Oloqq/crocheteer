@@ -1,5 +1,6 @@
 venv
 *egg-info
 __pycache__
-population/*
-!population/interesting
+population/experiments/*
+
+!.gitkeep
