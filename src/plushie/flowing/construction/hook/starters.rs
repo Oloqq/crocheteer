@@ -51,7 +51,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
-                    leniency: Leniency::None,
+                    leniency: Leniency::NoMercy,
                 })
             }
             Ch(x) => {
@@ -88,7 +88,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
-                    leniency: Leniency::None,
+                    leniency: Leniency::NoMercy,
                 })
             }
             _ => Err(HookError::BadStarter),

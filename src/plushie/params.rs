@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 
 use serde_derive::{Deserialize, Serialize};
 
-use super::flowing::Leniency;
+pub use super::flowing::Leniency;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Params {
@@ -79,10 +79,10 @@ impl Params {
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
-            hook_leniency: Leniency::None, // initializer: Initializer::OneByOne(OneByOneParams {
-                                           //     acceptable_displacement_for_expanding: 0.03,
-                                           //     force_expansion_after_time: 100.0,
-                                           // }),
+            hook_leniency: Leniency::NoMercy, // initializer: Initializer::OneByOne(OneByOneParams {
+                                              //     acceptable_displacement_for_expanding: 0.03,
+                                              //     force_expansion_after_time: 100.0,
+                                              // }),
         }
     }
 
@@ -116,7 +116,6 @@ impl Params {
                 number: 3,
                 ..Default::default()
             },
-            hook_leniency: Leniency::Genetic,
             ..Self::floored()
         }
     }
