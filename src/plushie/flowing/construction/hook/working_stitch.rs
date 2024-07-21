@@ -98,6 +98,7 @@ impl Stitch {
 
     pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
         if hook.now.anchors.len() < 2 {
+            log::debug!("No anchors to fasten off");
             return Err(FORequires2Anchors);
         }
 

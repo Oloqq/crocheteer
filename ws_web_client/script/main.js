@@ -9,6 +9,7 @@ let world = undefined;
 const customGui = {
   edgesVisible: true,
   secondaryVisible: true,
+  debugDisplay: false,
   advance: function () {
     world.onAdvance();
     simulator.send("advance");
@@ -143,6 +144,9 @@ function main() {
   });
   gui.add(customGui, 'secondaryVisible').name("Show secondary").onChange((_value) => {
     plushie2.toggleVisibility()
+  });
+  gui.add(customGui, 'debugDisplay').name("Debug display").onChange((value) => {
+    mainPlushie.setDebugDisplay(value)
   });
 
   initParamsGui(gui, world);

@@ -8,7 +8,6 @@ const peculiarityColors = {
   "Tip": 0x0000ff,
   "Root": 0x0000ff,
 }
-const debugDisplay = false;
 
 export default class Plushie {
   constructor(status, gui, pattern, primary) {
@@ -23,6 +22,7 @@ export default class Plushie {
     this.visible = true;
     this.peculiar = {};
     this.nodeColors = [];
+    this.debugDisplay = false;
     this.colors = peculiarityColors;
   }
 
@@ -42,6 +42,18 @@ export default class Plushie {
 
   mouseUp(obj) {
     this.drag(obj);
+  }
+
+  setDebugDisplay(val) {
+    this.debugDisplay = val;
+    for (let i in this.stitchSpheres) {
+      const sph = this.stitchSpheres[i];
+      sph.material.color.set(this.nodeColor(i))
+    }
+    if (this.displayEdges) {
+      this.clearLinks();
+      this.drawLinks();
+    }
   }
 
   toggleVisibility() {
@@ -71,8 +83,8 @@ export default class Plushie {
   }
 
   linkColor(from, to) {
-    if (debugDisplay) {
-      return "red";
+    if (this.debugDisplay) {
+      return 0x343330;
     } else {
       let [r, g, b] = this.nodeColors[to];
       return `rgb(${r}, ${g}, ${b})`;
@@ -102,7 +114,7 @@ export default class Plushie {
   }
 
   nodeColor(i) {
-    if (debugDisplay) {
+    if (this.debugDisplay) {
       let colorKey = this.peculiar[i] ?? "normal";
       return peculiarityColors[colorKey];
     } else {
