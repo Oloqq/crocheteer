@@ -1,4 +1,4 @@
-mod hook;
+pub mod hook;
 mod hook_result;
 
 use self::hook::Hook;
@@ -57,7 +57,7 @@ impl Plushie {
     }
 
     pub fn from_flow(flow: impl Flow, params: Params) -> Result<Self, String> {
-        let hook_result = Hook::parse(flow)?;
+        let hook_result = Hook::parse(flow, &params.hook_leniency)?;
 
         Ok(match params.initializer {
             Initializer::OneByOne(_) => Plushie::for_one_by_one(

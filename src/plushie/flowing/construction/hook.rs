@@ -1,7 +1,10 @@
+pub mod leniency;
 mod starters;
 mod state_mgmt;
 mod utils;
 mod working_stitch;
+
+use leniency::Leniency;
 
 use self::utils::*;
 use self::working_stitch::Stitch;
@@ -48,6 +51,8 @@ pub struct Hook {
     colors: Vec<colors::Color>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_stitch: Option<usize>,
+    /// Leniency policy, may allow recovery after `HookError`s. Some leniency is beneficial with genetic algorithms
+    leniency: Leniency,
 
     part_start: usize,
     parts: Vec<Part>,
@@ -64,9 +69,9 @@ fn is_uniq(vec: &Vec<Point>) -> bool {
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow) -> Result<HookResult, HookError> {
+    pub fn parse(mut flow: impl Flow, leniency: &Leniency) -> Result<HookResult, HookError> {
         let first = flow.next().ok_or(Empty)?;
-        let mut hook = Hook::start_with(&first)?;
+        let mut hook = Hook::with_leniency(&first, leniency)?;
         let mut i: u32 = 0;
         while let Some(action) = flow.next() {
             log::trace!("Performing [{i}] {action:?}");

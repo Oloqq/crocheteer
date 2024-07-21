@@ -1,9 +1,16 @@
 use std::collections::HashMap;
 
+use super::leniency::Leniency;
 use super::{utils::*, Edges, Hook, Moment, Queue};
 use colors::Color;
 
 impl Hook {
+    pub fn with_leniency(action: &Action, leniency: &Leniency) -> Result<Self, HookError> {
+        let mut res = Self::start_with(action)?;
+        res.leniency = leniency.clone();
+        Ok(res)
+    }
+
     pub fn start_with(action: &Action) -> Result<Self, HookError> {
         let color = (255, 0, 255);
         match action {
@@ -44,6 +51,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
+                    leniency: Leniency::None,
                 })
             }
             Ch(x) => {
@@ -80,6 +88,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
+                    leniency: Leniency::None,
                 })
             }
             _ => Err(HookError::BadStarter),

@@ -4,6 +4,7 @@ mod construction;
 mod expanding;
 mod nodes;
 
+pub use self::construction::hook::leniency::Leniency;
 use self::{centroid::Centroids, nodes::Nodes};
 use super::{params::Initializer, Params, PlushieTrait};
 use crate::{common::*, sanity};
