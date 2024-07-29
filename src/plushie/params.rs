@@ -86,57 +86,6 @@ impl Params {
         }
     }
 
-    pub fn handpicked_for_grzib() -> Self {
-        Self {
-            autostop: AutoStoppingParams {
-                // relaxes in 172 iterations
-                acceptable_tension: 0.1,
-                max_relaxing_iterations: 300,
-            },
-            centroids: CentroidParams {
-                force: 0.2,
-                number: 3,
-                ..Default::default()
-            },
-            ..Self::floored()
-        }
-    }
-
-    pub fn handpicked_for_grzob() -> Self {
-        Self {
-            autostop: AutoStoppingParams {
-                // relaxes in 172 iterations
-                acceptable_tension: 0.1,
-                max_relaxing_iterations: 300,
-            },
-            gravity: 0.0,
-            single_loop_force: 0.0,
-            centroids: CentroidParams {
-                force: 0.2,
-                number: 3,
-                ..Default::default()
-            },
-            ..Self::floored()
-        }
-    }
-
-    pub fn handpicked_for_pillar() -> Self {
-        Self {
-            autostop: AutoStoppingParams {
-                acceptable_tension: 0.000000002,
-                max_relaxing_iterations: 500,
-            },
-            gravity: 0.0,
-            single_loop_force: 0.0,
-            centroids: CentroidParams {
-                force: 0.05,
-                number: 2,
-                ..Default::default()
-            },
-            ..Self::floored()
-        }
-    }
-
     #[allow(unused)]
     pub fn rooted_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
@@ -197,6 +146,77 @@ impl Default for AutoStoppingParams {
         Self {
             acceptable_tension: 0.02,
             max_relaxing_iterations: 100,
+        }
+    }
+}
+
+pub mod handpicked {
+    use super::*;
+
+    macro_rules! generate_get_handpicked {
+        ($($name:ident),*) => {
+            pub fn get(name: &str) -> Option<Params> {
+                match name {
+                    $(stringify!($name) => Some($name()),)*
+                    _ => None,
+                }
+            }
+        };
+    }
+    generate_get_handpicked!(default, grzib, grzob, pillar);
+
+    pub fn default() -> Params {
+        Params::default()
+    }
+
+    pub fn grzib() -> Params {
+        Params {
+            autostop: AutoStoppingParams {
+                // relaxes in 172 iterations
+                acceptable_tension: 0.1,
+                max_relaxing_iterations: 300,
+            },
+            centroids: CentroidParams {
+                force: 0.2,
+                number: 3,
+                ..Default::default()
+            },
+            ..Params::floored()
+        }
+    }
+
+    pub fn grzob() -> Params {
+        Params {
+            autostop: AutoStoppingParams {
+                // relaxes in 172 iterations
+                acceptable_tension: 0.1,
+                max_relaxing_iterations: 300,
+            },
+            gravity: 0.0,
+            single_loop_force: 0.0,
+            centroids: CentroidParams {
+                force: 0.2,
+                number: 3,
+                ..Default::default()
+            },
+            ..Params::floored()
+        }
+    }
+
+    pub fn pillar() -> Params {
+        Params {
+            autostop: AutoStoppingParams {
+                acceptable_tension: 0.000000002,
+                max_relaxing_iterations: 500,
+            },
+            gravity: 0.0,
+            single_loop_force: 0.0,
+            centroids: CentroidParams {
+                force: 0.05,
+                number: 2,
+                ..Default::default()
+            },
+            ..Params::floored()
         }
     }
 }

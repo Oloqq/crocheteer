@@ -37,6 +37,15 @@ pub enum Command {
 pub struct WebsocketArgs {
     #[structopt(short, long, default_value = "8080")]
     pub port: u16,
+
+    #[structopt(short = "l", long, default_value = "pillar")]
+    pub plushie: String,
+
+    #[structopt(short = "m", long, default_value = "default")]
+    pub params: String,
+
+    #[structopt(short, long)]
+    pub secondary: Option<PathBuf>,
 }
 
 #[derive(StructOpt, Debug)]

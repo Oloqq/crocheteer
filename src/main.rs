@@ -10,6 +10,7 @@ extern crate nalgebra as na;
 extern crate rocket;
 use flow::ergoflow::ErgoFlow;
 use flow::simple_flow::SimpleFlow;
+use plushie::params;
 
 use self::args::*;
 use self::ws_sim::plushie_sim::PlushieSimulation;
@@ -30,9 +31,33 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket(args) => {
-            let mut plushie = examples::ergogrzib();
-            plushie.params = Params::handpicked_for_grzib();
-            let sim = PlushieSimulation::from(plushie);
+            let mut plushie = match examples::get_example(&args.plushie) {
+                Some(x) => x,
+                None => {
+                    log::error!("Plushie {:?} does not exist", args.plushie);
+                    return;
+                }
+            };
+            plushie.params = match params::handpicked::get(&args.params) {
+                Some(x) => x,
+                None => {
+                    log::error!("Params {:?} does not exist", args.params);
+                    return;
+                }
+            };
+            let sim = match args.secondary {
+                // why bother with PathBuf when String does the job
+                // forums say that its due to Rust strings handling of UTF-8
+                // so I guess the filesystem will go apeshit if I e.g. pass emoji as argument?
+                // TODO investigate
+                Some(path) => {
+                    let secondary_plushie =
+                        Pointcloud::from_points_file(path.to_str().expect("converted to str"));
+                    PlushieSimulation::with_secondary(plushie, secondary_plushie)
+                }
+                None => PlushieSimulation::from(plushie),
+            };
+
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
         Inspect(args) => {
@@ -44,7 +69,7 @@ fn main() {
             let genome = &genomes[index];
             let actions = flow::genetic::v1::express_genes(genome);
             let flow = SimpleFlow::new(actions);
-            let plushie = Plushie::from_flow(flow, Params::handpicked_for_pillar()).unwrap();
+            let plushie = Plushie::from_flow(flow, params::handpicked::pillar()).unwrap();
             let sim = PlushieSimulation::from(plushie);
             serve_websocket(sim, "127.0.0.1:8080");
         }
@@ -76,7 +101,7 @@ fn main() {
                 5 => {
                     // visually compare a pointcloud to an example
                     let mut primary = examples::pillar();
-                    primary.params = Params::handpicked_for_grzib();
+                    primary.params = params::handpicked::grzib();
                     let secondary =
                         Pointcloud::from_points_file("model_preprocessing/models/pillar.json");
                     let sim = PlushieSimulation::with_secondary(primary, secondary);
@@ -89,7 +114,7 @@ fn main() {
                     let genome: Vec<u8> = serde_json::from_str("[0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 2, 1, 2, 1, 0, 1, 2, 0, 1, 0, 1, 1, 2, 0, 0, 1, 1, 1, 2, 0, 2, 0, 1, 2, 1, 1, 0, 1, 0, 2, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 2, 2, 0, 2, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 0, 0, 0, 1, 2, 0, 1, 1, 0, 2, 1, 1, 2, 1, 0, 2, 0, 0, 2, 1, 1, 2, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 1, 0, 0, 2, 1, 0]").unwrap();
                     let actions = flow::genetic::v1::express_genes(&genome);
                     let plushie =
-                        Plushie::from_flow(ErgoFlow::from(actions), Params::handpicked_for_grzob())
+                        Plushie::from_flow(ErgoFlow::from(actions), params::handpicked::grzob())
                             .unwrap();
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
@@ -97,7 +122,7 @@ fn main() {
                 10 => {}
                 11 => {
                     let mut plushie = examples::ergogrzob();
-                    plushie.params = Params::handpicked_for_grzob();
+                    plushie.params = params::handpicked::grzob();
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }

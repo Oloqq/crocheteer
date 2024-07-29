@@ -174,18 +174,6 @@ pub fn ergogrzob() -> Plushie {
     plushie
 }
 
-pub fn pillar() -> Plushie {
-    use crate::flow::actions::Action;
-    use Action::*;
-
-    let mut flow = ErgoFlow::new();
-    flow += MR(6);
-    flow += Sc * 42;
-    flow += FO;
-    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
-    plushie
-}
-
 pub fn lollipop() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;
@@ -221,3 +209,41 @@ pub fn lollipop() -> Plushie {
     let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
     plushie
 }
+
+pub fn pillar() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += Sc * 42;
+    flow += FO;
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
+    plushie
+}
+
+pub fn disk() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += Inc * 6;
+    flow += Sc * 12;
+    flow += Dec * 6;
+    flow += FO;
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
+    plushie
+}
+
+macro_rules! generate_get_example {
+    ($($name:ident),*) => {
+        pub fn get_example(name: &str) -> Option<Plushie> {
+            match name {
+                $(stringify!($name) => Some($name()),)*
+                _ => None,
+            }
+        }
+    };
+}
+generate_get_example!(pillar, disk);
