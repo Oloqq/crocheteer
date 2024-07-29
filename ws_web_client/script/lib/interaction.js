@@ -1,11 +1,12 @@
 import { app } from "./init";
 import * as THREE from 'three';
-import { send } from "./websocket";
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let selectedObject = null;
 
-function onMouseDown(event) {
+const ENABLE_DRAGGING = false;
+
+function selectObject(event) {
   // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -30,7 +31,6 @@ function onMouseDown(event) {
     // send("pause");
   }
 }
-window.addEventListener('mousedown', onMouseDown);
 
 const dragPlane = new THREE.Plane();
 const planeNormal = new THREE.Vector3(); // The plane's normal
@@ -40,7 +40,7 @@ function updateDragPlane() {
   dragPlane.setFromNormalAndCoplanarPoint(planeNormal, selectedObject.position);
 }
 
-function onMouseMove(event) {
+function dragObject(event) {
   if (!selectedObject) return;
 
   // Update mouse position
@@ -59,9 +59,9 @@ function onMouseMove(event) {
     }
   }
 }
-window.addEventListener('mousemove', onMouseMove);
 
-function onMouseUp(event) {
+
+function releaseObject(event) {
   if (selectedObject) {
     if (app.world) {
       app.world.mouseUp(selectedObject);
@@ -71,4 +71,9 @@ function onMouseUp(event) {
     // send("resume");
   }
 }
-window.addEventListener('mouseup', onMouseUp);
+
+if (ENABLE_DRAGGING) {
+  window.addEventListener('mousedown', selectObject);
+  window.addEventListener('mousemove', dragObject);
+  window.addEventListener('mouseup', releaseObject);
+}
