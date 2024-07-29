@@ -5,7 +5,7 @@ import random
 import click
 import os
 
-ACTIONS_NUM_FOR_GRZIB = 133 # 135 - 2 bcs skipping MR and FO
+ACTIONS_NUM_FOR_PILLAR = 42 # 42 - 2 bcs skipping MR and FO
 
 def latest_generation(path):
     files = os.listdir(path)
@@ -40,7 +40,7 @@ def train(experiment_name, fresh, seed):
 
     if fresh:
         refresh_directory(experiment_path)
-        population = genetic.fresh_population(size=50, genom_size=ACTIONS_NUM_FOR_GRZIB)
+        population = genetic.fresh_population(size=50, genom_size=ACTIONS_NUM_FOR_PILLAR)
     else:
         if not os.path.exists(experiment_path):
             print(f"Experiment '{experiment_name}' does not exist. Maybe you meant to run with -f?")

@@ -8,7 +8,7 @@ use crate::plushie::{Params, Plushie, PlushieTrait};
 
 pub fn rank(specimen: &Vec<u8>, judge: &impl Comparator) -> f32 {
     let actions: Vec<Action> = genetic::v1::express_genes(specimen);
-    let mut params = Params::handpicked_for_grzob();
+    let mut params = Params::handpicked_for_pillar();
     params.hook_leniency = Leniency::SkipIncorrect;
     let mut plushie = match Plushie::from_flow(SimpleFlow::new(actions), params) {
         Ok(plushie) => plushie,

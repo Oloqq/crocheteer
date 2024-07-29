@@ -120,6 +120,23 @@ impl Params {
         }
     }
 
+    pub fn handpicked_for_pillar() -> Self {
+        Self {
+            autostop: AutoStoppingParams {
+                acceptable_tension: 0.000000002,
+                max_relaxing_iterations: 500,
+            },
+            gravity: 0.0,
+            single_loop_force: 0.0,
+            centroids: CentroidParams {
+                force: 0.05,
+                number: 2,
+                ..Default::default()
+            },
+            ..Self::floored()
+        }
+    }
+
     #[allow(unused)]
     pub fn rooted_floating() -> Self {
         const THIS_DEFAULT_IS_TRASH: f32 = 0.02;

@@ -17,7 +17,7 @@ def init():
 
     toolbox.register("evaluate", fitness)
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", tools.mutUniformInt, low=MIN_GENE, up=MAX_GENE, indpb=0.05)
+    toolbox.register("mutate", tools.mutUniformInt, low=MIN_GENE, up=MAX_GENE, indpb=0.1)
     toolbox.register("select", tools.selTournament, tournsize=3)
 
     return toolbox
@@ -37,9 +37,12 @@ def load_population(filepath):
     return population
 
 def solve(experiment_path, toolbox, generations_num, population, starting_generation):
+    crossover_prob = 0.5
+    mutation_prob = 0.3
+
     for gen in range(starting_generation, generations_num):
         print(f"Generation {gen+1}/{generations_num}...")
-        offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
+        offspring = algorithms.varAnd(population, toolbox, cxpb=crossover_prob, mutpb=mutation_prob)
         with open(f"{experiment_path}/generation{gen}.json", "w") as f:
             json.dump(offspring, f)
         fits = batch_fitness(offspring)

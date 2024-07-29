@@ -92,7 +92,7 @@ impl Hook {
         HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
     }
 
-    pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
+    fn do_perform(mut self, action: &Action) -> Result<Self, HookError> {
         match action {
             Sc => {
                 self = Stitch::linger(self)?
@@ -140,6 +140,21 @@ impl Hook {
         }
 
         Ok(self)
+    }
+
+    pub fn perform(self, action: &Action) -> Result<Self, HookError> {
+        match self.leniency {
+            Leniency::NoMercy => self.do_perform(action),
+            Leniency::SkipIncorrect => {
+                // If this approach turns out to be actually useful, a more efficient implementation is necessary
+                let copy = self.clone();
+                match copy.do_perform(action) {
+                    Ok(hook) => Ok(hook),
+                    Err(_) => Ok(self),
+                }
+            }
+            Leniency::GeneticFixups => todo!(),
+        }
     }
 }
 

@@ -1,4 +1,6 @@
 # Next
+- display tension in the client
+- max tension clearly doesnt work
 
 # Backlog
 - update documentation relating to hook and plushie

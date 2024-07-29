@@ -174,6 +174,18 @@ pub fn ergogrzob() -> Plushie {
     plushie
 }
 
+pub fn pillar() -> Plushie {
+    use crate::flow::actions::Action;
+    use Action::*;
+
+    let mut flow = ErgoFlow::new();
+    flow += MR(6);
+    flow += Sc * 42;
+    flow += FO;
+    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
+    plushie
+}
+
 pub fn lollipop() -> Plushie {
     use crate::flow::actions::Action;
     use Action::*;

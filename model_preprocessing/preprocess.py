@@ -26,12 +26,16 @@ def interactive_visualization(cloud):
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print("provide input file")
-    cloud = create_pointcloud(sys.argv[1], number_of_points=1000)
+    source_path = sys.argv[1]
+
+    cloud = create_pointcloud(source_path, number_of_points=1000)
     points = np.asarray(cloud.points)
     # interactive_visualization(cloud)
 
-    points = points / 4 + np.array([0.8, 0, 0])
+    # points = points + np.array([5, 0, 0])
+    points = points / 4
     points = [[p[0], p[2], p[1]] for p in list(points)] # y and z are swapped in this open3d
 
-    with open("pointcloud.json", "w") as f:
+    save_path = source_path.rpartition(".stl")[0] + ".json"
+    with open(save_path, "w") as f:
         json.dump(points, f)

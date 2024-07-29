@@ -1,0 +1,24 @@
+# Verifying feasibility
+
+- Create a model with Fusion360
+- save as STL
+- run model_preprocessing/preprocess.py
+  - visualization of the cloud is possible
+- confirm that the pointcloud is properly scaled and centered
+  -  `cargo run dev 5`, path is hardcoded in `main.rs`
+- handcraft a solution as a flow in `examples.rs`
+  - use  `cargo run dev 5` to compare it to the pointcloud, adjust both so they fit
+- adjust parameters for the simulation
+  - with `cargo run dev 5`, hit `Animate`, the handcrafter thing must fit the pointcloud AND STOP simulating
+  - most notable: max relaxing iterations and max tension
+- use those parameters in `src\rocket_server\rank.rs`
+- use the json of pointcloud in `src\rocket_server.rs:main`
+- adjust evolver
+  - number of actions
+  - genetic parameters
+- start the ranking server `cargo run dev 8`
+  - it is way faster with release build
+    - `cargo build --release`
+    - `.\target\release\crocheteer.exe dev 8`
+- start the evolution in `evolver`
+- inspect the population with `cargo run inspect ...`
