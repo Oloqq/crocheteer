@@ -22,7 +22,8 @@ use crate::ws_sim::serve_websocket;
 use std::fs;
 use std::io::Write;
 
-fn main() {
+#[rocket::main]
+async fn main() {
     env_logger::Builder::from_default_env()
         .format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()))
         .init();
@@ -60,6 +61,7 @@ fn main() {
 
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
+        Rank(args) => rocket_server::start(&args).await,
         Inspect(args) => {
             // inspect population
             let population_file = args.popfile;
@@ -107,8 +109,6 @@ fn main() {
                     let sim = PlushieSimulation::with_secondary(primary, secondary);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
-                // start the ranking server
-                8 => rocket_server::main(),
                 9 => {
                     // see an evolved individual in action
                     let genome: Vec<u8> = serde_json::from_str("[0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 2, 1, 2, 1, 0, 1, 2, 0, 1, 0, 1, 1, 2, 0, 0, 1, 1, 1, 2, 0, 2, 0, 1, 2, 1, 1, 0, 1, 0, 2, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 2, 2, 0, 2, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 0, 0, 0, 1, 2, 0, 1, 1, 0, 2, 1, 1, 2, 1, 0, 2, 0, 0, 2, 1, 1, 2, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 1, 0, 0, 2, 1, 0]").unwrap();
@@ -130,12 +130,6 @@ fn main() {
             }
             println!(":)");
             println!(":)");
-        }
-        Genetic(genetic) => {
-            let suite = &genetic.suite;
-            println!("Selected suite: {suite}");
-            unimplemented!();
-            // run_benchmark(&suite, &genetic);
         }
         FromPattern { pattern, stl, ws } => {
             let pattern = {

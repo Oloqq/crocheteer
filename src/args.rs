@@ -6,17 +6,14 @@ pub enum Command {
     #[structopt(about = "debugging command")]
     Dev { num: usize },
 
-    #[structopt(alias = "ws", about = "Run a WebSocket server for visualization")]
+    #[structopt(alias = "ws", about = "Start a WebSocket server for visualization")]
     WebSocket(WebsocketArgs),
 
     #[structopt(alias = "ins", about = "Inspect a population")]
     Inspect(InspectArgs),
 
-    #[structopt(
-        alias = "gen",
-        about = "Run a specified benchmark for genetic algorithms"
-    )]
-    Genetic(GeneticArgs),
+    #[structopt(about = "Start a server for calculating fitness")]
+    Rank(RankArgs),
 
     #[structopt(
         aliases = &["fp", "p", "pat"],
@@ -49,28 +46,14 @@ pub struct WebsocketArgs {
 }
 
 #[derive(StructOpt, Debug)]
-#[allow(unused)]
-pub struct GeneticArgs {
-    #[structopt(long)]
-    pub stdout: bool,
+pub struct RankArgs {
+    // #[structopt(short, long, default_value = "8080")]
+    // pub port: u16,
+    #[structopt(short, long, default_value = "pillar")]
+    pub goal: String,
 
-    #[structopt(short, long)]
-    pub fresh: bool,
-
-    #[structopt(short, long)]
-    pub seed: Option<u64>,
-
-    #[structopt(short, long, default_value = "0")]
-    pub generations: usize,
-
-    #[structopt(long)]
-    pub save_stl: bool,
-
-    /// Include full information in generation reports. Expensive.
-    #[structopt(short, long)]
-    pub debug: bool,
-
-    pub suite: String,
+    #[structopt(short, long, default_value = "default")]
+    pub params: String,
 }
 
 #[derive(StructOpt, Debug)]
