@@ -1,7 +1,6 @@
 * {
     margin: 0;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 body {
@@ -11,15 +10,20 @@ body {
 .ui-left {
     position: absolute;
     background-color: lightgray;
+    top: 29px;
 }
 
 .status {
+    position: absolute;
     background-color: white;
     padding: 5px;
+    width: 100vw;
+    box-sizing: border-box;
 }
 
 .folder {
     border-bottom: 2px solid black;
+    min-width: 20vw;
 }
 
 .folder * {
@@ -32,6 +36,7 @@ body {
 
 .folder>p:nth-child(1) {
     margin-left: 5px;
+    cursor: pointer;
 }
 
 #pattern {
@@ -40,13 +45,7 @@ body {
     height: 50vh;
 }
 
-/* #pattern-container {
-    position: absolute;
-}
-
-
-
 #command-txt {
     display: inline-block;
     width: 300px;
-} */
+}
