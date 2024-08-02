@@ -163,7 +163,6 @@ pub mod handpicked {
             }
         };
     }
-    generate_get_handpicked!(default, grzib, grzob, pillar);
 
     pub fn default() -> Params {
         Params::default()
@@ -219,4 +218,23 @@ pub mod handpicked {
             ..Params::floored()
         }
     }
+
+    pub fn disk() -> Params {
+        Params {
+            autostop: AutoStoppingParams {
+                acceptable_tension: 0.000000002,
+                max_relaxing_iterations: 500,
+            },
+            gravity: 0.0,
+            single_loop_force: 0.0,
+            centroids: CentroidParams {
+                force: 0.05,
+                number: 2,
+                ..Default::default()
+            },
+            ..Params::floored()
+        }
+    }
+
+    generate_get_handpicked!(default, grzib, grzob, pillar, disk);
 }

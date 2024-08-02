@@ -22,8 +22,7 @@ use crate::ws_sim::serve_websocket;
 use std::fs;
 use std::io::Write;
 
-#[rocket::main]
-async fn main() {
+fn main() {
     env_logger::Builder::from_default_env()
         .format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()))
         .init();
@@ -61,7 +60,9 @@ async fn main() {
 
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
-        Rank(args) => rocket_server::start(&args).await,
+        Rank(args) => {
+            let _ = rocket_server::start(&args);
+        }
         Inspect(args) => {
             // inspect population
             let population_file = args.popfile;

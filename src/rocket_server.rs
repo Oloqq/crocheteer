@@ -1,5 +1,6 @@
 mod rank;
 
+use futures::executor;
 use std::fs;
 use std::process::exit;
 
@@ -69,6 +70,7 @@ fn keep_system_awake() -> Option<keepawake::KeepAwake> {
         )
 }
 
+#[tokio::main]
 pub async fn start(args: &RankArgs) {
     let _awake = keep_system_awake();
 
@@ -91,10 +93,10 @@ pub async fn start(args: &RankArgs) {
     };
 
     println!("Rocket starting");
-    let _ = rocket::build()
+    let rocket_future = rocket::build()
         .manage(RstarComparator::with_basis(&basis))
         .manage(params)
         .mount("/", routes![batch_fitness, fitness_sum, batch_fitness_sum])
-        .launch()
-        .await;
+        .launch();
+    let _ = executor::block_on(rocket_future);
 }

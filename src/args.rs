@@ -49,7 +49,7 @@ pub struct WebsocketArgs {
 pub struct RankArgs {
     // #[structopt(short, long, default_value = "8080")]
     // pub port: u16,
-    #[structopt(short, long, default_value = "pillar")]
+    #[structopt(short, long, default_value = "model_preprocessing/models/pillar.json")]
     pub goal: String,
 
     #[structopt(short, long, default_value = "default")]
