@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+body {
+    background-color: red;
+}
+
+.ui-left {
+    position: absolute;
+    background-color: lightgray;
+}
+
+.status {
+    background-color: white;
+    padding: 5px;
+}
+
+.folder {
+    border-bottom: 2px solid black;
+}
+
+.folder * {
+    margin: 2px;
+}
+
+.folder>* {
+    margin-left: 20px;
+}
+
+.folder>p:nth-child(1) {
+    margin-left: 5px;
+}
+
+#pattern {
+    font-family: monospace;
+    width: 20vw;
+    height: 50vh;
+}
+
+/* #pattern-container {
+    position: absolute;
+}
+
+
+
+#command-txt {
+    display: inline-block;
+    width: 300px;
+} */
