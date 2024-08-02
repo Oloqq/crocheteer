@@ -229,7 +229,7 @@ pub mod handpicked {
             single_loop_force: 0.0,
             centroids: CentroidParams {
                 force: 0.05,
-                number: 2,
+                number: 3,
                 ..Default::default()
             },
             ..Params::floored()

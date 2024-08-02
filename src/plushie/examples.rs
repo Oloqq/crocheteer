@@ -228,8 +228,12 @@ pub fn disk() -> Plushie {
 
     let mut flow = ErgoFlow::new();
     flow += MR(6);
-    flow += Inc * 6;
-    flow += Sc * 12;
+    flow += Inc * 6; //12
+    flow += Inc * 12; //24
+    flow += Inc * 24; //48
+
+    flow += Dec * 24;
+    flow += Dec * 12;
     flow += Dec * 6;
     flow += FO;
     let plushie = Plushie::from_flow(flow, Params::default()).unwrap();

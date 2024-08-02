@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # points = points + np.array([5, 0, 0])
     points = points / 4
-    points = [[p[0], p[2], p[1]] for p in list(points)] # y and z are swapped in this open3d
+    points = [[p[0] * 0.9, p[2] * 1.5, p[1] * 0.9] for p in list(points)] # y and z are swapped in this open3d
 
     save_path = source_path.rpartition(".stl")[0] + ".json"
     with open(save_path, "w") as f:
