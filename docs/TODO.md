@@ -1,6 +1,21 @@
 # Next
 - display tension in the client
 - max tension clearly doesnt work
+  - max iterations really have to be MAX, not an always-stop
+  - mby there even should be a punishment for reaching max
+
+# Selecting appropriate tension
+## Client
+- the screen becomes cluttered => UI refactor
+  - add "folders" to the UI
+    - folder 1: pattern
+    - folder 2: admin buttons (and command sender)
+  - graph shall be displayed on the bottom, like a footer, with button to toggle
+- upon clicking animate, display the graph of tension
+- clicking animate multiple times shall not erase data
+
+## Server
+- send tensions in update
 
 # Backlog
 - update documentation relating to hook and plushie

@@ -31,21 +31,23 @@ fn main() {
     use Command::*;
     match args.cmd {
         WebSocket(args) => {
-            let mut plushie = match examples::get_example(&args.plushie) {
+            let presetable = args.apply_preset();
+
+            let mut plushie = match examples::get_example(&presetable.plushie) {
                 Some(x) => x,
                 None => {
                     log::error!("Plushie {:?} does not exist", args.plushie);
                     return;
                 }
             };
-            plushie.params = match params::handpicked::get(&args.params) {
+            plushie.params = match params::handpicked::get(&presetable.params) {
                 Some(x) => x,
                 None => {
                     log::error!("Params {:?} does not exist", args.params);
                     return;
                 }
             };
-            let sim = match args.secondary {
+            let sim = match presetable.secondary {
                 // why bother with PathBuf when String does the job
                 // forums say that its due to Rust strings handling of UTF-8
                 // so I guess the filesystem will go apeshit if I e.g. pass emoji as argument?
