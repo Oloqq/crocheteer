@@ -21,20 +21,20 @@ body {
     box-sizing: border-box;
 }
 
-.folder {
+.folder-crochet {
     border-bottom: 2px solid black;
     min-width: 20vw;
 }
 
-.folder * {
+.folder-crochet * {
     margin: 2px;
 }
 
-.folder>* {
+.folder-crochet>* {
     margin-left: 20px;
 }
 
-.folder>p:nth-child(1) {
+.folder-crochet>p:nth-child(1) {
     margin-left: 5px;
     cursor: pointer;
 }
