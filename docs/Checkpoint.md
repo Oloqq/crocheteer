@@ -17,11 +17,7 @@
 - evolution experiments
 - idiot-proof parsing (obligatory for genetic algorithms)
 
-## Pokazanie
-- terminy
-  - deklaracji w usos
-  - kiedy sa składane i bronione prace
-
+##
 - infrastruktura pod eksperymenty genetyczne
   - konwersja: STL -> jednorodna chmura punktowa (.json)
   - generowanie osobnikow, operacje genetyczne
@@ -32,6 +28,25 @@
 
 - cargo run ws --preset pillar
 - npm run dev
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - same eksperymenty jeszcze nie wychodza
   - zatrzymywanie symulacji w odpowiednim momencie
@@ -47,5 +62,6 @@
   - naiwna mutacja
 
 
-
-# 2 (TODO)
+- terminy
+  - deklaracji w usos
+  - kiedy sa składane i bronione prace
