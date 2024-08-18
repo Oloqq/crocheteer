@@ -25,6 +25,8 @@
   - funkcja fitnesu
     - dla kazdego punktu w wygenerowanym pluszaku znajdz najblizszy punkt w chmurze punktowej, suma odleglosci to fitness
     - używam [R-tree](https://en.wikipedia.org/wiki/R-tree) dla szukania w czasie O(log n)
+    - kwadrat zeby bardziej karac
+    - normalizacja dla zatrzymywania
 
 - cargo run ws --preset pillar
 - npm run dev
@@ -59,9 +61,27 @@
     - gpu?
     - cloud?
     - modyfikacja podczas symulacji?
+    - zamiast przesuniecia, relatywne przesuniecie wzgledem innych
   - naiwna mutacja
 
 
 - terminy
   - deklaracji w usos
+    - 13.09 (w naszym wypadku)
   - kiedy sa składane i bronione prace
+    - skladanie +- tydzien przed obrona
+    - na magisterskie => przed rekrutacja na magisterke (styczen)
+    -
+
+- praca ok. 40 stron
+  - sa konwertery markdown na latex
+  - wstep - motywacja
+  - opis algorytmow (teoria)(tylko to co potrzebne do zrozumienia implementacji)
+  - projekt implementacji
+  - wyniki
+  - podsumowanie realizacji celow
+
+## TODO
+- elbow detection
+- eksperymenty czy faktycznie obrot przeszkadza
+- Slazynski jest ok z pojsciem w narzedzie jak to nie wyjdzie
