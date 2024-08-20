@@ -1,4 +1,4 @@
-const folders = document.getElementsByClassName("folder");
+const folders = document.getElementsByClassName("folder-crochet");
 for (let f of folders) {
   const title = f.children[0];
   const itemList = f.children[1];

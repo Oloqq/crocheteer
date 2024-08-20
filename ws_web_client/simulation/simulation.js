@@ -1,3 +1,5 @@
+import { Graph } from "./graph";
+
 function download(data, filename, type) {
   var file = new Blob([data], { type: type });
   if (window.navigator.msSaveOrOpenBlob) // IE10+
@@ -43,6 +45,7 @@ export default class Simulation {
     };
     this.mainPlushie = mainPlushie;
     this.plushies = plushies;
+    this.graph = new Graph("graph");
   }
 
   parseMessage(key, data) {
@@ -50,6 +53,9 @@ export default class Simulation {
       case "upd":
         console.log(data);
         this.mainPlushie.update(data);
+        break;
+      case "stress":
+        console.log(key, data);
         break;
       case "ini":
         this.mainPlushie.init(data);

@@ -39,6 +39,13 @@ body {
     cursor: pointer;
 }
 
+#graph-container {
+    position: absolute;
+    background-color: lightgray;
+    bottom: 0;
+    max-height: 20vh;
+}
+
 #pattern {
     font-family: monospace;
     width: 20vw;

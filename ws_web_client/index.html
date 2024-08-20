@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crocheteer</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -103,6 +104,12 @@ FO
                 <button id="export-btn">Export pointcloud</button>
                 <button id="import-btn">Import pointcloud</button>
             </div>
+        </div>
+    </div>
+    <div id="graph-container" class="folder-crochet">
+        <p>Relax graph</p>
+        <div>
+            <canvas id="graph"></canvas>
         </div>
     </div>
     <script type="module" src="/simulation/main.js"></script>

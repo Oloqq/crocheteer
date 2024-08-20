@@ -31,25 +31,6 @@
 - cargo run ws --preset pillar
 - npm run dev
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - same eksperymenty jeszcze nie wychodza
   - zatrzymywanie symulacji w odpowiednim momencie
     - elbow method?
@@ -75,13 +56,14 @@
 
 - praca ok. 40 stron
   - sa konwertery markdown na latex
-  - wstep - motywacja
-  - opis algorytmow (teoria)(tylko to co potrzebne do zrozumienia implementacji)
-  - projekt implementacji
-  - wyniki
-  - podsumowanie realizacji celow
+  - strukture
+    - wstep - motywacja
+    - opis algorytmow (teoria)(tylko to co potrzebne do zrozumienia implementacji)
+    - projekt implementacji
+    - wyniki
+    - podsumowanie realizacji celow
 
 ## TODO
 - elbow detection
 - eksperymenty czy faktycznie obrot przeszkadza
-- Slazynski jest ok z pojsciem w narzedzie jak to nie wyjdzie
+- promotor jest ok z pojsciem w narzedzie jak to nie wyjdzie
