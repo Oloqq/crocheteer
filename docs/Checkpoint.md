@@ -69,7 +69,7 @@
 - promotor jest ok z pojsciem w narzedzie jak to nie wyjdzie
 
 ## wynik
-graf naprezenia jest nieprzewidywalny
+graf napiecia jest nieprzewidywalny
 ![alt text](images/image-4.png)
 relaks ~ 0.002
 
@@ -77,3 +77,7 @@ relaks ~ 0.002
 relaks ~ 0.5
 
 kolanko odpada, mozna trackowac zmiane w czasie, jesli jest mała to uznajemy że zakończono relaksowanie
+
+podzielenie napiecia przez liczbe punktow utrudnia sprawe przy malych ksztaltach, bo wartosci sa za male
+
+nadal pozostaje problem wybrania progow

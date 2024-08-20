@@ -86,6 +86,8 @@ impl PlushieTrait for Plushie {
     }
 
     fn tension(&self) -> f32 {
+        println!("nodes {}", self.nodes.len());
         self.last_total_displacement.magnitude()
+        // self.last_total_displacement.magnitude() / self.nodes.len() as f32
     }
 }
