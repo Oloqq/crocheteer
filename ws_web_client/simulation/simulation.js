@@ -52,10 +52,9 @@ export default class Simulation {
     switch (key) {
       case "upd":
         console.log(data);
+        const tension = data["tension"];
+        this.graph.update(tension);
         this.mainPlushie.update(data);
-        break;
-      case "stress":
-        console.log(key, data);
         break;
       case "ini":
         this.mainPlushie.init(data);

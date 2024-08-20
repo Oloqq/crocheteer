@@ -43,8 +43,15 @@ body {
     position: absolute;
     background-color: lightgray;
     bottom: 0;
-    max-height: 20vh;
+    left: 0;
 }
+
+#chart-wrapper-for-size {
+    display: inline-block;
+    /* display: none; */
+    position: relative;
+    width: 96%;
+  }
 
 #pattern {
     font-family: monospace;

@@ -58,7 +58,8 @@ impl PlushieSimulation {
             "key": "upd",
             "dat": {
                 "points": self.plushie.nodes_to_json(),
-                "centroids": self.plushie.centroids_to_json()
+                "centroids": self.plushie.centroids_to_json(),
+                "tension": self.plushie.tension(),
             }
         })
     }

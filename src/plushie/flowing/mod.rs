@@ -84,4 +84,8 @@ impl PlushieTrait for Plushie {
         let tension: f32 = self.last_total_displacement.magnitude();
         tension <= self.params.autostop.acceptable_tension
     }
+
+    fn tension(&self) -> f32 {
+        self.last_total_displacement.magnitude()
+    }
 }

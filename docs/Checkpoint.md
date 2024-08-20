@@ -63,7 +63,17 @@
     - wyniki
     - podsumowanie realizacji celow
 
-## TODO
+## task
 - elbow detection
 - eksperymenty czy faktycznie obrot przeszkadza
 - promotor jest ok z pojsciem w narzedzie jak to nie wyjdzie
+
+## wynik
+graf naprezenia jest nieprzewidywalny
+![alt text](images/image-4.png)
+relaks ~ 0.002
+
+![alt text](images/image-5.png)
+relaks ~ 0.5
+
+kolanko odpada, mozna trackowac zmiane w czasie, jesli jest mała to uznajemy że zakończono relaksowanie

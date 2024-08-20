@@ -64,12 +64,6 @@ async fn tick(
         None => (),
     }
 
-    if let Some(data) = simulation.step(dt) {
-        if write.send(Message::Text(data)).await.is_err() {
-            return Action::Quit;
-        }
-    }
-
     match simulation.step(dt) {
         Some(data) => match write.send(Message::Text(data)).await {
             Ok(_) => Action::UpdateInterval,
