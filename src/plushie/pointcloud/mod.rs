@@ -49,8 +49,6 @@ impl Pointcloud {
 }
 
 impl PlushieTrait for Pointcloud {
-    fn animate(&mut self) {}
-
     fn step(&mut self, _time: f32) {}
 
     fn params(&mut self) -> &mut super::Params {
@@ -88,9 +86,5 @@ impl PlushieTrait for Pointcloud {
 
     fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
-    }
-
-    fn is_relaxed(&self) -> bool {
-        true
     }
 }

@@ -1,16 +1,10 @@
 mod args;
 mod common;
-mod comparison;
 mod flow;
 mod plushie;
-mod rocket_server;
 mod ws_sim;
+
 extern crate nalgebra as na;
-#[macro_use]
-extern crate rocket;
-use flow::ergoflow::ErgoFlow;
-use flow::simple_flow::SimpleFlow;
-use plushie::params;
 
 use self::args::*;
 use self::ws_sim::plushie_sim::PlushieSimulation;
@@ -19,6 +13,7 @@ use crate::plushie::examples;
 use crate::plushie::Params;
 use crate::plushie::{Plushie, Pointcloud};
 use crate::ws_sim::serve_websocket;
+use plushie::params;
 use std::fs;
 use std::io::Write;
 
@@ -62,22 +57,6 @@ fn main() {
 
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
-        Rank(args) => {
-            let _ = rocket_server::start(&args);
-        }
-        Inspect(args) => {
-            // inspect population
-            let population_file = args.popfile;
-            let content = fs::read_to_string(population_file).unwrap();
-            let genomes: Vec<Vec<u8>> = serde_json::from_str(&content).unwrap();
-            let index = args.index;
-            let genome = &genomes[index];
-            let actions = flow::genetic::v1::express_genes(genome);
-            let flow = SimpleFlow::new(actions);
-            let plushie = Plushie::from_flow(flow, params::handpicked::pillar()).unwrap();
-            let sim = PlushieSimulation::from(plushie);
-            serve_websocket(sim, "127.0.0.1:8080");
-        }
         Dev { num } => {
             match num {
                 1 => {
@@ -112,17 +91,6 @@ fn main() {
                     let sim = PlushieSimulation::with_secondary(primary, secondary);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
-                9 => {
-                    // see an evolved individual in action
-                    let genome: Vec<u8> = serde_json::from_str("[0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 2, 1, 2, 1, 0, 1, 2, 0, 1, 0, 1, 1, 2, 0, 0, 1, 1, 1, 2, 0, 2, 0, 1, 2, 1, 1, 0, 1, 0, 2, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 2, 2, 0, 2, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 0, 0, 0, 1, 2, 0, 1, 1, 0, 2, 1, 1, 2, 1, 0, 2, 0, 0, 2, 1, 1, 2, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 1, 0, 0, 2, 1, 0]").unwrap();
-                    let actions = flow::genetic::v1::express_genes(&genome);
-                    let plushie =
-                        Plushie::from_flow(ErgoFlow::from(actions), params::handpicked::grzob())
-                            .unwrap();
-                    let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim, "127.0.0.1:8080");
-                }
-                10 => {}
                 11 => {
                     let mut plushie = examples::ergogrzob();
                     plushie.params = params::handpicked::grzob();

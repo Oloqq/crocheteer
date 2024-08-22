@@ -1,0 +1,1 @@
+model_preprocessing remains in the project so the user can still have a reference to an STL they created

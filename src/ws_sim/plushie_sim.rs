@@ -212,7 +212,7 @@ impl Simulation for PlushieSimulation {
             }
             RunState::RunningUntilRelaxedOrMax(mut steps_left) => {
                 steps_left -= 1;
-                if self.plushie.is_relaxed() || steps_left == 0 {
+                if steps_left == 0 {
                     let iterations =
                         self.plushie.params().autostop.max_relaxing_iterations - steps_left;
                     self.send(

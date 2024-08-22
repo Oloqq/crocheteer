@@ -9,12 +9,6 @@ pub enum Command {
     #[structopt(alias = "ws", about = "Start a WebSocket server for visualization")]
     WebSocket(WebsocketArgs),
 
-    #[structopt(alias = "ins", about = "Inspect a population")]
-    Inspect(InspectArgs),
-
-    #[structopt(about = "Start a server for calculating fitness")]
-    Rank(RankArgs),
-
     #[structopt(
         aliases = &["fp", "p", "pat"],
         about = "Transformations starting from a pattern file"
@@ -84,23 +78,6 @@ impl WebsocketArgs {
             secondary,
         }
     }
-}
-
-#[derive(StructOpt, Debug)]
-pub struct RankArgs {
-    // #[structopt(short, long, default_value = "8080")]
-    // pub port: u16,
-    #[structopt(short, long, default_value = "model_preprocessing/models/pillar.json")]
-    pub goal: String,
-
-    #[structopt(short, long, default_value = "default")]
-    pub params: String,
-}
-
-#[derive(StructOpt, Debug)]
-pub struct InspectArgs {
-    pub popfile: String,
-    pub index: usize,
 }
 
 #[derive(StructOpt, Debug)]

@@ -25,15 +25,6 @@ pub struct Plushie {
 }
 
 impl PlushieTrait for Plushie {
-    fn animate(&mut self) {
-        for _ in 0..self.params.autostop.max_relaxing_iterations {
-            self.step(self.params.timestep);
-            if self.is_relaxed() {
-                break;
-            }
-        }
-    }
-
     fn step(&mut self, time: f32) {
         use Initializer::*;
         match self.params.initializer {
@@ -78,10 +69,5 @@ impl PlushieTrait for Plushie {
 
     fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
-    }
-
-    fn is_relaxed(&self) -> bool {
-        let tension: f32 = self.last_total_displacement.magnitude();
-        tension <= self.params.autostop.acceptable_tension
     }
 }
