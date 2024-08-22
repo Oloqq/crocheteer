@@ -93,8 +93,4 @@ impl PlushieTrait for Pointcloud {
     fn is_relaxed(&self) -> bool {
         true
     }
-
-    fn tension(&self) -> f32 {
-        0.0
-    }
 }

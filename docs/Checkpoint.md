@@ -31,6 +31,25 @@
 - cargo run ws --preset pillar
 - npm run dev
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - same eksperymenty jeszcze nie wychodza
   - zatrzymywanie symulacji w odpowiednim momencie
     - elbow method?
@@ -56,28 +75,13 @@
 
 - praca ok. 40 stron
   - sa konwertery markdown na latex
-  - strukture
-    - wstep - motywacja
-    - opis algorytmow (teoria)(tylko to co potrzebne do zrozumienia implementacji)
-    - projekt implementacji
-    - wyniki
-    - podsumowanie realizacji celow
+  - wstep - motywacja
+  - opis algorytmow (teoria)(tylko to co potrzebne do zrozumienia implementacji)
+  - projekt implementacji
+  - wyniki
+  - podsumowanie realizacji celow
 
-## task
+## TODO
 - elbow detection
 - eksperymenty czy faktycznie obrot przeszkadza
-- promotor jest ok z pojsciem w narzedzie jak to nie wyjdzie
-
-## wynik
-graf napiecia jest nieprzewidywalny
-![alt text](images/image-4.png)
-relaks ~ 0.002
-
-![alt text](images/image-5.png)
-relaks ~ 0.5
-
-kolanko odpada, mozna trackowac zmiane w czasie, jesli jest mała to uznajemy że zakończono relaksowanie
-
-podzielenie napiecia przez liczbe punktow utrudnia sprawe przy malych ksztaltach, bo wartosci sa za male
-
-nadal pozostaje problem wybrania progow
+- Slazynski jest ok z pojsciem w narzedzie jak to nie wyjdzie

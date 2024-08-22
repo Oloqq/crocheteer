@@ -39,20 +39,6 @@ body {
     cursor: pointer;
 }
 
-#graph-container {
-    position: absolute;
-    background-color: lightgray;
-    bottom: 0;
-    left: 0;
-}
-
-#chart-wrapper-for-size {
-    display: inline-block;
-    /* display: none; */
-    position: relative;
-    width: 96%;
-  }
-
 #pattern {
     font-family: monospace;
     width: 20vw;

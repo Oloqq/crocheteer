@@ -1,5 +1,3 @@
-import { Graph } from "./graph";
-
 function download(data, filename, type) {
   var file = new Blob([data], { type: type });
   if (window.navigator.msSaveOrOpenBlob) // IE10+
@@ -45,15 +43,12 @@ export default class Simulation {
     };
     this.mainPlushie = mainPlushie;
     this.plushies = plushies;
-    this.graph = new Graph("graph");
   }
 
   parseMessage(key, data) {
     switch (key) {
       case "upd":
         console.log(data);
-        const tension = data["tension"];
-        this.graph.update(tension);
         this.mainPlushie.update(data);
         break;
       case "ini":
