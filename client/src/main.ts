@@ -8,4 +8,4 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 `;
 
 setupGui();
-render.initScene();
+render.init();
