@@ -7,5 +7,5 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   </div>
 `;
 
-setupGui();
-render.init();
+const display3d = render.init();
+setupGui(display3d);

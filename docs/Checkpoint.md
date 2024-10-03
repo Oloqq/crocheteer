@@ -81,6 +81,16 @@
   - wyniki
   - podsumowanie realizacji celow
 
+# Tytuł
+Fabric simulation for three-dimensional crochet designs
+
+Trójwymiarowa symulacja materiału dla wzorów szydełkowych
+
+Celem projektu jest stworzenie narzędzia wspomagającego opracowywanie szydełkowych wzorów. Projekt skupi się na trójwymiarowych kreacjach z wypełnieniem w środku (tzw. amigurumi).
+W ramach projektu, zaproponowany zostanie formalny język wzorów, możliwie podobny do istniejących (jednak nieformalnych) reprezentacji. Następnie, zaimplementowane zostanie narzędzie przekształcające wzory opisane w tym języku w trójwymiarowe modele, poprzez quasi-fizyczną symulację.
+Proponowane narzędzie umożliwi projektującemu szybką weryfikację tego, czy otrzyma ze swojego wzoru spodziewany kształt.
+
+
 ## TODO
 - elbow detection
 - eksperymenty czy faktycznie obrot przeszkadza
