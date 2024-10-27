@@ -34,10 +34,16 @@ export function init(): Display {
   };
   saveDefaultView(display);
 
-  cube(display);
   display.scene.add(grids.xy);
   display.scene.add(grids.xz);
   display.scene.add(grids.yz);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    display.controls.update();
+    display.renderer.render(display.scene, display.camera);
+  }
+  animate();
 
   return display;
 }
@@ -79,19 +85,3 @@ export const grids = (() => {
     })(),
   };
 })();
-
-function cube(display: any) {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const cube = new THREE.Mesh(geometry, material);
-  display.scene.add(cube);
-
-  display.camera.position.z = 5;
-
-  function animate() {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    display.renderer.render(display.scene, display.camera);
-  }
-  display.renderer.setAnimationLoop(animate);
-}

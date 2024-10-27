@@ -1,8 +1,8 @@
-import Scene from "./Scene";
+import World from "./World";
 
 let ws: WebSocket | undefined = undefined;
 
-export function connect(url: string, scene: Scene): WebSocket {
+export function connect(url: string, scene: World): WebSocket {
   ws = new WebSocket(url);
 
   ws.onopen = function (_event) {
