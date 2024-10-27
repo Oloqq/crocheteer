@@ -1,11 +1,16 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-interface Display {
+export interface Display {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   controls: OrbitControls;
+  grids: {
+    xy: THREE.GridHelper;
+    xz: THREE.GridHelper;
+    yz: THREE.GridHelper;
+  };
 }
 
 export function init(): Display {
@@ -25,13 +30,14 @@ export function init(): Display {
     camera: camera,
     renderer: renderer,
     controls: new OrbitControls(camera, renderer.domElement),
+    grids: grids,
   };
   saveDefaultView(display);
 
   cube(display);
   display.scene.add(grids.xy);
-  // display.scene.add(gridHelperYZ);
-  // display.scene.add(gridHelperXZ);
+  display.scene.add(grids.xz);
+  display.scene.add(grids.yz);
 
   return display;
 }
@@ -46,20 +52,29 @@ function saveDefaultView(display: Display) {
   display.controls.saveState();
 }
 
-const grids = (() => {
-  const gridSize = 10;
-  const gridDivisions = 10;
+export const grids = (() => {
+  const cellSize = 1;
+  const floorCells = 10;
+  const verticalCells = 20;
 
   return {
-    xy: new THREE.GridHelper(gridSize, gridDivisions),
+    xy: new THREE.GridHelper(floorCells * cellSize, floorCells),
     yz: (() => {
-      const grid = new THREE.GridHelper(gridSize, gridDivisions);
+      const grid = new THREE.GridHelper(
+        verticalCells * cellSize,
+        verticalCells
+      );
       grid.rotation.z = Math.PI / 2;
+      grid.visible = false;
       return grid;
     })(),
     xz: (() => {
-      const grid = new THREE.GridHelper(gridSize, gridDivisions);
+      const grid = new THREE.GridHelper(
+        verticalCells * cellSize,
+        verticalCells
+      );
       grid.rotation.x = Math.PI / 2;
+      grid.visible = false;
       return grid;
     })(),
   };
