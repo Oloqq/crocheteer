@@ -2,12 +2,19 @@ import * as dat from "dat.gui";
 import * as comms from "./comms";
 import { Display, restoreDefaultView } from "./render3d";
 
-export let data = {
-  paused: true,
-};
+export interface GuiData {
+  paused: boolean;
+  stepCallback: () => void;
+}
 
-export function setupGui(display3d: Display): void {
+export function setupGui(display3d: Display): GuiData {
   const gui = new dat.GUI();
+  const data: GuiData = {
+    paused: true,
+    stepCallback: () => {
+      comms.send("advance");
+    },
+  };
 
   gui
     .add(data, "paused")
@@ -19,6 +26,8 @@ export function setupGui(display3d: Display): void {
         comms.send("resume");
       }
     });
+
+  gui.add(data, "stepCallback").name("Step");
 
   const display = gui.addFolder("Display");
   {
@@ -40,4 +49,6 @@ export function setupGui(display3d: Display): void {
   // };
   // element.addEventListener("click", () => setCounter(counter + 1));
   // setCounter(0);
+
+  return data;
 }
