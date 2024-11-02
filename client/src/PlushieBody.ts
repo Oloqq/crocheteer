@@ -2,6 +2,7 @@ import { Mesh } from "three";
 import { Display } from "./render3d";
 import * as create from "./utils/create";
 import * as THREE from "three";
+import { GuiData } from "./gui";
 
 export default class PlushieBody {
   scene: THREE.Scene;
@@ -9,7 +10,7 @@ export default class PlushieBody {
   links: Mesh[] = [];
   edges: number[][];
 
-  constructor(display: Display, data: crapi.Initialize) {
+  constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
     this.nodes = [];
     for (let [i, point] of data.nodes.points.entries()) {
@@ -17,7 +18,9 @@ export default class PlushieBody {
       this.nodes.push(newSphere);
     }
     this.edges = data.edges;
-    this.drawLinks();
+    if (guiData.showEdges) {
+      this.drawLinks();
+    }
   }
 
   update(data: crapi.Update) {
