@@ -1,10 +1,11 @@
 /// Crochet API
 namespace crapi {
   type Point = [number, number, number];
+  type EdgeTo = number;
 
   interface Initialize {
     nodes: Nodes;
-    edges: Edge[];
+    edges: EdgeTo[][];
     centroids: CentroidsWrapper;
   }
 
@@ -13,8 +14,6 @@ namespace crapi {
     peculiarities: any; // TODO
     colors: any; // TODO
   }
-
-  interface Edge {}
 
   // FIXME
   interface CentroidsWrapper {

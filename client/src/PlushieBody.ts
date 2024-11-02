@@ -1,21 +1,23 @@
 import { Mesh } from "three";
 import { Display } from "./render3d";
 import * as create from "./utils/create";
+import * as THREE from "three";
 
 export default class PlushieBody {
+  scene: THREE.Scene;
   nodes: Mesh[];
+  links: Mesh[] = [];
+  edges: number[][];
 
   constructor(display: Display, data: crapi.Initialize) {
+    this.scene = display.scene;
     this.nodes = [];
     for (let [i, point] of data.nodes.points.entries()) {
-      let newSphere = create.sphere(
-        display.scene,
-        point,
-        0.1,
-        this.nodeColor(i)
-      );
+      let newSphere = create.sphere(this.scene, point, 0.1, this.nodeColor(i));
       this.nodes.push(newSphere);
     }
+    this.edges = data.edges;
+    this.drawLinks();
   }
 
   update(data: crapi.Update) {
@@ -35,8 +37,53 @@ export default class PlushieBody {
     }
   }
 
+  drawLinks() {
+    const width = 0.05;
+
+    for (let from = 0; from < this.edges.length; from++) {
+      for (let to of this.edges[from]) {
+        if (from >= this.nodes.length || to >= this.nodes.length) {
+          continue;
+        }
+        const color = this.linkColor(from, to);
+        let link = create.link(
+          this.scene,
+          this.nodes[from].position,
+          this.nodes[to].position,
+          width,
+          color
+        );
+        this.links.push(link);
+      }
+    }
+  }
+
+  clearLinks() {
+    for (let link of this.links) {
+      if (link.geometry) link.geometry.dispose();
+      if (link.material) {
+        // hack: link.material is (Material | Material[]). it's always Material here
+        const x: any = link.material;
+        x.dispose();
+      }
+      this.scene.remove(link);
+    }
+    this.links = [];
+  }
+
   // FIXME
   nodeColor(_: any): any {
     return 0x00ff00;
+  }
+
+  // FIXME
+  linkColor(_from: any, _to: any) {
+    return 0x00ff00;
+    // if (this.debugDisplay) {
+    //   return 0x343330;
+    // } else {
+    //   let [r, g, b] = this.nodeColors[to];
+    //   return `rgb(${r}, ${g}, ${b})`;
+    // }
   }
 }

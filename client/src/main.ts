@@ -9,12 +9,20 @@ let world = new World("ws://127.0.0.1:8080", display3d);
 
 let callbacks: GuiCallbacks = {
   paused(value) {
-    value ? comms.send("pause") : comms.send("resume");
+    if (value) {
+      comms.send("pause");
+    } else {
+      world.plushie?.clearLinks();
+      comms.send("resume");
+    }
   },
   step() {
+    world.plushie?.clearLinks();
     comms.send("advance");
   },
-  showEdges(_val) {},
+  showEdges(val) {
+    val ? world.plushie?.drawLinks() : world.plushie?.clearLinks();
+  },
 };
 
 setupGui(display3d, callbacks);
