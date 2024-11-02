@@ -1,33 +1,26 @@
 import * as dat from "dat.gui";
-import * as comms from "./comms";
 import { Display, restoreDefaultView } from "./render3d";
 
 export interface GuiData {
   paused: boolean;
-  stepCallback: () => void;
+  showEdges: boolean;
 }
 
-export function setupGui(display3d: Display): GuiData {
+export interface GuiCallbacks {
+  paused: (val: boolean) => void;
+  step: () => void;
+  showEdges: (val: boolean) => void;
+}
+
+export function setupGui(display3d: Display, callbacks: GuiCallbacks): GuiData {
   const gui = new dat.GUI();
   const data: GuiData = {
     paused: true,
-    stepCallback: () => {
-      comms.send("advance");
-    },
+    showEdges: true,
   };
 
-  gui
-    .add(data, "paused")
-    .name("Pause")
-    .onChange((value) => {
-      if (value) {
-        comms.send("pause");
-      } else {
-        comms.send("resume");
-      }
-    });
-
-  gui.add(data, "stepCallback").name("Step");
+  gui.add(data, "paused").name("Pause").onChange(callbacks.paused);
+  gui.add(callbacks, "step").name("Step");
 
   const display = gui.addFolder("Display");
   {
@@ -35,11 +28,11 @@ export function setupGui(display3d: Display): GuiData {
     display
       .add({ _: () => restoreDefaultView(display3d) }, "_")
       .name("Reset camera");
-    // display.add({""}, 0);
-    // .name("XY grid")
-    // .onChange((value) => {
-    //   display3d.grids.xy.visible = value;
-    // });
+
+    display
+      .add(data, "showEdges")
+      .name("Show links")
+      .onChange(callbacks.showEdges);
   }
 
   // let counter = 0;

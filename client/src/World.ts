@@ -1,5 +1,4 @@
 import { connect } from "./comms";
-import { GuiData } from "./gui";
 import PlushieBody from "./PlushieBody";
 import { Display } from "./render3d";
 
@@ -9,10 +8,9 @@ export default class World {
   plushie: PlushieBody | undefined;
   // ghosts: GhostRenderer[];
 
-  constructor(url: string, display: Display, guiData: GuiData) {
+  constructor(url: string, display: Display) {
     this.ws = connect(url, this);
     this.display = display;
-    void guiData;
   }
 
   parseMessage(key: string, data: any) {
