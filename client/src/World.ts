@@ -19,11 +19,16 @@ export default class World {
       case "ini":
         this.plushie = new PlushieBody(this.display, data);
         break;
-      // case "upd":
-      //   // this.plushie.init(data);
-      //   break;
+      case "upd":
+        this.plushie ?? panic("Plushie is not initialied");
+        this.plushie!.update(data);
+        break;
       default:
         console.error("unhandled message", key);
     }
   }
+}
+
+function panic(msg: string) {
+  throw msg;
 }
