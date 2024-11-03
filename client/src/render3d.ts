@@ -26,7 +26,7 @@ export function init(): Display {
     throw "malformed html: missing canvas for three.js";
   }
 
-  const renderer = new THREE.WebGLRenderer();
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
   canvasContainer.appendChild(renderer.domElement);
 
@@ -49,6 +49,12 @@ export function init(): Display {
     display.renderer.render(display.scene, display.camera);
   }
   animate();
+
+  window.addEventListener("resize", () => {
+    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+    camera.updateProjectionMatrix();
+  });
 
   return display;
 }
