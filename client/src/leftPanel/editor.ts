@@ -2,6 +2,7 @@ import * as monaco from "monaco-editor";
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import JsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import TypeScriptWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import defaultPattern from "./demoPattern.txt?raw";
 
 self.MonacoEnvironment = {
   getWorker(_: string, label: string) {
@@ -19,18 +20,15 @@ self.MonacoEnvironment = {
 
 export function init(editorContainer: HTMLElement) {
   const STORAGE_KEY_EDITOR_CONTENT = "editorContent";
-  const savedContent = localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT);
+  const pattern =
+    localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT) ?? defaultPattern;
 
   const editor = monaco.editor.create(editorContainer, {
-    value: savedContent ?? "# Type your pattern here",
+    value: pattern,
     language: "plaintext",
     theme: "vs-dark",
     automaticLayout: true,
   });
-
-  if (!savedContent) {
-    laodDefaultContent(editor);
-  }
 
   window.addEventListener("resize", () => {
     editor.layout();
@@ -41,10 +39,4 @@ export function init(editorContainer: HTMLElement) {
   }, 5000);
 
   return editor;
-}
-
-async function laodDefaultContent(editor: any) {
-  const fileContent = await fetch("src/leftPanel/demoPattern.txt");
-  const text = await fileContent.text();
-  editor.setValue(text);
 }
