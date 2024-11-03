@@ -28,6 +28,12 @@ function initResizing(
 ) {
   let isResizing = false;
 
+  const savedWidth = localStorage.getItem("leftPanelWidth");
+  if (savedWidth) {
+    leftPanel.style.width = savedWidth;
+    resizer.style.left = savedWidth;
+  }
+
   const onMouseMove = throttle((e: MouseEvent) => {
     if (!isResizing) return;
     const app = document.getElementById("app") as HTMLElement;
@@ -42,6 +48,7 @@ function initResizing(
     leftPanel.style.width = `${newWidth}px`;
     resizer.style.left = `${newWidth}px`;
     editor.layout();
+    localStorage.setItem("leftPanelWidth", `${newWidth}px`);
   }, 16);
 
   const stopResizing = () => {
