@@ -12,6 +12,7 @@ export function connect(url: string, scene: World): WebSocket {
 
   ws.onmessage = function (event) {
     let dict = JSON.parse(event.data);
+    console.debug(`received (${dict["key"]})`, dict["dat"]);
     scene.parseMessage(dict["key"], dict["dat"]);
   };
 
@@ -23,7 +24,7 @@ export function connect(url: string, scene: World): WebSocket {
 }
 
 export function send(text: string) {
-  console.log(`sending: ${text}`, ws);
+  console.debug(`sending: ${text}`);
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(text);
   } else {

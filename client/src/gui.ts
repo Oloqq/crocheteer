@@ -5,6 +5,10 @@ import World from "./World";
 
 export class GuiData {
   world?: World = undefined;
+  updateDisplay: () => void = () => {
+    console.error("display wasn't ready for update");
+  };
+
   paused: boolean = true;
   showEdges: boolean = true;
   getPattern: () => string;
@@ -46,9 +50,12 @@ export function initGui(
   display3d: Display,
   data: GuiData,
   world: World
-): GuiData {
+): dat.GUI {
   const gui = new dat.GUI();
   data.world = world;
+  data.updateDisplay = () => {
+    gui.updateDisplay();
+  };
 
   gui.add(data, "paused").name("Pause").onChange(data.pausedCallback);
   gui.add(data, "step").name("Step");
@@ -85,10 +92,12 @@ export function initGui(
         .name("Nodes per centroid")
         .onChange(sendParams);
       // removeSlider(
-      // centroids.add(p.centroids, "number", 0, 20, 1).onChange((val) => {
-      //   world.mainPlushie.setCentroidNum(val);
-      //   sendParams();
-      // });
+      centroids
+        .add(data.params.centroids, "number", 0, 20, 1)
+        .onChange((_val) => {
+          // world.plushie.setCentroidNum(val);
+          sendParams();
+        });
       // );
     }
 
@@ -117,7 +126,7 @@ export function initGui(
       .onChange(sendParams);
   }
 
-  return data;
+  return gui;
 }
 
 const paramsThatInitializeDatGuiWithCorrectTypes: crapi.Params = {

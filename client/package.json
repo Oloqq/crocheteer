@@ -16,8 +16,10 @@
     "dependencies": {
         "@types/bun": "^1.1.13",
         "@types/dat.gui": "^0.7.13",
+        "@types/jquery": "^3.5.32",
         "@types/three": "^0.168.0",
         "dat.gui": "^0.7.9",
+        "jquery": "^3.7.1",
         "monaco-editor": "^0.52.0",
         "three": "^0.168.0"
     }
