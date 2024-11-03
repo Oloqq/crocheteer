@@ -40,10 +40,8 @@ function initResizing(
     const appRect = app.getBoundingClientRect();
     let newWidth = e.clientX - appRect.left;
 
-    const minWidth = 200;
-    const maxWidth = 500;
-
-    newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+    const minWidth = 20;
+    newWidth = Math.max(minWidth, newWidth);
 
     leftPanel.style.width = `${newWidth}px`;
     resizer.style.left = `${newWidth}px`;
