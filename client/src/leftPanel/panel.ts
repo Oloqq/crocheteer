@@ -1,0 +1,64 @@
+import * as monacoEditor from "./editor";
+
+export function init() {
+  const leftPanel = document.getElementById("left-panel") as HTMLElement;
+  const resizer = document.getElementById("resizer") as HTMLElement;
+  const editorContainer = document.getElementById(
+    "editor-container"
+  ) as HTMLElement;
+  const editor = monacoEditor.init(editorContainer);
+  initResizing(leftPanel, resizer, editor);
+}
+
+function throttle(fn: Function, limit: number) {
+  let lastCall = 0;
+  return function (this: any, ...args: any[]) {
+    const now = new Date().getTime();
+    if (now - lastCall >= limit) {
+      lastCall = now;
+      fn.apply(this, args);
+    }
+  };
+}
+
+function initResizing(
+  leftPanel: HTMLElement,
+  resizer: HTMLElement,
+  editor: any
+) {
+  let isResizing = false;
+
+  const onMouseMove = throttle((e: MouseEvent) => {
+    if (!isResizing) return;
+    const app = document.getElementById("app") as HTMLElement;
+    const appRect = app.getBoundingClientRect();
+    let newWidth = e.clientX - appRect.left;
+
+    const minWidth = 200;
+    const maxWidth = 500;
+
+    newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+
+    leftPanel.style.width = `${newWidth}px`;
+    resizer.style.left = `${newWidth}px`;
+    editor.layout();
+  }, 16);
+
+  const stopResizing = () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.cursor = "default";
+      document.body.style.userSelect = "auto";
+    }
+  };
+
+  resizer.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    isResizing = true;
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
+  });
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", stopResizing);
+}
