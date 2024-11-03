@@ -19,16 +19,18 @@ self.MonacoEnvironment = {
 
 export function init(editorContainer: HTMLElement) {
   const STORAGE_KEY_EDITOR_CONTENT = "editorContent";
-  const editorContent =
-    localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT) ??
-    "# Type your pattern here"; // TODO make a "demo" as default
+  const savedContent = localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT);
 
   const editor = monaco.editor.create(editorContainer, {
-    value: editorContent,
+    value: savedContent ?? "# Type your pattern here",
     language: "plaintext",
     theme: "vs-dark",
     automaticLayout: true,
   });
+
+  if (!savedContent) {
+    laodDefaultContent(editor);
+  }
 
   window.addEventListener("resize", () => {
     editor.layout();
@@ -39,4 +41,10 @@ export function init(editorContainer: HTMLElement) {
   }, 5000);
 
   return editor;
+}
+
+async function laodDefaultContent(editor: any) {
+  const fileContent = await fetch("src/leftPanel/demoPattern.txt");
+  const text = await fileContent.text();
+  editor.setValue(text);
 }
