@@ -1,4 +1,58 @@
-* {
-    margin: 0;
-    padding: 0;
+/* Existing Styles */
+#app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#left-panel {
+  width: 300px; /* Default width */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ccc;
+  min-width: 200px; /* Minimum width */
+}
+
+#left-panel.hidden {
+  width: 0;
+}
+
+#panel-header {
+  height: 50px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+#panel-header button {
+  margin-right: 10px;
+}
+
+#editor-container {
+  flex: 1;
+  overflow: auto;
+}
+
+#main-content {
+  flex: 1;
+  position: relative;
+  padding: 5px;
+}
+
+#right-panel {
+  width: 300px;
+  /* Existing styles for your dat.gui panel */
+}
+
+/* Resizer Handle Styles */
+#resizer {
+  width: 5px;
+  cursor: ew-resize;
+  background-color: #ccc;
+}
+
+#resizer:hover {
+  background-color: #aaa;
 }

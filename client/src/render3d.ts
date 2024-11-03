@@ -21,9 +21,14 @@ export function init(): Display {
     1000
   );
 
+  let canvasContainer = document.getElementById("main-content");
+  if (!canvasContainer) {
+    throw "malformed html: missing canvas for three.js";
+  }
+
   const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+  canvasContainer.appendChild(renderer.domElement);
 
   const display = {
     scene: new THREE.Scene(),
