@@ -1,6 +1,7 @@
 /// Crochet API
 namespace crapi {
   type Point = [number, number, number];
+  type RGB = [number, number, number];
   type EdgeTo = number;
   type integer = number;
 
@@ -12,8 +13,10 @@ namespace crapi {
 
   interface Nodes {
     points: Point[];
-    peculiarities: any; // TODO
-    colors: any; // TODO
+    peculiarities: {
+      [node: integer]: "Root" | "Tip";
+    };
+    colors: RGB[];
   }
 
   // FIXME later so legacy client can still work for a while
