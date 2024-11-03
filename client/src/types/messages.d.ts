@@ -15,7 +15,7 @@ namespace crapi {
     colors: any; // TODO
   }
 
-  // FIXME
+  // FIXME later so legacy client can still work for a while
   interface CentroidsWrapper {
     centroids: Centroids;
   }
@@ -26,4 +26,6 @@ namespace crapi {
     centroids: CentroidsWrapper;
     points: Point[];
   }
+
+  interface Params {}
 }

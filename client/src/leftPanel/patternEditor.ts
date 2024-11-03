@@ -18,7 +18,9 @@ self.MonacoEnvironment = {
   },
 };
 
-export function init(editorContainer: HTMLElement) {
+export function init(
+  editorContainer: HTMLElement
+): monaco.editor.IStandaloneCodeEditor {
   const STORAGE_KEY_EDITOR_CONTENT = "editorContent";
   const pattern =
     localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT) ?? defaultPattern;

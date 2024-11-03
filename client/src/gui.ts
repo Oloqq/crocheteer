@@ -7,6 +7,11 @@ export class GuiData {
   world?: World = undefined;
   paused: boolean = true;
   showEdges: boolean = true;
+  getPattern: () => string;
+
+  constructor(getPattern: () => string) {
+    this.getPattern = getPattern;
+  }
 
   pausedCallback = (val: boolean) => {
     if (!this.world) return;
@@ -59,14 +64,6 @@ export function setupGui(
       .name("Show links")
       .onChange(data.showEdgesCallback);
   }
-
-  // let counter = 0;
-  // const setCounter = (count: number) => {
-  //   counter = count;
-  //   element.innerHTML = `count is ${counter}`;
-  // };
-  // element.addEventListener("click", () => setCounter(counter + 1));
-  // setCounter(0);
 
   return data;
 }

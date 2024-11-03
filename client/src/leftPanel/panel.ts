@@ -1,6 +1,7 @@
-import * as monacoEditor from "./editor";
+import * as monaco from "monaco-editor";
+import * as monacoEditor from "./patternEditor";
 
-export function init() {
+export function init(): monaco.editor.IStandaloneCodeEditor {
   const leftPanel = document.getElementById("left-panel") as HTMLElement;
   const resizer = document.getElementById("resizer") as HTMLElement;
   const editorContainer = document.getElementById(
@@ -8,6 +9,7 @@ export function init() {
   ) as HTMLElement;
   const editor = monacoEditor.init(editorContainer);
   initResizing(leftPanel, resizer, editor);
+  return editor;
 }
 
 function throttle(fn: Function, limit: number) {
