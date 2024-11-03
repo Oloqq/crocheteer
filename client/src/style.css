@@ -34,12 +34,6 @@
   transition: none; /* Remove any transition for immediate resizing */
 }
 
-/* Hidden State for Left Panel */
-#left-panel.hidden {
-  width: 0;
-  overflow: hidden;
-}
-
 /* Panel Header */
 #panel-header {
   height: 50px;
@@ -79,16 +73,4 @@
 /* Adjust Resizer Position When Left Panel is Hidden */
 #left-panel.hidden + #resizer {
   left: 0; /* Move resizer to the left edge */
-}
-
-/* Right Panel (dat.gui) */
-#right-panel {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 100%;
-  background-color: #f0f0f0;
-  border-left: 1px solid #ccc;
-  z-index: 10; /* Ensure it's above the Three.js canvas */
 }

@@ -18,16 +18,25 @@ self.MonacoEnvironment = {
 };
 
 export function init(editorContainer: HTMLElement) {
+  const STORAGE_KEY_EDITOR_CONTENT = "editorContent";
+  const editorContent =
+    localStorage.getItem(STORAGE_KEY_EDITOR_CONTENT) ??
+    "# Type your pattern here"; // TODO make a "demo" as default
+
   const editor = monaco.editor.create(editorContainer, {
-    value: `// Type your code here`,
-    language: "javascript", // or your domain-specific language
+    value: editorContent,
+    language: "plaintext",
     theme: "vs-dark",
-    automaticLayout: true, // Automatically adjust layout
+    automaticLayout: true,
   });
 
   window.addEventListener("resize", () => {
     editor.layout();
   });
+
+  setInterval(() => {
+    localStorage.setItem(STORAGE_KEY_EDITOR_CONTENT, editor.getValue());
+  }, 5000);
 
   return editor;
 }

@@ -26,9 +26,10 @@ function initResizing(
   resizer: HTMLElement,
   editor: any
 ) {
+  const STORAGE_KEY_WIDTH = "leftPanelWidth";
   let isResizing = false;
 
-  const savedWidth = localStorage.getItem("leftPanelWidth");
+  const savedWidth = localStorage.getItem(STORAGE_KEY_WIDTH);
   if (savedWidth) {
     leftPanel.style.width = savedWidth;
     resizer.style.left = savedWidth;
@@ -46,7 +47,7 @@ function initResizing(
     leftPanel.style.width = `${newWidth}px`;
     resizer.style.left = `${newWidth}px`;
     editor.layout();
-    localStorage.setItem("leftPanelWidth", `${newWidth}px`);
+    localStorage.setItem(STORAGE_KEY_WIDTH, `${newWidth}px`);
   }, 16);
 
   const stopResizing = () => {
