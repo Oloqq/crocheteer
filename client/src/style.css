@@ -1,22 +1,56 @@
-/* Existing Styles */
+/* Reset default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* App Container */
 #app {
-  display: flex;
+  position: relative; /* Establish a containing block for absolute positioning */
+  width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Main Content (Three.js Canvas) */
+#main-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#three-canvas {
+  width: 100%;
+  height: 100%;
+  display: block; /* Removes default inline behavior */
+}
+
+/* Left Panel */
+#left-panel {
+  position: absolute; /* Overlay on top of main content */
+  top: 0;
+  left: 0;
+  width: 300px; /* Default width */
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  z-index: 10; /* Ensure it's above the Three.js canvas */
+  min-width: 200px; /* Minimum width */
+  max-width: 500px; /* Maximum width */
+  transition: none; /* Remove any transition for immediate resizing */
+}
+
+/* Hidden State for Left Panel */
+#left-panel.hidden {
+  width: 0;
   overflow: hidden;
 }
 
-#left-panel {
-  width: 300px; /* Default width */
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #ccc;
-  min-width: 200px; /* Minimum width */
-}
-
-#left-panel.hidden {
-  width: 0;
-}
-
+/* Panel Header */
 #panel-header {
   height: 50px;
   background-color: #f0f0f0;
@@ -30,29 +64,41 @@
   margin-right: 10px;
 }
 
+/* Editor Container */
 #editor-container {
   flex: 1;
-  overflow: auto;
+  overflow: hidden; /* Ensure smooth resizing */
 }
 
-#main-content {
-  flex: 1;
-  position: relative;
-  padding: 5px;
-}
-
-#right-panel {
-  width: 300px;
-  /* Existing styles for your dat.gui panel */
-}
-
-/* Resizer Handle Styles */
+/* Resizer Handle */
 #resizer {
+  position: absolute;
+  top: 0;
+  left: 300px; /* Align with the default width of the left panel */
   width: 5px;
+  height: 100%;
   cursor: ew-resize;
   background-color: #ccc;
+  z-index: 15; /* Above the left panel */
 }
 
 #resizer:hover {
   background-color: #aaa;
+}
+
+/* Adjust Resizer Position When Left Panel is Hidden */
+#left-panel.hidden + #resizer {
+  left: 0; /* Move resizer to the left edge */
+}
+
+/* Right Panel (dat.gui) */
+#right-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100%;
+  background-color: #f0f0f0;
+  border-left: 1px solid #ccc;
+  z-index: 10; /* Ensure it's above the Three.js canvas */
 }

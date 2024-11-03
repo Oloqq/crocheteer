@@ -3,9 +3,28 @@ import * as render from "./render3d.ts";
 import World from "./World.ts";
 import * as monaco from "monaco-editor";
 
+import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import JsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import TypeScriptWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+
+// Define MonacoEnvironment
+self.MonacoEnvironment = {
+  getWorker(_: string, label: string) {
+    switch (label) {
+      case "json":
+        return new JsonWorker();
+      case "typescript":
+      case "javascript":
+        return new TypeScriptWorker();
+      default:
+        return new EditorWorker();
+    }
+  },
+};
+
 setupSimulator();
 // toggleButton();
-editor();
+// editor();
 resizing();
 
 function resizing() {
@@ -19,36 +38,30 @@ function resizing() {
       "editor-container"
     ) as HTMLElement;
 
-    // // Initialize Monaco Editor
-    // const editor = monaco.editor.create(editorContainer, {
-    //   value: `// Type your code here`,
-    //   language: "javascript", // or your domain-specific language
-    //   theme: "vs-dark",
-    //   automaticLayout: true, // Automatically adjust layout
-    // });
+    // Initialize Monaco Editor
+    const editor = monaco.editor.create(editorContainer, {
+      value: `// Type your code here`,
+      language: "javascript", // or your domain-specific language
+      theme: "vs-dark",
+      automaticLayout: true, // Automatically adjust layout
+    });
 
-    // // Toggle Panel Visibility
-    // toggleButton.addEventListener("click", () => {
-    //   leftPanel.classList.toggle("hidden");
-    //   if (leftPanel.classList.contains("hidden")) {
-    //     // Optionally, hide the resizer when panel is hidden
-    //     resizer.style.display = "none";
-    //   } else {
-    //     resizer.style.display = "block";
-    //     editor.layout();
-    //   }
-    // });
+    // Toggle Panel Visibility
+    toggleButton.addEventListener("click", () => {
+      leftPanel.classList.toggle("hidden");
+      if (leftPanel.classList.contains("hidden")) {
+        // Optionally, hide the resizer when panel is hidden
+        resizer.style.display = "none";
+      } else {
+        resizer.style.display = "block";
+        editor.layout();
+      }
+    });
 
     // Drag to Resize Functionality
     let isResizing = false;
 
-    resizer.addEventListener("mousedown", (e) => {
-      isResizing = true;
-      document.body.style.cursor = "ew-resize";
-      document.body.style.userSelect = "none"; // Prevent text selection
-    });
-
-    document.addEventListener("mousemove", (e) => {
+    const onMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
       const app = document.getElementById("app") as HTMLElement;
       const appRect = app.getBoundingClientRect();
@@ -56,24 +69,32 @@ function resizing() {
 
       // Set minimum and maximum widths
       const minWidth = 200; // Minimum width of the left panel
-      const maxWidth = 700; // Maximum width of the left panel
+      const maxWidth = 500; // Maximum width of the left panel
 
-      if (newWidth < minWidth) newWidth = minWidth;
-      if (newWidth > maxWidth) newWidth = maxWidth;
-
-      console.log(newWidth);
+      newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
 
       leftPanel.style.width = `${newWidth}px`;
-      // editor.layout();
-    });
+      resizer.style.left = `${newWidth}px`; // Move resizer accordingly
+      // editor.layout(); // Optional: Adjust editor if necessary
+    };
 
-    document.addEventListener("mouseup", () => {
+    const stopResizing = () => {
       if (isResizing) {
         isResizing = false;
         document.body.style.cursor = "default";
         document.body.style.userSelect = "auto";
       }
+    };
+
+    resizer.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      isResizing = true;
+      document.body.style.cursor = "ew-resize";
+      document.body.style.userSelect = "none";
     });
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", stopResizing);
 
     // Handle Window Resize
     window.addEventListener("resize", () => {
