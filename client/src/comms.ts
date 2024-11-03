@@ -7,6 +7,7 @@ export function connect(url: string, scene: World): WebSocket {
 
   ws.onopen = function (_event) {
     console.log("Connected to WebSocket server");
+    send("getparams");
   };
 
   ws.onmessage = function (event) {

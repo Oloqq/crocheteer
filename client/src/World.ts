@@ -7,7 +7,7 @@ export default class World {
   ws: WebSocket;
   display: Display;
   plushie: PlushieBody | undefined;
-  readonly guiData: GuiData;
+  guiData: GuiData;
   // ghosts: GhostRenderer[];
 
   constructor(url: string, display: Display, guiData: GuiData) {
@@ -26,12 +26,14 @@ export default class World {
         this.plushie ?? panic("Plushie is not initialied");
         this.plushie!.update(data);
         break;
+      case "params":
+        break;
       default:
         console.error("unhandled message", key);
     }
   }
 }
 
-function panic(msg: string) {
+function panic(msg: string): void {
   throw msg;
 }

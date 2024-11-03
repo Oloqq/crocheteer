@@ -8,6 +8,7 @@ export class GuiData {
   paused: boolean = true;
   showEdges: boolean = true;
   getPattern: () => string;
+  params: crapi.Params = paramsThatInitializeDatGuiWithCorrectTypes;
 
   constructor(getPattern: () => string) {
     this.getPattern = getPattern;
@@ -41,7 +42,7 @@ export class GuiData {
   };
 }
 
-export function setupGui(
+export function initGui(
   display3d: Display,
   data: GuiData,
   world: World
@@ -65,5 +66,77 @@ export function setupGui(
       .onChange(data.showEdgesCallback);
   }
 
+  const params = gui.addFolder("Params");
+  {
+    const sendParams = () => {
+      comms.send(`setparams ${JSON.stringify(data.params)}`);
+    };
+
+    params.open();
+    const centroids = params.addFolder("Centroid stuffing");
+    centroids.open();
+    {
+      centroids
+        .add(data.params.centroids, "force", 0)
+        .name("Force")
+        .onChange(sendParams);
+      centroids
+        .add(data.params.centroids, "min_nodes_per_centroid", 0)
+        .name("Nodes per centroid")
+        .onChange(sendParams);
+      // removeSlider(
+      // centroids.add(p.centroids, "number", 0, 20, 1).onChange((val) => {
+      //   world.mainPlushie.setCentroidNum(val);
+      //   sendParams();
+      // });
+      // );
+    }
+
+    params
+      .add(data.params, "desired_stitch_distance")
+      .name("DSD")
+      .onChange(sendParams);
+    params.add(data.params, "floor").name("Floored").onChange(sendParams);
+    params
+      .add(data.params, "keep_root_at_origin")
+      .name("Rooted")
+      .onChange(sendParams);
+    params
+      .add(data.params, "single_loop_force", 0)
+      .name("SLF")
+      .onChange(sendParams);
+    // .domElement.setAttribute("title", "bruh"); // TODO add tooltips on hover
+    // Reversing time does not work in this simulation
+    params
+      .add(data.params, "timestep", 0.1, 1.7)
+      .name("Timestep")
+      .onChange(sendParams);
+    params
+      .add(data.params, "minimum_displacement")
+      .name("Min displacement")
+      .onChange(sendParams);
+  }
+
   return data;
 }
+
+const paramsThatInitializeDatGuiWithCorrectTypes: crapi.Params = {
+  centroids: {
+    force: 0.1,
+    min_nodes_per_centroid: 0,
+    number: 0,
+  },
+  desired_stitch_distance: 0.1, // decimal point here enables displaying decimal points later
+  floor: false,
+  gravity: 0.1,
+  keep_root_at_origin: false,
+  single_loop_force: 0.1,
+  timestep: 1.1,
+  minimum_displacement: 0.001,
+  initializer: "temp", // TODO enum
+  hook_leniency: "temp", // TODO enum
+  autostop: {
+    max_relaxing_iterations: 50,
+    acceptable_tension: 0.1,
+  },
+};

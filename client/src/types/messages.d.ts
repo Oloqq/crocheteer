@@ -2,6 +2,7 @@
 namespace crapi {
   type Point = [number, number, number];
   type EdgeTo = number;
+  type integer = number;
 
   interface Initialize {
     nodes: Nodes;
@@ -27,5 +28,23 @@ namespace crapi {
     points: Point[];
   }
 
-  interface Params {}
+  interface Params {
+    timestep: number;
+    floor: boolean;
+    gravity: number;
+    desired_stitch_distance: number;
+    centroids: {
+      number: integer;
+      force: number;
+      min_nodes_per_centroid: integer;
+    };
+    autostop: { acceptable_tension: number; max_relaxing_iterations: integer };
+    keep_root_at_origin: boolean;
+    single_loop_force: number;
+    initializer: string; // TODO enum
+    hook_leniency: string; // TODO enum
+    minimum_displacement: number;
+  }
+
+  interface CentroidParams {}
 }
