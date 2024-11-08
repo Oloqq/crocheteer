@@ -1,5 +1,5 @@
 # Intro
-Amongst many handcrafting hobbies, there is crocheting. Crocheting involves weaving a yarn stitch by stitch to create a piece of fabric. The craft is commonly confused with knitting, although the techniques are vastly different.
+Crocheting is a manual craft that involves weaving a yarn stitch by stitch to create a piece of fabric. The craft is commonly confused with knitting, although the techniques are vastly different.
 
 ![alt text](images/image-4.png)
 https://www.thesprucecrafts.com/differences-between-knitting-and-crochet-4077447
@@ -26,6 +26,7 @@ The goal of this project is to create a tool, that would let an artist visualize
 
 # Domain specific terminology
 > This is not a crochet guide. The terms presented have a broader meaning in the crocheting community, and the processes are more nuanced. This section aims to give just enough information to understand the algorithms described in further sections.
+> (link do jakiegos tutoriala)
 > working starts from a circle\
 > worked in rounds\
 > define basic stitches (sc, inc, dec)\
