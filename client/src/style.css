@@ -1,0 +1,90 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  position: relative; /* Establish a containing block for absolute positioning */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Three.js Canvas container */
+#main-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#left-panel {
+  position: absolute; /* Overlay on top of main content */
+  top: 0;
+  left: 0;
+  width: 300px; /* Default width */
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  z-index: 10; /* Ensure it's above the Three.js canvas */
+  min-width: 10px; /* Minimum width */
+  transition: none; /* Remove any transition for immediate resizing */
+}
+
+/* Panel Header */
+#panel-header {
+  background-color: #1a1a1a; /* Dark background for contrast */
+  padding: 10px; /* Adds padding around the panel */
+}
+
+#panel-header button {
+  background-color: #4e54c8;
+  /* #4e54c8,
+    #8f94fb */
+  color: #ffffff; /* White text for contrast */
+  padding: 12px 12px; /* Larger padding for clickability */
+  border: none; /* Remove default border */
+  border-radius: 6px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: all 0.3s ease; /* Smooth transition for effects */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow for depth */
+}
+
+#panel-header button:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+  background-color: #6f74e2;
+}
+
+#panel-header button:active {
+  background-color: #8f94fb;
+}
+
+/* Editor Container */
+#editor-container {
+  flex: 1;
+  overflow: hidden; /* Ensure smooth resizing */
+}
+
+/* Resizer Handle */
+#resizer {
+  position: absolute;
+  top: 0;
+  left: 300px; /* Align with the default width of the left panel */
+  width: 5px;
+  height: 100%;
+  cursor: ew-resize;
+  background-color: #ccc;
+  z-index: 15; /* Above the left panel */
+}
+
+#resizer:hover {
+  background-color: #aaa;
+}
+
+/* Adjust Resizer Position When Left Panel is Hidden */
+#left-panel.hidden + #resizer {
+  left: 0; /* Move resizer to the left edge */
+}

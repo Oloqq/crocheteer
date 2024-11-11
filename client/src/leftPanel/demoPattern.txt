@@ -1,0 +1,43 @@
+# This is a sample pattern, creating a mushroom.
+# Lines starting with '#' are comments.
+
+# Set amount of stuffing
+@centroids = 2
+
+# Start with a magic ring
+MR(6)
+
+# A round takes a single line of the file
+# It starts with round number ('R1:'),
+# followed by list of stitches ('6 inc')
+# and number of stitches produced in the round ('(12)')
+R1: 6 inc (12)
+
+# Round number and number of stitches produced are optional
+: 12 sc
+
+# Round repetition
+2: 12 sc (12)
+
+# 'mark' and 'goto' functions allow you to switch working position.
+# They take a label as an argument, so that you can mark several positions.
+# The label can't contain spaces.
+mark(cap_start)
+
+# 'BLO' and 'FLO' is another pair of functions that makes the hook work on Back Loop Only / Front Loop Only.
+: BLO, 6 dec (6)
+# The hook will automatically switch to working on both loops at the next round start.
+# You can also do this switch mid-round with function 'BL'.
+
+# Fasten off the stem
+FO
+
+# Go back to the cap, switch yarn color (RGB)
+goto(cap_start), color(255, 255, 0)
+: FLO, 12 inc (24)
+2: 24 sc (24)
+# 'subpatterns' consist of stitches inside brackets followed by 'x' and number of repetitions
+: [dec, sc] x 8 (18)
+: [dec, sc] x 6 (12)
+: 6 dec (6)
+FO
