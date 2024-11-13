@@ -28,6 +28,15 @@ export default class PlushieBody {
     }
   }
 
+  destroy() {
+    for (let sph of this.nodes) {
+      if (sph.geometry) sph.geometry.dispose();
+      if (sph.material) (sph.material as THREE.Material).dispose();
+      this.scene.remove(sph);
+    }
+    this.clearLinks();
+  }
+
   update(data: crapi.Update) {
     // const centroids = data.centroids.centroids;
     this.updateStitches(data.points);

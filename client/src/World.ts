@@ -22,6 +22,7 @@ export default class World {
     // FIXME use more descriptive names
     switch (key) {
       case "ini": // also handle ini2
+        this.plushie?.destroy();
         this.plushie = new PlushieBody(this.display, data, this.guiData);
         break;
       case "upd":
@@ -34,13 +35,13 @@ export default class World {
         this.guiData.updateDisplay();
         break;
       case "status":
-        console.info(`status: ${data}`)
+        console.info(`status: ${data}`);
         break;
       case "pattern_update": // TODO test
         this.guiData.setPattern(data);
         break;
       case "export": // TODO test
-        download(data, "plushie.json", "json")
+        download(data, "plushie.json", "json");
         break;
       // "relax ended" can be removed on the server side
       default:

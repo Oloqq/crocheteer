@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const visualizeButton = document.getElementById("visualize-button");
   visualizeButton?.addEventListener("click", () => {
-    const pattern = guiData.getPattern();
-    send(`pattern flow ${pattern}`);
+    send(`pattern flow ${guiData.getPattern()}`);
   });
 });
