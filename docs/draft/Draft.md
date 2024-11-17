@@ -1,4 +1,4 @@
-# Intro
+# 1. Introduction
 Crocheting is a manual craft that involves weaving a yarn stitch by stitch to create a piece of fabric. The craft is commonly confused with knitting, although the techniques are vastly different.
 
 ![alt text](images/image-4.png)
@@ -22,33 +22,27 @@ The person crocheting, works by following a *pattern* that describes the sequenc
 
 There are currently no tools that could help with designing such shapes. The closest thing is [Crochet Lathe](https://avtanski.net/projects/crochet/lathe/), however the tool is still limited by requiring axial symmetry.
 
+## 1.1 Objectives
+
 The goal of this project is to create a tool, that would let an artist visualize the plushie that their pattern produces before commiting hours into actually crocheting it.
 
-# Domain specific terminology
-> This is not a crochet guide. The terms presented have a broader meaning in the crocheting community, and the processes are more nuanced. This section aims to give just enough information to understand the algorithms described in further sections.
-> (link do jakiegos tutoriala)
-> working starts from a circle\
+## 1.2 Structure
+TODO
+
+# 2. Crocheting
+This section aims to give just enough information to understand the algorithms described in further sections. A curious reader may find more details about the process in dedicated guides. [guide1](https://www.tinycurl.co/how-to-amigurumi-crochet/#stitches).
+
+> working starts from a circle (MR/Ch)\
 > worked in rounds\
 > define basic stitches (sc, inc, dec)\
 > sharper corner are made with back loop only, front loop only (BLO, FLO)\
 > explain fasten off (FO)\
 > hook can be reinserted into a plushie (grzib is a good example)\
 > branches are created with chains and gotos\
-> sewing multiple parts together (not in scope)
 
 # Theory
 ## Pattern as a formal language
-> (paywall) Parsing Semi-structured Languages: A Crochet Pattern to Diagram Translation, https://www.springerprofessional.de/en/parsing-semi-structured-languages-a-crochet-pattern-to-diagram-t/25864374
-
-In order to process a crochet pattern, we need to express it using a formal language. Patterns shared in the community have equivalent overall structure, but do not follow a strict grammar.
-> list examples of differences?
-> https://whimsicalyarncreations.com/axolotl-free-pattern/
-> https://yarnsociety.com/patterns/celia-the-crab/
-> https://www.themaryjay.com/free-patterns/crochet-turtle-pattern
-
-This project shall define a domain specific language, *amigurumi crochet language (ACL)*, that should be easily understood by creators that can read a pattern found online. The language shall have a formal, context-free [grammar](..\src\flow\pest_parser\pat.pest), so a parser for it can be implemented.
-
-> provide a few examples
+[subdocument](./Formal%20language%20for%20amigurumi%20patterns.md)
 
 ## Simulation
 
