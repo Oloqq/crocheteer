@@ -18,4 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   visualizeButton?.addEventListener("click", () => {
     send(`pattern flow ${guiData.getPattern()}`);
   });
+
+  const exportButton = document.getElementById("export-button");
+  exportButton?.addEventListener("click", () => {
+    send(`export-pointcloud`);
+  });
 });
