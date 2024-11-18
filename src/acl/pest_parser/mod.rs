@@ -8,7 +8,7 @@ use pest_derive::Parser;
 use std::collections::HashMap;
 
 #[derive(Parser)]
-#[grammar = "acl/pest_parser/pat.pest"]
+#[grammar = "acl/pest_parser/ACL.pest"]
 struct PatParser;
 
 pub struct Pattern {
