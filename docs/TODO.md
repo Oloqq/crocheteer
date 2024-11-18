@@ -1,18 +1,36 @@
 # Next
+- centroids
+  - display centroids in new gui
+  - toggle centroids visibility
+
+# Then
+
+- refactor communications
+  - make sure the simulator loads parameters from pattern
+
+- implement skeleton stuffing
 
 # Backlog
-- update documentation relating to hook and plushie
-- allow color before starter
-- foam proves the coloring is wrong now
-- R*Tree project uses https://github.com/sebcrozet/kiss3d, which seems nice for a visualization client
-- display requested vs actual centroids in the gui
-- jump the creation to root when rooted changes values from false to true
-- bugs:
-  - `rooted` fully disables gravity
-  - timestep has no effect
-  - there is no real reason why plushie should be unable to recover from this ![](images/2024-04-29-22-22-27.png)
 
-- adding some inertia/weight to a point after it is moved by a user would make nudging actually useful (possible with mutable Constraints)
+
+- ACL refactors
+  - allow color before starter
+  - metadata -> parameters
+  - operations -> actions
+
+- jump the creation to root when rooted changes values from false to true
+  - verify parameters displayed in the gui all make sense
+
+
+# After-inzynierka
+
+- deployment
+  - make rust serve the index.html
+    - provide a binary on github
+  - heroku https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust
+  - should be $5 per month
+
+- R*Tree project uses https://github.com/sebcrozet/kiss3d, which seems nice for a visualization client
 
 - rewrite token_args macro as procedural
 
@@ -33,13 +51,13 @@
 
 - frontend
   - highlight points when cursor is on the text area
-  - display line number in the text area + mby auto counting of rounds and stitch numbers
-  - configure width and color of the edges
   - display a closed shape (mesh)
-  - adjust the GUI to the refactor
 
-- deployment
-  - make rust serve the index.html
-    - provide a binary on github
-  - heroku https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust
-  - should be $5 per month
+- bugs:
+  - `rooted` fully disables gravity
+  - timestep has no effect
+  - there is no real reason why plushie should be unable to recover from this ![](images/2024-04-29-22-22-27.png)
+
+
+- adding some inertia/weight to a point after it is moved by a user would make nudging actually useful (possible with mutable Constraints)
+  - need to reenable nudging first
