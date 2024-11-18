@@ -11,7 +11,7 @@ use self::working_stitch::Stitch;
 use self::HookError::*;
 use super::hook_result::{Edges, HookResult};
 use crate::{
-    flow::{
+    acl::{
         actions::{Action, Label},
         Flow,
     },

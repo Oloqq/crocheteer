@@ -1,6 +1,6 @@
 use super::{errors::*, CurrentLoop};
 use super::{Pattern, Rule};
-use crate::flow::actions::Action;
+use crate::acl::actions::Action;
 use pest::iterators::{Pair, Pairs};
 
 impl Pattern {

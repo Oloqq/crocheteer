@@ -2,9 +2,9 @@
 
 use super::{Params, Plushie};
 use crate::common::*;
-use crate::flow::actions::Action;
-use crate::flow::ergoflow::ErgoFlow;
-use crate::flow::simple_flow::SimpleFlow;
+use crate::acl::actions::Action;
+use crate::acl::ergoflow::ErgoFlow;
+use crate::acl::simple_flow::SimpleFlow;
 use Action::*;
 
 pub fn vase_simple_flow() -> Plushie {
@@ -21,7 +21,7 @@ pub fn vase_simple_flow() -> Plushie {
 }
 
 pub fn pillar_simple_flow() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
@@ -37,7 +37,7 @@ pub fn pillar_simple_flow() -> Plushie {
 }
 
 pub fn pillar_blo() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
@@ -61,7 +61,7 @@ pub fn pillar_blo() -> Plushie {
 }
 
 pub fn hat() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut actions: Vec<Action> = vec![Ch(12)];
@@ -77,7 +77,7 @@ pub fn hat() -> Plushie {
 }
 
 pub fn flailer() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut actions: Vec<Action> = vec![MR(6)];
@@ -94,7 +94,7 @@ pub fn flailer() -> Plushie {
 
 pub fn fatflailer() -> Plushie {
     use crate::common::colors::*;
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut flow = ErgoFlow::new();
@@ -108,7 +108,7 @@ pub fn fatflailer() -> Plushie {
 }
 
 pub fn grzib() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut actions: Vec<Action> = vec![MR(6)];
@@ -139,7 +139,7 @@ pub fn grzib() -> Plushie {
 }
 
 pub fn ergogrzib() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut flow = ErgoFlow::new();
@@ -157,7 +157,7 @@ pub fn ergogrzib() -> Plushie {
 }
 
 pub fn ergogrzob() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut flow = ErgoFlow::new();
@@ -175,7 +175,7 @@ pub fn ergogrzob() -> Plushie {
 }
 
 pub fn lollipop() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut actions: Vec<Action> = vec![MR(6)];
@@ -211,7 +211,7 @@ pub fn lollipop() -> Plushie {
 }
 
 pub fn pillar() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut flow = ErgoFlow::new();
@@ -223,7 +223,7 @@ pub fn pillar() -> Plushie {
 }
 
 pub fn disk() -> Plushie {
-    use crate::flow::actions::Action;
+    use crate::acl::actions::Action;
     use Action::*;
 
     let mut flow = ErgoFlow::new();

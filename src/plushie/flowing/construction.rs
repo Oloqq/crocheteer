@@ -8,9 +8,9 @@ use super::centroid::Centroids;
 use super::nodes::Nodes;
 use super::Plushie;
 use super::{Initializer, Params};
+use crate::acl::pest_parser::Pattern;
+use crate::acl::Flow;
 use crate::common::*;
-use crate::flow::pest_parser::Pattern;
-use crate::flow::Flow;
 use colors::Color;
 use std::collections::HashMap;
 

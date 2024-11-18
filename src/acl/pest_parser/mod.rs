@@ -2,13 +2,13 @@ pub mod errors;
 mod parsing;
 
 pub use self::errors::Error;
-use crate::flow::{actions::Action, Flow};
+use crate::acl::{actions::Action, Flow};
 use pest::Parser;
 use pest_derive::Parser;
 use std::collections::HashMap;
 
 #[derive(Parser)]
-#[grammar = "flow/pest_parser/pat.pest"]
+#[grammar = "acl/pest_parser/pat.pest"]
 struct PatParser;
 
 pub struct Pattern {
