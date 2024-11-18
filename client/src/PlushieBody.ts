@@ -4,9 +4,19 @@ import * as create from "./utils/create";
 import * as THREE from "three";
 import { GuiData } from "./gui";
 
+// const peculiarityColors = {
+//   "normal": 0x00ff00,
+//   "centroid": 0xffa500,
+//   "Tip": 0x0000ff,
+//   "Root": 0x0000ff,
+// }
+
+const centroidColor: crapi.RGB = [255, 165, 0];
+
 export default class PlushieBody {
   scene: THREE.Scene;
   nodes: Mesh[];
+  centroids: Mesh[];
   links: Mesh[] = [];
   edges: number[][];
   nodeColors: crapi.RGB[];
@@ -22,6 +32,14 @@ export default class PlushieBody {
       let newSphere = create.sphere(this.scene, point, 0.1, this.nodeColor(i));
       this.nodes.push(newSphere);
     }
+
+    this.centroids = [];
+    for (let centroidPoint of data.centroids.centroids) {
+      this.centroids.push(
+        create.sphere(this.scene, centroidPoint, 0.3, centroidColor)
+      );
+    }
+
     this.edges = data.edges;
     if (guiData.showEdges) {
       this.drawLinks();
@@ -34,23 +52,44 @@ export default class PlushieBody {
       if (sph.material) (sph.material as THREE.Material).dispose();
       this.scene.remove(sph);
     }
+    for (let sph of this.centroids) {
+      if (sph.geometry) sph.geometry.dispose();
+      if (sph.material) (sph.material as THREE.Material).dispose();
+      this.scene.remove(sph);
+    }
     this.clearLinks();
   }
 
   update(data: crapi.Update) {
-    // const centroids = data.centroids.centroids;
-    this.updateStitches(data.points);
+    this.updatePoints(this.nodes, data.points);
+    this.updateCentroids(data.centroids.centroids);
   }
 
-  updateStitches(stitchPositions: crapi.Point[]) {
-    if (stitchPositions.length < this.nodes.length) {
+  updateCentroids(centroids: crapi.Point[]) {
+    while (this.centroids.length < centroids.length) {
+      this.centroids.push(
+        create.sphere(this.scene, [0, 0, 0], 0.3, centroidColor)
+      );
+    }
+    while (this.centroids.length > centroids.length) {
+      const removed = this.centroids.pop()!;
+      if (removed.geometry) removed.geometry.dispose();
+      if (removed.material) (removed.material as THREE.Material).dispose();
+      this.scene.remove(removed);
+    }
+
+    this.updatePoints(this.centroids, centroids);
+  }
+
+  updatePoints(points: Mesh[], newPositions: crapi.Point[]) {
+    if (newPositions.length != points.length) {
       console.error("Position data got corrupted");
     }
 
-    for (let i = 0; i < stitchPositions.length; i++) {
-      this.nodes[i].position.x = stitchPositions[i][0];
-      this.nodes[i].position.y = stitchPositions[i][1];
-      this.nodes[i].position.z = stitchPositions[i][2];
+    for (let i = 0; i < newPositions.length; i++) {
+      points[i].position.x = newPositions[i][0];
+      points[i].position.y = newPositions[i][1];
+      points[i].position.z = newPositions[i][2];
     }
   }
 
@@ -92,12 +131,11 @@ export default class PlushieBody {
     return this.nodeColors[index];
   }
 
-  linkColor(_from: any, to: any) {
+  linkColor(_from: any, to: any): crapi.RGB {
     if (this.displayMode == "debug") {
-      return 0x343330;
+      return [52, 51, 48];
     }
 
-    let [r, g, b] = this.nodeColors[to];
-    return `rgb(${r}, ${g}, ${b})`;
+    return this.nodeColors[to];
   }
 }

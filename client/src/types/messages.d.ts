@@ -21,12 +21,9 @@ namespace crapi {
     colors: RGB[];
   }
 
-  // FIXME later so legacy client can still work for a while
   interface CentroidsWrapper {
-    centroids: Centroids;
+    centroids: Point[]; // TODO call this points, CentroidsWrapper -> Centroids
   }
-
-  interface Centroids { }
 
   interface Update {
     centroids: CentroidsWrapper;
@@ -51,5 +48,5 @@ namespace crapi {
     minimum_displacement: number;
   }
 
-  interface CentroidParams { }
+  interface CentroidParams {}
 }

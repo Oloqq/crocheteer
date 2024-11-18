@@ -24,6 +24,9 @@ export default class World {
       case "ini": // also handle ini2
         this.plushie?.destroy();
         this.plushie = new PlushieBody(this.display, data, this.guiData);
+        const centroidNum = data["centroids"]["centroids"].length;
+        this.guiData.params.centroids.number = centroidNum;
+        this.guiData.updateDisplay();
         break;
       case "upd":
         this.plushie ?? panic("Plushie is not initialied");
