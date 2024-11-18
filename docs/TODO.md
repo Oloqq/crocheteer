@@ -6,10 +6,14 @@
 
 - implement skeleton stuffing
 
-# Backlog
+# Backlog (need to do for thesis)
 
+- debug mode that shows peculiarities
+
+- error reporting in the new client
 
 - ACL refactors
+  - currently, metadata in ACL cannot save arbitrary strings or floats, just read until end of line there
   - allow color before starter
   - metadata -> parameters
   - operations -> actions

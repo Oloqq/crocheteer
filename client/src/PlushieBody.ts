@@ -34,7 +34,7 @@ export default class PlushieBody {
     }
 
     this.centroids = [];
-    for (let centroidPoint of data.centroids.centroids) {
+    for (let centroidPoint of data.centroids.points) {
       this.centroids.push(
         create.sphere(this.scene, centroidPoint, 0.3, centroidColor)
       );
@@ -62,7 +62,7 @@ export default class PlushieBody {
 
   update(data: crapi.Update) {
     this.updatePoints(this.nodes, data.points);
-    this.updateCentroids(data.centroids.centroids);
+    this.updateCentroids(data.centroids.points);
   }
 
   updateCentroids(centroids: crapi.Point[]) {

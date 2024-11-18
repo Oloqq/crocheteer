@@ -8,7 +8,7 @@ namespace crapi {
   interface Initialize {
     nodes: Nodes;
     edges: EdgeTo[][];
-    centroids: CentroidsWrapper;
+    centroids: Centroids;
   }
 
   type Peculiarities = {
@@ -21,12 +21,12 @@ namespace crapi {
     colors: RGB[];
   }
 
-  interface CentroidsWrapper {
-    centroids: Point[]; // TODO call this points, CentroidsWrapper -> Centroids
+  interface Centroids {
+    points: Point[];
   }
 
   interface Update {
-    centroids: CentroidsWrapper;
+    centroids: Centroids;
     points: Point[];
   }
 

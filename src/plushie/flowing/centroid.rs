@@ -9,8 +9,7 @@ use serde_derive::Serialize;
 
 #[derive(Clone, Serialize)]
 pub struct Centroids {
-    // keep in mind that this field name is important in the frontend in current communication
-    centroids: Vec<Point>,
+    points: Vec<Point>,
 }
 
 impl Centroids {
@@ -22,18 +21,18 @@ impl Centroids {
         let centroids = (0..number)
             .map(|i| Point::new(0.0, floor + spacing * i as f32, 0.0))
             .collect();
-        Self { centroids }
+        Self { points: centroids }
     }
 
     fn adjust_centroid_number(&mut self, params: &CentroidParams, nodes: &Nodes) {
-        let has_too_little = self.centroids.len() < params.number;
-        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * (self.centroids.len());
+        let has_too_little = self.points.len() < params.number;
+        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * (self.points.len());
 
         if has_too_little {
             if is_ready_to_add {
-                let new = if self.centroids.len() >= 2 {
-                    let c0 = self.centroids[0];
-                    let c1 = self.centroids[1];
+                let new = if self.points.len() >= 2 {
+                    let c0 = self.points[0];
+                    let c1 = self.points[1];
                     Point::from((c0.coords + c1.coords) / 2.0)
                 } else {
                     nodes
@@ -42,23 +41,23 @@ impl Centroids {
                         .expect("Centroid logic running on empty nodes?")
                         .clone()
                 };
-                self.centroids.push(new);
+                self.points.push(new);
             }
         } else {
-            while self.centroids.len() > params.number {
-                self.centroids.pop();
+            while self.points.len() > params.number {
+                self.points.pop();
             }
         }
-        sanity!(self.centroids.assert_no_nan("after adjusting number"));
+        sanity!(self.points.assert_no_nan("after adjusting number"));
     }
 
     pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
         self.adjust_centroid_number(params, nodes);
 
-        if !self.centroids.is_empty() {
+        if !self.points.is_empty() {
             let centroid2points =
-                push_and_map(nodes.as_vec(), &self.centroids, params.force, displacement);
-            recalculate_centroids(nodes.as_vec(), &mut self.centroids, centroid2points);
+                push_and_map(nodes.as_vec(), &self.points, params.force, displacement);
+            recalculate_centroids(nodes.as_vec(), &mut self.points, centroid2points);
         }
     }
 }

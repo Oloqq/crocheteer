@@ -22,9 +22,10 @@ export default class World {
     // FIXME use more descriptive names
     switch (key) {
       case "ini": // also handle ini2
+        const dataInit = data as crapi.Initialize;
         this.plushie?.destroy();
-        this.plushie = new PlushieBody(this.display, data, this.guiData);
-        const centroidNum = data["centroids"]["centroids"].length;
+        this.plushie = new PlushieBody(this.display, dataInit, this.guiData);
+        const centroidNum = dataInit.centroids.points.length;
         this.guiData.params.centroids.number = centroidNum;
         this.guiData.updateDisplay();
         break;
