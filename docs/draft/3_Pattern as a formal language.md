@@ -44,7 +44,7 @@ Sometimes a whole round needs to be repeated several times, which is denoted wit
 R1-R2: 6sc
 ```
 
-While a user is developing their pattern, it would be a nuisance to keep correcting the changing round numbers. Therefore, round numbering in ACL is optional, and round repetition can be set by just writing an integer before the colon.
+While a user is developing their pattern, it would be a nuisance to keep correcting the changing round numbers. Therefore, round numbering in ACL is optional, and round repetition can be set by just putting an integer before the colon.
 ```
 : 6 sc
 2: 6 sc
