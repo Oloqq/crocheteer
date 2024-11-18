@@ -9,7 +9,7 @@ Crocheting makes it easy to create 3-dimensional shapes, and the pieces are gene
 > crochet as a tool to visualize hyperbolic geometry
 > https://www.cabinetmagazine.org/issues/16/wertheim_henderson_taimina.php
 
-This project puts it's focus on using crocheting to create 3-dimentional, stuffed shapes, an art called [amigurumi](https://en.wikipedia.org/wiki/Amigurumi).
+This project focuses on using crocheting to create 3-dimentional, stuffed shapes, an art called [amigurumi](https://en.wikipedia.org/wiki/Amigurumi).
 
 The person crocheting, works by following a *pattern* that describes the sequence of stitches necessary to achieve a certain shape. Designing such a pattern is trivial for axially symmetrical shapes, but otherwise requires much trial and error.
 
@@ -20,7 +20,7 @@ The person crocheting, works by following a *pattern* that describes the sequenc
 > https://theamigurumi.com/wp-content/uploads/2024/01/Crochet-Dinosaur-Trex-Amigurumi.jpg
 >
 
-There are currently no tools that could help with designing such shapes. The closest thing is [Crochet Lathe](https://avtanski.net/projects/crochet/lathe/), however the tool is still limited by requiring axial symmetry.
+There are currently no tools that could help with designing such shapes. The closest thing is [Crochet Lathe](https://avtanski.net/projects/crochet/lathe/), however the tool is only applicable to simple, axially symmetrical shapes.
 
 ## 1.1 Objectives
 
@@ -41,10 +41,21 @@ This section aims to give just enough information to understand the algorithms d
 > branches are created with chains and gotos\
 
 # Theory
+## Overview
+
 ## Pattern as a formal language
 [subdocument](./Formal%20language%20for%20amigurumi%20patterns.md)
 
-## Simulation
+## Representing connected stitches as a graph
+
+## Making the graph spatial
+
+## Relaxing the graph
+### Stich-to-stitch force
+
+### Centroid stuffing
+
+### Skeleton-based stuffing
 
 # Implementation
 ## Backend
