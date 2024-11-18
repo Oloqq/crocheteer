@@ -3,7 +3,7 @@
 To process a crochet pattern, we need to express it using a formal language.
  <!-- Maybe we don't and
  Parsing Semi-structured Languages: A Crochet Pattern to Diagram Translation, https://www.springerprofessional.de/en/parsing-semi-structured-languages-a-crochet-pattern-to-diagram-t/25864374
- could show that, but it's behind a paywall -->
+ could show that, but I gotta find non-paywall version -->
 
 Patterns shared in the community have equivalent overall structure, but do not follow a strict grammar. For example, repetition of stitch *Sc* 7 times could be seen written as "7 SC", "[SC] x 7", "(sc) 7 times" and more.
 <!-- if this needs a source, it would have to be random patterns online
@@ -96,7 +96,7 @@ Using operations `BLO` and `FLO`, the default behavior can be altered so that ne
 
 #### Mark and goto
 Operations `mark` and `goto` are used in pairs to mark a working position, and return there later. Both operations require an identifier for the position.
-For example, following code closes a piece by working on the back-loop, fastens-off, and the returns to continue working from the front loop.
+For example, following code closes a piece by working on the back-loop, fastens-off, and then returns to continue working from the front loop.
 
 ```
 ...
@@ -160,6 +160,7 @@ FO
 
 ## Implementation
 ACL parser and lexer are generated using [pest](https://pest.rs). Pest uses a [custom syntax](https://pest.rs/book/) for grammar definition. The following code defines ACL using that syntax.
+<!-- TODO: BNF notation -->
 ```
 program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI}
 
