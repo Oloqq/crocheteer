@@ -12,8 +12,8 @@ export default class World {
   guiData: GuiData;
   // ghosts: GhostRenderer[];
 
-  constructor(url: string, display: Display, guiData: GuiData) {
-    this.ws = connect(url, this);
+  constructor(url: string, display: Display, guiData: GuiData, onconnect: any) {
+    this.ws = connect(url, this, onconnect);
     this.display = display;
     this.guiData = guiData;
   }

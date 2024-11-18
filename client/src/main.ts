@@ -11,13 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
     () => editor.getValue(),
     (pattern: string) => editor.setValue(pattern)
   );
-  let world = new World("ws://127.0.0.1:8080", display3d, guiData);
+
+  const sendPattern = () => {
+    send(`pattern flow ${guiData.getPattern()}`);
+  };
+
+  let world = new World("ws://127.0.0.1:8080", display3d, guiData, sendPattern);
   initGui(display3d, guiData, world);
 
   const visualizeButton = document.getElementById("visualize-button");
-  visualizeButton?.addEventListener("click", () => {
-    send(`pattern flow ${guiData.getPattern()}`);
-  });
+  visualizeButton?.addEventListener("click", sendPattern);
 
   const exportButton = document.getElementById("export-button");
   exportButton?.addEventListener("click", () => {

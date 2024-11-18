@@ -2,12 +2,15 @@ import World from "./World";
 
 let ws: WebSocket | undefined = undefined;
 
-export function connect(url: string, scene: World): WebSocket {
+export function connect(url: string, scene: World, onconnect: any): WebSocket {
   ws = new WebSocket(url);
 
   ws.onopen = function (_event) {
     console.log("Connected to WebSocket server");
-    send("getparams");
+    // send("getparams");
+    if (onconnect) {
+      onconnect();
+    }
   };
 
   ws.onmessage = function (event) {

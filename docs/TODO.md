@@ -1,12 +1,8 @@
 # Next
-- centroids
-  - display centroids in new gui
-  - toggle centroids visibility
-
-# Then
-
 - refactor communications
   - make sure the simulator loads parameters from pattern
+
+# Then
 
 - implement skeleton stuffing
 
@@ -21,6 +17,7 @@
 - jump the creation to root when rooted changes values from false to true
   - verify parameters displayed in the gui all make sense
 
+- toggle centroids visibility
 
 # After-inzynierka
 
