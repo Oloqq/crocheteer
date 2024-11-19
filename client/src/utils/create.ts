@@ -37,3 +37,64 @@ export function link(
 
   return mesh;
 }
+
+export function arrow(
+  scene: THREE.Scene,
+  origin: any,
+  direction: any,
+  length: any,
+  color: any,
+  shaftRadius = 0.05,
+  headLength = 0.2,
+  headRadius = 0.1
+) {
+  const arrowGroup = new THREE.Group();
+
+  // Normalize the direction
+  const dir = direction.clone().normalize();
+
+  // Calculate shaft length
+  const shaftLength = length - headLength;
+
+  // Create the shaft geometry and material
+  const shaftGeometry = new THREE.CylinderGeometry(
+    shaftRadius, // Top radius
+    shaftRadius, // Bottom radius
+    shaftLength,
+    12 // Radial segments for smoother appearance
+  );
+  const shaftMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255),
+  });
+  const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
+
+  // Position the shaft
+  shaft.position.copy(origin).add(dir.clone().multiplyScalar(shaftLength / 2));
+
+  // Align the shaft with the direction
+  shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+
+  // Create the head geometry and material
+  const headGeometry = new THREE.ConeGeometry(headRadius, headLength, 12);
+  const headMaterial = new THREE.MeshBasicMaterial({
+    color: shaftMaterial.color,
+  });
+  const head = new THREE.Mesh(headGeometry, headMaterial);
+
+  // Position the head
+  head.position
+    .copy(origin)
+    .add(dir.clone().multiplyScalar(shaftLength + headLength / 2));
+
+  // Align the head with the direction
+  head.quaternion.copy(shaft.quaternion);
+
+  // Add shaft and head to the group
+  arrowGroup.add(shaft);
+  arrowGroup.add(head);
+
+  // Add the group to the scene
+  scene.add(arrowGroup);
+
+  return arrowGroup;
+}

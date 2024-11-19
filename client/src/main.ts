@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     send(`export-pointcloud`);
   });
 
+  document.getElementById("normals-button")!.addEventListener("click", () => {
+    send(`calculate-normals`);
+  });
+
   setupStatusTooltip(guiData);
 });
 

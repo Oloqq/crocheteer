@@ -12,6 +12,7 @@ import { GuiData } from "./gui";
 // }
 
 const centroidColor: crapi.RGB = [255, 165, 0];
+const normalsColor: crapi.RGB = [59, 200, 0];
 
 export default class PlushieBody {
   scene: THREE.Scene;
@@ -22,6 +23,8 @@ export default class PlushieBody {
   nodeColors: crapi.RGB[];
   peculiarities: crapi.Peculiarities;
   displayMode: "normal" | "debug" = "normal";
+
+  disposeAtStep: Mesh[] = [];
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -137,5 +140,34 @@ export default class PlushieBody {
     }
 
     return this.nodeColors[to];
+  }
+
+  displayNormals(data: crapi.Point[]) {
+    // if (data.length != this.nodes.length) {
+    //   console.error(`Points and normals must have the same length`);
+    //   return;
+    // }
+
+    for (let i = 0; i < data.length && i < this.nodes.length; i++) {
+      const nodePos = this.nodes[i].position;
+      const normal = new THREE.Vector3(data[i][0], data[i][1], data[i][2]);
+      const arrowLength = normal.length();
+
+      const shaftRadius = 0.05 * arrowLength;
+      const headLength = 0.2 * arrowLength;
+      const headRadius = 0.1 * arrowLength;
+
+      let arrow = create.arrow(
+        this.scene,
+        nodePos,
+        normal,
+        arrowLength,
+        normalsColor,
+        shaftRadius,
+        headLength,
+        headRadius
+      );
+      // this.disposeAtStep.push(arrow);
+    }
   }
 }

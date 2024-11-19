@@ -20,6 +20,8 @@ pub trait PlushieTrait: Send + 'static {
     /// Overwrite params
     fn set_params(&mut self, params: Params);
 
+    fn get_points(&self) -> &Vec<Point>;
+
     // JSONs for frontend communication
     fn nodes_to_json(&self) -> JSON;
     fn centroids_to_json(&self) -> JSON;

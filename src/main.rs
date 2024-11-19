@@ -2,6 +2,7 @@ mod acl;
 mod args;
 mod common;
 mod plushie;
+mod skeletonization;
 mod ws_sim;
 
 extern crate nalgebra as na;

@@ -70,4 +70,8 @@ impl PlushieTrait for Plushie {
     fn clonebox(&self) -> Box<dyn PlushieTrait> {
         Box::new(Clone::clone(self))
     }
+
+    fn get_points(&self) -> &Vec<Point> {
+        &self.nodes.as_vec()
+    }
 }

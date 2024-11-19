@@ -2,7 +2,7 @@ use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
 use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
-use crate::{common::*, token_args};
+use crate::{common::*, skeletonization, token_args};
 
 use std::fs;
 use std::sync::{Arc, Mutex};
@@ -153,6 +153,12 @@ impl PlushieSimulation {
                 self.plushie = Box::new(plushie);
                 self.controls.need_init = true;
                 self.send("status", "loaded pointcloud");
+            }
+            "calculate-normals" => {
+                let normals =
+                    skeletonization::local_surface_normals_per_point(self.plushie.get_points());
+
+                self.send("normals", serde_json::to_string(&normals).unwrap().as_str());
             }
             _ => log::error!("Unexpected msg: {msg}"),
         };
