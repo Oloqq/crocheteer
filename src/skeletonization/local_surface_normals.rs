@@ -68,7 +68,6 @@ fn call_cloud_compare(_input_filename: &str) -> String {
 
 fn read_normals(output_filename: &str) -> Vec<V> {
     let reader = pcd_rs::DynReader::open(output_filename).expect("cloudcompare result to exist");
-    println!("{:?}", reader.meta().field_defs);
 
     reader
         .map(|record| {

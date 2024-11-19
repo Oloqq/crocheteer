@@ -16,7 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
     send(`pattern flow ${guiData.getPattern()}`);
   };
 
-  let world = new World("ws://127.0.0.1:8080", display3d, guiData, sendPattern);
+  const syncPatternAndParams = () => {
+    send("getparams");
+    sendPattern();
+  };
+
+  let world = new World(
+    "ws://127.0.0.1:8080",
+    display3d,
+    guiData,
+    syncPatternAndParams
+  );
   initGui(display3d, guiData, world);
 
   const visualizeButton = document.getElementById("visualize-button")!;

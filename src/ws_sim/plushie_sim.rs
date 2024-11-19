@@ -125,11 +125,12 @@ impl PlushieSimulation {
                     RunState::Running => RunState::RunningFor(1),
                 }
             }
-            "stuffing" => log::warn!("this should be removed from the frontend"),
             "setparams" => {
                 let serialized = tokens.get(1)?;
-                let deserd = serde_json::from_str(serialized)
-                    .map_err(|_| super::tokens::Error::CantParseParams)?;
+                let deserd = serde_json::from_str(serialized).map_err(|e| {
+                    log::error!("{e}");
+                    super::tokens::Error::CantParseParams
+                })?;
                 self.plushie.set_params(deserd);
             }
             "getparams" => {
@@ -203,7 +204,7 @@ impl Simulation for PlushieSimulation {
     fn react(&mut self, msg: &str) {
         match self.react_internal(msg) {
             Ok(_) => (),
-            Err(e) => log::warn!("Message parsing error: {e:?} on message: {msg}"),
+            Err(e) => log::error!("Message parsing error: {e:?} on message: {msg}"),
         };
     }
 

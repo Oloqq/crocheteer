@@ -54,6 +54,7 @@ pub struct CentroidParams {
 pub enum Initializer {
     /// Start with a few stitches, and build the plushie while simulation is running.
     OneByOne(OneByOneParams),
+    /// Start with points arranged roughly in the shape of a cylinder
     Cylinder,
 }
 
@@ -86,19 +87,9 @@ impl Params {
         }
     }
 
-    #[allow(unused)]
-    pub fn rooted_floating() -> Self {
-        const THIS_DEFAULT_IS_TRASH: f32 = 0.02;
-        Self {
-            keep_root_at_origin: true,
-            ..Self::unconstrained_floating()
-        }
-    }
-
     pub fn floored() -> Self {
         Self {
             floor: true,
-            gravity: 5e-4,
             keep_root_at_origin: true,
             ..Self::unconstrained_floating()
         }

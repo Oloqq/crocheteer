@@ -98,7 +98,6 @@ export function initGui(
       centroids
         .add(data.params.centroids, "number", 0, 20, 1)
         .onChange((_val) => {
-          // world.plushie.setCentroidNum(val);
           sendParams();
         });
       // );
@@ -145,8 +144,8 @@ const paramsThatInitializeDatGuiWithCorrectTypes: crapi.Params = {
   single_loop_force: 0.1,
   timestep: 1.1,
   minimum_displacement: 0.001,
-  initializer: "temp", // TODO enum
-  hook_leniency: "temp", // TODO enum
+  initializer: "Cylinder",
+  hook_leniency: "NoMercy",
   autostop: {
     max_relaxing_iterations: 50,
     acceptable_tension: 0.1,

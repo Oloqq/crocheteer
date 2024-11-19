@@ -94,8 +94,7 @@ fn main() {
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
                 11 => {
-                    let mut plushie = examples::ergogrzob();
-                    plushie.params = params::handpicked::grzob();
+                    let plushie = examples::pillar();
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
