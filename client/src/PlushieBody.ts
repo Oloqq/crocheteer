@@ -24,7 +24,7 @@ export default class PlushieBody {
   peculiarities: crapi.Peculiarities;
   displayMode: "normal" | "debug" = "normal";
 
-  disposeAtStep: Mesh[] = [];
+  disposeAtStep: THREE.Group[] = [];
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -63,7 +63,31 @@ export default class PlushieBody {
     this.clearLinks();
   }
 
+  disposeGarbage() {
+    for (let garbage of this.disposeAtStep) {
+      garbage.traverse((protochild) => {
+        // I don't have time for retroactively designed type systems
+        let child = protochild as any;
+        if (child.isMesh) {
+          if (child.geometry) {
+            child.geometry.dispose();
+          }
+
+          if (child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach((material: any) => material.dispose());
+            } else {
+              child.material.dispose();
+            }
+          }
+        }
+      });
+      this.scene.remove(garbage);
+    }
+  }
+
   update(data: crapi.Update) {
+    this.disposeGarbage();
     this.updatePoints(this.nodes, data.points);
     this.updateCentroids(data.centroids.points);
   }
@@ -167,7 +191,7 @@ export default class PlushieBody {
         headLength,
         headRadius
       );
-      // this.disposeAtStep.push(arrow);
+      this.disposeAtStep.push(arrow);
     }
   }
 }
