@@ -33,7 +33,7 @@ export default class World {
         break;
       case "params":
         const RECURSIVE = true;
-        jq.extend(RECURSIVE, this.guiData.params, JSON.parse(data)); // FIXME shouldn't need json parse here
+        jq.extend(RECURSIVE, this.guiData.params, JSON.parse(data));
         this.guiData.updateDisplay();
         break;
       case "status":
