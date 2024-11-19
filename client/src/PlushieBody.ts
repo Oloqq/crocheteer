@@ -12,7 +12,7 @@ import { GuiData } from "./gui";
 // }
 
 const centroidColor: crapi.RGB = [255, 165, 0];
-const normalsColor: crapi.RGB = [59, 200, 0];
+const normalsColor: crapi.RGB = [255, 0, 0];
 
 export default class PlushieBody {
   scene: THREE.Scene;

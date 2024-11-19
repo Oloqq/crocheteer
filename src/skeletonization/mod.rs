@@ -1,5 +1,3 @@
-use crate::common::Point;
+mod local_surface_normals;
 
-pub fn local_surface_normals_per_point(_points: &Vec<Point>) -> Vec<Point> {
-    vec![Point::new(1.0, 0.0, 0.0)]
-}
+pub use local_surface_normals::local_surface_normals_per_point;
