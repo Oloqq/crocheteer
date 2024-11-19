@@ -15,8 +15,8 @@ export function connect(url: string, scene: World, onconnect: any): WebSocket {
 
   ws.onmessage = function (event) {
     let dict = JSON.parse(event.data);
-    console.debug(`received (${dict["key"]})`, dict["dat"]);
-    scene.parseMessage(dict["key"], dict["dat"]);
+    console.debug(`received (${dict["key"]})`, dict["data"]);
+    scene.parseMessage(dict["key"], dict["data"]);
   };
 
   ws.onerror = function (error) {

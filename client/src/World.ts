@@ -10,7 +10,6 @@ export default class World {
   display: Display;
   plushie: PlushieBody | undefined;
   guiData: GuiData;
-  // ghosts: GhostRenderer[];
 
   constructor(url: string, display: Display, guiData: GuiData, onconnect: any) {
     this.ws = connect(url, this, onconnect);
@@ -19,9 +18,8 @@ export default class World {
   }
 
   parseMessage(key: string, data: any) {
-    // FIXME use more descriptive names
     switch (key) {
-      case "ini": // also handle ini2
+      case "initialize":
         const dataInit = data as crapi.Initialize;
         this.plushie?.destroy();
         this.plushie = new PlushieBody(this.display, dataInit, this.guiData);
@@ -29,7 +27,7 @@ export default class World {
         this.guiData.params.centroids.number = centroidNum;
         this.guiData.updateDisplay();
         break;
-      case "upd":
+      case "update":
         this.plushie ?? panic("Plushie is not initialied");
         this.plushie!.update(data);
         break;
@@ -40,14 +38,19 @@ export default class World {
         break;
       case "status":
         console.info(`status: ${data}`);
+        this.guiData.statusMessage = data;
+        const statusButton = document.getElementById("status-box")!;
+        if (this.guiData.statusMessage.startsWith("Couldn't parse")) {
+          statusButton.innerText = "Error";
+          statusButton.classList.add("box-highlight");
+        } else {
+          statusButton.innerText = "OK";
+          statusButton.classList.remove("box-highlight");
+        }
         break;
-      case "pattern_update": // TODO test
-        this.guiData.setPattern(data);
+      case "export":
+        download(data, "plushie.json", "json"); // TODO pcd
         break;
-      case "export": // TODO test
-        download(data, "plushie.json", "json");
-        break;
-      // "relax ended" can be removed on the server side
       default:
         console.error("unhandled message", key);
     }

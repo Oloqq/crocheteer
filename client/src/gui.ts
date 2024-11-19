@@ -14,6 +14,7 @@ export class GuiData {
   getPattern: () => string;
   setPattern: (pattern: string) => void;
   params: crapi.Params = paramsThatInitializeDatGuiWithCorrectTypes;
+  statusMessage: string = "Status messages will be displayed here";
 
   constructor(getPattern: () => string, setPattern: (pattern: string) => void) {
     this.getPattern = getPattern;

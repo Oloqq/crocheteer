@@ -12,7 +12,6 @@ pub enum RunState {
     Paused,
     Running,
     RunningFor(usize),
-    RunningUntilRelaxedOrMax(usize),
 }
 
 #[derive(Clone)]
@@ -55,8 +54,8 @@ impl PlushieSimulation {
 
     fn get_update_data(&self) -> JSON {
         serde_json::json!({
-            "key": "upd",
-            "dat": {
+            "key": "update",
+            "data": {
                 "points": self.plushie.nodes_to_json(),
                 "centroids": self.plushie.centroids_to_json()
             }
@@ -67,17 +66,17 @@ impl PlushieSimulation {
         if let Some(p) = &self.secondary_plushie {
             serde_json::json!({
                 "key": "ini2",
-                "dat": serde_json::json!([self.plushie.init_data(), p.init_data()]),
+                "data": serde_json::json!([self.plushie.init_data(), p.init_data()]),
             })
         } else {
             serde_json::json!({
-                "key": "ini",
-                "dat": self.plushie.init_data(),
+                "key": "initialize",
+                "data": self.plushie.init_data(),
             })
         }
     }
 
-    fn change_pattern(&mut self, msg: &str, _soft: bool) -> Result<(), String> {
+    fn change_pattern(&mut self, msg: &str) -> Result<(), String> {
         log::info!("Changing pattern...");
 
         let (_, version_pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
@@ -91,7 +90,7 @@ impl PlushieSimulation {
         self.messages.lock().unwrap().push(
             serde_json::json!({
                 "key": key,
-                "dat": data
+                "data": data
             })
             .to_string(),
         )
@@ -108,7 +107,7 @@ impl PlushieSimulation {
                 let (id, x, y, z) = token_args!(tokens, usize, f32, f32, f32);
                 self.plushie.set_point_position(id, Point::new(x, y, z));
             }
-            "pattern" | "soft_update" => match self.change_pattern(msg, command == "soft_update") {
+            "pattern" => match self.change_pattern(msg) {
                 Ok(_) => {
                     self.controls.need_init = true;
                     self.send("status", "Loaded the pattern");
@@ -124,7 +123,6 @@ impl PlushieSimulation {
                     RunState::RunningFor(steps) => RunState::RunningFor(steps + 1),
                     RunState::Paused => RunState::RunningFor(1),
                     RunState::Running => RunState::RunningFor(1),
-                    RunState::RunningUntilRelaxedOrMax(_) => RunState::RunningFor(1),
                 }
             }
             "stuffing" => log::warn!("this should be removed from the frontend"),
@@ -137,20 +135,6 @@ impl PlushieSimulation {
             "getparams" => {
                 let serialized = serde_json::to_string(self.plushie.params()).unwrap();
                 self.send("params", &serialized);
-            }
-            "load_example" => {
-                self.send("status", "examples are temporarily not available");
-                log::warn!("examples are temporarily not available");
-                // let name = tokens.get(1).unwrap();
-                // match examples::get(name) {
-                //     Some((pattern, plushie)) => {
-                //         self.controls.need_init = true;
-                //         self.plushie = Box::new(plushie);
-                //         self.send("pattern_update", &pattern.human_readable());
-                //         self.send("status", "Loaded an example");
-                //     }
-                //     None => self.send("status", "no such example"),
-                // }
             }
             "save" => {
                 if let Ok(name) = tokens.get(1) {
@@ -169,11 +153,6 @@ impl PlushieSimulation {
                 self.plushie = Box::new(plushie);
                 self.controls.need_init = true;
                 self.send("status", "loaded pointcloud");
-            }
-            "animate" => {
-                controls.run_state = RunState::RunningUntilRelaxedOrMax(
-                    self.plushie.params().autostop.max_relaxing_iterations,
-                )
             }
             _ => log::error!("Unexpected msg: {msg}"),
         };
@@ -194,7 +173,7 @@ impl Simulation for PlushieSimulation {
 
         let data = match self.controls.run_state {
             RunState::Paused => None,
-            RunState::Running | RunState::RunningFor(_) | RunState::RunningUntilRelaxedOrMax(_) => {
+            RunState::Running | RunState::RunningFor(_) => {
                 self.plushie.step(dt);
                 Some(self.get_update_data().to_string())
             }
@@ -208,21 +187,6 @@ impl Simulation for PlushieSimulation {
                     RunState::Paused
                 } else {
                     RunState::RunningFor(steps - 1)
-                }
-            }
-            RunState::RunningUntilRelaxedOrMax(mut steps_left) => {
-                steps_left -= 1;
-                if steps_left == 0 {
-                    let iterations =
-                        self.plushie.params().autostop.max_relaxing_iterations - steps_left;
-                    self.send(
-                        "status",
-                        &format!("relaxing stopped after {} iterations", iterations),
-                    );
-                    self.send("relax ended", "");
-                    RunState::Paused
-                } else {
-                    RunState::RunningUntilRelaxedOrMax(steps_left)
                 }
             }
         };

@@ -88,3 +88,27 @@
 #left-panel.hidden + #resizer {
   left: 0; /* Move resizer to the left edge */
 }
+
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+  pointer-events: none; /* Allows mouse events to pass through */
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+#status-box {
+  float: right;
+}
+
+.box-highlight {
+  background-color: #b63929 !important;
+}
