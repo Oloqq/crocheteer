@@ -159,8 +159,7 @@ FO
 ```
 
 ## Implementation
-ACL parser and lexer are generated using [pest](https://pest.rs). Pest uses a [custom syntax](https://pest.rs/book/) for grammar definition. The following code defines ACL using that syntax.
-<!-- TODO: BNF notation -->
+ACL parser and lexer are generated using [pest](https://pest.rs). Pest generates these based on a [parsing expression grammar (PEG)](https://en.wikipedia.org/wiki/Parsing_expression_grammar) defined using a [custom syntax](https://pest.rs/book/). The following code defines ACL using that syntax.
 ```
 program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI}
 
@@ -231,4 +230,9 @@ NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
 WHITESPACE  = _{ " " }
+```
+
+The PEG above would be equivalent to the following BNF grammar.
+<!-- TODO: BNF notation -->
+```
 ```
