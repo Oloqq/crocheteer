@@ -4,7 +4,7 @@ pub use structopt::StructOpt;
 #[derive(StructOpt, Debug)]
 pub enum Command {
     #[structopt(about = "debugging command")]
-    Dev { num: usize },
+    Dev { num: Option<usize> },
 
     #[structopt(alias = "ws", about = "Start a WebSocket server for visualization")]
     WebSocket(WebsocketArgs),

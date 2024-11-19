@@ -58,6 +58,7 @@ fn main() {
             serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
         Dev { num } => {
+            let num = num.unwrap_or(11);
             match num {
                 1 => {
                     let d = Params::default();
