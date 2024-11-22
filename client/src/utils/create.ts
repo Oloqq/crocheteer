@@ -107,6 +107,11 @@ export function arrow(
 
 export function disk(
   scene: THREE.Scene,
+  x: number,
+  y: number,
+  z: number,
+  angleX: number,
+  angleY: number,
   radius: number,
   color: THREE.Color,
   opacity: number
@@ -118,19 +123,13 @@ export function disk(
     side: THREE.DoubleSide,
     transparent: true,
     opacity: opacity,
-  }); // DoubleSide for visibility from both sides
+  });
   const circle = new THREE.Mesh(geometry, material);
 
-  // Position the circle at the desired point
-  circle.position.set(0, 0, 0);
-
-  // Rotate the circle
-  const angleX = Math.PI / 4; // Rotate 45 degrees around the X-axis
-  const angleY = Math.PI / 6; // Rotate 30 degrees around the Y-axis
+  circle.position.set(x, y, z);
   circle.rotation.x = angleX;
   circle.rotation.y = angleY;
 
-  // Add the circle to the scene
   scene.add(circle);
 
   return circle;

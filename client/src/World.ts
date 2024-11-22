@@ -74,6 +74,7 @@ export default class World {
             create.destroy(this.plushie.scene, this.plushie.centroids.pop()!);
           }
           this.plushie.centroidColors = colors;
+          this.plushie.centroidAngles = d["angles"];
           this.plushie.updateCentroids(centroids);
         }
         break;

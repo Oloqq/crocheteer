@@ -48,6 +48,10 @@ export class GuiData {
 
     val ? this.world.plushie?.drawLinks() : this.world.plushie?.clearLinks();
   };
+
+  // Skeleton research
+  inspectCluster: number = 0;
+  clusterChanged: (val: number) => void = (_) => {};
 }
 
 export function initGui(
@@ -156,6 +160,10 @@ export function initGui(
     skeleton
       .add(skeletonFuncs, "initialCrossSections")
       .name("Initial cross sections");
+
+    skeleton
+      .add(data, "inspectCluster", 0)
+      .onChange((val) => data.clusterChanged(val));
   }
 
   return gui;

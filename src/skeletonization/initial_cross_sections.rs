@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use crate::common::*;
 use kmeans::*;
 
@@ -57,5 +59,12 @@ pub fn select_seeds(
     assert_eq!(seeds.len(), centroids.len());
     seeds
 }
+
+// pub fn orient_planes(seeds: &Vec<usize>) -> Vec<(f32, f32)> {
+//     const ANGULAR_INTERVAL: f32 = PI / 6.0;
+//     todo!();
+//     // assert_eq!(result.len(), seeds.len());
+//     // result
+// }
 
 // pub fn detect_initial_cross_sections() {}

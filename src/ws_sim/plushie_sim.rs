@@ -192,11 +192,13 @@ impl PlushieSimulation {
                         .iter()
                         .map(|cluster| cluster_colors[*cluster])
                         .collect();
-                    for seed in seeds {
-                        colors[seed] = (255, 255, 255);
+                    for seed in &seeds {
+                        colors[*seed] = (255, 255, 255);
                     }
                     colors
                 };
+
+                let angles: Vec<(f32, f32)> = seeds.iter().map(|_| (0.0, 0.0)).collect();
 
                 self.send(
                     "change-colors",
@@ -207,7 +209,8 @@ impl PlushieSimulation {
                     "change-centroids",
                     serde_json::to_string(&json!({
                         "centroids": &centroids,
-                        "colors": &cluster_colors
+                        "colors": &cluster_colors,
+                        "angles": &angles
                     }))
                     .unwrap()
                     .as_str(),

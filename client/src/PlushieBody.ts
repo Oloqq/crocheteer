@@ -29,6 +29,7 @@ export default class PlushieBody {
   restoreColors: crapi.RGB[] | undefined;
   centroidColors: crapi.RGB[] | undefined;
   planeDisk: Mesh | undefined;
+  centroidAngles: [number, number][] | undefined;
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -58,7 +59,39 @@ export default class PlushieBody {
       this.drawLinks();
     }
 
-    this.planeDisk = create.disk(this.scene, 1, planeColor, planeOpacity);
+    guiData.clusterChanged = (val) => {
+      if (!this.centroidColors) {
+        console.log(
+          "inspecting clusters only work after they have been calculated"
+        );
+        return;
+      }
+
+      if (this.planeDisk) {
+        create.destroy(this.scene, this.planeDisk);
+      }
+      if (val < 0 || val >= this.centroids.length) {
+        console.log("tried to inspect nonexisting centroid");
+        return;
+      }
+      const centroidPos = this.centroids[val].position;
+      if (this.centroidAngles == undefined) {
+        console.error("expected centroidAngles");
+        return;
+      }
+      const angles = this.centroidAngles[val];
+      this.planeDisk = create.disk(
+        this.scene,
+        centroidPos.x,
+        centroidPos.y,
+        centroidPos.z,
+        angles[0],
+        angles[1],
+        1,
+        planeColor,
+        planeOpacity
+      );
+    };
   }
 
   destroy() {
@@ -107,6 +140,11 @@ export default class PlushieBody {
       while (this.centroids.length > 0) {
         create.destroy(this.scene, this.centroids.pop()!);
       }
+    }
+
+    if (this.planeDisk != undefined) {
+      create.destroy(this.scene, this.planeDisk);
+      this.planeDisk = undefined;
     }
   }
 
@@ -195,7 +233,6 @@ export default class PlushieBody {
   }
 
   centroidColor(i: number): THREE.Color {
-    console.log(i);
     if (this.centroidColors != undefined) {
       const color = this.centroidColors[i];
       return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
