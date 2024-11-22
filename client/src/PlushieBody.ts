@@ -11,8 +11,8 @@ import { GuiData } from "./gui";
 //   "Root": 0x0000ff,
 // }
 
-const centroidColor: crapi.RGB = [255, 165, 0];
-const normalsColor: crapi.RGB = [255, 0, 0];
+const centroidColor = new THREE.Color(1, 165 / 255, 0);
+const normalsColor = new THREE.Color(1, 0, 0);
 
 export default class PlushieBody {
   scene: THREE.Scene;
@@ -25,6 +25,7 @@ export default class PlushieBody {
   displayMode: "normal" | "debug" = "normal";
 
   disposeAtStep: THREE.Group[] = [];
+  restoreColors: crapi.RGB[] | undefined;
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -83,6 +84,11 @@ export default class PlushieBody {
         }
       });
       this.scene.remove(garbage);
+    }
+
+    if (this.restoreColors != undefined) {
+      this.updateColors(this.restoreColors);
+      this.restoreColors = undefined;
     }
   }
 
@@ -154,16 +160,18 @@ export default class PlushieBody {
     this.links = [];
   }
 
-  nodeColor(index: number): crapi.RGB {
-    return this.nodeColors[index];
+  nodeColor(index: number): THREE.Color {
+    const color = this.nodeColors[index];
+    return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
   }
 
-  linkColor(_from: any, to: any): crapi.RGB {
+  linkColor(_from: any, to: any): THREE.Color {
     if (this.displayMode == "debug") {
-      return [52, 51, 48];
+      return new THREE.Color(52 / 255, 51 / 255, 48 / 255);
     }
 
-    return this.nodeColors[to];
+    const color = this.nodeColors[to];
+    return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
   }
 
   displayNormals(data: crapi.Point[]) {
@@ -192,6 +200,13 @@ export default class PlushieBody {
         headRadius
       );
       this.disposeAtStep.push(arrow);
+    }
+  }
+
+  updateColors(colors: crapi.ChangeColors) {
+    this.nodeColors = colors;
+    for (let i = 0; i < this.nodes.length; i++) {
+      (this.nodes[i].material as any).color = this.nodeColor(i);
     }
   }
 }

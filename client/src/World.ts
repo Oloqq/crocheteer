@@ -54,6 +54,14 @@ export default class World {
       case "normals":
         this.plushie?.displayNormals(JSON.parse(data));
         break;
+      // Skeletonization research
+      case "change-colors":
+        if (this.plushie) {
+          this.plushie.clearLinks();
+          this.plushie.restoreColors = this.plushie?.nodeColors;
+          this.plushie.updateColors(JSON.parse(data));
+        }
+        break;
       default:
         console.error("unhandled message", key);
     }

@@ -4,11 +4,11 @@ export function sphere(
   scene: THREE.Scene,
   coords: any,
   r: any,
-  color: crapi.RGB
+  color: THREE.Color
 ) {
   const geometry = new THREE.SphereGeometry(r);
   const material = new THREE.MeshBasicMaterial({
-    color: new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255),
+    color: color,
   });
   const result = new THREE.Mesh(geometry, material);
   result.position.x = coords[0];
@@ -23,14 +23,14 @@ export function link(
   point1: any,
   point2: any,
   width: any,
-  color: crapi.RGB
+  color: THREE.Color
 ) {
   let curve = new THREE.CatmullRomCurve3([point1, point2]);
   let tubeGeometry = new THREE.TubeGeometry(curve, 20, width, 8, false);
 
   // Step 4: Create a Material and Mesh
   let material = new THREE.MeshBasicMaterial({
-    color: new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255),
+    color: color,
   });
   let mesh = new THREE.Mesh(tubeGeometry, material);
   scene.add(mesh);
@@ -43,7 +43,7 @@ export function arrow(
   origin: any,
   direction: any,
   length: any,
-  color: any,
+  color: THREE.Color,
   shaftRadius = 0.05,
   headLength = 0.2,
   headRadius = 0.1
@@ -64,7 +64,7 @@ export function arrow(
     12 // Radial segments for smoother appearance
   );
   const shaftMaterial = new THREE.MeshBasicMaterial({
-    color: new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255),
+    color: color,
   });
   const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
 

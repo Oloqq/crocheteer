@@ -168,12 +168,19 @@ impl PlushieSimulation {
                 self.send("normals", serde_json::to_string(&normals).unwrap().as_str());
             }
             "do-clustering" => {
-                let _plushie = self
+                let plushie = self
                     .plushie
                     .as_animated()
                     .expect("This to be used with animated plushie");
-                // let colors = self.plushie
-                // self.send("change-colors")
+
+                let colors: Vec<(usize, usize, usize)> = (0..plushie.nodes.colors.len())
+                    .map(|_| (255, 255, 255))
+                    .collect();
+
+                self.send(
+                    "change-colors",
+                    serde_json::to_string(&colors).unwrap().as_str(),
+                );
             }
             "initial-cross-sections" => {
                 // let normals =

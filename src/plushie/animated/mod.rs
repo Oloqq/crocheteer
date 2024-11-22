@@ -14,7 +14,7 @@ type Edges = Vec<Vec<usize>>;
 
 #[derive(Clone, Serialize)]
 pub struct Plushie {
-    nodes: Nodes,
+    pub nodes: Nodes,
     edges: Edges,
     edges_goal: Vec<Vec<usize>>, // ideally this would be replaced with a Queue, but right now frontend gets list of edges just once at the beginning
     pub params: Params,
