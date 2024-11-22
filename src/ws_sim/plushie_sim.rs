@@ -173,8 +173,15 @@ impl PlushieSimulation {
                     .as_animated()
                     .expect("This to be used with animated plushie");
 
-                let colors: Vec<(usize, usize, usize)> = (0..plushie.nodes.colors.len())
-                    .map(|_| (255, 255, 255))
+                const CLUSTER_NUM: usize = 4;
+                let cluster_colors: [(usize, usize, usize); CLUSTER_NUM] =
+                    [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
+                let cluster_membership =
+                    skeletonization::do_clustering(CLUSTER_NUM, &plushie.nodes.points);
+
+                let colors: Vec<(usize, usize, usize)> = cluster_membership
+                    .iter()
+                    .map(|cluster| cluster_colors[*cluster])
                     .collect();
 
                 self.send(
