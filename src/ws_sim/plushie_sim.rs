@@ -1,5 +1,3 @@
-use serde_json::json;
-
 use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
 use crate::plushie::parse_to_any_plushie;
@@ -157,10 +155,11 @@ impl PlushieSimulation {
             }
             "export-pointcloud" => self.send("export", &self.plushie.nodes_to_json().to_string()),
             "import-pointcloud" => {
-                let plushie = crate::plushie::Pointcloud::from_points_str(tokens.get(1).unwrap());
-                self.plushie = Box::new(plushie);
-                self.controls.need_init = true;
-                self.send("status", "loaded pointcloud");
+                unimplemented!()
+                // let plushie = crate::plushie::Pointcloud::from_points_str(tokens.get(1).unwrap());
+                // self.plushie = Box::new(plushie);
+                // self.controls.need_init = true;
+                // self.send("status", "loaded pointcloud");
             }
             "calculate-normals" => {
                 let normals =
@@ -169,7 +168,11 @@ impl PlushieSimulation {
                 self.send("normals", serde_json::to_string(&normals).unwrap().as_str());
             }
             "do-clustering" => {
-
+                let _plushie = self
+                    .plushie
+                    .as_animated()
+                    .expect("This to be used with animated plushie");
+                // let colors = self.plushie
                 // self.send("change-colors")
             }
             "initial-cross-sections" => {

@@ -25,6 +25,7 @@ pub enum Command {
 }
 
 #[derive(StructOpt, Debug)]
+#[allow(unused)]
 pub struct WebsocketArgs {
     #[structopt(short, long, default_value = "8080")]
     pub port: u16,
@@ -43,6 +44,7 @@ pub struct WebsocketArgs {
     pub secondary: Option<PathBuf>,
 }
 
+#[allow(unused)]
 pub struct AppliedPreset<'a> {
     pub plushie: &'a str,
     pub params: &'a str,

@@ -74,4 +74,8 @@ impl PlushieTrait for Plushie {
     fn get_points(&self) -> &Vec<Point> {
         &self.nodes.as_vec()
     }
+
+    fn as_animated(&self) -> Option<&self::Plushie> {
+        Some(&self)
+    }
 }

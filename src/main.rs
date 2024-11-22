@@ -12,9 +12,8 @@ use self::ws_sim::plushie_sim::PlushieSimulation;
 use crate::acl::pest_parser::Pattern;
 use crate::plushie::examples;
 use crate::plushie::Params;
-use crate::plushie::{Plushie, Pointcloud};
+use crate::plushie::Plushie;
 use crate::ws_sim::serve_websocket;
-use plushie::params;
 use std::fs;
 use std::io::Write;
 
@@ -26,37 +25,38 @@ fn main() {
     let args = Args::from_args();
     use Command::*;
     match args.cmd {
-        WebSocket(args) => {
-            let presetable = args.apply_preset();
+        WebSocket(_args) => {
+            unimplemented!()
+            // let presetable = args.apply_preset();
 
-            let mut plushie = match examples::get_example(&presetable.plushie) {
-                Some(x) => x,
-                None => {
-                    log::error!("Plushie {:?} does not exist", args.plushie);
-                    return;
-                }
-            };
-            plushie.params = match params::handpicked::get(&presetable.params) {
-                Some(x) => x,
-                None => {
-                    log::error!("Params {:?} does not exist", args.params);
-                    return;
-                }
-            };
-            let sim = match presetable.secondary {
-                // why bother with PathBuf when String does the job
-                // forums say that its due to Rust strings handling of UTF-8
-                // so I guess the filesystem will go apeshit if I e.g. pass emoji as argument?
-                // TODO investigate
-                Some(path) => {
-                    let secondary_plushie =
-                        Pointcloud::from_points_file(path.to_str().expect("converted to str"));
-                    PlushieSimulation::with_secondary(plushie, secondary_plushie)
-                }
-                None => PlushieSimulation::from(plushie),
-            };
+            // let mut plushie = match examples::get_example(&presetable.plushie) {
+            //     Some(x) => x,
+            //     None => {
+            //         log::error!("Plushie {:?} does not exist", args.plushie);
+            //         return;
+            //     }
+            // };
+            // plushie.params = match params::handpicked::get(&presetable.params) {
+            //     Some(x) => x,
+            //     None => {
+            //         log::error!("Params {:?} does not exist", args.params);
+            //         return;
+            //     }
+            // };
+            // let sim = match presetable.secondary {
+            //     // why bother with PathBuf when String does the job
+            //     // forums say that its due to Rust strings handling of UTF-8
+            //     // so I guess the filesystem will go apeshit if I e.g. pass emoji as argument?
+            //     // TODO investigate
+            //     Some(path) => {
+            //         let secondary_plushie =
+            //             Pointcloud::from_points_file(path.to_str().expect("converted to str"));
+            //         PlushieSimulation::with_secondary(plushie, secondary_plushie)
+            //     }
+            //     None => PlushieSimulation::from(plushie),
+            // };
 
-            serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
+            // serve_websocket(sim, format!("127.0.0.1:{}", args.port).as_str());
         }
         Dev { num } => {
             let num = num.unwrap_or(11);
@@ -71,28 +71,28 @@ fn main() {
                     let sim = PlushieSimulation::from(plushie);
                     serve_websocket(sim, "127.0.0.1:8080");
                 }
-                3 => {
-                    // viewing vertexes in an STL
-                    let plushie = Pointcloud::from_stl("models/grzib40.stl");
-                    let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim, "127.0.0.1:8080");
-                }
-                4 => {
-                    // viewing a pregenerated pointcloud
-                    let plushie =
-                        Pointcloud::from_points_file("model_preprocessing/models/pillar.json");
-                    let sim = PlushieSimulation::from(plushie);
-                    serve_websocket(sim, "127.0.0.1:8080");
-                }
-                5 => {
-                    // visually compare a pointcloud to an example
-                    let mut primary = examples::pillar();
-                    primary.params = params::handpicked::grzib();
-                    let secondary =
-                        Pointcloud::from_points_file("model_preprocessing/models/pillar.json");
-                    let sim = PlushieSimulation::with_secondary(primary, secondary);
-                    serve_websocket(sim, "127.0.0.1:8080");
-                }
+                // 3 => {
+                //     // viewing vertexes in an STL
+                //     let plushie = Pointcloud::from_stl("models/grzib40.stl");
+                //     let sim = PlushieSimulation::from(plushie);
+                //     serve_websocket(sim, "127.0.0.1:8080");
+                // }
+                // 4 => {
+                //     // viewing a pregenerated pointcloud
+                //     let plushie =
+                //         Pointcloud::from_points_file("model_preprocessing/models/pillar.json");
+                //     let sim = PlushieSimulation::from(plushie);
+                //     serve_websocket(sim, "127.0.0.1:8080");
+                // }
+                // 5 => {
+                //     // visually compare a pointcloud to an example
+                //     let mut primary = examples::pillar();
+                //     primary.params = params::handpicked::grzib();
+                //     let secondary =
+                //         Pointcloud::from_points_file("model_preprocessing/models/pillar.json");
+                //     let sim = PlushieSimulation::with_secondary(primary, secondary);
+                //     serve_websocket(sim, "127.0.0.1:8080");
+                // }
                 11 => {
                     let plushie = examples::pillar();
                     let sim = PlushieSimulation::from(plushie);

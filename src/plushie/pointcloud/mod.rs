@@ -1,10 +1,12 @@
+#![allow(unused)]
+
 /// This implementation serves as an easy way to view any static pointcloud in the same visualization tools
 use std::{
     error::Error,
     fs::{self, OpenOptions},
 };
 
-use super::{Params, PlushieTrait};
+use super::Params;
 use crate::common::*;
 
 #[derive(Clone)]
@@ -48,47 +50,47 @@ impl Pointcloud {
     }
 }
 
-impl PlushieTrait for Pointcloud {
-    fn step(&mut self, _time: f32) {}
+// impl PlushieTrait for Pointcloud {
+//     fn step(&mut self, _time: f32) {}
 
-    fn params(&mut self) -> &mut super::Params {
-        &mut self.params
-    }
+//     fn params(&mut self) -> &mut super::Params {
+//         &mut self.params
+//     }
 
-    fn set_params(&mut self, params: super::Params) {
-        self.params = params;
-    }
+//     fn set_params(&mut self, params: super::Params) {
+//         self.params = params;
+//     }
 
-    fn nodes_to_json(&self) -> super::JSON {
-        serde_json::json!(self.points)
-    }
+//     fn nodes_to_json(&self) -> super::JSON {
+//         serde_json::json!(self.points)
+//     }
 
-    fn centroids_to_json(&self) -> super::JSON {
-        serde_json::json!({"centroids": []})
-    }
+//     fn centroids_to_json(&self) -> super::JSON {
+//         serde_json::json!({"centroids": []})
+//     }
 
-    fn init_data(&self) -> super::JSON {
-        let colors = vec![(120, 120, 120); self.points.len()];
-        serde_json::json!({
-            "nodes": {
-                "points": serde_json::json!(self.points),
-                "colors": serde_json::json!(colors),
-                "peculiarities": serde_json::json!({})
-            },
-            "edges": serde_json::json!([]),
-            "centroids": {
-                "centroids": serde_json::json!([])
-            }
-        })
-    }
+//     fn init_data(&self) -> super::JSON {
+//         let colors = vec![(120, 120, 120); self.points.len()];
+//         serde_json::json!({
+//             "nodes": {
+//                 "points": serde_json::json!(self.points),
+//                 "colors": serde_json::json!(colors),
+//                 "peculiarities": serde_json::json!({})
+//             },
+//             "edges": serde_json::json!([]),
+//             "centroids": {
+//                 "centroids": serde_json::json!([])
+//             }
+//         })
+//     }
 
-    fn set_point_position(&mut self, _i: usize, _pos: super::Point) {}
+//     fn set_point_position(&mut self, _i: usize, _pos: super::Point) {}
 
-    fn clonebox(&self) -> Box<dyn PlushieTrait> {
-        Box::new(Clone::clone(self))
-    }
+//     fn clonebox(&self) -> Box<dyn PlushieTrait> {
+//         Box::new(Clone::clone(self))
+//     }
 
-    fn get_points(&self) -> &Vec<Point> {
-        &self.points
-    }
-}
+//     fn get_points(&self) -> &Vec<Point> {
+//         &self.points
+//     }
+// }

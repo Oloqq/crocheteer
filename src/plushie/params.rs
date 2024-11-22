@@ -141,6 +141,7 @@ impl Default for AutoStoppingParams {
     }
 }
 
+#[allow(unused)]
 pub mod handpicked {
     use super::*;
 

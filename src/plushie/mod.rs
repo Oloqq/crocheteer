@@ -8,7 +8,6 @@ mod pointcloud;
 
 pub use animated::Plushie;
 pub use params::Params;
-pub use pointcloud::Pointcloud;
 
 use crate::common::*;
 
@@ -32,6 +31,8 @@ pub trait PlushieTrait: Send + 'static {
     /// As far as I understand, Send and Clone are not compatible
     /// This is a workaround, types implementing the trait can just put Clone::clone() inside
     fn clonebox(&self) -> Box<dyn PlushieTrait>;
+
+    fn as_animated(&self) -> Option<&animated::Plushie>;
 }
 
 pub fn parse_to_any_plushie(
