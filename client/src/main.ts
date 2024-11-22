@@ -38,10 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     send(`export-pointcloud`);
   });
 
-  document.getElementById("normals-button")!.addEventListener("click", () => {
-    send(`calculate-normals`);
-  });
-
   setupTooltip(
     document.getElementById("status-box")!,
     () => guiData.statusMessage

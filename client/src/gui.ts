@@ -133,6 +133,19 @@ export function initGui(
       .onChange(sendParams);
   }
 
+  const skeleton = gui.addFolder("Skeletonization");
+  const skeletonFuncs = {
+    calculateNormals: () => {
+      comms.send(`calculate-normals`);
+    },
+  };
+  skeleton.open();
+  {
+    skeleton
+      .add(skeletonFuncs, "calculateNormals")
+      .name("Calculate normals (takes time)");
+  }
+
   return gui;
 }
 
