@@ -1,3 +1,5 @@
+#![feature(iter_array_chunks)]
+
 mod acl;
 mod args;
 mod common;
