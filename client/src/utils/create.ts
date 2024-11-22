@@ -104,3 +104,34 @@ export function arrow(
 
   return arrowGroup;
 }
+
+export function disk(
+  scene: THREE.Scene,
+  radius: number,
+  color: THREE.Color,
+  opacity: number
+) {
+  const segments = 32; // Number of segments for smoothness
+  const geometry = new THREE.CircleGeometry(radius, segments);
+  const material = new THREE.MeshBasicMaterial({
+    color: color,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: opacity,
+  }); // DoubleSide for visibility from both sides
+  const circle = new THREE.Mesh(geometry, material);
+
+  // Position the circle at the desired point
+  circle.position.set(0, 0, 0);
+
+  // Rotate the circle
+  const angleX = Math.PI / 4; // Rotate 45 degrees around the X-axis
+  const angleY = Math.PI / 6; // Rotate 30 degrees around the Y-axis
+  circle.rotation.x = angleX;
+  circle.rotation.y = angleY;
+
+  // Add the circle to the scene
+  scene.add(circle);
+
+  return circle;
+}

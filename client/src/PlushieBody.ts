@@ -12,6 +12,8 @@ import { GuiData } from "./gui";
 // }
 
 const normalsColor = new THREE.Color(1, 0, 0);
+const planeColor = new THREE.Color(1, 1, 1);
+const planeOpacity = 0.5;
 
 export default class PlushieBody {
   scene: THREE.Scene;
@@ -26,6 +28,7 @@ export default class PlushieBody {
   disposeAtStep: THREE.Group[] = [];
   restoreColors: crapi.RGB[] | undefined;
   centroidColors: crapi.RGB[] | undefined;
+  planeDisk: Mesh | undefined;
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -54,6 +57,8 @@ export default class PlushieBody {
     if (guiData.showEdges) {
       this.drawLinks();
     }
+
+    this.planeDisk = create.disk(this.scene, 1, planeColor, planeOpacity);
   }
 
   destroy() {
