@@ -3,10 +3,10 @@
 pub mod examples;
 pub mod params;
 
-mod flowing;
+mod animated;
 mod pointcloud;
 
-pub use flowing::Plushie;
+pub use animated::Plushie;
 pub use params::Params;
 pub use pointcloud::Pointcloud;
 

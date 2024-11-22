@@ -1,6 +1,6 @@
 use crate::{
     common::{CheckNan, Point, V},
-    plushie::{flowing::nodes::Nodes, params::CentroidParams},
+    plushie::{animated::nodes::Nodes, params::CentroidParams},
     sanity,
 };
 

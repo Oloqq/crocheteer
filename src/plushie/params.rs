@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 
 use serde_derive::{Deserialize, Serialize};
 
-pub use super::flowing::Leniency;
+pub use super::animated::Leniency;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Params {
@@ -29,7 +29,7 @@ pub struct Params {
     /// Method for setting initial positions of stitches
     pub initializer: Initializer,
     ///
-    pub hook_leniency: crate::plushie::flowing::Leniency,
+    pub hook_leniency: crate::plushie::animated::Leniency,
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
 }

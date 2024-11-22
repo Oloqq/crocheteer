@@ -1,6 +1,6 @@
-pub use crate::common::*;
 pub use crate::acl::actions::{Action, Label};
-pub use crate::plushie::flowing::construction::Peculiarity;
+pub use crate::common::*;
+pub use crate::plushie::animated::construction::Peculiarity;
 pub use std::collections::VecDeque as Queue;
 
 pub use Action::*;
