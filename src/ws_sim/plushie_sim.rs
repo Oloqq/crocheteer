@@ -1,3 +1,5 @@
+use serde_json::json;
+
 use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
 use crate::plushie::parse_to_any_plushie;
@@ -176,7 +178,7 @@ impl PlushieSimulation {
                 const CLUSTER_NUM: usize = 4;
                 let cluster_colors: [(usize, usize, usize); CLUSTER_NUM] =
                     [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
-                let (cluster_membership, _centroids) =
+                let (cluster_membership, centroids) =
                     skeletonization::do_clustering(CLUSTER_NUM, &plushie.nodes.points);
 
                 let colors: Vec<(usize, usize, usize)> = cluster_membership
@@ -187,6 +189,16 @@ impl PlushieSimulation {
                 self.send(
                     "change-colors",
                     serde_json::to_string(&colors).unwrap().as_str(),
+                );
+
+                self.send(
+                    "change-centroids",
+                    serde_json::to_string(&json!({
+                        "centroids": &centroids,
+                        "colors": &cluster_colors
+                    }))
+                    .unwrap()
+                    .as_str(),
                 );
             }
             "initial-cross-sections" => {

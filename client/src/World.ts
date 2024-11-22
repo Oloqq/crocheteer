@@ -5,6 +5,9 @@ import { Display } from "./render3d";
 import jq from "jquery";
 import { download } from "./utils/download";
 
+// TEMP for skeletonization research
+import * as create from "./utils/create";
+
 export default class World {
   ws: WebSocket;
   display: Display;
@@ -60,6 +63,18 @@ export default class World {
           this.plushie.clearLinks();
           this.plushie.restoreColors = this.plushie?.nodeColors;
           this.plushie.updateColors(JSON.parse(data));
+        }
+        break;
+      case "change-centroids":
+        if (this.plushie) {
+          const d = JSON.parse(data);
+          const centroids = d["centroids"];
+          const colors = d["colors"];
+          while (this.plushie.centroids.length > 0) {
+            create.destroy(this.plushie.scene, this.plushie.centroids.pop()!);
+          }
+          this.plushie.centroidColors = colors;
+          this.plushie.updateCentroids(centroids);
         }
         break;
       default:

@@ -1,5 +1,11 @@
 import * as THREE from "three";
 
+export function destroy(scene: THREE.Scene, thing: THREE.Mesh) {
+  if (thing.geometry) thing.geometry.dispose();
+  if (thing.material) (thing.material as THREE.Material).dispose();
+  scene.remove(thing);
+}
+
 export function sphere(
   scene: THREE.Scene,
   coords: any,

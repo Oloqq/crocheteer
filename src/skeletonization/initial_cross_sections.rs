@@ -20,18 +20,13 @@ pub fn do_clustering(num_clusters: usize, points: &Vec<Point>) -> (Vec<usize>, V
         &KMeansConfig::default(),
     );
 
-    println!("Centroids: {:?}", result.centroids);
-    println!("Cluster-Assignments: {:?}", result.assignments);
-    println!("Error: {}", result.distsum);
-
-    // let centroids: Vec<Point> = result
-    //     .centroids
-    //     .iter()
-    //     .array_chunks::<3>()
-    //     .map(|[x, y, z]| Point::new((*x)[0], (*y)[0], (*z)[0]))
-    //     .collect();
-
-    let centroids = vec![Point::new(0.0, 0.0, 0.0); num_clusters];
+    let centroids: Vec<Point> = result
+        .centroids
+        .to_vec()
+        .iter()
+        .array_chunks::<3>()
+        .map(|[x, y, z]| Point::new(*x, *y, *z))
+        .collect();
 
     // maybe these could be included in the type system?
     assert!(result.assignments.len() == points.len());
