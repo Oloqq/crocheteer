@@ -181,10 +181,22 @@ impl PlushieSimulation {
                 let (cluster_membership, centroids) =
                     skeletonization::do_clustering(CLUSTER_NUM, &plushie.nodes.points);
 
-                let colors: Vec<(usize, usize, usize)> = cluster_membership
-                    .iter()
-                    .map(|cluster| cluster_colors[*cluster])
-                    .collect();
+                let seeds = skeletonization::select_seeds(
+                    &plushie.nodes.points,
+                    &cluster_membership,
+                    &centroids,
+                );
+
+                let colors: Vec<(usize, usize, usize)> = {
+                    let mut colors: Vec<(usize, usize, usize)> = cluster_membership
+                        .iter()
+                        .map(|cluster| cluster_colors[*cluster])
+                        .collect();
+                    for seed in seeds {
+                        colors[seed] = (255, 255, 255);
+                    }
+                    colors
+                };
 
                 self.send(
                     "change-colors",

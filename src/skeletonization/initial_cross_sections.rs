@@ -29,9 +29,33 @@ pub fn do_clustering(num_clusters: usize, points: &Vec<Point>) -> (Vec<usize>, V
         .collect();
 
     // maybe these could be included in the type system?
-    assert!(result.assignments.len() == points.len());
+    assert_eq!(result.assignments.len(), points.len());
     assert_eq!(centroids.len(), num_clusters);
     (result.assignments, centroids)
+}
+
+pub fn select_seeds(
+    points: &Vec<Point>,
+    assignments: &Vec<usize>,
+    centroids: &Vec<Point>,
+) -> Vec<usize> {
+    assert_eq!(points.len(), assignments.len());
+
+    type BestId = usize;
+    type Distance = f32;
+    let mut closest_to_centroid: Vec<(BestId, Distance)> =
+        vec![(0, Distance::MAX); centroids.len()];
+    for (i, (point, cluster)) in points.iter().zip(assignments).enumerate() {
+        let center = centroids[*cluster];
+        let distance = point.coords.metric_distance(&center.coords);
+        if distance < closest_to_centroid[*cluster].1 {
+            closest_to_centroid[*cluster] = (i, distance);
+        }
+    }
+
+    let seeds: Vec<usize> = closest_to_centroid.iter().map(|(i, _dist)| *i).collect();
+    assert_eq!(seeds.len(), centroids.len());
+    seeds
 }
 
 // pub fn detect_initial_cross_sections() {}

@@ -8,6 +8,7 @@ mod in_execution_order {
     pub use local_surface_normals::local_surface_normals_per_point;
 
     pub use initial_cross_sections::do_clustering;
+    pub use initial_cross_sections::select_seeds;
     // pub use initial_cross_sections::detect_initial_cross_sections;
 }
 
