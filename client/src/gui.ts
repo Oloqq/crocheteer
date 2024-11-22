@@ -2,6 +2,7 @@ import * as dat from "dat.gui";
 import { Display, restoreDefaultView } from "./render3d";
 import * as comms from "./comms";
 import World from "./World";
+import { setupTooltip } from "./utils/tooltip";
 
 export class GuiData {
   world?: World = undefined;
@@ -94,29 +95,33 @@ export function initGui(
         .add(data.params.centroids, "min_nodes_per_centroid", 0)
         .name("Nodes per centroid")
         .onChange(sendParams);
-      // removeSlider(
       centroids
         .add(data.params.centroids, "number", 0, 20, 1)
         .onChange((_val) => {
           sendParams();
         });
-      // );
     }
 
-    params
-      .add(data.params, "desired_stitch_distance")
-      .name("DSD")
-      .onChange(sendParams);
+    setupTooltip(
+      params
+        .add(data.params, "desired_stitch_distance")
+        .name("DSD")
+        .onChange(sendParams).domElement,
+      () => "Desired stitch distance"
+    );
+
     params.add(data.params, "floor").name("Floored").onChange(sendParams);
     params
       .add(data.params, "keep_root_at_origin")
       .name("Rooted")
       .onChange(sendParams);
-    params
-      .add(data.params, "single_loop_force", 0)
-      .name("SLF")
-      .onChange(sendParams);
-    // .domElement.setAttribute("title", "bruh"); // TODO add tooltips on hover
+    setupTooltip(
+      params
+        .add(data.params, "single_loop_force", 0)
+        .name("SLF")
+        .onChange(sendParams).domElement,
+      () => "Single loop force"
+    );
     // Reversing time does not work in this simulation
     params
       .add(data.params, "timestep", 0.1, 1.7)
