@@ -48,5 +48,7 @@ namespace crapi {
     minimum_displacement: number;
   }
 
-  interface CentroidParams {}
+  interface ChangeColors {
+    colors: RGB[];
+  }
 }

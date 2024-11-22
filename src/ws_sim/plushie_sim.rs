@@ -1,3 +1,5 @@
+use serde_json::json;
+
 use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
 use crate::plushie::parse_to_any_plushie;
@@ -165,6 +167,30 @@ impl PlushieSimulation {
                     skeletonization::local_surface_normals_per_point(self.plushie.get_points());
 
                 self.send("normals", serde_json::to_string(&normals).unwrap().as_str());
+            }
+            "do-clustering" => {
+
+                // self.send("change-colors")
+            }
+            "initial-cross-sections" => {
+                // let normals =
+                //     skeletonization::local_surface_normals_per_point(self.plushie.get_points());
+
+                // skeletonization::detect_initial_cross_sections();
+
+                // self.send(
+                //     "clusters",
+                //     serde_json::to_string(&vec![Point::new(0.0, 1.0, 0.0)])
+                //         .unwrap()
+                //         .as_str(),
+                // );
+
+                // self.send(
+                //     "seed-points",
+                //     serde_json::to_string(&vec![Point::new(0.0, 1.0, 0.0)])
+                //         .unwrap()
+                //         .as_str(),
+                // );
             }
             _ => log::error!("Unexpected msg: {msg}"),
         };

@@ -138,12 +138,24 @@ export function initGui(
     calculateNormals: () => {
       comms.send(`calculate-normals`);
     },
+    clustering: () => {
+      comms.send(`do-clustering`);
+    },
+    initialCrossSections: () => {
+      comms.send(`initial-cross-sections`);
+    },
   };
   skeleton.open();
   {
     skeleton
       .add(skeletonFuncs, "calculateNormals")
       .name("Calculate normals (takes time)");
+
+    skeleton.add(skeletonFuncs, "clustering").name("Perform kmeans");
+
+    skeleton
+      .add(skeletonFuncs, "initialCrossSections")
+      .name("Initial cross sections");
   }
 
   return gui;
