@@ -97,6 +97,11 @@ impl PlushieSimulation {
     }
 
     fn react_internal(&mut self, msg: &str) -> Result<(), super::tokens::Error> {
+        if msg.len() == 0 {
+            log::info!("Empty message");
+            return Ok(());
+        }
+
         let tokens = Tokens::from(msg)?;
         log::info!("Message tokens: {tokens:?}");
         let command: &str = tokens.get(0)?;

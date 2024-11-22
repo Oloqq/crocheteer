@@ -3,6 +3,7 @@ import * as render from "./render3d.ts";
 import World from "./World.ts";
 import * as leftPanel from "./leftPanel/panel.ts";
 import { send } from "./comms.ts";
+import { setupTooltip } from "./utils/tooltip.ts";
 
 document.addEventListener("DOMContentLoaded", () => {
   const editor = leftPanel.init();
@@ -41,53 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
     send(`calculate-normals`);
   });
 
-  setupStatusTooltip(guiData);
+  setupTooltip(
+    document.getElementById("status-box")!,
+    () => guiData.statusMessage
+  );
 });
-
-function setupStatusTooltip(guiData: GuiData) {
-  const statusButton = document.getElementById("status-box")!;
-  const tooltip = document.createElement("div");
-  tooltip.className = "tooltip";
-  document.body.appendChild(tooltip);
-
-  const showTooltip = (event: MouseEvent) => {
-    tooltip.style.opacity = "1";
-    tooltip.textContent = guiData.statusMessage;
-    positionTooltip(event);
-  };
-
-  const moveTooltip = (event: MouseEvent) => {
-    positionTooltip(event);
-  };
-
-  const hideTooltip = () => {
-    tooltip.style.opacity = "0";
-  };
-
-  // Function to position the tooltip near the cursor
-  const positionTooltip = (event: MouseEvent) => {
-    const tooltipRect = tooltip.getBoundingClientRect();
-    const offset = 10; // Distance between cursor and tooltip
-
-    let x = event.pageX + offset;
-    let y = event.pageY + offset;
-
-    // Prevent tooltip from going off the right edge
-    if (x + tooltipRect.width > window.innerWidth) {
-      x = event.pageX - tooltipRect.width - offset;
-    }
-
-    // Prevent tooltip from going off the bottom edge
-    if (y + tooltipRect.height > window.innerHeight) {
-      y = event.pageY - tooltipRect.height - offset;
-    }
-
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
-  };
-
-  // Attach event listeners to the status button
-  statusButton.addEventListener("mouseenter", showTooltip);
-  statusButton.addEventListener("mousemove", moveTooltip);
-  statusButton.addEventListener("mouseleave", hideTooltip);
-}
