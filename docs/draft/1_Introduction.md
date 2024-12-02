@@ -27,6 +27,19 @@ There are currently no tools that could help with designing such shapes. The clo
 
 The goal of this project is to create a tool, that would let an artist visualize the plushie that their pattern produces before commiting hours into actually crocheting it.
 
+The idea here is to build a graph representing the fabric, and then treat it as a [force directed graph](https://en.wikipedia.org/wiki/Force-directed_graph_drawing) ([see a live demo](https://vasturiano.github.io/force-graph/example/directional-links-particles/)), with forces specifically designed so that as forces diminish, the spatial graph looks like the crocheted piece that would be created from the same pattern.
+
+
 ## 1.2 Overview
 Section 2 describes how a crochet piece is built. It describes the techniques referenced later in the work, and the considerations necessary to handle them in proposed algorithms.
-<!-- TODO -->
+
+Section 3 introduces ACL (Amigurumi Crochet Language), the formal language used to describe crochet patterns.
+
+Sections 4, 5 and 6 describe how the ACL pattern is processed into a 3D visualization.
+
+![alt text](image.png)
+Figure shows a high level view of the process.
+
+Section 7 showcases a GUI used while developing these algorithms. It also describes the interfaces used for communication between the calculation (backend) and display (frontend) components.
+
+Section 8 summarizes the work related to the project.
