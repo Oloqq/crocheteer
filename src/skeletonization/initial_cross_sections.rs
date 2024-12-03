@@ -60,11 +60,14 @@ pub fn select_seeds(
     seeds
 }
 
-// pub fn orient_planes(seeds: &Vec<usize>) -> Vec<(f32, f32)> {
-//     const ANGULAR_INTERVAL: f32 = PI / 6.0;
-//     todo!();
-//     // assert_eq!(result.len(), seeds.len());
-//     // result
-// }
+// fn get_inliers()
+
+pub fn orient_planes(seeds: &Vec<usize>) -> Vec<(f32, f32)> {
+    const ANGULAR_INTERVAL: f32 = PI / 6.0;
+    // assert_eq!(result.len(), seeds.len());
+    // result
+
+    seeds.iter().map(|_| (0.0, 0.0)).collect()
+}
 
 // pub fn detect_initial_cross_sections() {}
