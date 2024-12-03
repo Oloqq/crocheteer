@@ -60,14 +60,55 @@ pub fn select_seeds(
     seeds
 }
 
-// fn get_inliers()
+fn get_inliers(
+    cloud: &Vec<Point>,
+    connectivity: (),
+    threshold: f32,
+    seed: usize,
+    normal_offset: (f32, f32, f32),
+) -> Vec<usize> {
+    todo!();
+}
 
-pub fn orient_planes(seeds: &Vec<usize>) -> Vec<(f32, f32)> {
+fn orient_cost(normals: (), inliers: &Vec<usize>, normal_offset: (f32, f32, f32)) -> f32 {
+    todo!();
+}
+
+pub struct Orientation(pub f32, pub f32);
+
+fn orient_plane(cloud: &Vec<Point>, normals: (), connectivity: (), seed: usize) -> Orientation {
     const ANGULAR_INTERVAL: f32 = PI / 6.0;
-    // assert_eq!(result.len(), seeds.len());
-    // result
+    const THETA_STEPS: usize = 11;
+    const PHI_STEPS: usize = 4;
+    const GLOBAL_THRESHOLD: f32 = 1.0;
 
-    seeds.iter().map(|_| (0.0, 0.0)).collect()
+    let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(THETA_STEPS * PHI_STEPS);
+    for theta in (0..=THETA_STEPS).map(|t| t as f32 * ANGULAR_INTERVAL) {
+        for phi in (0..=PHI_STEPS).map(|p| p as f32 * ANGULAR_INTERVAL) {
+            let normal_orient = (theta.cos() * phi.sin(), theta.sin() * phi.sin(), phi.cos());
+            let inliers = get_inliers(cloud, connectivity, GLOBAL_THRESHOLD, seed, normal_orient);
+            let cost = orient_cost(normals, &inliers, normal_orient);
+            candidates.push((Orientation(theta, phi), cost));
+        }
+    }
+
+    candidates
+        .into_iter()
+        .min_by(|a, b| a.1.total_cmp(&b.1))
+        .and_then(|candidate| Some(candidate.0))
+        .unwrap()
+}
+
+pub fn orient_planes(
+    cloud: &Vec<Point>,
+    normals: (),
+    connectivity: (),
+    seeds: &Vec<usize>,
+) -> Vec<Orientation> {
+    seeds
+        .iter()
+        .map(|seed| orient_plane(cloud, normals, connectivity, *seed))
+        .collect()
 }
 
 // pub fn detect_initial_cross_sections() {}

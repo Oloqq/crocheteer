@@ -198,7 +198,11 @@ impl PlushieSimulation {
                     colors
                 };
 
-                let angles: Vec<(f32, f32)> = skeletonization::orient_planes(&seeds);
+                let angles: Vec<(f32, f32)> =
+                    skeletonization::orient_planes(&plushie.nodes.points, (), (), &seeds)
+                        .iter()
+                        .map(|orient| (orient.0, orient.1))
+                        .collect();
 
                 self.send(
                     "change-colors",
