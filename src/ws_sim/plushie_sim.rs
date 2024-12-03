@@ -198,11 +198,65 @@ impl PlushieSimulation {
                     colors
                 };
 
-                let angles: Vec<(f32, f32)> =
-                    skeletonization::orient_planes(&plushie.nodes.points, (), (), &seeds)
-                        .iter()
-                        .map(|orient| (orient.0, orient.1))
-                        .collect();
+                self.send(
+                    "change-colors",
+                    serde_json::to_string(&colors).unwrap().as_str(),
+                );
+
+                self.send(
+                    "change-centroids",
+                    serde_json::to_string(&json!({
+                        "centroids": &centroids,
+                        "colors": &cluster_colors,
+                    }))
+                    .unwrap()
+                    .as_str(),
+                );
+            }
+            "initial-cross-sections" => {
+                let plushie = self
+                    .plushie
+                    .as_animated()
+                    .expect("This to be used with animated plushie");
+
+                let (cluster_membership, centroids) =
+                    skeletonization::do_clustering(CLUSTER_NUM, &plushie.nodes.points);
+
+                let seeds = skeletonization::select_seeds(
+                    &plushie.nodes.points,
+                    &cluster_membership,
+                    &centroids,
+                );
+
+                let normals =
+                    skeletonization::local_surface_normals_per_point(self.plushie.get_points());
+
+                let orient_inliers =
+                    skeletonization::orient_planes(&plushie.nodes.points, &normals, (), &seeds);
+
+                let angles: Vec<(f32, f32)> = orient_inliers
+                    .iter()
+                    .map(|(orient, _)| (orient.0, orient.1))
+                    .collect();
+
+                let inliers: Vec<Vec<usize>> = orient_inliers
+                    .into_iter()
+                    .map(|(_, inliers)| inliers)
+                    .collect();
+
+                const CLUSTER_NUM: usize = 4;
+                let cluster_colors: [(usize, usize, usize); CLUSTER_NUM] =
+                    [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
+                let colors: Vec<(usize, usize, usize)> = (0..plushie.nodes.points.len())
+                    .map(|i| {
+                        for (ci, color) in cluster_colors.iter().enumerate() {
+                            if inliers[ci].contains(&i) {
+                                return color.clone();
+                            }
+                        }
+                        return (255, 255, 255);
+                    })
+                    .collect();
 
                 self.send(
                     "change-colors",
@@ -219,26 +273,6 @@ impl PlushieSimulation {
                     .unwrap()
                     .as_str(),
                 );
-            }
-            "initial-cross-sections" => {
-                // let normals =
-                //     skeletonization::local_surface_normals_per_point(self.plushie.get_points());
-
-                // skeletonization::detect_initial_cross_sections();
-
-                // self.send(
-                //     "clusters",
-                //     serde_json::to_string(&vec![Point::new(0.0, 1.0, 0.0)])
-                //         .unwrap()
-                //         .as_str(),
-                // );
-
-                // self.send(
-                //     "seed-points",
-                //     serde_json::to_string(&vec![Point::new(0.0, 1.0, 0.0)])
-                //         .unwrap()
-                //         .as_str(),
-                // );
             }
             _ => log::error!("Unexpected msg: {msg}"),
         };

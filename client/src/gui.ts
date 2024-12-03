@@ -159,7 +159,7 @@ export function initGui(
 
     skeleton
       .add(skeletonFuncs, "initialCrossSections")
-      .name("Initial cross sections");
+      .name("Initial cross sections (takes time)");
 
     skeleton
       .add(data, "inspectCluster", 0)
