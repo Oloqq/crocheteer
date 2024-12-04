@@ -3,6 +3,22 @@ use std::f32::consts::PI;
 use crate::common::*;
 use kmeans::*;
 
+#[allow(unused)]
+pub fn max_dists(points: &Vec<Point>, edges: &Vec<Vec<usize>>) -> Vec<f32> {
+    edges
+        .iter()
+        .enumerate()
+        .map(|(from, targets)| {
+            let source = points[from];
+            let targets = targets.iter().map(|ind| points[*ind]);
+            targets
+                .map(|t| source.coords.metric_distance(&t.coords))
+                .max_by(|a, b| a.total_cmp(&b))
+                .unwrap_or(0.0)
+        })
+        .collect()
+}
+
 pub fn do_clustering(num_clusters: usize, points: &Vec<Point>) -> (Vec<usize>, Vec<Point>) {
     let sample_count = points.len();
     let sample_dims = 3;
@@ -60,6 +76,9 @@ pub fn select_seeds(
     seeds
 }
 
+/// Nodes in relaxed plushie have max distance of ~1.4
+const GLOBAL_THRESHOLD: f32 = 1.5 * 1.4;
+
 fn get_inliers(
     cloud: &Vec<Point>,
     _connectivity: (),
@@ -73,7 +92,12 @@ fn get_inliers(
         .enumerate()
         .filter_map(|(i, p)| (normal_offset.dot(&p.coords) - d <= threshold).then_some(i))
         .collect();
-    let connected = close_to_plane;
+    let connected = close_to_plane
+        .into_iter()
+        .filter(|i| {
+            cloud[*i].coords.metric_distance(&cloud[seed].coords) <= GLOBAL_THRESHOLD * 10.0
+        })
+        .collect();
     connected
 }
 
@@ -96,7 +120,6 @@ fn orient_plane(
     const ANGULAR_INTERVAL: f32 = PI / 6.0;
     const THETA_STEPS: usize = 11;
     const PHI_STEPS: usize = 4;
-    const GLOBAL_THRESHOLD: f32 = 0.00001;
 
     let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(THETA_STEPS * PHI_STEPS);
     let mut debug_inliers: Vec<Vec<usize>> = Vec::with_capacity(candidates.capacity());

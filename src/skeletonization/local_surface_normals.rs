@@ -19,7 +19,7 @@ fn save_to_pcd(points: &Vec<Point>) -> String {
     ];
 
     let mut writer: DynWriter<_> = pcd_rs::WriterInit {
-        width: 169,
+        width: points.len() as u64,
         height: 1,
         viewpoint: Default::default(),
         data_kind: pcd_rs::DataKind::Ascii,

@@ -223,20 +223,19 @@ impl PlushieSimulation {
                     .as_animated()
                     .expect("This to be used with animated plushie");
 
-                let (cluster_membership, centroids) =
-                    skeletonization::do_clustering(CLUSTER_NUM, &plushie.nodes.points);
+                let cloud = &plushie.nodes.points;
+                // let max_dists = skeletonization::max_dists(cloud, &plushie.edges);
+                // println!("{:?}", max_dists);
 
-                let seeds = skeletonization::select_seeds(
-                    &plushie.nodes.points,
-                    &cluster_membership,
-                    &centroids,
-                );
+                let (cluster_membership, centroids) =
+                    skeletonization::do_clustering(CLUSTER_NUM, cloud);
+
+                let seeds = skeletonization::select_seeds(cloud, &cluster_membership, &centroids);
 
                 let normals =
                     skeletonization::local_surface_normals_per_point(self.plushie.get_points());
 
-                let orient_inliers =
-                    skeletonization::orient_planes(&plushie.nodes.points, &normals, (), &seeds);
+                let orient_inliers = skeletonization::orient_planes(cloud, &normals, (), &seeds);
 
                 let angles: Vec<(f32, f32)> = orient_inliers
                     .iter()
@@ -251,7 +250,7 @@ impl PlushieSimulation {
                 const CLUSTER_NUM: usize = 4;
                 let cluster_colors: [(usize, usize, usize); CLUSTER_NUM] =
                     [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
-                let colors: Vec<(usize, usize, usize)> = (0..plushie.nodes.points.len())
+                let colors: Vec<(usize, usize, usize)> = (0..cloud.len())
                     .map(|i| {
                         for (ci, color) in cluster_colors.iter().enumerate() {
                             if inliers[ci].contains(&i) {
@@ -262,7 +261,7 @@ impl PlushieSimulation {
                     })
                     .collect();
 
-                let all_white = vec![(255, 255, 255); plushie.nodes.points.len()];
+                let all_white = vec![(255, 255, 255); cloud.len()];
                 let mut variable_colors: Vec<Vec<(usize, usize, usize)>> =
                     vec![all_white.clone(); inliers.len()];
                 for (i, plane_inliers) in inliers.iter().enumerate() {
@@ -281,10 +280,11 @@ impl PlushieSimulation {
                     .as_str(),
                 );
 
+                let seed_points: Vec<Point> = seeds.iter().map(|s| cloud[*s].clone()).collect();
                 self.send(
                     "change-centroids",
                     serde_json::to_string(&json!({
-                        "centroids": &centroids,
+                        "centroids": &seed_points,
                         "colors": &cluster_colors,
                         "angles": &angles
                     }))
