@@ -48,5 +48,8 @@ namespace crapi {
     minimum_displacement: number;
   }
 
-  type ChangeColors = RGB[];
+  interface ChangeColors {
+    standard: RGB[];
+    variable?: RGB[][];
+  }
 }

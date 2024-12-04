@@ -29,7 +29,9 @@ export default class PlushieBody {
   restoreColors: crapi.RGB[] | undefined;
   centroidColors: crapi.RGB[] | undefined;
   planeDisk: Mesh | undefined;
+  planeArrow: THREE.Group | undefined;
   centroidAngles: [number, number][] | undefined;
+  variableNodeColors: crapi.RGB[][] | undefined;
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -70,6 +72,10 @@ export default class PlushieBody {
       if (this.planeDisk) {
         create.destroy(this.scene, this.planeDisk);
       }
+      if (this.planeArrow) {
+        create.destroyGroup(this.scene, this.planeArrow);
+      }
+
       if (val < 0 || val >= this.centroids.length) {
         console.log("tried to inspect nonexisting centroid");
         return;
@@ -91,6 +97,19 @@ export default class PlushieBody {
         planeColor,
         planeOpacity
       );
+
+      this.planeArrow = create.arrowFromAngles(
+        this.scene,
+        centroidPos,
+        angles[0],
+        angles[1],
+        1,
+        planeColor
+      );
+
+      if (this.variableNodeColors != undefined) {
+        this.updateColors(this.variableNodeColors![val]);
+      }
     };
   }
 
@@ -110,24 +129,7 @@ export default class PlushieBody {
 
   disposeGarbage() {
     for (let garbage of this.disposeAtStep) {
-      garbage.traverse((protochild) => {
-        // I don't have time for retroactively designed type systems
-        let child = protochild as any;
-        if (child.isMesh) {
-          if (child.geometry) {
-            child.geometry.dispose();
-          }
-
-          if (child.material) {
-            if (Array.isArray(child.material)) {
-              child.material.forEach((material: any) => material.dispose());
-            } else {
-              child.material.dispose();
-            }
-          }
-        }
-      });
-      this.scene.remove(garbage);
+      create.destroyGroup(this.scene, garbage);
     }
 
     if (this.restoreColors != undefined) {
@@ -145,6 +147,11 @@ export default class PlushieBody {
     if (this.planeDisk != undefined) {
       create.destroy(this.scene, this.planeDisk);
       this.planeDisk = undefined;
+    }
+
+    if (this.planeArrow != undefined) {
+      create.destroyGroup(this.scene, this.planeArrow);
+      this.planeArrow = undefined;
     }
   }
 
@@ -269,7 +276,7 @@ export default class PlushieBody {
     }
   }
 
-  updateColors(colors: crapi.ChangeColors) {
+  updateColors(colors: crapi.RGB[]) {
     this.nodeColors = colors;
     for (let i = 0; i < this.nodes.length; i++) {
       (this.nodes[i].material as any).color = this.nodeColor(i);

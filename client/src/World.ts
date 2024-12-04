@@ -60,9 +60,11 @@ export default class World {
       // Skeletonization research
       case "change-colors":
         if (this.plushie) {
+          const d = JSON.parse(data) as crapi.ChangeColors;
           this.plushie.clearLinks();
           this.plushie.restoreColors = this.plushie?.nodeColors;
-          this.plushie.updateColors(JSON.parse(data));
+          this.plushie.variableNodeColors = d.variable;
+          this.plushie.updateColors(d.standard);
         }
         break;
       case "change-centroids":

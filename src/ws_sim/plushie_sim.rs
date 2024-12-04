@@ -200,7 +200,11 @@ impl PlushieSimulation {
 
                 self.send(
                     "change-colors",
-                    serde_json::to_string(&colors).unwrap().as_str(),
+                    serde_json::to_string(&json!({
+                        "standard": &colors,
+                    }))
+                    .unwrap()
+                    .as_str(),
                 );
 
                 self.send(
@@ -258,9 +262,23 @@ impl PlushieSimulation {
                     })
                     .collect();
 
+                let all_white = vec![(255, 255, 255); plushie.nodes.points.len()];
+                let mut variable_colors: Vec<Vec<(usize, usize, usize)>> =
+                    vec![all_white.clone(); inliers.len()];
+                for (i, plane_inliers) in inliers.iter().enumerate() {
+                    for point in plane_inliers {
+                        variable_colors[i][*point] = cluster_colors[i];
+                    }
+                }
+
                 self.send(
                     "change-colors",
-                    serde_json::to_string(&colors).unwrap().as_str(),
+                    serde_json::to_string(&json!({
+                        "standard": &colors,
+                        "variable": &variable_colors,
+                    }))
+                    .unwrap()
+                    .as_str(),
                 );
 
                 self.send(

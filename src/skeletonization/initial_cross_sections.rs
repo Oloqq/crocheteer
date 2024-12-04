@@ -96,7 +96,7 @@ fn orient_plane(
     const ANGULAR_INTERVAL: f32 = PI / 6.0;
     const THETA_STEPS: usize = 11;
     const PHI_STEPS: usize = 4;
-    const GLOBAL_THRESHOLD: f32 = 0.1;
+    const GLOBAL_THRESHOLD: f32 = 0.00001;
 
     let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(THETA_STEPS * PHI_STEPS);
     let mut debug_inliers: Vec<Vec<usize>> = Vec::with_capacity(candidates.capacity());
