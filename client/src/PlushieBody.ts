@@ -98,14 +98,14 @@ export default class PlushieBody {
         planeOpacity
       );
 
-      // this.planeArrow = create.arrowFromAngles(
-      //   this.scene,
-      //   centroidPos,
-      //   angles[0],
-      //   angles[1],
-      //   1,
-      //   planeColor
-      // );
+      this.planeArrow = create.arrowFromAngles(
+        this.scene,
+        centroidPos,
+        angles[0],
+        angles[1],
+        1,
+        planeColor
+      );
 
       if (this.variableNodeColors != undefined) {
         this.updateColors(this.variableNodeColors![val]);

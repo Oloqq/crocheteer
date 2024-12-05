@@ -197,8 +197,8 @@ export function disk(
   x: number,
   y: number,
   z: number,
-  angleX: number,
-  angleY: number,
+  theta: number,
+  phi: number,
   radius: number,
   color: THREE.Color,
   opacity: number
@@ -214,8 +214,14 @@ export function disk(
   const circle = new THREE.Mesh(geometry, material);
 
   circle.position.set(x, y, z);
-  circle.rotation.x = angleX;
-  circle.rotation.y = angleY;
+  const normal = new THREE.Vector3(
+    Math.sin(phi) * Math.cos(theta),
+    Math.sin(phi) * Math.sin(theta),
+    Math.cos(phi)
+  ).normalize();
+  circle.lookAt(
+    circle.position.clone().add(normal) // Make the disk "face" the normal vector
+  );
 
   scene.add(circle);
 

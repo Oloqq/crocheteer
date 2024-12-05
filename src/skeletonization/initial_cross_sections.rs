@@ -78,7 +78,7 @@ pub fn select_seeds(
 
 /// Nodes in relaxed plushie have max distance of ~1.4
 const CLUSTER_DISTANCE_THRESHOLD: f32 = 1.4;
-const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
+// const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
 
 fn get_inliers(
     cloud: &Vec<Point>,
