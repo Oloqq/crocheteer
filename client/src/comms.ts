@@ -11,6 +11,10 @@ export function connect(url: string, scene: World, onconnect: any): WebSocket {
     if (onconnect) {
       onconnect();
     }
+
+    (window as any).mockReceive = (x: any) => {
+      scene.parseMessage("change-centroids", x);
+    };
   };
 
   ws.onmessage = function (event) {
