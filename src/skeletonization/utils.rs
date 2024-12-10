@@ -10,7 +10,7 @@ fn get_inliers(
     _connectivity: (),
     threshold: f32,
     seed: usize,
-    normal_offset: V,
+    normal_offset: &V,
 ) -> Vec<usize> {
     let d = normal_offset.dot(&cloud[seed].coords);
     let close_to_plane: Vec<usize> = cloud
@@ -26,7 +26,7 @@ fn get_inliers(
     // connected
 }
 
-fn orient_cost(normals: &Vec<V>, inliers: &Vec<usize>, normal_offset: V) -> f32 {
+fn orient_cost(normals: &Vec<V>, inliers: &Vec<usize>, normal_offset: &V) -> f32 {
     inliers
         .iter()
         .map(|i| normal_offset.dot(&normals[*i]).abs())
@@ -37,32 +37,26 @@ fn orient_cost(normals: &Vec<V>, inliers: &Vec<usize>, normal_offset: V) -> f32 
 #[derive(Debug, Clone)]
 pub struct Orientation(pub f32, pub f32);
 
-fn orient_plane(
+fn find_best_plane(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
     connectivity: (),
     seed: usize,
+    considered_normals: &Vec<(V, Orientation)>,
 ) -> (Orientation, Vec<usize>) {
-    const ANGULAR_INTERVAL: f32 = PI / 6.0;
-    const THETA_STEPS: usize = 12;
-    const PHI_STEPS: usize = 4;
-
-    let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(THETA_STEPS * PHI_STEPS);
+    let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(considered_normals.len());
     let mut debug_inliers: Vec<Vec<usize>> = Vec::with_capacity(candidates.capacity());
-    for theta in (0..THETA_STEPS).map(|t| t as f32 * ANGULAR_INTERVAL) {
-        for phi in (0..PHI_STEPS).map(|p| p as f32 * ANGULAR_INTERVAL) {
-            let normal_orient = V::new(theta.cos() * phi.sin(), theta.sin() * phi.sin(), phi.cos());
-            let inliers = get_inliers(
-                cloud,
-                connectivity,
-                CLUSTER_DISTANCE_THRESHOLD,
-                seed,
-                normal_orient,
-            );
-            let cost = orient_cost(normals, &inliers, normal_orient);
-            candidates.push((Orientation(theta, phi), cost));
-            debug_inliers.push(inliers);
-        }
+    for (normal, angles) in considered_normals {
+        let inliers = get_inliers(
+            cloud,
+            connectivity,
+            CLUSTER_DISTANCE_THRESHOLD,
+            seed,
+            normal,
+        );
+        let cost = orient_cost(normals, &inliers, normal);
+        candidates.push((angles.clone(), cost));
+        debug_inliers.push(inliers);
     }
 
     let (index, best_orientation) = candidates
@@ -81,8 +75,21 @@ pub fn orient_planes(
     connectivity: (),
     seeds: &Vec<usize>,
 ) -> Vec<(Orientation, Vec<usize>)> {
+    const ANGULAR_INTERVAL: f32 = PI / 6.0;
+    const THETA_STEPS: usize = 12;
+    const PHI_STEPS: usize = 4;
+    let mut considered_normals: Vec<(V, Orientation)> = Vec::with_capacity(THETA_STEPS * PHI_STEPS);
+    for theta in (0..THETA_STEPS).map(|t| t as f32 * ANGULAR_INTERVAL) {
+        for phi in (0..PHI_STEPS).map(|p| p as f32 * ANGULAR_INTERVAL) {
+            considered_normals.push((
+                V::new(theta.cos() * phi.sin(), theta.sin() * phi.sin(), phi.cos()),
+                Orientation(theta, phi),
+            ));
+        }
+    }
+
     seeds
         .iter()
-        .map(|seed| orient_plane(cloud, normals, connectivity, *seed))
+        .map(|seed| find_best_plane(cloud, normals, connectivity, *seed, &considered_normals))
         .collect()
 }
