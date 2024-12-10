@@ -275,7 +275,69 @@ impl PlushieSimulation {
                     .as_str(),
                 );
             }
-            "growing" => {}
+            "growing" => {
+                const CLUSTER_NUM: usize = 4;
+                let cloud = &self.plushie.as_animated().unwrap().nodes.points;
+                let cross_sections =
+                    skeletonization::detect_initial_cross_sections(cloud, CLUSTER_NUM);
+                let parts: Vec<skeletonization::Part> =
+                    skeletonization::grow(cloud, cross_sections);
+
+                let all_white = vec![(255, 255, 255); cloud.len()];
+                let highlight_color = (255, 0, 0);
+
+                let mut variable_colors: Vec<Vec<(usize, usize, usize)>> =
+                    vec![all_white.clone(); parts.len()];
+                for (i, part) in parts.iter().enumerate() {
+                    for section in &part.sections {
+                        for point in &section.inliers {
+                            variable_colors[i][*point] = highlight_color.clone();
+                        }
+                    }
+                }
+
+                self.send(
+                    "change-colors",
+                    serde_json::to_string(&json!({
+                        "standard": &all_white,
+                        "variable": &variable_colors,
+                    }))
+                    .unwrap()
+                    .as_str(),
+                );
+
+                fn get_center(
+                    cloud: &Vec<Point>,
+                    section: &skeletonization::CrossSection,
+                ) -> Point {
+                    let points: Vec<&Point> = section.inliers.iter().map(|i| &cloud[*i]).collect();
+                    let mut sum = V::zeros();
+                    for point in &points {
+                        sum += point.coords;
+                    }
+                    let avg = sum / points.len() as f32;
+                    Point::new(avg.x, avg.y, avg.z)
+                }
+
+                let mut skeleton: Vec<Point> = Vec::new();
+                let mut colors: Vec<(usize, usize, usize)> = Vec::new();
+                for part in parts.iter() {
+                    for section in &part.sections {
+                        skeleton.push(get_center(cloud, section));
+                        colors.push((255, 255, 255));
+                    }
+                }
+
+                self.send(
+                    "change-centroids",
+                    serde_json::to_string(&json!({
+                        "centroids": &skeleton,
+                        "colors": &colors
+                    }))
+                    .unwrap()
+                    .as_str(),
+                );
+            }
             _ => log::error!("Unexpected msg: {msg}"),
         };
         Ok(())

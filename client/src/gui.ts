@@ -167,6 +167,8 @@ export function initGui(
     skeleton
       .add(data, "inspectCluster", 0)
       .onChange((val) => data.clusterChanged(val));
+
+    skeleton.add(skeletonFuncs, "initialCrossSections").name("Growing");
   }
 
   return gui;
