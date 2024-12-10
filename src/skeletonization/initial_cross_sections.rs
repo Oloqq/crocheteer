@@ -162,4 +162,24 @@ pub fn orient_planes(
         .collect()
 }
 
-// pub fn detect_initial_cross_sections() {}
+pub struct CrossSection {
+    pub seed: usize,
+    pub normal: Orientation,
+    pub inliers: Vec<usize>,
+}
+
+pub fn detect_initial_cross_sections(cloud: &Vec<Point>, clusters: usize) -> Vec<CrossSection> {
+    let (cluster_membership, centroids) = do_clustering(clusters, cloud);
+    let seeds = select_seeds(cloud, &cluster_membership, &centroids);
+    let normals = super::local_surface_normals_per_point(cloud);
+
+    orient_planes(cloud, &normals, (), &seeds)
+        .into_iter()
+        .zip(seeds)
+        .map(|((orient, inliers), seed)| CrossSection {
+            seed,
+            normal: orient,
+            inliers,
+        })
+        .collect()
+}

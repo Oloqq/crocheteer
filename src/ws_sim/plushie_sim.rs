@@ -218,36 +218,19 @@ impl PlushieSimulation {
                 );
             }
             "initial-cross-sections" => {
-                let plushie = self
-                    .plushie
-                    .as_animated()
-                    .expect("This to be used with animated plushie");
-
-                let cloud = &plushie.nodes.points;
-                // let max_dists = skeletonization::max_dists(cloud, &plushie.edges);
-                // println!("{:?}", max_dists);
-
-                let (cluster_membership, centroids) =
-                    skeletonization::do_clustering(CLUSTER_NUM, cloud);
-
-                let seeds = skeletonization::select_seeds(cloud, &cluster_membership, &centroids);
-
-                let normals =
-                    skeletonization::local_surface_normals_per_point(self.plushie.get_points());
-
-                let orient_inliers = skeletonization::orient_planes(cloud, &normals, (), &seeds);
-
-                let angles: Vec<(f32, f32)> = orient_inliers
-                    .iter()
-                    .map(|(orient, _)| (orient.0, orient.1))
-                    .collect();
-
-                let inliers: Vec<Vec<usize>> = orient_inliers
-                    .into_iter()
-                    .map(|(_, inliers)| inliers)
-                    .collect();
-
                 const CLUSTER_NUM: usize = 4;
+                let cloud = &self.plushie.as_animated().unwrap().nodes.points;
+                let cross_sections =
+                    skeletonization::detect_initial_cross_sections(cloud, CLUSTER_NUM);
+
+                let seeds: Vec<usize> = cross_sections.iter().map(|cs| cs.seed).collect();
+                let angles: Vec<(f32, f32)> = cross_sections
+                    .iter()
+                    .map(|cs| (cs.normal.0, cs.normal.1))
+                    .collect();
+                let inliers: Vec<Vec<usize>> =
+                    cross_sections.iter().map(|cs| cs.inliers.clone()).collect();
+
                 let cluster_colors: [(usize, usize, usize); CLUSTER_NUM] =
                     [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
                 let colors: Vec<(usize, usize, usize)> = (0..cloud.len())
@@ -292,6 +275,7 @@ impl PlushieSimulation {
                     .as_str(),
                 );
             }
+            "growing" => {}
             _ => log::error!("Unexpected msg: {msg}"),
         };
         Ok(())

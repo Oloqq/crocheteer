@@ -148,6 +148,9 @@ export function initGui(
     initialCrossSections: () => {
       comms.send(`initial-cross-sections`);
     },
+    growing: () => {
+      comms.send(`growing`);
+    },
   };
   skeleton.open();
   {
