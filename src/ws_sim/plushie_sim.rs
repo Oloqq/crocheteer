@@ -220,8 +220,12 @@ impl PlushieSimulation {
             "initial-cross-sections" => {
                 const CLUSTER_NUM: usize = 4;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let cross_sections =
-                    skeletonization::detect_initial_cross_sections(cloud, CLUSTER_NUM);
+                let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
+                let cross_sections = skeletonization::detect_initial_cross_sections(
+                    cloud,
+                    CLUSTER_NUM,
+                    &surface_normals,
+                );
 
                 let seeds: Vec<usize> = cross_sections.iter().map(|cs| cs.seed).collect();
                 let angles: Vec<(f32, f32)> = cross_sections
@@ -278,10 +282,14 @@ impl PlushieSimulation {
             "growing" => {
                 const CLUSTER_NUM: usize = 4;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let cross_sections =
-                    skeletonization::detect_initial_cross_sections(cloud, CLUSTER_NUM);
+                let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
+                let cross_sections = skeletonization::detect_initial_cross_sections(
+                    cloud,
+                    CLUSTER_NUM,
+                    &surface_normals,
+                );
                 let parts: Vec<skeletonization::Part> =
-                    skeletonization::grow(cloud, cross_sections);
+                    skeletonization::grow(cloud, cross_sections, &surface_normals);
 
                 let all_white = vec![(255, 255, 255); cloud.len()];
                 let highlight_color = (255, 0, 0);
@@ -306,24 +314,11 @@ impl PlushieSimulation {
                     .as_str(),
                 );
 
-                fn get_center(
-                    cloud: &Vec<Point>,
-                    section: &skeletonization::CrossSection,
-                ) -> Point {
-                    let points: Vec<&Point> = section.inliers.iter().map(|i| &cloud[*i]).collect();
-                    let mut sum = V::zeros();
-                    for point in &points {
-                        sum += point.coords;
-                    }
-                    let avg = sum / points.len() as f32;
-                    Point::new(avg.x, avg.y, avg.z)
-                }
-
                 let mut skeleton: Vec<Point> = Vec::new();
                 let mut colors: Vec<(usize, usize, usize)> = Vec::new();
                 for part in parts.iter() {
                     for section in &part.sections {
-                        skeleton.push(get_center(cloud, section));
+                        skeleton.push(Point::from(section.center));
                         colors.push((255, 255, 255));
                     }
                 }
