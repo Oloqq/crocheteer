@@ -290,6 +290,11 @@ impl PlushieSimulation {
                 );
                 let parts: Vec<skeletonization::Part> =
                     skeletonization::grow(cloud, cross_sections, &surface_normals);
+                println!(
+                    "parts: {}, sections: {}",
+                    parts.len(),
+                    parts.iter().flat_map(|p| &p.sections).count()
+                );
 
                 let all_white = vec![(255, 255, 255); cloud.len()];
                 let highlight_color = (255, 0, 0);

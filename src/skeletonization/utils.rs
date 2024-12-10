@@ -37,7 +37,7 @@ fn orient_cost(normals: &Vec<V>, inliers: &Vec<usize>, normal_offset: &V) -> f32
 #[derive(Debug, Clone)]
 pub struct Orientation(pub f32, pub f32);
 
-fn find_best_plane(
+pub fn find_best_plane(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
     connectivity: (),

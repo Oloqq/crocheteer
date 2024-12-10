@@ -84,7 +84,7 @@ pub struct CrossSection {
 }
 
 impl CrossSection {
-    fn new(cloud: &Vec<Point>, seed: usize, normal: Orientation, inliers: Vec<usize>) -> Self {
+    pub fn new(cloud: &Vec<Point>, seed: usize, normal: Orientation, inliers: Vec<usize>) -> Self {
         let center = Self::center(cloud, &inliers);
         CrossSection {
             seed,

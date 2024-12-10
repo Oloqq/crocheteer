@@ -81,31 +81,32 @@ export default class PlushieBody {
         return;
       }
       const centroidPos = this.centroids[val].position;
-      if (this.centroidAngles == undefined) {
+      if (this.centroidAngles != undefined) {
+        const angles = this.centroidAngles[val];
+        this.planeDisk = create.disk(
+          this.scene,
+          centroidPos.x,
+          centroidPos.y,
+          centroidPos.z,
+          angles[0],
+          angles[1],
+          1,
+          planeColor,
+          planeOpacity
+        );
+
+        this.planeArrow = create.arrowFromAngles(
+          this.scene,
+          centroidPos,
+          angles[0],
+          angles[1],
+          1,
+          planeColor
+        );
+      } else {
         console.error("expected centroidAngles");
         return;
       }
-      const angles = this.centroidAngles[val];
-      this.planeDisk = create.disk(
-        this.scene,
-        centroidPos.x,
-        centroidPos.y,
-        centroidPos.z,
-        angles[0],
-        angles[1],
-        1,
-        planeColor,
-        planeOpacity
-      );
-
-      this.planeArrow = create.arrowFromAngles(
-        this.scene,
-        centroidPos,
-        angles[0],
-        angles[1],
-        1,
-        planeColor
-      );
 
       if (this.variableNodeColors != undefined) {
         this.updateColors(this.variableNodeColors![val]);
