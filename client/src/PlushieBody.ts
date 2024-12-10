@@ -32,6 +32,7 @@ export default class PlushieBody {
   planeArrow: THREE.Group | undefined;
   centroidAngles: [number, number][] | undefined;
   variableNodeColors: crapi.RGB[][] | undefined;
+  partToCentroids: number[][] | undefined;
 
   constructor(display: Display, data: crapi.Initialize, guiData: GuiData) {
     this.scene = display.scene;
@@ -103,13 +104,23 @@ export default class PlushieBody {
           1,
           planeColor
         );
-      } else {
-        console.error("expected centroidAngles");
-        return;
       }
 
       if (this.variableNodeColors != undefined) {
-        this.updateColors(this.variableNodeColors![val]);
+        if (val < this.variableNodeColors.length) {
+          this.updateColors(this.variableNodeColors![val]);
+        }
+      }
+
+      if (this.partToCentroids != undefined) {
+        if (val < this.partToCentroids.length) {
+          for (let i = 0; i < this.centroids.length; i++) {
+            this.centroids[i].visible = false;
+          }
+          for (let i of this.partToCentroids[val]) {
+            this.centroids[i].visible = true;
+          }
+        }
       }
     };
   }

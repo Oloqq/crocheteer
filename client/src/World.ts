@@ -77,6 +77,7 @@ export default class World {
           }
           this.plushie.centroidColors = colors;
           if (d["angles"]) this.plushie.centroidAngles = d["angles"];
+          if (d["variable"]) this.plushie.partToCentroids = d["variable"];
           this.plushie.updateCentroids(centroids);
         }
         break;

@@ -280,7 +280,7 @@ impl PlushieSimulation {
                 );
             }
             "growing" => {
-                const CLUSTER_NUM: usize = 4;
+                const CLUSTER_NUM: usize = 10;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
@@ -299,12 +299,12 @@ impl PlushieSimulation {
                 let all_white = vec![(255, 255, 255); cloud.len()];
                 let highlight_color = (255, 0, 0);
 
-                let mut variable_colors: Vec<Vec<(usize, usize, usize)>> =
+                let mut variable_node_colors: Vec<Vec<(usize, usize, usize)>> =
                     vec![all_white.clone(); parts.len()];
-                for (i, part) in parts.iter().enumerate() {
+                for (partnum, part) in parts.iter().enumerate() {
                     for section in &part.sections {
                         for point in &section.inliers {
-                            variable_colors[i][*point] = highlight_color.clone();
+                            variable_node_colors[partnum][*point] = highlight_color.clone();
                         }
                     }
                 }
@@ -313,7 +313,7 @@ impl PlushieSimulation {
                     "change-colors",
                     serde_json::to_string(&json!({
                         "standard": &all_white,
-                        "variable": &variable_colors,
+                        "variable": &variable_node_colors,
                     }))
                     .unwrap()
                     .as_str(),
@@ -321,10 +321,14 @@ impl PlushieSimulation {
 
                 let mut skeleton: Vec<Point> = Vec::new();
                 let mut colors: Vec<(usize, usize, usize)> = Vec::new();
-                for part in parts.iter() {
+                let mut part_to_centroids: Vec<Vec<usize>> = vec![Vec::new(); parts.len()];
+                let mut centroidnum = 0;
+                for (partnum, part) in parts.iter().enumerate() {
                     for section in &part.sections {
                         skeleton.push(Point::from(section.center));
-                        colors.push((255, 255, 255));
+                        colors.push((255, 165, 255));
+                        part_to_centroids[partnum].push(centroidnum);
+                        centroidnum += 1;
                     }
                 }
 
@@ -332,7 +336,8 @@ impl PlushieSimulation {
                     "change-centroids",
                     serde_json::to_string(&json!({
                         "centroids": &skeleton,
-                        "colors": &colors
+                        "colors": &colors,
+                        "variable": &part_to_centroids
                     }))
                     .unwrap()
                     .as_str(),

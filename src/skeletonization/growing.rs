@@ -27,15 +27,15 @@ fn grow_single_part(
     surface_normals: &Vec<V>,
 ) -> Part {
     let forwards = grow_in_direction(1.0, &initial_section, cloud, surface_normals);
-    // let backwards = grow_in_direction(-1.0, &initial_section, cloud, surface_normals);
-    // let sections = backwards
-    //     .into_iter()
-    //     .rev()
-    //     .chain(std::iter::once(initial_section))
-    //     .chain(forwards.into_iter())
-    //     .collect();
+    let backwards = grow_in_direction(-1.0, &initial_section, cloud, surface_normals);
+    let sections = backwards
+        .into_iter()
+        .rev()
+        .chain(std::iter::once(initial_section))
+        .chain(forwards.into_iter())
+        .collect();
 
-    let sections = forwards;
+    // let sections = forwards;
 
     Part { sections }
 }
@@ -89,10 +89,10 @@ fn sprout(
     const DELTA_ANG_DEG: f32 = 12.5;
     let delta_ang = DELTA_ANG_DEG.to_radians();
 
-    println!(
-        "new center: {}, theta {}, phi {}, dang {}",
-        new_center, theta, phi, delta_ang
-    );
+    // println!(
+    //     "new center: {}, theta {}, phi {}, dang {}",
+    //     new_center, theta, phi, delta_ang
+    // );
 
     let mut considered_normals: Vec<(V, Orientation)> = Vec::with_capacity(9);
     for theta in [theta - delta_ang, theta, theta + delta_ang] {
@@ -131,6 +131,8 @@ fn sprout(
     if added == 0 {
         return None;
     }
+    // TODO: check scale with eigenvalues
+    println!("remember to implement scale checking");
 
     Some(CrossSection::new(
         cloud,
@@ -138,4 +140,63 @@ fn sprout(
         best_plane_orientation,
         inliers,
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    // use super::*;
+
+    #[test]
+    fn test_bruh() {
+        use nalgebra::{DMatrix, SymmetricEigen};
+        // Suppose you have n 3D points in a Vec of arrays:
+        let points = vec![
+            [-1.0, 2.0, 3.0],
+            [1.0, 2.0, 3.0],
+            [1.0, 2.0, 3.0],
+            [1.0, 2.0, 3.0],
+        ];
+
+        // Convert this into a DMatrix<f64> of shape (n, 3)
+        // Each row is a data point (x, y, z)
+        let n = points.len();
+        let mut data = DMatrix::from_iterator(3, n, points.iter().flat_map(|&p| p.clone()));
+        println!("data {}", &data);
+
+        let mean = data.column_mean();
+        println!("mean {}", mean);
+
+        // 2. Center data: For each row, subtract the mean
+        for mut col in data.column_iter_mut() {
+            col -= &mean;
+        }
+
+        // 3. Compute covariance matrix (3x3)
+        // Covariance = (X^T X) / (n - 1)
+        // shape(X) = (n,3), shape(X^T X) = (3,3)
+        let cov = (&data.transpose() * &data) / (n as f64 - 1.0);
+
+        // 4. Perform eigen decomposition on the symmetric covariance matrix
+        let eig = SymmetricEigen::new(cov);
+
+        // eig.eigenvalues and eig.eigenvectors are now available
+        // Sort eigenvalues (and vectors) by descending order of eigenvalue
+        let mut eigen_pairs: Vec<(f64, Vec<f64>)> = eig
+            .eigenvalues
+            .iter()
+            .zip(eig.eigenvectors.column_iter())
+            .map(|(val, vec)| (*val, vec.iter().copied().collect()))
+            .collect();
+
+        eigen_pairs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+
+        // The two most significant eigenvalues:
+        let top_two_eigenvalues = [eigen_pairs[0].0, eigen_pairs[1].0];
+        println!("Most significant eigenvalues: {:?}", top_two_eigenvalues);
+
+        // Optional: If you need the principal components (eigenvectors):
+        // let top_two_eigenvectors = [eigen_pairs[0].1.clone(), eigen_pairs[1].1.clone()];
+        // println!("Corresponding eigenvectors: {:?}", top_two_eigenvectors);
+        // assert!(false);
+    }
 }
