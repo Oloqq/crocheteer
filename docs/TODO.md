@@ -14,7 +14,9 @@
 
 # Backlog (need to do for thesis)
 
-- skeleton stuffing: select optimal parts
+- skeleton stuffing
+  - scale checking
+  - select optimal parts
 
 - debug mode that shows peculiarities
 

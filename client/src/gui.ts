@@ -59,7 +59,7 @@ export function initGui(
   data: GuiData,
   world: World
 ): dat.GUI {
-  const gui = new dat.GUI();
+  const gui = new dat.GUI({ hideable: false });
   data.world = world;
   data.updateDisplay = () => {
     gui.updateDisplay();
