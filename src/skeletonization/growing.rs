@@ -83,7 +83,7 @@ fn sprout(
     let (theta, phi) = (source.normal.0, source.normal.1);
     let normal_orient = V::new(theta.cos() * phi.sin(), theta.sin() * phi.sin(), phi.cos());
     let direction = direction * normal_orient;
-    let delta_step = 1.0; // arbitrary
+    let delta_step = 1.5; // arbitrary
     let new_center = source.center + direction * delta_step;
 
     const DELTA_ANG_DEG: f32 = 12.5;

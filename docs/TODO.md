@@ -1,22 +1,22 @@
 # Next
-- refactor communications
-  - make sure the simulator loads parameters from pattern
+- create a Y shape
 
 # Then
-
-- implement skeleton stuffing
-
-# Backlog (need to do for thesis)
-
-- debug mode that shows peculiarities
-
-- error reporting in the new client
 
 - ACL refactors
   - currently, metadata in ACL cannot save arbitrary strings or floats, just read until end of line there
   - allow color before starter
   - metadata -> parameters
   - operations -> actions
+
+- include chains in the tutorial
+
+
+# Backlog (need to do for thesis)
+
+- skeleton stuffing: select optimal parts
+
+- debug mode that shows peculiarities
 
 - jump the creation to root when rooted changes values from false to true
   - verify parameters displayed in the gui all make sense
