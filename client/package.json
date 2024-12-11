@@ -21,6 +21,7 @@
         "dat.gui": "^0.7.9",
         "jquery": "^3.7.1",
         "monaco-editor": "^0.52.0",
+        "monaco-themes": "^0.4.4",
         "three": "^0.168.0"
     }
 }
