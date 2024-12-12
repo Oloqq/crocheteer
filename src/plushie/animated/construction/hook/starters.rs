@@ -51,6 +51,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
+                    last_mark: None,
                     leniency: Leniency::NoMercy,
                 })
             }
@@ -88,6 +89,7 @@ impl Hook {
                     color,
                     colors,
                     last: None,
+                    last_mark: None,
                     leniency: Leniency::NoMercy,
                 })
             }

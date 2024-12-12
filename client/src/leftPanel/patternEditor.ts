@@ -61,7 +61,10 @@ function defineLanguage() {
         [/#[^\n]*/, "comment"],
 
         // Keywords
-        [/\b(MR|FO|mark|goto|FLO|BLO|BL|ch|Ch|color|sc|inc|dec)\b/, "keyword"],
+        [
+          /\b(MR|FO|mark|goto|FLO|BLO|BL|ch|Ch|color|sc|inc|dec|attach)\b/,
+          "keyword",
+        ],
 
         // Special Symbols (e.g., R)
         [/\bR\b/, "symbol"],

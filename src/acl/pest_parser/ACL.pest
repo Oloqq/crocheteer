@@ -25,6 +25,7 @@ operation_sequence = { operation ~ ("," ~ operation)* }
 arg_int   =  { "(" ~ NUMBER ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
+arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
 
 
 operation = {
@@ -40,18 +41,20 @@ interstitchable_operation = {
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
     | (KW_CH ~ arg_int)
+    | (KW_ATTACH ~ arg_ident_int)
 }
 
-KW_MR       = { "MR" }
-KW_FO       = { "FO" }
-KW_MARK     = { "mark" }
-KW_GOTO     = { "goto" }
-KW_FLO      = { "FLO" }
-KW_BLO      = { "BLO" }
-KW_BL       = { "BL" }
-KW_CH       = { "ch" | "Ch" }
-KW_COLOR      = { "color" }
-KW_STITCH   =  { "sc" | "inc" | "dec" }
+KW_MR     = { "MR" }
+KW_FO     = { "FO" }
+KW_MARK   = { "mark" }
+KW_GOTO   = { "goto" }
+KW_FLO    = { "FLO" }
+KW_BLO    = { "BLO" }
+KW_BL     = { "BL" }
+KW_CH     = { "ch" | "Ch" }
+KW_COLOR  = { "color" }
+KW_ATTACH = { "attach" }
+KW_STITCH =  { "sc" | "inc" | "dec" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{

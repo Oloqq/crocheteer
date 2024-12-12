@@ -8,8 +8,8 @@ pub enum Action {
     Inc,
     Dec,
     Ch(usize),
-    /// Pull yarn through a spot
-    Attach(Label),
+    /// Create a chain, then attach it to a marked position
+    Attach(Label, usize),
     /// Begin working in the other direction
     Reverse,
     /// Front loop only

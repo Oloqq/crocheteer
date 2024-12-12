@@ -205,6 +205,16 @@ impl Pattern {
                 let count = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
                 Ok(vec![Action::Ch(count)])
             }
+            Rule::KW_ATTACH => {
+                let label_pair = tokens.next().unwrap();
+                let label = ident(label_pair.clone())?;
+                let index = self
+                    .labels
+                    .get(&label)
+                    .ok_or(error(UndefinedLabel(label), &label_pair))?;
+                todo!();
+                // Ok(vec![Action::Attach(*index)])
+            }
             _ => unreachable!(),
         }
     }

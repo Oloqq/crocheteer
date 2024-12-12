@@ -31,6 +31,36 @@ struct Moment {
     working_on: WorkingLoops,
 }
 
+impl Moment {
+    fn split(mut self, attachment_anchor: usize, new_anchors: Vec<usize>) -> (Self, Self) {
+        // let start_i = self
+        //     .anchors
+        //     .iter()
+        //     .position(|x| *x == starting_anchor)
+        //     .expect("starting anchor present in current ring"); // TODO real error handling
+        let attachment_i = self
+            .anchors
+            .iter()
+            .position(|x| *x == attachment_anchor)
+            .expect("starting anchor present in current ring"); // TODO real error handling
+        let mut ring_a = self.anchors.split_off(attachment_i);
+        let mut moment_b = self;
+        moment_b.anchors.extend(new_anchors.iter().rev());
+
+        ring_a.pop_front();
+        ring_a.append(&mut new_anchors.into());
+        let moment_a = Moment {
+            cursor: 0,
+            anchors: ring_a,
+            round_count: 0,
+            round_left: 0,
+            working_on: WorkingLoops::Both,
+        };
+
+        (moment_a, moment_b)
+    }
+}
+
 /// Responsible for building the graph used in the simulation
 #[derive(Clone, Debug)]
 pub struct Hook {
@@ -57,7 +87,11 @@ pub struct Hook {
     part_start: usize,
     parts: Vec<Part>,
     at_junction: bool,
+    // TODO make this non ugly
+    /// Last stitch created (not counting actions like mark, goto)
     last: Option<Action>,
+    /// Was the last action a mark?
+    last_mark: Option<Action>,
 }
 
 fn is_uniq(vec: &Vec<Point>) -> bool {
@@ -122,7 +156,28 @@ impl Hook {
                 }
                 self = Stitch::linger(self)?.chain(*x)?;
             }
-            Attach(_) => unimplemented!(),
+            Attach(label, chain_size) => {
+                // create a chain
+                // attach it to given point
+                // assumption: user marked a spot X right before an attach
+                // after attaching, the plushie splits into 2 working rings: A and B
+                // A is the one that user will work when doing rounds normally
+                // ring B can be accessed by goto(X)
+
+                let attaching_anchor = self.labels.get(label).unwrap().cursor - 1;
+                let new_anchors: Vec<usize>;
+                (new_anchors, self) =
+                    Stitch::linger(self)?.attaching_chain(*chain_size, attaching_anchor)?;
+                let (ring_a, ring_b) = self.now.split(attaching_anchor, new_anchors);
+
+                if let Some(Mark(ring_b_label)) = self.last_mark {
+                    assert!(self.labels.contains_key(&ring_b_label));
+                    println!("update");
+                    self.labels.insert(ring_b_label, ring_b);
+                }
+
+                self.now = ring_a;
+            }
             Reverse => unimplemented!(),
             FLO => self.now.working_on = WorkingLoops::Front,
             BLO => self.now.working_on = WorkingLoops::Back,
@@ -135,8 +190,12 @@ impl Hook {
         };
 
         match action {
-            Reverse | FLO | BLO | BL | Goto(_) | Mark(_) | FO | Action::Color(_) => (),
-            _ => self.last = Some(*action),
+            Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) => self.last_mark = None,
+            Mark(_) => self.last_mark = Some(*action),
+            _ => {
+                self.last = Some(*action);
+                self.last_mark = None
+            }
         }
 
         Ok(self)
@@ -418,6 +477,93 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_
+    #[test]
+    fn test_attach() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let attach_here = 0;
+        let return_here = 1;
+        h = h.perform(&Mark(attach_here)).unwrap();
+        q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
+        q!(h.now.round_count, 0);
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Mark(return_here)).unwrap();
+        q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
+        q!(h.now.round_count, 1);
+        q!(h.now.round_left, 2);
+        q!(
+            h.edges,
+            Edges::from(vec![
+                vec![],     // 0: root
+                vec![0],    // 1: mr 1
+                vec![0, 1], // 2: mr 2
+                vec![0, 2], // 3: mr 3, mark
+                vec![1, 3], // 4: sc
+                vec![],
+            ])
+        );
+        h = h.perform(&Attach(attach_here, 3)).unwrap();
+        q!(
+            h.edges,
+            Edges::from(vec![
+                vec![],     // 0: root
+                vec![0],    // 1: mr 1
+                vec![0, 1], // 2: mr 2
+                vec![0, 2], // 3: mr 3, mark
+                vec![1, 3], // 4: sc 1
+                vec![4],    // 5: ch 1
+                vec![5],    // 6: ch 2
+                vec![3, 6], // 7: ch 3
+                vec![],
+            ])
+        );
+        let part_a = h.now;
+        let part_b = h.labels.get(&return_here).unwrap();
+
+        q!(part_a.anchors, Queue::from(vec![4, 5, 6, 7]));
+        // q!(part_a.round_count, 0);
+        // q!(part_a.round_left, 4);
+
+        q!(part_b.anchors, Queue::from(vec![2, 7, 6, 5]));
+        // q!(part_b.round_count, 0);
+        // q!(part_b.round_left, 1);
+    }
+
+    #[test]
+    fn test_attach2() {
+        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let attach_here = 0;
+        let return_here = 1;
+        h = h.perform(&Mark(attach_here)).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Sc).unwrap();
+        h = h.perform(&Mark(return_here)).unwrap();
+        q!(
+            h.edges,
+            Edges::from(vec![
+                vec![],     // 0: root
+                vec![0],    // 1: mr 1
+                vec![0, 1], // 2: mr 2
+                vec![0, 2], // 3: mr 3, mark
+                vec![1, 3], // 4: sc 1
+                vec![2, 4], // 5: sc 2
+                vec![],
+            ])
+        );
+        h = h.perform(&Attach(attach_here, 3)).unwrap();
+        q!(
+            h.edges,
+            Edges::from(vec![
+                vec![],     // 0: root
+                vec![0],    // 1: mr 1
+                vec![0, 1], // 2: mr 2
+                vec![0, 2], // 3: mr 3, mark
+                vec![1, 3], // 4: sc 1
+                vec![2, 4], // 5: sc 2
+                vec![5],    // 6: ch 1
+                vec![6],    // 7: ch 2
+                vec![3, 7], // 8: ch 3
+                vec![],
+            ])
+        );
+    }
 }

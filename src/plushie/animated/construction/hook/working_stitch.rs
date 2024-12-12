@@ -98,6 +98,31 @@ impl Stitch {
         self.finish()
     }
 
+    pub fn attaching_chain(
+        mut self,
+        stitches: usize,
+        attach_to: usize,
+    ) -> Result<(Vec<usize>, Hook), HookError> {
+        if stitches == 0 {
+            return Err(ChainOfZero); // TODO
+        }
+
+        let mut new_anchors = Vec::with_capacity(stitches);
+
+        new_anchors.push(self.hook.now.cursor);
+        self = self.pull_over_without_registering_anchor(true)?;
+
+        // skip first
+        for _ in 1..stitches {
+            new_anchors.push(self.hook.now.cursor);
+            self = self.pull_over_without_registering_anchor(false)?;
+        }
+
+        self.hook.edges.link(self.hook.now.cursor - 1, attach_to);
+
+        Ok((new_anchors, self.hook))
+    }
+
     pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");

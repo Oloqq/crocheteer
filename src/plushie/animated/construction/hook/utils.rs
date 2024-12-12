@@ -19,8 +19,10 @@ pub enum HookError {
     SingleLoopOnNonAnchored,
     SingleLoopNoGrandparent,
     ChainOfZero,
-    /// Chains are finished with some custom logic, chains one after another is currently not supported
+    /// Chains are finished with some custom logic, chains one after another are currently not supported
     ChainAfterChain,
+    /// Attach is supported only directly after a chain
+    AttachWithoutChain,
     /// Simulation can't handle a node with too many links
     TooManyAnchorsForFO,
 }
