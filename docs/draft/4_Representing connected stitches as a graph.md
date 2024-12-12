@@ -1,6 +1,6 @@
 # Representing connected stitches as a graph
 
-Once the pattern is parsed into a list of actions, those actions need to be transformed into a graph, that will later have forces applied to it. In this graph, nodes shall represent singular stitches or more precisely, spots where a human performs "pull over". That is step 3 in the figure.
+Once the pattern is parsed into a list of actions, those actions need to be transformed into a graph, that will later have forces applied to it. In this graph, nodes shall represent singular stitches or more precisely, spots where a human performs "pull over". That is step 3 in the figure <!-- TODO figure number -->.
 
 ![alt text](image-1.png)
 https://hobbii.com/blog/single-crochet
@@ -12,24 +12,28 @@ Edges in the graph represent the fabric connecting those stitches. Each stitch i
 <!-- TODO one by one vs cyllinder initializer -->
 
 <!-- TODO link the concrete files implementing this -->
-The procedure takes a list of actions produced by ACL parser and outputs structures
-$$(N_i, E_{i}, C_i, P_i)$$
+The procedure takes a list of actions produced by ACL parser and outputs a tuple describing nodes and edges of the graph.
+$$(N, E, C, P)$$
 Where
+<!-- TODO need help with math notation -->
 $$
-N_i = \{(x_i,y_i,z_i)\}
+\#N = \#E = \#C = \#P = \text{number of nodes}
 \\
-E_i = \{ j: N_i \text{ and } N_j \text{ are connected } \land i > j \}
+N_i: [(x_i,y_i,z_i)]
 \\
-C_i
+E: [e_i : \{ j: N_i \text{ and } N_j \text{ are connected } \land i > j \}]
 \\
-P_i
+C: \text{node colors}
+\\
+P: \{i \rightarrow p\ \mid p \in \{ \text{root, tip, FLO, BLO} \} \}
 $$
 
-- $N$ stores 3D vectors representing the initial positions of nodes of the graph. The positions are arbitrary at this stage, and initialized in a cylindrical shape. Nodes/stitches at lower indexes are created earlier.
-- $E$ represents the edges of the graph. Note that the condition $i > j$ is introduced to ensure the representation is unamiguous
+- $N$ stores 3D vectors representing the positions of nodes int the graph. The positions can be set arbitrarily at this stage. In Crocheteer they are initialized in a cylindrical shape. Nodes/stitches at lower indexes are created earlier.
+- $E$ represents the edges of the graph. Note that the condition $i > j$ is introduced to ensure the representation is unamiguous.
+- $C$ represents color of each node. Crocheteer works with 8 bit RGB values.
+- $P$ is a dictionary storing peculiarities of graph nodes. The significance of $P$ will be exlained in section 5 describing the forces acting on the graph. These peculiarites include nodes that are
+  - a virtual node at the start of a piece (root)
+  - virtual nodes created by an FO (tip)
+  - attached to only the front loop or the back loop (FLO/BLO)
 
 
-<!-- TODO pseudocode -->
-```
-
-```

@@ -1,5 +1,7 @@
 # Formal language for amigurumi patterns
 
+<!-- https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf -->
+
 To process a crochet pattern, we need to express it using a formal language.
  <!-- Maybe we don't and
  Parsing Semi-structured Languages: A Crochet Pattern to Diagram Translation, https://www.springerprofessional.de/en/parsing-semi-structured-languages-a-crochet-pattern-to-diagram-t/25864374

@@ -19,14 +19,11 @@ BNF notation for the grammar
 # 4. [Representing connected stitches as a graph](./4_Representing%20connected%20stitches%20as%20a%20graph.md)
 <!-- stub -->
 
-# 5. [Making the graph spatial](./5_Making%20the%20graph%20spatial.md)
+# 5. [Force directed graph](./5_Making%20the%20graph%20spatial.md)
 <!-- stub -->
 
-# 6. [Giving shape to the piece](./6_Giving%20shape%20to%20the%20piece.md)
+# 6. [User interface](./6_User%20interface.md)
 <!-- stub -->
 
-# 7. [User interface](./7_User%20interface.md)
-<!-- stub -->
-
-# 8. [Goal summary](./8_Goal%20summary.md)
+# 7. [Goal summary](./7_Goal%20summary.md)
 <!-- stub -->
