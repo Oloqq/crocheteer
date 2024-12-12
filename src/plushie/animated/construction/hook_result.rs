@@ -135,6 +135,7 @@ impl HookResult {
         log::trace!("round spans: {:?}", round_spans);
         fill_round_span(&edges, &mut round_spans);
         let (nodes, highest) = make_nodes(round_spans);
+        assert_eq!(colors.len(), nodes.len());
 
         if log_enabled!(Level::Warn) {
             let edgelen = edges.len();

@@ -1,0 +1,11 @@
+@centroids = 4
+
+MR(6)
+: 6 inc (12)
+6: 12 sc (12)
+: mark(anchor), 6 sc, mark(split), attach(anchor, 3) (9)
+color(0, 0, 255)
+2 : 9 sc (9)
+goto(split)
+color(255, 0, 0)
+3: 9 sc (9)
