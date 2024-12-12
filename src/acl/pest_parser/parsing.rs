@@ -206,14 +206,16 @@ impl Pattern {
                 Ok(vec![Action::Ch(count)])
             }
             Rule::KW_ATTACH => {
-                let label_pair = tokens.next().unwrap();
-                let label = ident(label_pair.clone())?;
+                let args_pair = tokens.next().unwrap();
+                let mut args = args_pair.clone().into_inner();
+                let label = args.next().unwrap().as_str().to_owned();
+                let chain_size = integer(&args.next().unwrap())?;
+
                 let index = self
                     .labels
                     .get(&label)
-                    .ok_or(error(UndefinedLabel(label), &label_pair))?;
-                todo!();
-                // Ok(vec![Action::Attach(*index)])
+                    .ok_or(error(UndefinedLabel(label), &args_pair))?;
+                Ok(vec![Action::Attach(*index, chain_size)])
             }
             _ => unreachable!(),
         }
@@ -341,5 +343,12 @@ mod tests {
         let prog = ": [[sc, sc] x 2] x 3";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
+    }
+
+    #[test]
+    fn test_attach() {
+        let prog = "mark(anchor), attach(anchor, 3)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Mark(0), Attach(0, 3)]);
     }
 }
