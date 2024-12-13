@@ -1,11 +1,10 @@
+<!-- TODO keyword attach -->
+<!-- TODO make sure current implementation is mentioned as Crocheteer in the introduction -->
+<!-- TODO make sure centroids in visualization are explained -->
+
 # Formal language for amigurumi patterns
 
-<!-- https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf -->
-
 To process a crochet pattern, we need to express it using a formal language.
- <!-- Maybe we don't and
- Parsing Semi-structured Languages: A Crochet Pattern to Diagram Translation, https://www.springerprofessional.de/en/parsing-semi-structured-languages-a-crochet-pattern-to-diagram-t/25864374
- could show that, but I gotta find non-paywall version -->
 
 Patterns shared in the community have equivalent overall structure, but do not follow a strict grammar. For example, repetition of stitch *Sc* 7 times could be seen written as "7 SC", "[SC] x 7", "(sc) 7 times" and more.
 <!-- if this needs a source, it would have to be random patterns online
@@ -17,7 +16,7 @@ This work shall define a domain specific language, *Amigurumi Crochet Language (
 
 ## Amigurumi Crochet Language grammar
 ### Starter
-An amigurumi piece begins with either MR (Magic Ring) or Ch (Chain), so an ACL document also begins with one of them. MR or Ch can be constructed from an arbitrary number of stitches, so those instructions take an argument specifying that number.
+An amigurumi piece begins with either MR (Magic Ring) or Ch (Chain) ([1] pages 4, 18), so an ACL document also begins with one of them. MR or Ch can be constructed from an arbitrary number of stitches, so those instructions take an argument specifying that number.
 
 ```
 MR(6)
@@ -26,10 +25,10 @@ MR(6)
 Ch(18)
 ```
 
-The only instructions allowed before a starter are *metadata* and yarn describing *operations* (defined in further subsections).
+The only instructions allowed before a starter are *parameters* and yarn describing *actions* (defined in further subsections).
 
 ### Rounds
-After the starter, an amigurumi piece is worked stitch by stitch in a spiral. A set of stitches going all around the current piece is called a *round*.
+After the starter, an amigurumi piece is worked stitch by stitch in a spiral. A set of stitches going all around the perimeter of current piece is called a *round*.
 A round is denoted by its number, then a colon (`:`), followed by a list of stitches (details below).
 ```
 R1: 6 sc
@@ -54,10 +53,9 @@ While a user is developing their pattern, it would be a nuisance to keep correct
 
 ### Stitches
 ACL currently works with 3 types of stitches:
-- sc - [single crochet](https://www.thesprucecrafts.com/single-crochet-stitch-tutorial-979083)
-- inc - [increase](https://thewoobles.com/pages/how-to-single-crochet-increase)
-- dec - [decrease](https://www.thesprucecrafts.com/how-to-decrease-in-crochet-4002866)
-<!-- TODO find a ONE book/blog that describes all the stitches, it's silly to link different websites for different stitches -->
+- sc - single crochet ([[1]] page 7)
+- inc - increase ([[1]] page 12)
+- dec - decrease ([[1]] page 12)
 
 Stitches are only placed inside *rounds*. Each round contains a comma-separated list of stitches. Each stitch is optionally preceded by a number stating how many times it should be repeated.
 ```
@@ -73,12 +71,11 @@ is equivalent to
 sc, inc, sc, inc, sc, sc
 ```
 
-### Operations
-<!-- TODO action would be a better name, refactor the code -->
-The person crocheting has a few actions available besides creating new stitches, in the context of ACL we call them operations. With a few exceptions, operations are permitted either between stitches of a round or between rounds.
+### Actions
+The person crocheting has a few actions available besides creating new stitches. With a few exceptions, *actions* are permitted either between stitches of a round or between rounds.
 
 #### Fasten-off
-When the piece is done, the last round is typically squeezed together by performing a [fasten-off (FO)](https://crochettoplay.com/how-to-fasten-off-in-amigurumi/). `FO` is only allowed between rounds. No stitches may be placed after FO, unless `goto` operation is used.
+When the piece is done, the last round is typically squeezed together by performing a fasten-off (FO) [[2]]. Note that fasten-off as described in [[1]] only prevents yarn unwinding, and that described in [[2]] also serves to close the piece tightly. `FO` is only allowed between rounds. No stitches may be placed after FO, unless `goto` action is used.
 
 ```
 ...
@@ -87,8 +84,11 @@ FO
 ```
 
 #### Back-loop-only, front-loop only, both-loops
+![alt text](images/image.png)
+<!-- [2] page 14 -->
+
 Each existing stitch can be split into 2 loops. One on the inner side (back-loop), one on the outer side (front-loop). By default, new stitches are anchored to both of those loops. Using only one loop creates a sharper corner in the piece.
-Using operations `BLO` and `FLO`, the default behavior can be altered so that new stitches are anchored to just the back-loop or just the front-loop. Default behavior is restored at the start of next round or by using `BL`, which stands for both-loops.
+Using actions `BLO` and `FLO`, the default behavior can be altered so that new stitches are anchored to just the back loop or just the front loop. Default behavior is restored at the start of next round or by using `BL`, which stands for both loops.
 
 ```
 : FLO, 12 inc
@@ -97,7 +97,7 @@ Using operations `BLO` and `FLO`, the default behavior can be altered so that ne
 ```
 
 #### Mark and goto
-Operations `mark` and `goto` are used in pairs to mark a working position, and return there later. Both operations require an identifier for the position.
+Actions `mark` and `goto` are used in pairs to mark a working position, and return there later. Both of these actions require an identifier for the position.
 For example, following code closes a piece by working on the back-loop, fastens-off, and then returns to continue working from the front loop.
 
 ```
@@ -114,12 +114,46 @@ goto(point_of_split)
 ```
 
 #### Yarn color
-`color` operations allows setting color for part of the piece in the visualization. Takes 3 integer arguments, representing the RGB components of the color.
+`color` action allows setting color for part of the piece in the visualization. It takes 3 integer arguments, representing the RGB components of the color.
 
 ```
 color(255, 255, 0)
 : 6 sc, color(0, 0, 255), 12 sc
 ```
+#### Attach
+Attach action involves creating a chain at current position, then attaching it to a previously marked spot. This effectively splits the current round into two independent ones. *Attach* takes 2 arguments: identifier of position where the chain is attached and size of the chain.
+
+Consider the following pattern creating the shape of letter Y (as seen is figure X).
+<!-- TODO figure num -->
+
+Firstly, the stem with perimeter of 12 stitches:
+```
+MR(6)
+: 6 inc (12)
+6: 12 sc (12)
+```
+Then, the beginning of the round is marked as `A`. 6 out of 12 stitches are used. Another mark `B` is placed right before splitting the round. Then a chain of 3 is used to connect the current position with position A.
+```
+: mark(A), 6 sc, mark(B), attach(A, 3)
+```
+
+<!-- TODO diagram? fusion 360 could make it look pretty? -->
+
+There are now two independent workable perimeters. After `attach(A, _)`, the hook is in position `A`, as if `goto` was used. Let's create one "branch" of the letter Y and color it blue. Notice that we have 9 stitches available, as we used a chain of 3 stitches, and there were 6 stitches between `mark(A)` and `anchor(A, 3)`.
+```
+color(0, 0, 255)
+2 : 9 sc (9)
+```
+![alt text](images/image-3.png)
+
+If we now `goto` the mark placed immediately before the `attach`, we can create the second "branch".
+```
+goto(B)
+color(255, 0, 0)
+3: 9 sc (9)
+```
+
+![alt text](images/image-2.png)
 
 ### Comments
 Comments start with a hash `#` and continue until the end of the line. There are no multi-line comments in ACL.
@@ -128,13 +162,14 @@ Comments start with a hash `#` and continue until the end of the line. There are
 color(255, 0, 0) # switch to red yarn
 ```
 
-### Metadata
-<!-- TODO this doesnt really fit the definition of metadata, refactor the code so its called parameters or smth -->
+### Parameters
 Patterns may need a specific simulation/visualization setup. ACL grammar handles that by accepting arbitrary key-value pairs using the following syntax.
 ```
 @key = value
 @centroids = 2
 ```
+
+Concrete keys used by Crocheteer are described in further sections.
 
 ## Sample ACL pattern
 The following pattern describes a simple mushroom shape.
@@ -163,11 +198,11 @@ FO
 ## Implementation
 ACL parser and lexer are generated using [pest](https://pest.rs). Pest generates these based on a [parsing expression grammar (PEG)](https://en.wikipedia.org/wiki/Parsing_expression_grammar) defined using a [custom syntax](https://pest.rs/book/). The following code defines ACL using that syntax.
 ```
-program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
 
-meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
+parameter   = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
 
-round       =  { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
+round       = { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
 roundspec   = {
     round_range
   | round_index
@@ -181,23 +216,24 @@ stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
 stitch_sequence  = {
       (NUMBER ~ KW_STITCH)
     | KW_STITCH
-    | interstitchable_operation
+    | interstitchable_action
     | repetition }
 repetition = { "[" ~ stitches ~ "]" ~ "x" ~ NUMBER }
 
-control = { operation_sequence ~ LINEEND }
-operation_sequence = { operation ~ ("," ~ operation)* }
+control = { action_sequence ~ LINEEND }
+action_sequence = { action ~ ("," ~ action)* }
 arg_int   =  { "(" ~ NUMBER ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
+arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
 
 
-operation = {
-      interstitchable_operation
+action = {
+      interstitchable_action
     | (KW_MR ~ arg_int)
     |  KW_FO
 }
-interstitchable_operation = {
+interstitchable_action = {
       KW_BLO
     | KW_FLO
     | KW_BL
@@ -205,18 +241,20 @@ interstitchable_operation = {
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
     | (KW_CH ~ arg_int)
+    | (KW_ATTACH ~ arg_ident_int)
 }
 
-KW_MR       = { "MR" }
-KW_FO       = { "FO" }
-KW_MARK     = { "mark" }
-KW_GOTO     = { "goto" }
-KW_FLO      = { "FLO" }
-KW_BLO      = { "BLO" }
-KW_BL       = { "BL" }
-KW_CH       = { "ch" | "Ch" }
-KW_COLOR      = { "color" }
-KW_STITCH   =  { "sc" | "inc" | "dec" }
+KW_MR     = { "MR" }
+KW_FO     = { "FO" }
+KW_MARK   = { "mark" }
+KW_GOTO   = { "goto" }
+KW_FLO    = { "FLO" }
+KW_BLO    = { "BLO" }
+KW_BL     = { "BL" }
+KW_CH     = { "ch" | "Ch" }
+KW_COLOR  = { "color" }
+KW_ATTACH = { "attach" }
+KW_STITCH =  { "sc" | "inc" | "dec" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{
@@ -232,9 +270,13 @@ NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
 WHITESPACE  = _{ " " }
+
 ```
 
 The PEG above would be equivalent to the following BNF grammar.
 <!-- TODO: BNF notation -->
 ```
 ```
+
+[1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
+[2]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/

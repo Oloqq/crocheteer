@@ -10,7 +10,7 @@ impl Pattern {
                 match pair.as_rule() {
                     Rule::round => self.round(pair.into_inner())?,
                     Rule::comment => (),
-                    Rule::meta => self.meta(pair.into_inner())?,
+                    Rule::parameter => self.parameter(pair.into_inner())?,
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
@@ -124,8 +124,8 @@ impl Pattern {
                         actions.append(&mut stitches.clone());
                     }
                 }
-                Rule::interstitchable_operation => {
-                    actions.append(&mut self.interstitchable_operation(first.into_inner())?);
+                Rule::interstitchable_action => {
+                    actions.append(&mut self.interstitchable_action(first.into_inner())?);
                 }
                 _ => unreachable!("{}", first),
             }
@@ -135,7 +135,7 @@ impl Pattern {
 
     fn control(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
         for pair in pairs {
-            assert!(matches!(pair.as_rule(), Rule::operation));
+            assert!(matches!(pair.as_rule(), Rule::action));
             let mut tokens = pair.into_inner();
             let opcode = tokens.next().unwrap();
             match opcode.as_rule() {
@@ -145,8 +145,8 @@ impl Pattern {
                 }
                 Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),
-                Rule::interstitchable_operation => {
-                    let mut new = self.interstitchable_operation(opcode.into_inner())?;
+                Rule::interstitchable_action => {
+                    let mut new = self.interstitchable_action(opcode.into_inner())?;
                     self.actions.append(&mut new);
                 }
                 _ => unreachable!("{opcode}"),
@@ -155,7 +155,7 @@ impl Pattern {
         Ok(())
     }
 
-    fn interstitchable_operation(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
+    fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
         let first = tokens.next().unwrap();
         match first.as_rule() {
             Rule::KW_MARK => {
@@ -221,7 +221,7 @@ impl Pattern {
         }
     }
 
-    fn meta(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+    fn parameter(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
         let key_pair = pairs.next().unwrap();
         let key = key_pair.as_str();
         let val = pairs.next().unwrap().as_str();

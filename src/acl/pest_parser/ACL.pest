@@ -1,8 +1,8 @@
-program = { SOI ~ (round | comment | meta | control | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
 
-meta    = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
+parameter   = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
 
-round       =  { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
+round       = { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
 roundspec   = {
     round_range
   | round_index
@@ -16,24 +16,24 @@ stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
 stitch_sequence  = {
       (NUMBER ~ KW_STITCH)
     | KW_STITCH
-    | interstitchable_operation
+    | interstitchable_action
     | repetition }
 repetition = { "[" ~ stitches ~ "]" ~ "x" ~ NUMBER }
 
-control = { operation_sequence ~ LINEEND }
-operation_sequence = { operation ~ ("," ~ operation)* }
+control = { action_sequence ~ LINEEND }
+action_sequence = { action ~ ("," ~ action)* }
 arg_int   =  { "(" ~ NUMBER ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
 arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
 
 
-operation = {
-      interstitchable_operation
+action = {
+      interstitchable_action
     | (KW_MR ~ arg_int)
     |  KW_FO
 }
-interstitchable_operation = {
+interstitchable_action = {
       KW_BLO
     | KW_FLO
     | KW_BL
