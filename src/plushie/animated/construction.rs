@@ -73,7 +73,7 @@ impl Plushie {
     pub fn parse(src: &str) -> Result<Self, String> {
         let pattern = Pattern::parse(src)?;
         let mut params = Params::default();
-        params.update(&pattern.meta);
+        params.update(&pattern.parameters);
         Ok(Self::from_flow(pattern, params)?)
     }
 

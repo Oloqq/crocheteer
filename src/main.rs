@@ -117,7 +117,7 @@ fn main() {
                 }
             };
             let mut params: Params = Default::default();
-            params.update(&pattern.meta);
+            params.update(&pattern.parameters);
             let plushie = Plushie::from_flow(pattern, params).unwrap();
 
             if stl.is_some() && ws || stl.is_none() && !ws {

@@ -12,7 +12,7 @@ use std::collections::HashMap;
 struct PatParser;
 
 pub struct Pattern {
-    pub meta: HashMap<String, String>,
+    pub parameters: HashMap<String, String>,
     pub annotated_round_counts: Vec<Option<usize>>,
     labels: HashMap<String, usize>,
     label_cursor: usize,
@@ -30,7 +30,7 @@ enum CurrentLoop {
 impl Pattern {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
         let mut p = Self {
-            meta: HashMap::new(),
+            parameters: HashMap::new(),
             annotated_round_counts: vec![],
             labels: HashMap::new(),
             label_cursor: 0,
