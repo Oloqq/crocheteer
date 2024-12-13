@@ -80,10 +80,7 @@ impl Params {
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
-            hook_leniency: Leniency::NoMercy, // initializer: Initializer::OneByOne(OneByOneParams {
-                                              //     acceptable_displacement_for_expanding: 0.03,
-                                              //     force_expansion_after_time: 100.0,
-                                              // }),
+            hook_leniency: Leniency::NoMercy,
         }
     }
 
@@ -98,7 +95,17 @@ impl Params {
     fn update_one(&mut self, key: &str, val: &str) -> Result<(), Box<dyn Error>> {
         match key {
             "centroids" => self.centroids.number = val.parse()?,
-            _ => return Ok(()),
+            "initializer" => {
+                self.initializer = match val {
+                    "cylinder" => Initializer::Cylinder,
+                    "obo" | "onebyone" => Initializer::OneByOne(OneByOneParams::default()),
+                    _ => {
+                        log::debug!("Unknown value ({}) for parameter: {}", val, key);
+                        Initializer::Cylinder
+                    }
+                }
+            }
+            _ => log::debug!("Unknown parameter: {}", key),
         }
         return Ok(());
     }
@@ -128,6 +135,15 @@ impl Default for CentroidParams {
             number: 2,
             force: 0.05,
             min_nodes_per_centroid: 60,
+        }
+    }
+}
+
+impl Default for OneByOneParams {
+    fn default() -> Self {
+        Self {
+            acceptable_displacement_for_expanding: 0.03,
+            force_expansion_after_time: 100.0,
         }
     }
 }

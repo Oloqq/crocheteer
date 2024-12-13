@@ -169,8 +169,20 @@ export default class PlushieBody {
 
   update(data: crapi.Update) {
     this.disposeGarbage();
-    this.updatePoints(this.nodes, data.points);
+    this.updateSkin(data.points);
     this.updateCentroids(data.centroids.points);
+  }
+
+  updateSkin(points: crapi.Point[]) {
+    if (points.length > this.nodes.length) {
+      for (let i = this.nodes.length; i < points.length; i++) {
+        let point = points[i];
+        let sph = create.sphere(this.scene, point, 0.1, this.nodeColor(i));
+        this.nodes.push(sph);
+      }
+    }
+
+    this.updatePoints(this.nodes, points);
   }
 
   updateCentroids(centroids: crapi.Point[]) {
@@ -247,7 +259,7 @@ export default class PlushieBody {
       return new THREE.Color(52 / 255, 51 / 255, 48 / 255);
     }
 
-    const color = this.nodeColors[to];
+    const color = this.nodeColors[_from];
     return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
   }
 
