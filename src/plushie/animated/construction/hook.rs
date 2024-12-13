@@ -19,11 +19,9 @@ use crate::{
 };
 use std::collections::{HashMap, HashSet};
 
-/// Span of a single generalized cylinder in the plushie
-type Part = (usize, usize);
-
 #[derive(Clone, Debug)]
 struct Moment {
+    /// Node index to be created
     cursor: usize,
     anchors: Queue<usize>,
     round_count: usize,
@@ -37,9 +35,7 @@ pub struct Hook {
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
     now: Moment,
-    /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive
-    /// When chains are introduced, round_spans acts merely as data for Initializer::Cylinder,
-    /// and it's content may not be connected to what a human would consider a working round
+    /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive.
     round_spans: Vec<(usize, usize)>,
     /// Storage of index -> it's anchor, used for single loop forces
     parents: Vec<Option<usize>>,
@@ -54,12 +50,8 @@ pub struct Hook {
     /// Leniency policy, may allow recovery after `HookError`s. Some leniency is beneficial with genetic algorithms
     leniency: Leniency,
 
-    part_start: usize,
-    parts: Vec<Part>,
-    at_junction: bool,
-    // TODO make this non ugly
     /// Last stitch created (not counting actions like mark, goto)
-    last: Option<Action>,
+    last_stitch: Option<Action>,
     /// Was the last action a mark?
     last_mark: Option<Action>,
 }
@@ -121,7 +113,7 @@ impl Hook {
                     .finish()?;
             }
             Ch(x) => {
-                if matches!(self.last, Some(Ch(_))) {
+                if matches!(self.last_stitch, Some(Ch(_))) {
                     return Err(ChainAfterChain);
                 }
                 self = Stitch::linger(self)?.chain(*x)?;
@@ -160,7 +152,7 @@ impl Hook {
             Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) => self.last_mark = None,
             Mark(_) => self.last_mark = Some(*action),
             _ => {
-                self.last = Some(*action);
+                self.last_stitch = Some(*action);
                 self.last_mark = None
             }
         }

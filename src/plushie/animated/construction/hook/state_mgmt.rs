@@ -7,7 +7,6 @@ impl Hook {
         self.override_previous_stitch = Some(moment.cursor - 1);
         moment.cursor = self.now.cursor;
         self.now = moment;
-        self.at_junction = true;
         Ok(())
     }
 

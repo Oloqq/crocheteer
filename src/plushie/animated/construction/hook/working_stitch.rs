@@ -151,7 +151,6 @@ impl Stitch {
         hook.edges.grow();
         hook.peculiar.insert(tip, Peculiarity::Tip);
         hook.round_spans.push((tip, tip));
-        hook.parts.push((hook.part_start, tip));
         hook.colors.push(hook.color);
         hook.now.cursor += 1;
         Ok(hook)

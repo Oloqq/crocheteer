@@ -87,7 +87,7 @@ FO
 ![alt text](images/image.png)
 <!-- [2] page 14 -->
 
-Each existing stitch can be split into 2 loops. One on the inner side (back-loop), one on the outer side (front-loop). By default, new stitches are anchored to both of those loops. Using only one loop creates a sharper corner in the piece.
+Each existing stitch can be split into 2 loops. One on the inner side (back-loop), one on the outer side (front-loop). By default, new stitches are anchored to both of those loops. Using single loop creates a sharper corner in the piece.
 Using actions `BLO` and `FLO`, the default behavior can be altered so that new stitches are anchored to just the back loop or just the front loop. Default behavior is restored at the start of next round or by using `BL`, which stands for both loops.
 
 ```
@@ -195,7 +195,8 @@ R11: 6 dec (6)
 FO
 ```
 
-## Implementation
+## Parser
+ACL parser returns a list of stitches and actions, and a dictionary of parameters. The type handling the parsing in Crocheteer[[3]] is `Pattern`.
 ACL parser and lexer are generated using [pest](https://pest.rs). Pest generates these based on a [parsing expression grammar (PEG)](https://en.wikipedia.org/wiki/Parsing_expression_grammar) defined using a [custom syntax](https://pest.rs/book/). The following code defines ACL using that syntax.
 ```
 program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
@@ -280,3 +281,4 @@ The PEG above would be equivalent to the following BNF grammar.
 
 [1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
 [2]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/
+[3]: https://github.com/Oloqq/crocheteer
