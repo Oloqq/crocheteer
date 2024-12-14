@@ -4,6 +4,13 @@ use HookError::*;
 impl Hook {
     pub fn restore(&mut self, label: Label) -> Result<(), HookError> {
         let mut moment = self.labels.get(&label).ok_or(UnknownLabel(label))?.clone();
+        if moment.round_count != 0 {
+            println!(
+                "leaving an unfinished round {} {}",
+                moment.round_left, moment.round_count
+            );
+        }
+
         self.override_previous_stitch = Some(moment.cursor - 1);
         moment.cursor = self.now.cursor;
         self.now = moment;

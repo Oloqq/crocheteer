@@ -3,15 +3,6 @@
 
 # Then
 
-- ACL refactors
-  - currently, metadata in ACL cannot save arbitrary strings or floats, just read until end of line there
-  - allow color before starter
-  - metadata -> parameters
-  - operations -> actions
-
-- include chains in the tutorial
-
-
 # Backlog (need to do for thesis)
 
 - skeleton stuffing

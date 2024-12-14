@@ -118,7 +118,9 @@ impl Stitch {
             self = self.pull_over_without_registering_anchor(false)?;
         }
 
-        self.hook.edges.link(self.hook.now.cursor - 1, attach_to);
+        new_anchors.push(self.hook.now.cursor);
+        self.hook.edges.link(self.hook.now.cursor, attach_to);
+        self = self.pull_over_without_registering_anchor(false)?;
 
         Ok((new_anchors, self.hook))
     }
