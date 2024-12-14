@@ -1,0 +1,24 @@
+@centroids = 6
+@initializer = obo
+@points_per_centroid = 30
+
+MR(6)
+: 6 inc (12)
+6: 12 sc (12)
+: mark(anchor), 6 sc, mark(split), attach(anchor, 3) (9)
+
+color(0, 0, 255)
+4 : 9 sc (9)
+: [sc, sc, inc] x 3 (12)
+: mark(anchor_blue), 6 sc, mark(split_blue), attach(anchor_blue, 3) (9)
+
+color(0, 125, 255)
+4 : 9 sc (9)
+
+goto(split_blue)
+color(0, 255, 125)
+4 : 9 sc (9)
+
+goto(split)
+color(255, 0, 0)
+3: 9 sc (9)

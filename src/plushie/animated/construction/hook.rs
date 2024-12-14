@@ -164,16 +164,18 @@ impl Hook {
                 // A is the one that user will work when doing rounds normally
                 // ring B can be accessed by goto(X)
 
+                let starting_anchor = self.now.cursor;
                 let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
                 let new_anchors: Vec<usize>;
                 (new_anchors, self) =
                     Stitch::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
-                let moment_b;
+                let mut moment_b;
                 (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
                 // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);
 
                 if let Some(Mark(ring_b_label)) = self.last_mark {
                     assert!(self.labels.contains_key(&ring_b_label));
+                    moment_b.cursor = starting_anchor;
                     self.labels.insert(ring_b_label, moment_b);
                 }
             }
@@ -640,58 +642,4 @@ mod tests {
         q!(moment_a.anchors.len(), 9);
         q!(moment_b.anchors.len(), 9);
     }
-
-    // #[test]
-    // fn test_attach_numnbers_from_12() {
-    //     let mut h = Hook::start_with(&MR(6)).unwrap();
-    //     let attach_here1 = 0;
-    //     let return_here1 = 1;
-    //     let attach_here2 = 2;
-    //     let return_here2 = 3;
-    //     for _ in 0..6 {
-    //         h = h.perform(&Inc).unwrap();
-    //     }
-    //     for _ in 0..12 {
-    //         h = h.perform(&Sc).unwrap();
-    //     }
-    //     q!(h.now.anchors.len(), 12);
-    //     q!(h.now.round_count, 0);
-    //     q!(h.now.round_left, 12);
-
-    //     h = h.perform(&Mark(attach_here1)).unwrap();
-    //     for _ in 0..6 {
-    //         h = h.perform(&Sc).unwrap();
-    //     }
-    //     h = h.perform(&Mark(return_here1)).unwrap();
-
-    //     h = h.perform(&Attach(attach_here1, 3)).unwrap();
-    //     q!(h.now.anchors.len(), 9);
-    //     q!(h.now.round_count, 0);
-    //     q!(h.now.round_left, 9);
-    //     for _ in 0..3 {
-    //         h = h.perform(&Sc).unwrap();
-    //         h = h.perform(&Sc).unwrap();
-    //         h = h.perform(&Inc).unwrap();
-    //     }
-    //     q!(h.now.anchors.len(), 12);
-
-    //     h = h.perform(&Mark(attach_here2)).unwrap();
-    //     for _ in 0..6 {
-    //         h = h.perform(&Sc).unwrap();
-    //     }
-    //     h = h.perform(&Mark(return_here2)).unwrap();
-    //     h = h.perform(&Attach(attach_here2, 3)).unwrap();
-    //     q!(h.now.anchors.len(), 9);
-    //     for _ in 0..9 {
-    //         h = h.perform(&Sc).unwrap();
-    //     }
-    //     q!(h.now.round_count, 0);
-
-    //     h = h.perform(&Goto(return_here1)).unwrap();
-    //     println!("{:?}", h.now.anchors);
-    //     q!(h.now.anchors.len(), 9);
-
-    //     let result = h.finish();
-    //     q!(result.nodes.len(), result.colors.len());
-    // }
 }
