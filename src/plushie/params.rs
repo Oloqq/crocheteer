@@ -105,6 +105,7 @@ impl Params {
                     }
                 }
             }
+            "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
             _ => log::debug!("Unknown parameter: {}", key),
         }
         return Ok(());
