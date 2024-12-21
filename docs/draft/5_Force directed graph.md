@@ -1,4 +1,4 @@
-## Overview
+## Simulation overview
 Two kinds of forces need to act on a Plushie. First one, *link force*, shall try to keep connected stitches at a specific distance from one another. Second one, *stuffing force*, shall simulate the effect of stuffing inside the piece on the fabric. The first force is trivial, but for the second one, we need to get a notion on where is the inside of the Plushie.
 <!-- TODO -->
 Two approaches are explored for *stuffing force*.

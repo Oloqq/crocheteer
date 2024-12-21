@@ -252,6 +252,23 @@ For small Plushies, the obvious solution is to push nodes towards or away from t
 TODO: draw arrows representing the stuffing force.
 Notice that as the translation from nodes of the blue rounds to nodes of the white round is almost horizontal, a force applied from the center of white round would not produce the curvature characteristic to stitches anchored onto a single loop.
 
+<!-- TODO link ACL to the figure -->
+```
+@centroids = 10
+
+MR(6)
+
+R1: 6 inc (12)
+2: 12 sc (12)
+: color(255, 0, 0), 6 sc, color(0, 0, 255), 6 inc (18)
+: color(255, 0, 0), 6 sc, color(0, 0, 255), 12 inc (30)
+color(255, 255, 255)
+: 6 sc, 6 sc, 12 inc, 6 sc (42)
+color(255, 0, 255)
+: 42 sc
+6: 42 sc
+```
+
 Another solution would be to calculate surface normals as CloudCompare [[4]] does. In Crocheteer we found that we can also derive a good-enough (and trivial to compute) approximation by fitting a plane through 3 connected nodes. For that purpose, when creating a node $n$ anchored to a single loop, `Hook` saves the indexes of 3 nodes laying on the relevant plane as in algorithm X and figure X.
 
 ```
