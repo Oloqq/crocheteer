@@ -48,6 +48,7 @@ impl PlushieSimulation {
         }
     }
 
+    #[allow(unused)]
     pub fn with_secondary(plushie: impl PlushieTrait, secondary: impl PlushieTrait) -> Self {
         let mut res = Self::from(plushie);
         res.secondary_plushie = Some(Box::new(secondary));

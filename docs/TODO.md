@@ -1,5 +1,5 @@
 # Next
-- create a Y shape
+- gui needs to be updated after loading a pattern (e.g. if gui has centroids=0, then altering SLF will delete centroids)
 
 # Then
 
@@ -17,6 +17,8 @@
 - toggle centroids visibility
 
 # After-inzynierka
+
+- zmiana parametrow podczas obo zatrzymuje rosniecie
 
 - deployment
   - make rust serve the index.html

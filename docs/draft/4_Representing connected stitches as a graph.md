@@ -97,14 +97,23 @@ struct Edges {
     edges: Vec<Vec<usize>>,
 }
 
-pub type Label = usize;
+type Label = usize;
+
+enum Peculiarity {
+    Root,
+    Tip,
+    BLO(PointsOnPushPlane),
+    FLO(PointsOnPushPlane),
+}
+
+type PointsOnPushPlane = (usize, usize, usize);
 ```
 
 - `edges` directly corresponds to $E$ from the procedure output. Type `Edges` is introduced, instead of directly using `Vec<Vec<usize>>`, so the type can implement error checking and enforce the condition $i > j$ of $E$.
-- `peculiar` directly corresponds to $P$ from the procedure output. `Peculiarity` enum is described in section 4.X<!-- TODO Handling front-loop-only and back-loop-only -->
+- `peculiar` directly corresponds to $P$ from the procedure output. Variant `Root` denotes the virtual node at the basis of `MR`. `Tip` denotes the virtual node created by an `FO`. Variants `BLO` and `FLO` of `Peculiarity` are described in section 4.X<!-- TODO Handling front-loop-only and back-loop-only -->
 - `now` stores the current `Moment`
 - `round_spans` is used to keep track of where rounds begin and end. This is mostly for setting initial positions of nodes described in section 5, but may also be used to verify the round counts annotated in ACL.
-- `parents` is relevant to single loop forces and is described in section 4.X<!-- TODO Handling front-loop-only and back-loop-only -->
+- `parents`. A parent of node $n$ is a node that $n$ is anchored to. Note that even though a node created by `dec` is anchored to two nodes we only need to store one of them. Usage of `parents` is described in section 4.X.<!-- TODO Handling front-loop-only and back-loop-only -->
 - `labels`. When `Hook` encounters ACL's `mark`, field `now` is cloned and saved in `labels`. This HashMap is used with `goto` and `attach`.
 - `color` keeps track of the currently used yarn.
 - `colors` directly corresponds to $C$. It is tempting to only store changes in color, but with the current approach it is easier to use colors for debugging.
@@ -231,21 +240,52 @@ match action {
 ```
 
 ### Handling front-loop-only and back-loop-only
-```rs
-pub enum Peculiarity {
-    Root,
-    Tip,
-    BLO(PointsOnPushPlane),
-    FLO(PointsOnPushPlane),
-    Constrained(V),
-}
+Each stitch contains two loops that subsequent stitches can anchor to.
+![alt text](images/image.png)
+The back loop is the one on the inside of an amigurumi piece, the front loop is on the outside. A stitch that is anchored to both loops has a tendency to position itself right above it's parent (as per `hook.parents`). A stitch that is anchored to just the back or front loop has a tendency to position itself towards the the side of that single loop.
 
-pub type PointsOnPushPlane = (usize, usize, usize);
+To implement that behavior for node $n$ in a simulation, we need to find a vector approximating the normal to the local surface around $p$. You can read more about the simulation in section 5.
+
+For small Plushies, the obvious solution is to push nodes towards or away from the center of the plushie. This approach breaks as the plushie gets taller, because the vector between a node at the top or bottom and the center is no longer related to the normal of the local surface. For tall Plushies, a tempting solution is to calculate the center of nodes in the current round, and push from that. This approximation starts to fail when the Plushie has no axial symmetry, as illustrated on figure X
+
+![alt text](image-2.png)
+TODO: draw arrows representing the stuffing force
+
+Another solution would be to calculate surface normals as CloudCompare [[4]] does. In Crocheteer we found that we can also derive a good-enough (and trivial to compute) approximation by fitting a plane through 3 connected nodes. For that purpose, when creating a node $n$ anchored to a single loop, `Hook` saves the indexes of 3 nodes laying on the relevant plane as in algorithm X and figure X.
+
+```
+n: node anchored on a single loop
+hook: Hook instance
+
+function parent(x)
+    if hook.parents[x] = nil then
+        Error
+    end if
+    return hook.parents[x]
+end function
+
+p1 <- parent(n)
+p2 <- p1 + 1
+p3 <- parent(p1)
+
+if hook.now.working_on = Back then
+    hook.peculiar[n] = BLO(p1, p2, p3)
+else if hook.now.working_on = Front then
+    hook.peculiar[n] = FLO(p1, p2, p3)
+end if
 ```
 
+![alt text](images/image-6.png)
+TODO tablet graficzny i ladny diagram.
+
+When red node is anchored on a single loop, it will be pushed along the normal of the plane defined by positions of p1, p2, and p3. Notice there is a corner case such that the use of `goto` or `attach` could cause the green node to have an index different than $p_1 + 1$. That corner case is currently not handled in Crocheteer.
+
+
 ### Handling marks and gotos
+
 
 ### Handling attach
 
 [1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
 [3]: https://github.com/Oloqq/crocheteer
+[4]: https://cloudcompare.org/doc/wiki/index.php?title=Normals%5CCompute
