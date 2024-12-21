@@ -132,14 +132,15 @@ MR(6)
 : 6 inc (12)
 6: 12 sc (12)
 ```
-Then, the beginning of the round is marked as `A`. 6 out of 12 stitches are used. Another mark `B` is placed right before splitting the round. Then a chain of 3 is used to connect the current position with position A.
+Then, the beginning of the round is marked as `x`. 6 out of 12 stitches are used. Another mark `y` is placed right before splitting the round. Then a chain of 3 is used to connect the current position with position `x`.
 ```
-: mark(A), 6 sc, mark(B), attach(A, 3)
+: mark(x), 6 sc, mark(y), attach(x, 3)
 ```
 
-<!-- TODO diagram? fusion 360 could make it look pretty? -->
+![alt text](images/image-10.png)
+The working direction is counter-clockwise
 
-There are now two independent workable perimeters. After `attach(A, _)`, the hook is in position `A`, as if `goto` was used. Let's create one "branch" of the letter Y and color it blue. Notice that we have 9 stitches available, as we used a chain of 3 stitches, and there were 6 stitches between `mark(A)` and `anchor(A, 3)`.
+There are now two independent workable perimeters labeled A and B on figure X (image-10). After `attach(x, _)`, the hook is in position `x`, as if `goto` was used. Let's create one "branch" of the letter Y and color it blue. The technique for attaching should be such that it leaves part A with 9 stitches available, as we used a chain of 3 stitches, and there were 6 stitches between `mark(x)` and `anchor(x, 3)`.
 ```
 color(0, 0, 255)
 2 : 9 sc (9)
@@ -148,7 +149,7 @@ color(0, 0, 255)
 
 If we now `goto` the mark placed immediately before the `attach`, we can create the second "branch".
 ```
-goto(B)
+goto(y)
 color(255, 0, 0)
 3: 9 sc (9)
 ```

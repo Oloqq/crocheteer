@@ -129,7 +129,7 @@ E = hook.edges
 c = hook.now.cursor
 p: last removed anchor that may become a parent
 
-function previous_stitch()
+function previous_stitch(hook)
     if hook.override_previous_stitch = nil then
         return c - 1
     else
@@ -142,7 +142,7 @@ end function
 
 Every time an anchor is removed from $A$, `anchor_removed` is run to keep track of rounds:
 ```
-function anchor_removed(a)
+function anchor_removed(hook, a)
     p <- a
     hook.now.round_left -= 1
     if hook.now.round_left = 0 then
@@ -156,7 +156,7 @@ end function
 
 Every time `hook.now.cursor` is about to advance, the following procedure is run to register node's parents and color.
 ```
-function cursor_advance()
+function cursor_advance(hook)
     hook.parents[c] <- p
     hook.colors[c] <- hook.color
 end function
@@ -169,10 +169,10 @@ if |A| = 0 then
 end
 
 a <- A[0]
-E[c] <- E[c] || {a, previous_stitch()}
+E[c] <- E[c] || {a, previous_stitch(hook)}
 A <- A[1:] || {c}
-anchor_removed(a)
-cursor_advance()
+anchor_removed(hook, a)
+cursor_advance(hook)
 c <- c + 1
 ```
 
@@ -183,13 +183,13 @@ if |A| = 0 then
 end
 
 a <- A[0]
-E[c] <- E[c] || {a, previous_stitch()}
+E[c] <- E[c] || {a, previous_stitch(hook)}
 cursor_advance()
 c <- c + 1
-E[c] <- E[c] || {a, previous_stitch()}
+E[c] <- E[c] || {a, previous_stitch(hook)}
 A <- A[1:] || {c}
-anchor_removed(a)
-cursor_advance()
+anchor_removed(hook, a)
+cursor_advance(hook)
 c <- c + 1
 ```
 
@@ -201,11 +201,11 @@ end
 
 a0 = A[0]
 a1 = A[1]
-E[c] <- E[c] || {a0, a1} || E[previous_stitch()]
+E[c] <- E[c] || {a0, a1} || E[previous_stitch(hook)]
 A <- A[2:] || {c}
-on_anchor_removed(a0)
-on_anchor_removed(a1)
-cursor_advance()
+anchor_removed(hook, a0)
+anchor_removed(hook, a1)
+cursor_advance(hook)
 c <- c + 1
 ```
 ---
@@ -249,30 +249,31 @@ To implement that behavior for node $n$ in a simulation, we need to find a vecto
 For small Plushies, the obvious solution is to push nodes towards or away from the center of the plushie. This approach breaks as the plushie gets taller, because the vector between a node at the top or bottom and the center is no longer related to the normal of the local surface. For tall Plushies, a tempting solution is to calculate the center of nodes in the current round, and push from that. This approximation starts to fail when the Plushie has no axial symmetry, as illustrated on figure X
 
 ![alt text](image-2.png)
-TODO: draw arrows representing the stuffing force
+TODO: draw arrows representing the stuffing force.
+Notice that as the translation from nodes of the blue rounds to nodes of the white round is almost horizontal, a force applied from the center of white round would not produce the curvature characteristic to stitches anchored onto a single loop.
 
 Another solution would be to calculate surface normals as CloudCompare [[4]] does. In Crocheteer we found that we can also derive a good-enough (and trivial to compute) approximation by fitting a plane through 3 connected nodes. For that purpose, when creating a node $n$ anchored to a single loop, `Hook` saves the indexes of 3 nodes laying on the relevant plane as in algorithm X and figure X.
 
 ```
-n: node anchored on a single loop
-hook: Hook instance
-
-function parent(x)
+function parent(hook, x)
     if hook.parents[x] = nil then
         Error
     end if
     return hook.parents[x]
 end function
 
-p1 <- parent(n)
-p2 <- p1 + 1
-p3 <- parent(p1)
+n: node anchored on a single loop
+function register_single_loop(hook, n)
+    p1 <- parent(hook, n)
+    p2 <- p1 + 1
+    p3 <- parent(hook, p1)
 
-if hook.now.working_on = Back then
-    hook.peculiar[n] = BLO(p1, p2, p3)
-else if hook.now.working_on = Front then
-    hook.peculiar[n] = FLO(p1, p2, p3)
-end if
+    if hook.now.working_on = Back then
+        hook.peculiar[n] = BLO(p1, p2, p3)
+    else if hook.now.working_on = Front then
+        hook.peculiar[n] = FLO(p1, p2, p3)
+    end if
+end function
 ```
 
 ![alt text](images/image-6.png)
@@ -280,11 +281,95 @@ TODO tablet graficzny i ladny diagram.
 
 When red node is anchored on a single loop, it will be pushed along the normal of the plane defined by positions of p1, p2, and p3. Notice there is a corner case such that the use of `goto` or `attach` could cause the green node to have an index different than $p_1 + 1$. That corner case is currently not handled in Crocheteer.
 
-
 ### Handling marks and gotos
+When `Hook` encounters a `mark`, it saves the current moment (`hook.now`) in `hook.labels`. Error checking is implemented to ensure labels are not duplicated and the user did not place the mark in a location from which they cannot continue working.
 
+When `Hook` encounters a `goto`, it gets the moment saved in `hook.labels`, and overwrites `hook.now` according to `restore_moment` shown in algorithm X.
+
+```
+function restore_moment(hook, label)
+    saved <- hook.labels[label]
+    if saved = nil then
+        return Error("undefined label")
+    end if
+    hook.override_previous_stitch <- saved.cursor - 1
+    saved.cursor <- hook.now.cursor
+    hook.now <- saved
+end function
+```
 
 ### Handling attach
+`attach` instruction effectively splits a single working perimeter into two (A and B on figure X). A typical usage would be to mark a spot that an `attach` will target, work a few switches, create another mark and immediately perform an attach. Figure X shows these as `mark(x)`, `mark(y)` and `attach(x, 3)`.
+
+![alt text](images/image-10.png)
+
+To express it within the graph, first we need to create a chain that finishes with an attachment to another anchor as in algorithm X. Note that anchors are not registered in the current moment yet.
+```
+function create_chain(hook, size, chain_attach)
+    E = hook.edges
+    c = hook.now.cursor
+    anchors = {}
+
+    // proper chain
+    for i in [0, size) do
+        E[c].append(previous_stitch(hook))
+        anchors.append(c)
+        c <- c + 1
+        cursor_advance(hook)
+    end for
+
+    // attachment stitch
+    anchors.append(c)
+    E[c].append(chain_attach)
+    c <- c + 1
+    cursor_advance(hook)
+
+    return anchors
+end function
+```
+
+Once the chain is registered in $E$, the current moment must be split into two. First one (`moment_a`) will become the current moment. Second one (`moment_b`), that allows working on the second perimeter, will be saved in `hook.labels`. Splitting procedure is defined in algorithm X
+```
+M: Moment
+
+function split_moment(M, chain_attach, new_anchors)
+    moment_a, moment_b: new instances of Moment
+    hook.round_spans.append((M.cursor - M.round_count, M.cursor - 1))
+
+    moment_a.anchors <- M.anchors[index(chain_attach):] || new_anchors[:-1]
+    // reversed returns elements of a container in reversed order
+    moment_b.anchors <- M.anchors[:index(chain_attach)] || reversed(new_anchors)
+
+    moment_a.cursor <- M.cursor
+    moment_a.round_left <- #moment_a.anchors
+
+    moment_b.cursor <- M.cursor
+    moment_b.round_left <- #moment_b.anchors
+
+    return moment_a, moment_b
+end function
+```
+
+Attach handler can then use those functions to complete the `attach` action as in algorithm X.
+```
+function perform_attach(hook, label, chain_size)
+    chain_start <- hook.now.cursor
+    if hook.labels[label] = nil then
+        Error("undefined label")
+    end if
+    chain_attach <- hook.labels[label].cursor - 1
+
+    new_anchors <- create_chain(hook, chain_size, chain_attach)
+    moment_a, moment_b <- split_moment(hook.now, chain_attach, new_anchors)
+    hook.now = moment_a
+
+    if hook.last_mark != nil then
+        moment_b.cursor = chain_start
+        hook.labels[hook.last_mark] <- moment_b
+    end if
+end function
+```
+
 
 [1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
 [3]: https://github.com/Oloqq/crocheteer
