@@ -4,7 +4,7 @@
 # Representing connected stitches as a graph
 
 ## Overview
-Once the pattern is parsed into a list of actions, those actions need to be transformed into a graph, that will later have forces applied to it. In this graph, nodes shall represent singular stitches or more precisely, spots where a human performs "pull over" (as shown in figure X and [[1]] page 7, under "Single Crochet", step 2).
+Once the pattern is parsed into a list of actions, those actions need to be transformed into a graph, that will later have forces applied to it. In this graph, nodes shall represent singular stitches or more precisely, spots where a human performs "pull over" (as shown in figure X and [[3]] page 7, under "Single Crochet", step 2).
 <!-- TODO figure num -->
 
 ![alt text](images/image-4.png)
@@ -36,7 +36,7 @@ $$
   - attached to only the front loop or the back loop (FLO/BLO)
 
 ## Graph construction
-In Crocheteer[[3]], graph construction is handled by struct `Hook`, and the output tuple is defined as `HookResult`.
+In Crocheteer[[1]], graph construction is handled by struct `Hook`.
 
 `Hook` iterates over the list of stitches and actions produced by ACL parser and tries to apply each of them, while looking for semantic errors. These include misplacing a MR, duplicating a `mark`, `goto` to an undefined `mark`, and others.
 
@@ -200,7 +200,7 @@ if |A| < 2 then
 end
 
 a0 = A[0]
-a1 = A[1]
+a1 = A[3]
 E[c] <- E[c] || {a0, a1} || E[previous_stitch(hook)]
 A <- A[2:] || {c}
 anchor_removed(hook, a0)
@@ -269,7 +269,7 @@ color(255, 0, 255)
 6: 42 sc
 ```
 
-Another solution would be to calculate surface normals as CloudCompare [[4]] does. In Crocheteer we found that we can also derive a good-enough (and trivial to compute) approximation by fitting a plane through 3 connected nodes. For that purpose, when creating a node $n$ anchored to a single loop, `Hook` saves the indexes of 3 nodes laying on the relevant plane as in algorithm X and figure X.
+Another solution would be to calculate surface normals as CloudCompare [[5]] does. In Crocheteer we found that we can also derive a good-enough (and trivial to compute) approximation by fitting a plane through 3 connected nodes. For that purpose, when creating a node $n$ anchored to a single loop, `Hook` saves the indexes of 3 nodes laying on the relevant plane as in algorithm X and figure X.
 
 ```
 function parent(hook, x)
@@ -388,6 +388,6 @@ end function
 ```
 
 
-[1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
-[3]: https://github.com/Oloqq/crocheteer
-[4]: https://cloudcompare.org/doc/wiki/index.php?title=Normals%5CCompute
+[1]: https://github.com/Oloqq/crocheteer
+[3]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
+[5]: https://cloudcompare.org/doc/wiki/index.php?title=Normals%5CCompute

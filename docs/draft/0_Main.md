@@ -27,3 +27,10 @@ BNF notation for the grammar
 
 # 7. [Goal summary](./7_Goal%20summary.md)
 <!-- stub -->
+
+
+[1]: https://github.com/Oloqq/crocheteer
+[2]: https://arxiv.org/pdf/1912.11932
+[3]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
+[4]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/
+[5]: https://cloudcompare.org/doc/wiki/index.php?title=Normals%5CCompute

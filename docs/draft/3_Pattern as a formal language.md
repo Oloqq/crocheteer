@@ -16,7 +16,7 @@ This work shall define a domain specific language, *Amigurumi Crochet Language (
 
 ## Amigurumi Crochet Language grammar
 ### Starter
-An amigurumi piece begins with either MR (Magic Ring) or Ch (Chain) ([1] pages 4, 18), so an ACL document also begins with one of them. MR or Ch can be constructed from an arbitrary number of stitches, so those instructions take an argument specifying that number.
+An amigurumi piece begins with either MR (Magic Ring) or Ch (Chain) ([3] pages 4, 18), so an ACL document also begins with one of them. MR or Ch can be constructed from an arbitrary number of stitches, so those instructions take an argument specifying that number.
 
 ```
 MR(6)
@@ -53,9 +53,9 @@ While a user is developing their pattern, it would be a nuisance to keep correct
 
 ### Stitches
 ACL currently works with 3 types of stitches:
-- sc - single crochet ([[1]] page 7)
-- inc - increase ([[1]] page 12)
-- dec - decrease ([[1]] page 12)
+- sc - single crochet ([[3]] page 7)
+- inc - increase ([[3]] page 12)
+- dec - decrease ([[3]] page 12)
 
 Stitches are only placed inside *rounds*. Each round contains a comma-separated list of stitches. Each stitch is optionally preceded by a number stating how many times it should be repeated.
 ```
@@ -75,7 +75,7 @@ sc, inc, sc, inc, sc, sc
 The person crocheting has a few actions available besides creating new stitches. With a few exceptions, *actions* are permitted either between stitches of a round or between rounds.
 
 #### Fasten-off
-When the piece is done, the last round is typically squeezed together by performing a fasten-off (FO) [[2]]. Note that fasten-off as described in [[1]] only prevents yarn unwinding, and that described in [[2]] also serves to close the piece tightly. `FO` is only allowed between rounds. No stitches may be placed after FO, unless `goto` action is used.
+When the piece is done, the last round is typically squeezed together by performing a fasten-off (FO) [[4]]. Note that fasten-off as described in [[3]] only prevents yarn unwinding, and that described in [[4]] also serves to close the piece tightly. `FO` is only allowed between rounds. No stitches may be placed after FO, unless `goto` action is used.
 
 ```
 ...
@@ -85,7 +85,7 @@ FO
 
 #### Back-loop-only, front-loop only, both-loops
 ![alt text](images/image.png)
-<!-- [2] page 14 -->
+<!-- [4] page 14 -->
 
 Each existing stitch can be split into 2 loops. One on the inner side (back-loop), one on the outer side (front-loop). By default, new stitches are anchored to both of those loops. Using single loop creates a sharper corner in the piece.
 Using actions `BLO` and `FLO`, the default behavior can be altered so that new stitches are anchored to just the back loop or just the front loop. Default behavior is restored at the start of next round or by using `BL`, which stands for both loops.
@@ -197,7 +197,7 @@ FO
 ```
 
 ## Parser
-ACL parser returns a list of stitches and actions, and a dictionary of parameters. The type handling the parsing in Crocheteer[[3]] is `Pattern`.
+ACL parser returns a list of stitches and actions, and a dictionary of parameters. The type handling the parsing in Crocheteer[[1]] is `Pattern`.
 ACL parser and lexer are generated using [pest](https://pest.rs). Pest generates these based on a [parsing expression grammar (PEG)](https://en.wikipedia.org/wiki/Parsing_expression_grammar) defined using a [custom syntax](https://pest.rs/book/). The following code defines ACL using that syntax.
 ```
 program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
@@ -280,6 +280,6 @@ The PEG above would be equivalent to the following BNF grammar.
 ```
 ```
 
-[1]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
-[2]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/
-[3]: https://github.com/Oloqq/crocheteer
+[1]: https://github.com/Oloqq/crocheteer
+[3]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
+[4]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/
