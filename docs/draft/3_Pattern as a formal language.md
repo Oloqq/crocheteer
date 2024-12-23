@@ -138,7 +138,7 @@ Then, the beginning of the round is marked as `x`. 6 out of 12 stitches are used
 ```
 
 ![alt text](images/image-10.png)
-The working direction is counter-clockwise
+The working direction here is counter-clockwise
 
 There are now two independent workable perimeters labeled A and B on figure X (image-10). After `attach(x, _)`, the hook is in position `x`, as if `goto` was used. Let's create one "branch" of the letter Y and color it blue. The technique for attaching should be such that it leaves part A with 9 stitches available, as we used a chain of 3 stitches, and there were 6 stitches between `mark(x)` and `anchor(x, 3)`.
 ```

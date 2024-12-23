@@ -33,5 +33,10 @@ Figure shows a high level view of the process.
 
 All algorithms described in this paper are implemented in project *Crocheteer*, available as open source on github[[1]]. Crocheteer is split into backend and frontend. The algorithms described in the paper are part of the backend, written in Rust for performance and correctness. Web frontend, developed with TypeScript and webpack, handles the display. Either part can be swapped for another piece of software as long as it conforms to the defined API. Crocheteer's web frontend is described in detail in section 6.
 
+## Notes on images
+In this work, images of Plushies processed by Crocheteer are shown. Colorful outer shell represents the produced fabric. Colors are selected by the pattern designer and do not corelate to any special handling of the fabric. The gray grid shows the horizontal plane around origin. The orange points on the inside show the positions of centroids described in section 5.X.
+
+![alt text](images/image-2.png)
+
 [1]: https://github.com/Oloqq/crocheteer
 [2]: https://arxiv.org/pdf/1912.11932

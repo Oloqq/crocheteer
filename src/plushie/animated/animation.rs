@@ -27,7 +27,7 @@ impl Plushie {
         for (i, point) in self.nodes.points.iter().enumerate() {
             for neibi in &self.edges[i] {
                 if *neibi >= self.nodes.points.len() {
-                    continue;
+                    continue; // assert that it doesn't happen?
                 }
                 let neib = &self.nodes[*neibi];
                 let diff: V = attract(point, neib, self.params.desired_stitch_distance);

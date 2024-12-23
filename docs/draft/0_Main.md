@@ -34,3 +34,7 @@ BNF notation for the grammar
 [3]: https://www.montana.edu/extension/blaine/4-h/4h_documents/CrochetMadeEasy.pdf
 [4]: https://crochettoplay.com/how-to-fasten-off-in-amigurumi/
 [5]: https://cloudcompare.org/doc/wiki/index.php?title=Normals%5CCompute
+[6]: I. Binford, “Visual perception by computer,” in IEEE Conference of
+Systems and Control, 1971.
+[7]: https://mathvis.academic.wlu.edu/2016/06/15/crocheted-hyperbolic-planes/
+[8]: https://en.wikipedia.org/wiki/Force-directed_graph_drawing
