@@ -38,3 +38,6 @@ BNF notation for the grammar
 Systems and Control, 1971.
 [7]: https://mathvis.academic.wlu.edu/2016/06/15/crocheted-hyperbolic-planes/
 [8]: https://en.wikipedia.org/wiki/Force-directed_graph_drawing
+[9]: https://www.tinycurl.co/how-to-amigurumi-crochet/#stitches
+[10]: https://www.youtube.com/watch?v=P2b0j2xBd6I
+[11]: https://www.youtube.com/watch?v=GyjDd5tAhdU

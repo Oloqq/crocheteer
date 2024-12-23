@@ -3,6 +3,27 @@ Two kinds of forces need to act on a Plushie. First one, *link force*, shall try
 
 Two approaches are explored for *stuffing force*, that we call *centroid stuffing* and *skeleton stuffing*.
 
+One more force applies to nodes anchored on a single loop. *Single loop force* shall try to produce the characteristic sharp crease where stitches were created with `BLO` or `FLO`.
+
+In each timestep of the simulation, the forces acting on each node are accumulated in vector of node displacements $D: N \rightarrow \R^3$. Node positions are only mutated once all the forces have been calculated.
+
+Algorithm X shows a conceptual overview of Crocheteer's `step` function, and details are described throughout this section. Note that root displacement is subtracted from all elements of the displacement vector, so the node marked as root always stays at origin.
+```
+function step()
+    if initializer = one_by_one then
+        handle_adding_new_nodes()
+    end if
+
+    D <- (I -> [0, 0, 0])
+    add_link_forces(D)
+    add_stuffing_force(D)
+    add_single_loop_forces(D)
+
+    root: (i in I: P_i = Root)
+    N <- N + (D - D_root)
+end function
+```
+
 ## Initial node positions
 Before forces can be applied to the graph, it's nodes have to be assigned some initial positions, that is $N: I \rightarrow \R^3$.
 
@@ -94,8 +115,6 @@ C: \{ \R^3 \}
 \\
 f: \text{force multiplier}
 \\
-D: N \rightarrow \R^3
-\\
 M: C \rightarrow \{N\}
 $$
 
@@ -136,7 +155,10 @@ $$
 
 ![alt text](images/image-18.png)
 
-It is worth noting that for Plushies that fold onto themselves (have heavily concave regions) centroids can still escape from the inside and sabotage the simulation.
+It is worth noting that for Plushies that fold onto themselves (have heavily concave regions), centroids can still escape from the inside and sabotage the simulation. A proper skeletonization and general collision checking between nodes is necessary to handle such Plushies.
+
+## Single loop force
+
 
 ## Skeleton stuffing
 [[2]]

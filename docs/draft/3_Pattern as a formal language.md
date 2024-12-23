@@ -16,13 +16,10 @@ This work shall define a domain specific language, *Amigurumi Crochet Language (
 
 ## Amigurumi Crochet Language grammar
 ### Starter
-An amigurumi piece begins with either MR (Magic Ring) or Ch (Chain) ([3] pages 4, 18), so an ACL document also begins with one of them. MR or Ch can be constructed from an arbitrary number of stitches, so those instructions take an argument specifying that number.
+An amigurumi piece begins with a MR (Magic Ring) ([3] page 18), so an ACL document also begins with one of them. MR can be constructed from an arbitrary number of stitches, so this instruction takes an argument specifying that number.
 
 ```
 MR(6)
-```
-```
-Ch(18)
 ```
 
 The only instructions allowed before a starter are *parameters* and yarn describing *actions* (defined in further subsections).
@@ -85,7 +82,7 @@ FO
 
 #### Back-loop-only, front-loop only, both-loops
 ![alt text](images/image.png)
-<!-- [4] page 14 -->
+[[3]] page 12
 
 Each existing stitch can be split into 2 loops. One on the inner side (back-loop), one on the outer side (front-loop). By default, new stitches are anchored to both of those loops. Using single loop creates a sharper corner in the piece.
 Using actions `BLO` and `FLO`, the default behavior can be altered so that new stitches are anchored to just the back loop or just the front loop. Default behavior is restored at the start of next round or by using `BL`, which stands for both loops.
@@ -242,7 +239,6 @@ interstitchable_action = {
     | (KW_MARK ~ arg_ident)
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
-    | (KW_CH ~ arg_int)
     | (KW_ATTACH ~ arg_ident_int)
 }
 
@@ -253,7 +249,6 @@ KW_GOTO   = { "goto" }
 KW_FLO    = { "FLO" }
 KW_BLO    = { "BLO" }
 KW_BL     = { "BL" }
-KW_CH     = { "ch" | "Ch" }
 KW_COLOR  = { "color" }
 KW_ATTACH = { "attach" }
 KW_STITCH =  { "sc" | "inc" | "dec" }
