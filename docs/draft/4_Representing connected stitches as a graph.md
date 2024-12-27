@@ -159,6 +159,7 @@ Every time `hook.now.cursor` is about to advance, the following procedure is run
 function cursor_advance(hook)
     hook.parents[c] <- p
     hook.colors[c] <- hook.color
+    hook.round_count <- hook.round_count + 1
 end function
 ```
 
@@ -200,7 +201,7 @@ if |A| < 2 then
 end
 
 a0 = A[0]
-a1 = A[3]
+a1 = A[1]
 E[c] <- E[c] || {a0, a1} || E[previous_stitch(hook)]
 A <- A[2:] || {c}
 anchor_removed(hook, a0)

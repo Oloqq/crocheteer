@@ -1,8 +1,6 @@
 # 1. Introduction
 
-Crocheting is a manual craft that involves weaving a yarn stitch by stitch to create a piece of fabric. The craft is commonly confused with knitting, although the techniques are vastly different.
-
-https://www.thesprucecrafts.com/differences-between-knitting-and-crochet-4077447
+Crocheting is a manual craft that involves weaving a yarn stitch by stitch to create a piece of fabric. The craft is commonly confused with knitting, although the techniques are vastly different[[12]].
 
 Crocheting makes it easy to create 3-dimensional shapes, and the pieces are generally sturdier than knitted ones, making the technique well suited for things that should keep their shape such as decorations or toys.
 
@@ -40,3 +38,4 @@ In this work, images of Plushies processed by Crocheteer are shown. Colorful out
 
 [1]: https://github.com/Oloqq/crocheteer
 [2]: https://arxiv.org/pdf/1912.11932
+[12]: https://www.thesprucecrafts.com/differences-between-knitting-and-crochet-4077447

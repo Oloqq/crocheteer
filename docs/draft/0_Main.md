@@ -1,32 +1,24 @@
-<!-- title page -->
-<!-- table of contents -->
-
 # 1. [Introduction](./1_Introduction.md)
-<!-- need initial review
-more extensive objectives
-overview to be filled at the very end
- -->
+<!-- latex -->
 
 # 2. [Crocheting](./2_Crocheting.md)
-<!-- stub -->
+<!-- latex -->
 
 # 3. [Pattern as a formal language](./3_Pattern%20as%20a%20formal%20language.md)
-<!-- initial review: ok
-code refactors pending
-BNF notation for the grammar
- -->
+<!-- latex -->
 
 # 4. [Representing connected stitches as a graph](./4_Representing%20connected%20stitches%20as%20a%20graph.md)
-<!-- stub -->
+<!-- latex -->
 
 # 5. [Force directed graph](./5_Making%20the%20graph%20spatial.md)
-<!-- stub -->
+<!-- latex -->
+<!-- TODO skeletonization -->
 
 # 6. [User interface](./6_User%20interface.md)
-<!-- stub -->
+<!-- null -->
 
 # 7. [Goal summary](./7_Goal%20summary.md)
-<!-- stub -->
+<!-- null -->
 
 
 [1]: https://github.com/Oloqq/crocheteer
@@ -41,3 +33,4 @@ Systems and Control, 1971.
 [9]: https://www.tinycurl.co/how-to-amigurumi-crochet/#stitches
 [10]: https://www.youtube.com/watch?v=P2b0j2xBd6I
 [11]: https://www.youtube.com/watch?v=GyjDd5tAhdU
+[12]: https://www.thesprucecrafts.com/differences-between-knitting-and-crochet-4077447
