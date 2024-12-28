@@ -1,15 +1,57 @@
 use crate::common::*;
-use std::f32::consts::PI;
+use std::{collections::HashSet, f32::consts::PI};
 
 /// Nodes in relaxed plushie have max distance of ~1.4
 const CLUSTER_DISTANCE_THRESHOLD: f32 = 1.4;
 // const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
 
-// fn filter_connected(seed: usize, nodes: Vec<usize>, connectivity: ()) -> Vec<usize> {}
+// TODO all this really should be operating on sets
+fn get_connected(edges: &Vec<Vec<usize>>, node: usize) -> Vec<usize> {
+    let mut result = edges[node].clone();
+
+    for i in node + 1..edges.len() {
+        if edges[i].contains(&node) {
+            result.push(i);
+        }
+    }
+
+    result
+}
+
+fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<Vec<usize>>) -> Vec<usize> {
+    let mut result: HashSet<usize> = HashSet::with_capacity(nodes.len());
+    let mut frontier: HashSet<usize> = HashSet::with_capacity(nodes.len());
+    let mut closed: HashSet<usize> = HashSet::with_capacity(nodes.len());
+    frontier.insert(seed);
+
+    while frontier.len() > 0 {
+        let elem = frontier.iter().next().unwrap().clone();
+        frontier.remove(&elem);
+        closed.insert(elem);
+
+        let connected = get_connected(edges, elem);
+        for c in connected {
+            if nodes.contains(&c) && !result.contains(&c) {
+                result.insert(c);
+                if !frontier.contains(&c) && !closed.contains(&c) {
+                    frontier.insert(c);
+                }
+            }
+        }
+    }
+
+    assert!(
+        result.len() <= nodes.len(),
+        "{} <= {}",
+        result.len(),
+        nodes.len()
+    );
+    Vec::from_iter(result.into_iter())
+}
 
 fn get_inliers(
     cloud: &Vec<Point>,
-    _connectivity: (),
+    edges: &Vec<Vec<usize>>,
     threshold: f32,
     seed: usize,
     normal_offset: &V,
@@ -20,12 +62,7 @@ fn get_inliers(
         .enumerate()
         .filter_map(|(i, p)| ((normal_offset.dot(&p.coords) - d).abs() <= threshold).then_some(i))
         .collect();
-    close_to_plane
-    // let connected = close_to_plane
-    //     .into_iter()
-    //     .filter(|i| cloud[*i].coords.metric_distance(&cloud[seed].coords) <= GLOBAL_THRESHOLD)
-    //     .collect();
-    // connected
+    filter_connected(seed, close_to_plane, edges)
 }
 
 fn orient_cost(normals: &Vec<V>, inliers: &Vec<usize>, normal_offset: &V) -> f32 {
@@ -42,7 +79,7 @@ pub struct Orientation(pub f32, pub f32);
 pub fn find_best_plane(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: (),
+    connectivity: &Vec<Vec<usize>>,
     seed: usize,
     considered_normals: &Vec<(V, Orientation)>,
 ) -> (Orientation, Vec<usize>) {
@@ -74,7 +111,7 @@ pub fn find_best_plane(
 pub fn orient_planes(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: (),
+    connectivity: &Vec<Vec<usize>>,
     seeds: &Vec<usize>,
 ) -> Vec<(Orientation, Vec<usize>)> {
     const ANGULAR_INTERVAL: f32 = PI / 6.0;

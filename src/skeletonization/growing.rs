@@ -12,22 +12,24 @@ pub struct Part {
 
 pub fn grow(
     cloud: &Vec<Point>,
+    edges: &Vec<Vec<usize>>,
     cross_sections: Vec<CrossSection>,
     surface_normals: &Vec<V>,
 ) -> Vec<Part> {
     cross_sections
         .into_iter()
-        .map(|cs| grow_single_part(cloud, cs, surface_normals))
+        .map(|cs| grow_single_part(cloud, edges, cs, surface_normals))
         .collect()
 }
 
 fn grow_single_part(
     cloud: &Vec<Point>,
+    edges: &Vec<Vec<usize>>,
     initial_section: CrossSection,
     surface_normals: &Vec<V>,
 ) -> Part {
-    let forwards = grow_in_direction(1.0, &initial_section, cloud, surface_normals);
-    let backwards = grow_in_direction(-1.0, &initial_section, cloud, surface_normals);
+    let forwards = grow_in_direction(1.0, &initial_section, cloud, edges, surface_normals);
+    let backwards = grow_in_direction(-1.0, &initial_section, cloud, edges, surface_normals);
     let sections = backwards
         .into_iter()
         .rev()
@@ -44,6 +46,7 @@ fn grow_in_direction(
     direction: f32,
     section: &CrossSection,
     cloud: &Vec<Point>,
+    edges: &Vec<Vec<usize>>,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
     let mut result = Vec::new();
@@ -61,6 +64,7 @@ fn grow_in_direction(
             &source,
             cloud,
             surface_normals,
+            edges,
             &mut part_members,
         ) {
             result.push(new);
@@ -78,6 +82,7 @@ fn sprout(
     source: &CrossSection,
     cloud: &Vec<Point>,
     surface_normals: &Vec<V>,
+    edges: &Vec<Vec<usize>>,
     part_members: &mut std::collections::HashSet<usize>,
 ) -> Option<CrossSection> {
     let (theta, phi) = (source.normal.0, source.normal.1);
@@ -116,7 +121,7 @@ fn sprout(
         })
         .unwrap();
     let (best_plane_orientation, inliers) =
-        find_best_plane(cloud, surface_normals, (), seed, &considered_normals);
+        find_best_plane(cloud, surface_normals, edges, seed, &considered_normals);
 
     if inliers.len() == 0 {
         unreachable!();

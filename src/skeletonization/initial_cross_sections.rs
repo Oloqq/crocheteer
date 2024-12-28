@@ -100,13 +100,14 @@ impl CrossSection {
 
 pub fn detect_initial_cross_sections(
     cloud: &Vec<Point>,
+    edges: &Vec<Vec<usize>>,
     clusters: usize,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
     let (cluster_membership, centroids) = do_clustering(clusters, cloud);
     let seeds = select_seeds(cloud, &cluster_membership, &centroids);
 
-    orient_planes(cloud, surface_normals, (), &seeds)
+    orient_planes(cloud, surface_normals, edges, &seeds)
         .into_iter()
         .zip(seeds)
         .map(|((orient, inliers), seed)| CrossSection::new(cloud, seed, orient, inliers))

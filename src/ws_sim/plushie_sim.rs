@@ -221,9 +221,11 @@ impl PlushieSimulation {
             "initial-cross-sections" => {
                 const CLUSTER_NUM: usize = 4;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
+                let edges = &self.plushie.as_animated().unwrap().edges;
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
+                    edges,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
@@ -283,14 +285,16 @@ impl PlushieSimulation {
             "growing" => {
                 const CLUSTER_NUM: usize = 50;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
+                let edges = &self.plushie.as_animated().unwrap().edges;
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
+                    edges,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
                 let parts: Vec<skeletonization::Part> =
-                    skeletonization::grow(cloud, cross_sections, &surface_normals);
+                    skeletonization::grow(cloud, edges, cross_sections, &surface_normals);
                 println!(
                     "parts: {}, sections: {}",
                     parts.len(),
