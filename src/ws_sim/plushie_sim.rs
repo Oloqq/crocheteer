@@ -281,7 +281,7 @@ impl PlushieSimulation {
                 );
             }
             "growing" => {
-                const CLUSTER_NUM: usize = 10;
+                const CLUSTER_NUM: usize = 50;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(

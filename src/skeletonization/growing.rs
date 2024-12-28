@@ -131,15 +131,21 @@ fn sprout(
     if added == 0 {
         return None;
     }
-    // TODO: check scale with eigenvalues
-    println!("remember to implement scale checking");
 
-    Some(CrossSection::new(
-        cloud,
-        seed,
-        best_plane_orientation,
-        inliers,
-    ))
+    let new_section = CrossSection::new(cloud, seed, best_plane_orientation, inliers);
+
+    if scale_changed_too_much(source.scale, new_section.scale, 0.9) {
+        None
+    } else {
+        Some(new_section)
+    }
+}
+
+fn scale_changed_too_much(ei: na::Vector2<f32>, ej: na::Vector2<f32>, acceptable: f32) -> bool {
+    let numer = ei.metric_distance(&ej);
+    let denom = ei.norm();
+
+    f32::abs(1.0 - (numer / denom)) > acceptable
 }
 
 #[cfg(test)]

@@ -81,26 +81,20 @@ pub struct CrossSection {
     pub normal: Orientation,
     pub inliers: Vec<usize>,
     pub center: V,
+    pub scale: na::Vector2<f32>,
 }
 
 impl CrossSection {
     pub fn new(cloud: &Vec<Point>, seed: usize, normal: Orientation, inliers: Vec<usize>) -> Self {
-        let center = Self::center(cloud, &inliers);
+        let center = center(cloud, &inliers);
+        let scale = get_e1_e2(cloud, &inliers);
         CrossSection {
             seed,
             normal,
             inliers,
             center,
+            scale,
         }
-    }
-
-    fn center(cloud: &Vec<Point>, inliers: &Vec<usize>) -> V {
-        let points: Vec<&Point> = inliers.iter().map(|i| &cloud[*i]).collect();
-        let mut sum = V::zeros();
-        for point in &points {
-            sum += point.coords;
-        }
-        sum / points.len() as f32
     }
 }
 
@@ -117,4 +111,61 @@ pub fn detect_initial_cross_sections(
         .zip(seeds)
         .map(|((orient, inliers), seed)| CrossSection::new(cloud, seed, orient, inliers))
         .collect()
+}
+
+fn center(cloud: &Vec<Point>, inliers: &Vec<usize>) -> V {
+    let points: Vec<&Point> = inliers.iter().map(|i| &cloud[*i]).collect();
+    let mut sum = V::zeros();
+    for point in &points {
+        sum += point.coords;
+    }
+    sum / points.len() as f32
+}
+
+fn get_e1_e2(cloud: &Vec<Point>, inliers: &Vec<usize>) -> na::Vector2<f32> {
+    use nalgebra::{DMatrix, SymmetricEigen};
+    // Suppose you have n 3D points in a Vec of arrays:
+    let points: Vec<[f32; 3]> = inliers
+        .iter()
+        .map(|x| [cloud[*x].coords.x, cloud[*x].coords.y, cloud[*x].coords.z])
+        .collect();
+
+    // Convert this into a DMatrix<f64> of shape (n, 3)
+    // Each row is a data point (x, y, z)
+    let n = inliers.len();
+    let mut data = DMatrix::from_iterator(3, n, points.iter().flat_map(|&p| p.clone()));
+    // println!("data {}", &data);
+
+    let mean = data.column_mean();
+    // println!("mean {}", mean);
+
+    // 2. Center data: For each row, subtract the mean
+    for mut col in data.column_iter_mut() {
+        col -= &mean;
+    }
+
+    // 3. Compute covariance matrix (3x3)
+    // Covariance = (X^T X) / (n - 1)
+    // shape(X) = (n,3), shape(X^T X) = (3,3)
+    let cov = (&data.transpose() * &data) / (n as f32 - 1.0);
+
+    // 4. Perform eigen decomposition on the symmetric covariance matrix
+    let eig = SymmetricEigen::new(cov);
+
+    // eig.eigenvalues and eig.eigenvectors are now available
+    // Sort eigenvalues (and vectors) by descending order of eigenvalue
+    let mut eigen_pairs: Vec<(f32, Vec<f32>)> = eig
+        .eigenvalues
+        .iter()
+        .zip(eig.eigenvectors.column_iter())
+        .map(|(val, vec)| (*val, vec.iter().copied().collect()))
+        .collect();
+
+    eigen_pairs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+
+    // The two most significant eigenvalues:
+    let top_two_eigenvalues = [eigen_pairs[0].0, eigen_pairs[1].0];
+    // println!("Most significant eigenvalues: {:?}", top_two_eigenvalues);
+
+    na::Vector2::<f32>::new(top_two_eigenvalues[0] as f32, top_two_eigenvalues[1] as f32)
 }

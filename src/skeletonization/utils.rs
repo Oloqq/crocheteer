@@ -5,6 +5,8 @@ use std::f32::consts::PI;
 const CLUSTER_DISTANCE_THRESHOLD: f32 = 1.4;
 // const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
 
+// fn filter_connected(seed: usize, nodes: Vec<usize>, connectivity: ()) -> Vec<usize> {}
+
 fn get_inliers(
     cloud: &Vec<Point>,
     _connectivity: (),
