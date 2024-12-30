@@ -12,7 +12,7 @@ pub struct Part {
 
 pub fn grow(
     cloud: &Vec<Point>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     cross_sections: Vec<CrossSection>,
     surface_normals: &Vec<V>,
 ) -> Vec<Part> {
@@ -24,7 +24,7 @@ pub fn grow(
 
 fn grow_single_part(
     cloud: &Vec<Point>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     initial_section: CrossSection,
     surface_normals: &Vec<V>,
 ) -> Part {
@@ -46,7 +46,7 @@ fn grow_in_direction(
     direction: f32,
     section: &CrossSection,
     cloud: &Vec<Point>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
     let mut result = Vec::new();
@@ -82,7 +82,7 @@ fn sprout(
     source: &CrossSection,
     cloud: &Vec<Point>,
     surface_normals: &Vec<V>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     part_members: &mut std::collections::HashSet<usize>,
 ) -> Option<CrossSection> {
     let (theta, phi) = (source.normal.0, source.normal.1);

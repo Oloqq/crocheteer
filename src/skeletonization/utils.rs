@@ -5,20 +5,20 @@ use std::{collections::HashSet, f32::consts::PI};
 const CLUSTER_DISTANCE_THRESHOLD: f32 = 1.4;
 // const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
 
-// TODO all this really should be operating on sets
-fn get_connected(edges: &Vec<Vec<usize>>, node: usize) -> Vec<usize> {
+// TODO could be better using reverse_edges O(1)
+fn get_connected(edges: &Vec<HashSet<usize>>, node: usize) -> HashSet<usize> {
     let mut result = edges[node].clone();
 
     for i in node + 1..edges.len() {
         if edges[i].contains(&node) {
-            result.push(i);
+            result.insert(i);
         }
     }
 
     result
 }
 
-fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<Vec<usize>>) -> Vec<usize> {
+fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<HashSet<usize>>) -> Vec<usize> {
     let mut result: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut frontier: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut closed: HashSet<usize> = HashSet::with_capacity(nodes.len());
@@ -51,7 +51,7 @@ fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<Vec<usize>>) -> 
 
 fn get_inliers(
     cloud: &Vec<Point>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     threshold: f32,
     seed: usize,
     normal_offset: &V,
@@ -79,7 +79,7 @@ pub struct Orientation(pub f32, pub f32);
 pub fn find_best_plane(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: &Vec<Vec<usize>>,
+    connectivity: &Vec<HashSet<usize>>,
     seed: usize,
     considered_normals: &Vec<(V, Orientation)>,
 ) -> (Orientation, Vec<usize>, f32) {
@@ -115,7 +115,7 @@ pub fn find_best_plane(
 pub fn orient_planes(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: &Vec<Vec<usize>>,
+    connectivity: &Vec<HashSet<usize>>,
     seeds: &Vec<usize>,
 ) -> Vec<(Orientation, Vec<usize>, f32)> {
     const ANGULAR_INTERVAL: f32 = PI / 6.0;

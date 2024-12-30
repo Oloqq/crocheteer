@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::utils::{orient_planes, Orientation};
 use crate::common::*;
 use kmeans::*;
@@ -108,7 +110,7 @@ impl CrossSection {
 
 pub fn detect_initial_cross_sections(
     cloud: &Vec<Point>,
-    edges: &Vec<Vec<usize>>,
+    edges: &Vec<HashSet<usize>>,
     clusters: usize,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
