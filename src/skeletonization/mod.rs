@@ -22,6 +22,7 @@ mod in_execution_order {
     pub use growing::Part;
 
     pub use part_selection::sort_by_cost;
+    pub use part_selection::select_parts;
 }
 
 pub use in_execution_order::*;

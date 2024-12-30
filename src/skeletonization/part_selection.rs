@@ -6,6 +6,10 @@ use crate::common::*;
 type Metric = f32;
 type Cost = (Metric, Metric, Metric, Metric);
 
+pub fn select_parts(parts: Vec<Part>) -> Vec<Part> {
+    parts
+}
+
 pub fn sort_by_cost(parts: Vec<Part>) -> (Vec<Part>, Vec<f32>) {
     let costs: Vec<Cost> = parts.iter().map(|p| get_cost(&p)).collect();
     let costs: Vec<f32> = normalize_costs(costs);

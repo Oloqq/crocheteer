@@ -154,6 +154,9 @@ export function initGui(
     cost: () => {
       comms.send(`cost`);
     },
+    optimparts: () => {
+      comms.send(`optimparts`);
+    },
   };
   skeleton.open();
   {
@@ -173,6 +176,7 @@ export function initGui(
 
     skeleton.add(skeletonFuncs, "growing").name("Growing");
     skeleton.add(skeletonFuncs, "cost").name("Calculate cost");
+    skeleton.add(skeletonFuncs, "optimparts").name("Select parts");
   }
 
   return gui;
