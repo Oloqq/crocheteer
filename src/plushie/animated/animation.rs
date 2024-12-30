@@ -39,9 +39,21 @@ impl Plushie {
     }
 
     fn add_stuffing_force(&mut self) {
+        if self.params.skelet_stuffing.enable {
+            let s = &self.params.skelet_stuffing;
+            self.params.centroids.number = s.bones.len();
+            self.centroids.points = s.bones.clone();
+        }
+
         self.centroids
             .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
         sanity!(self.displacement.assert_no_nan("stuffing"));
+
+        if self.params.skelet_stuffing.enable {
+            let s = &self.params.skelet_stuffing;
+            self.params.centroids.number = s.bones.len();
+            self.centroids.points = s.bones.clone();
+        }
     }
 
     fn add_gravity(&mut self) {

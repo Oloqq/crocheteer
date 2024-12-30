@@ -123,9 +123,10 @@ fn sprout(
     let (best_plane_orientation, inliers, orient_cost) =
         find_best_plane(cloud, surface_normals, edges, seed, &considered_normals);
 
-    if inliers.len() == 0 {
-        unreachable!();
-    }
+    // why did I ever say it was unreachable? investigate
+    // if inliers.len() == 0 {
+    //     unreachable!();
+    // }
     let mut added = 0;
     for point in &inliers {
         if part_members.insert(*point) {

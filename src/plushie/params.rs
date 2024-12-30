@@ -59,7 +59,7 @@ pub struct SkeletParams {
     pub must_include_points: f32,
     pub allowed_overlap: f32,
     #[serde(skip)]
-    pub bones: Vec<crate::common::V>,
+    pub bones: Vec<crate::common::Point>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]

@@ -9,7 +9,7 @@ use serde_derive::Serialize;
 
 #[derive(Clone, Serialize)]
 pub struct Centroids {
-    points: Vec<Point>,
+    pub points: Vec<Point>,
 }
 
 impl Centroids {

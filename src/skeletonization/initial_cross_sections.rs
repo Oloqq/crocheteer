@@ -112,14 +112,19 @@ pub fn detect_initial_cross_sections(
     clusters: usize,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
+    println!("clustering...");
     let (cluster_membership, centroids) = do_clustering(clusters, cloud);
     let seeds = select_seeds(cloud, &cluster_membership, &centroids);
-
+    println!("orienting...");
     orient_planes(cloud, surface_normals, edges, &seeds)
         .into_iter()
         .zip(seeds)
-        .map(|((orient, inliers, orient_cost), seed)| {
-            CrossSection::new(cloud, seed, orient, inliers, orient_cost)
+        .filter_map(|((orient, inliers, orient_cost), seed)| {
+            if inliers.len() > 0 {
+                Some(CrossSection::new(cloud, seed, orient, inliers, orient_cost))
+            } else {
+                None
+            }
         })
         .collect()
 }

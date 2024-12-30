@@ -33,7 +33,7 @@ pub fn get_skelet(
     cluster_num: usize,
     must_include_points: f32,
     allowed_overlap: f32,
-) -> Vec<crate::common::V> {
+) -> Vec<crate::common::Point> {
     println!("getting skelet...");
     let cloud = &plushie.nodes.points;
     let edges = &plushie.edges;
@@ -52,6 +52,6 @@ pub fn get_skelet(
 
     parts
         .iter()
-        .flat_map(|p| p.sections.iter().map(|s| s.center))
+        .flat_map(|p| p.sections.iter().map(|s| s.center.into()))
         .collect()
 }
