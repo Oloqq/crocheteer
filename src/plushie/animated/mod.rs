@@ -35,7 +35,11 @@ impl PlushieTrait for Plushie {
         self.step(time * self.params.timestep);
     }
 
-    fn params(&mut self) -> &mut crate::plushie::Params {
+    fn params(&self) -> &Params {
+        &self.params
+    }
+
+    fn params_mut(&mut self) -> &mut crate::plushie::Params {
         &mut self.params
     }
 

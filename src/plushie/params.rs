@@ -32,6 +32,8 @@ pub struct Params {
     pub hook_leniency: crate::plushie::animated::Leniency,
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
+
+    pub skelet_stuffing: SkeletParams,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -48,6 +50,16 @@ pub struct CentroidParams {
     pub number: usize,
     pub force: f32,
     pub min_nodes_per_centroid: usize,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct SkeletParams {
+    pub enable: bool,
+    pub centroid_number: usize,
+    pub must_include_points: f32,
+    pub allowed_overlap: f32,
+    #[serde(skip)]
+    pub bones: Vec<crate::common::V>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -81,6 +93,7 @@ impl Params {
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
             hook_leniency: Leniency::NoMercy,
+            skelet_stuffing: Default::default(),
         }
     }
 
@@ -136,6 +149,18 @@ impl Default for CentroidParams {
             number: 2,
             force: 0.05,
             min_nodes_per_centroid: 60,
+        }
+    }
+}
+
+impl Default for SkeletParams {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            centroid_number: 49,
+            must_include_points: 0.9,
+            allowed_overlap: 6.8,
+            bones: vec![],
         }
     }
 }

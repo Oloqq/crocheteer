@@ -15,7 +15,8 @@ pub trait PlushieTrait: Send + 'static {
     /// Run the simulation for one step
     fn step(&mut self, time: f32);
     /// Access parameters of the simulation
-    fn params(&mut self) -> &mut Params;
+    fn params(&self) -> &Params;
+    fn params_mut(&mut self) -> &mut Params;
     /// Overwrite params
     fn set_params(&mut self, params: Params);
 

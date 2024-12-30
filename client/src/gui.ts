@@ -138,7 +138,7 @@ export function initGui(
   }
 
   const skeleton = gui.addFolder("Skeletonization");
-  const skeletonFuncs = {
+  const skeletonExperiments = {
     calculateNormals: () => {
       comms.send(`calculate-normals`);
     },
@@ -158,25 +158,57 @@ export function initGui(
       comms.send(`optimparts`);
     },
   };
+
+  const skeletonData = {
+    enable: false,
+    centroid_number: 50,
+    must_include_points: 0.95,
+    allowed_overlap: 5.0,
+    newskelet: () => {
+      comms.send(`newskelet`);
+    },
+  };
+  const sendSkelet = () => {
+    comms.send(`skeletparams ${JSON.stringify(skeletonData)}`);
+  };
+
   skeleton.open();
   {
+    const experiment = skeleton.addFolder("Experiment");
+    // experiment.open();
+    {
+      experiment
+        .add(skeletonExperiments, "calculateNormals")
+        .name("Calculate normals (takes time)");
+
+      experiment.add(skeletonExperiments, "clustering").name("Perform kmeans");
+
+      experiment
+        .add(skeletonExperiments, "initialCrossSections")
+        .name("Initial cross sections (takes time)");
+
+      experiment
+        .add(data, "inspectCluster", 0)
+        .onChange((val) => data.clusterChanged(val));
+
+      experiment.add(skeletonExperiments, "growing").name("Growing");
+      experiment.add(skeletonExperiments, "cost").name("Calculate cost");
+      experiment.add(skeletonExperiments, "optimparts").name("Select parts");
+    }
+
     skeleton
-      .add(skeletonFuncs, "calculateNormals")
-      .name("Calculate normals (takes time)");
+      .add(skeletonData, "enable")
+      .name("Skeleton stuffing")
+      .onChange(sendSkelet);
 
-    skeleton.add(skeletonFuncs, "clustering").name("Perform kmeans");
-
+    skeleton.add(skeletonData, "newskelet").name("New skelet");
     skeleton
-      .add(skeletonFuncs, "initialCrossSections")
-      .name("Initial cross sections (takes time)");
-
+      .add(skeletonData, "centroid_number", 1, 200, 1)
+      .onChange(sendSkelet);
     skeleton
-      .add(data, "inspectCluster", 0)
-      .onChange((val) => data.clusterChanged(val));
-
-    skeleton.add(skeletonFuncs, "growing").name("Growing");
-    skeleton.add(skeletonFuncs, "cost").name("Calculate cost");
-    skeleton.add(skeletonFuncs, "optimparts").name("Select parts");
+      .add(skeletonData, "must_include_points", 0, 1)
+      .onChange(sendSkelet);
+    skeleton.add(skeletonData, "allowed_overlap", 0, 10).onChange(sendSkelet);
   }
 
   return gui;

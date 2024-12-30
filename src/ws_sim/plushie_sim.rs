@@ -2,6 +2,7 @@ use serde_json::json;
 
 use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
+use crate::plushie::params::SkeletParams;
 use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
 use crate::{common::*, skeletonization, token_args};
@@ -142,7 +143,7 @@ impl PlushieSimulation {
                 self.plushie.set_params(deserd);
             }
             "getparams" => {
-                let serialized = serde_json::to_string(self.plushie.params()).unwrap();
+                let serialized = serde_json::to_string(self.plushie.params_mut()).unwrap();
                 self.send("params", &serialized);
             }
             "save" => {
@@ -163,6 +164,32 @@ impl PlushieSimulation {
                 // self.plushie = Box::new(plushie);
                 // self.controls.need_init = true;
                 // self.send("status", "loaded pointcloud");
+            }
+            "skeletparams" => {
+                let serialized = tokens.get(1)?;
+                let deserd: SkeletParams = serde_json::from_str(serialized).map_err(|e| {
+                    log::error!("{e}");
+                    super::tokens::Error::CantParseParams
+                })?;
+                let bones = self.plushie.params_mut().skelet_stuffing.bones.clone();
+                self.plushie.params_mut().skelet_stuffing = deserd;
+                self.plushie.params_mut().skelet_stuffing.bones = bones;
+            }
+            "newskelet" => {
+                let params = &self.plushie.params().skelet_stuffing;
+                if !params.enable {
+                    println!("enable skeletonization first");
+                    return Ok(());
+                }
+
+                let bones = skeletonization::get_skelet(
+                    &self.plushie.as_animated().unwrap(),
+                    params.centroid_number,
+                    params.must_include_points,
+                    params.allowed_overlap,
+                );
+
+                self.plushie.params_mut().skelet_stuffing.bones = bones;
             }
             "calculate-normals" => {
                 let normals =

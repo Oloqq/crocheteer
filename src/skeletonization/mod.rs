@@ -27,3 +27,31 @@ mod in_execution_order {
 }
 
 pub use in_execution_order::*;
+
+pub fn get_skelet(
+    plushie: &crate::plushie::Plushie,
+    cluster_num: usize,
+    must_include_points: f32,
+    allowed_overlap: f32,
+) -> Vec<crate::common::V> {
+    println!("getting skelet...");
+    let cloud = &plushie.nodes.points;
+    let edges = &plushie.edges;
+    println!("getting normals...");
+    let surface_normals = local_surface_normals_per_point(cloud);
+    println!("initial cross section...");
+    let cross_sections = detect_initial_cross_sections(cloud, edges, cluster_num, &surface_normals);
+    println!("growing...");
+    let parts: Vec<Part> = grow(cloud, edges, cross_sections, &surface_normals);
+    println!("all parts: {}...", parts.len());
+    let parts = select_parts(
+        parts,
+        PartSelectionParams::new(cloud.len(), must_include_points, allowed_overlap),
+    );
+    println!("selected parts: {}", parts.len());
+
+    parts
+        .iter()
+        .flat_map(|p| p.sections.iter().map(|s| s.center))
+        .collect()
+}
