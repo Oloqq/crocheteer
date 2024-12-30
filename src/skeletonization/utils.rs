@@ -3,22 +3,38 @@ use std::{collections::HashSet, f32::consts::PI};
 
 /// Nodes in relaxed plushie have max distance of ~1.4
 const CLUSTER_DISTANCE_THRESHOLD: f32 = 1.4;
+pub struct Connectivity {
+    backward: Vec<Vec<usize>>,
+    forward: Vec<Vec<usize>>,
+}
 // const GLOBAL_THRESHOLD: f32 = 1.5 * CLUSTER_DISTANCE_THRESHOLD;
 
-// TODO could be better using reverse_edges O(1)
-fn get_connected(edges: &Vec<HashSet<usize>>, node: usize) -> HashSet<usize> {
-    let mut result = edges[node].clone();
+impl Connectivity {
+    pub fn new(edges: &Vec<Vec<usize>>) -> Self {
+        let mut forward: Vec<Vec<usize>> = vec![vec![]; edges.len()];
+        for i in 0..edges.len() {
+            for j in &edges[i] {
+                forward[*j].push(i);
+            }
+        }
 
-    for i in node + 1..edges.len() {
-        if edges[i].contains(&node) {
-            result.insert(i);
+        Self {
+            backward: edges.clone(),
+            forward,
         }
     }
-
-    result
 }
 
-fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<HashSet<usize>>) -> Vec<usize> {
+// TODO could be better using reverse_edges O(1)
+fn get_connected(edges: &Connectivity, node: usize) -> Vec<usize> {
+    edges.backward[node]
+        .clone()
+        .into_iter()
+        .chain(edges.forward[node].clone())
+        .collect()
+}
+
+fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Connectivity) -> Vec<usize> {
     let mut result: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut frontier: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut closed: HashSet<usize> = HashSet::with_capacity(nodes.len());
@@ -51,7 +67,7 @@ fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Vec<HashSet<usize>>)
 
 fn get_inliers(
     cloud: &Vec<Point>,
-    edges: &Vec<HashSet<usize>>,
+    edges: &Connectivity,
     threshold: f32,
     seed: usize,
     normal_offset: &V,
@@ -79,7 +95,7 @@ pub struct Orientation(pub f32, pub f32);
 pub fn find_best_plane(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: &Vec<HashSet<usize>>,
+    connectivity: &Connectivity,
     seed: usize,
     considered_normals: &Vec<(V, Orientation)>,
 ) -> (Orientation, Vec<usize>, f32) {
@@ -115,7 +131,7 @@ pub fn find_best_plane(
 pub fn orient_planes(
     cloud: &Vec<Point>,
     normals: &Vec<V>,
-    connectivity: &Vec<HashSet<usize>>,
+    connectivity: &Connectivity,
     seeds: &Vec<usize>,
 ) -> Vec<(Orientation, Vec<usize>, f32)> {
     const ANGULAR_INTERVAL: f32 = PI / 6.0;

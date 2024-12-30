@@ -3,6 +3,7 @@ use std::collections::HashSet;
 
 use super::initial_cross_sections::CrossSection;
 use super::utils::Orientation;
+use super::Connectivity;
 use crate::common::*;
 use crate::skeletonization::utils::find_best_plane;
 
@@ -12,7 +13,7 @@ pub struct Part {
 
 pub fn grow(
     cloud: &Vec<Point>,
-    edges: &Vec<HashSet<usize>>,
+    edges: &Connectivity,
     cross_sections: Vec<CrossSection>,
     surface_normals: &Vec<V>,
 ) -> Vec<Part> {
@@ -24,7 +25,7 @@ pub fn grow(
 
 fn grow_single_part(
     cloud: &Vec<Point>,
-    edges: &Vec<HashSet<usize>>,
+    edges: &Connectivity,
     initial_section: CrossSection,
     surface_normals: &Vec<V>,
 ) -> Part {
@@ -46,7 +47,7 @@ fn grow_in_direction(
     direction: f32,
     section: &CrossSection,
     cloud: &Vec<Point>,
-    edges: &Vec<HashSet<usize>>,
+    edges: &Connectivity,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
     let mut result = Vec::new();
@@ -82,7 +83,7 @@ fn sprout(
     source: &CrossSection,
     cloud: &Vec<Point>,
     surface_normals: &Vec<V>,
-    edges: &Vec<HashSet<usize>>,
+    edges: &Connectivity,
     part_members: &mut std::collections::HashSet<usize>,
 ) -> Option<CrossSection> {
     let (theta, phi) = (source.normal.0, source.normal.1);

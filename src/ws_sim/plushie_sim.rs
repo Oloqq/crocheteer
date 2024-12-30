@@ -7,7 +7,6 @@ use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
 use crate::{common::*, skeletonization, token_args};
 
-use std::collections::HashSet;
 use std::fs;
 use std::sync::{Arc, Mutex};
 
@@ -249,15 +248,12 @@ impl PlushieSimulation {
             "initial-cross-sections" => {
                 const CLUSTER_NUM: usize = 4;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let edges = self.plushie.as_animated().unwrap().edges.clone();
-                let edges: Vec<HashSet<usize>> = edges
-                    .into_iter()
-                    .map(|e| HashSet::from_iter(e.into_iter()))
-                    .collect();
+                let connectivity =
+                    skeletonization::Connectivity::new(&self.plushie.as_animated().unwrap().edges);
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
-                    &edges,
+                    &connectivity,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
@@ -317,20 +313,17 @@ impl PlushieSimulation {
             "growing" => {
                 const CLUSTER_NUM: usize = 50;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let edges = self.plushie.as_animated().unwrap().edges.clone();
-                let edges: Vec<HashSet<usize>> = edges
-                    .into_iter()
-                    .map(|e| HashSet::from_iter(e.into_iter()))
-                    .collect();
+                let connectivity =
+                    skeletonization::Connectivity::new(&self.plushie.as_animated().unwrap().edges);
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
-                    &edges,
+                    &connectivity,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
                 let parts: Vec<skeletonization::Part> =
-                    skeletonization::grow(cloud, &edges, cross_sections, &surface_normals);
+                    skeletonization::grow(cloud, &connectivity, cross_sections, &surface_normals);
                 println!(
                     "parts: {}, sections: {}",
                     parts.len(),
@@ -387,20 +380,17 @@ impl PlushieSimulation {
             "cost" => {
                 const CLUSTER_NUM: usize = 50;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let edges = self.plushie.as_animated().unwrap().edges.clone();
-                let edges: Vec<HashSet<usize>> = edges
-                    .into_iter()
-                    .map(|e| HashSet::from_iter(e.into_iter()))
-                    .collect();
+                let connectivity =
+                    skeletonization::Connectivity::new(&self.plushie.as_animated().unwrap().edges);
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
-                    &edges,
+                    &connectivity,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
                 let parts: Vec<skeletonization::Part> =
-                    skeletonization::grow(cloud, &edges, cross_sections, &surface_normals);
+                    skeletonization::grow(cloud, &connectivity, cross_sections, &surface_normals);
                 let (parts, costs) = skeletonization::sort_by_cost(parts);
                 println!("parts: {}", parts.len());
                 println!("costs: {:?}", costs);
@@ -456,20 +446,17 @@ impl PlushieSimulation {
                 println!("selecting parts");
                 const CLUSTER_NUM: usize = 50;
                 let cloud = &self.plushie.as_animated().unwrap().nodes.points;
-                let edges = self.plushie.as_animated().unwrap().edges.clone();
-                let edges: Vec<HashSet<usize>> = edges
-                    .into_iter()
-                    .map(|e| HashSet::from_iter(e.into_iter()))
-                    .collect();
+                let connectivity =
+                    skeletonization::Connectivity::new(&self.plushie.as_animated().unwrap().edges);
                 let surface_normals = skeletonization::local_surface_normals_per_point(cloud);
                 let cross_sections = skeletonization::detect_initial_cross_sections(
                     cloud,
-                    &edges,
+                    &connectivity,
                     CLUSTER_NUM,
                     &surface_normals,
                 );
                 let parts: Vec<skeletonization::Part> =
-                    skeletonization::grow(cloud, &edges, cross_sections, &surface_normals);
+                    skeletonization::grow(cloud, &connectivity, cross_sections, &surface_normals);
                 println!("all parts: {}", parts.len());
                 let parts = skeletonization::select_parts(
                     parts,

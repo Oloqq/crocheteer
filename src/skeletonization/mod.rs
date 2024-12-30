@@ -8,6 +8,8 @@ mod utils;
 mod in_execution_order {
     use super::*;
 
+    pub use utils::Connectivity;
+
     pub use local_surface_normals::local_surface_normals_per_point;
 
     #[allow(unused)]
@@ -26,8 +28,6 @@ mod in_execution_order {
     pub use part_selection::PartSelectionParams;
 }
 
-use std::collections::HashSet;
-
 pub use in_execution_order::*;
 
 pub fn get_skelet(
@@ -38,18 +38,14 @@ pub fn get_skelet(
 ) -> Vec<crate::common::Point> {
     println!("getting skelet...");
     let cloud = &plushie.nodes.points;
-    let edges = plushie.edges.clone();
-    let edges: Vec<HashSet<usize>> = edges
-        .into_iter()
-        .map(|e| HashSet::from_iter(e.into_iter()))
-        .collect();
+    let connectivity = Connectivity::new(&plushie.edges);
     println!("getting normals...");
     let surface_normals = local_surface_normals_per_point(cloud);
     println!("initial cross section...");
     let cross_sections =
-        detect_initial_cross_sections(cloud, &edges, cluster_num, &surface_normals);
+        detect_initial_cross_sections(cloud, &connectivity, cluster_num, &surface_normals);
     println!("growing...");
-    let parts: Vec<Part> = grow(cloud, &edges, cross_sections, &surface_normals);
+    let parts: Vec<Part> = grow(cloud, &connectivity, cross_sections, &surface_normals);
     println!("all parts: {}...", parts.len());
     let parts = select_parts(
         parts,
