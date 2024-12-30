@@ -82,7 +82,7 @@ pub fn find_best_plane(
     connectivity: &Vec<Vec<usize>>,
     seed: usize,
     considered_normals: &Vec<(V, Orientation)>,
-) -> (Orientation, Vec<usize>) {
+) -> (Orientation, Vec<usize>, f32) {
     let mut candidates: Vec<(Orientation, f32)> = Vec::with_capacity(considered_normals.len());
     let mut debug_inliers: Vec<Vec<usize>> = Vec::with_capacity(candidates.capacity());
     for (normal, angles) in considered_normals {
@@ -98,14 +98,18 @@ pub fn find_best_plane(
         debug_inliers.push(inliers);
     }
 
-    let (index, best_orientation) = candidates
+    let (index, best_orientation, best_cost) = candidates
         .into_iter()
         .enumerate()
         .min_by(|(_, a), (_, b)| a.1.total_cmp(&b.1))
-        .and_then(|(i, candidate)| Some((i, candidate.0)))
+        .and_then(|(i, candidate)| Some((i, candidate.0, candidate.1)))
         .unwrap();
 
-    (best_orientation, debug_inliers.swap_remove(index))
+    (
+        best_orientation,
+        debug_inliers.swap_remove(index),
+        best_cost,
+    )
 }
 
 pub fn orient_planes(
@@ -113,7 +117,7 @@ pub fn orient_planes(
     normals: &Vec<V>,
     connectivity: &Vec<Vec<usize>>,
     seeds: &Vec<usize>,
-) -> Vec<(Orientation, Vec<usize>)> {
+) -> Vec<(Orientation, Vec<usize>, f32)> {
     const ANGULAR_INTERVAL: f32 = PI / 6.0;
     const THETA_STEPS: usize = 12;
     const PHI_STEPS: usize = 4;

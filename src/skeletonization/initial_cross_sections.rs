@@ -82,10 +82,17 @@ pub struct CrossSection {
     pub inliers: Vec<usize>,
     pub center: V,
     pub scale: na::Vector2<f32>,
+    pub orient_cost: f32,
 }
 
 impl CrossSection {
-    pub fn new(cloud: &Vec<Point>, seed: usize, normal: Orientation, inliers: Vec<usize>) -> Self {
+    pub fn new(
+        cloud: &Vec<Point>,
+        seed: usize,
+        normal: Orientation,
+        inliers: Vec<usize>,
+        orient_cost: f32,
+    ) -> Self {
         let center = center(cloud, &inliers);
         let scale = get_e1_e2(cloud, &inliers);
         CrossSection {
@@ -94,6 +101,7 @@ impl CrossSection {
             inliers,
             center,
             scale,
+            orient_cost,
         }
     }
 }
@@ -110,7 +118,9 @@ pub fn detect_initial_cross_sections(
     orient_planes(cloud, surface_normals, edges, &seeds)
         .into_iter()
         .zip(seeds)
-        .map(|((orient, inliers), seed)| CrossSection::new(cloud, seed, orient, inliers))
+        .map(|((orient, inliers, orient_cost), seed)| {
+            CrossSection::new(cloud, seed, orient, inliers, orient_cost)
+        })
         .collect()
 }
 

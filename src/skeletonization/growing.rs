@@ -120,7 +120,7 @@ fn sprout(
                 .total_cmp(&b.coords.metric_distance(&new_center))
         })
         .unwrap();
-    let (best_plane_orientation, inliers) =
+    let (best_plane_orientation, inliers, orient_cost) =
         find_best_plane(cloud, surface_normals, edges, seed, &considered_normals);
 
     if inliers.len() == 0 {
@@ -137,7 +137,7 @@ fn sprout(
         return None;
     }
 
-    let new_section = CrossSection::new(cloud, seed, best_plane_orientation, inliers);
+    let new_section = CrossSection::new(cloud, seed, best_plane_orientation, inliers, orient_cost);
 
     if scale_changed_too_much(source.scale, new_section.scale, 0.9) {
         None
