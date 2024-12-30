@@ -427,7 +427,10 @@ impl PlushieSimulation {
                 let parts: Vec<skeletonization::Part> =
                     skeletonization::grow(cloud, edges, cross_sections, &surface_normals);
                 println!("all parts: {}", parts.len());
-                let parts = skeletonization::select_parts(parts);
+                let parts = skeletonization::select_parts(
+                    parts,
+                    skeletonization::PartSelectionParams::new(cloud.len(), 0.95, 5.0),
+                );
                 println!("selected parts: {}", parts.len());
 
                 let all_white = vec![(255, 255, 255); cloud.len()];

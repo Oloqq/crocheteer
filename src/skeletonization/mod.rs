@@ -23,6 +23,7 @@ mod in_execution_order {
 
     pub use part_selection::sort_by_cost;
     pub use part_selection::select_parts;
+    pub use part_selection::PartSelectionParams;
 }
 
 pub use in_execution_order::*;

@@ -1,4 +1,9 @@
+mod optimization;
 mod registration;
+
+use std::collections::HashSet;
+
+use optimization::solve_optimization;
 
 use super::Part;
 use crate::common::*;
@@ -6,8 +11,77 @@ use crate::common::*;
 type Metric = f32;
 type Cost = (Metric, Metric, Metric, Metric);
 
-pub fn select_parts(parts: Vec<Part>) -> Vec<Part> {
+pub struct PartSelectionParams {
+    must_select: usize,
+    max_shared: usize,
+}
+
+impl PartSelectionParams {
+    pub fn new(points_len: usize, must_select: f32, max_shared: f32) -> Self {
+        let points_len = points_len as f32;
+        Self {
+            must_select: (points_len * must_select) as usize,
+            max_shared: (points_len * max_shared) as usize,
+        }
+    }
+}
+
+pub fn select_parts(parts: Vec<Part>, params: PartSelectionParams) -> Vec<Part> {
+    // costs = c
+    let (parts, costs) = sort_by_cost(parts);
+    // a
+    let points_per_part = parts
+        .iter()
+        .map(|p| p.sections.iter().map(|s| s.inliers.len()).sum())
+        .collect();
+    // q
+    let overlaps = prepare_overlaps(&parts);
+
+    // selection = x
+    let selection = solve_optimization(
+        &costs,
+        &points_per_part,
+        &overlaps,
+        params.must_select,
+        params.max_shared,
+    )
+    .expect("fine optimization");
+
     parts
+        .into_iter()
+        .zip(selection)
+        .filter_map(|(part, selected)| if selected { Some(part) } else { None })
+        .collect()
+}
+
+fn prepare_overlaps(parts: &Vec<Part>) -> Vec<Vec<usize>> {
+    let mut result: Vec<Vec<usize>> = Vec::with_capacity(parts.len());
+
+    for i in 0..parts.len() {
+        result.push(Vec::with_capacity(parts.len()));
+        for _ in 0..i + 1 {
+            result[i].push(0);
+        }
+        for j in i + 1..parts.len() {
+            result[i].push(common_points(&parts[i], &parts[j]));
+        }
+    }
+
+    result
+}
+
+fn common_points(a: &Part, b: &Part) -> usize {
+    let mut a_points = HashSet::new();
+    for p in a.sections.iter().flat_map(|s| &s.inliers) {
+        a_points.insert(p);
+    }
+
+    let mut b_points = HashSet::new();
+    for p in b.sections.iter().flat_map(|s| &s.inliers) {
+        b_points.insert(p);
+    }
+
+    a_points.intersection(&b_points).count()
 }
 
 pub fn sort_by_cost(parts: Vec<Part>) -> (Vec<Part>, Vec<f32>) {
@@ -108,7 +182,7 @@ fn normalize_costs(costs: Vec<Cost>) -> Vec<f32> {
     let ang = normalize(ang);
 
     for i in 0..regi.len() {
-        println!("{} + {} - {} + {}", regi[i], fit[i], length[i], ang[i]);
+        // println!("{} + {} - {} + {}", regi[i], fit[i], length[i], ang[i]);
         result.push(regi[i] + fit[i] - length[i] + ang[i]);
     }
     result
