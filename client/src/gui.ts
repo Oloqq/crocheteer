@@ -151,6 +151,9 @@ export function initGui(
     growing: () => {
       comms.send(`growing`);
     },
+    cost: () => {
+      comms.send(`cost`);
+    },
   };
   skeleton.open();
   {
@@ -169,6 +172,7 @@ export function initGui(
       .onChange((val) => data.clusterChanged(val));
 
     skeleton.add(skeletonFuncs, "growing").name("Growing");
+    skeleton.add(skeletonFuncs, "cost").name("Calculate cost");
   }
 
   return gui;

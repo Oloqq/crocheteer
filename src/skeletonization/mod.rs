@@ -1,6 +1,7 @@
 mod growing;
 mod initial_cross_sections;
 mod local_surface_normals;
+mod part_selection;
 mod utils;
 
 #[rustfmt::skip]
@@ -19,6 +20,8 @@ mod in_execution_order {
 
     pub use growing::grow;
     pub use growing::Part;
+
+    pub use part_selection::sort_by_cost;
 }
 
 pub use in_execution_order::*;
