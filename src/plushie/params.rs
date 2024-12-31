@@ -58,6 +58,10 @@ pub struct SkeletParams {
     pub centroid_number: usize,
     pub must_include_points: f32,
     pub allowed_overlap: f32,
+    pub autoskelet: bool,
+    pub interval: usize,
+    #[serde(skip)]
+    pub interval_left: usize,
     #[serde(skip)]
     pub bones: Vec<crate::common::Point>,
 }
@@ -161,6 +165,9 @@ impl Default for SkeletParams {
             must_include_points: 0.9,
             allowed_overlap: 6.8,
             bones: vec![],
+            autoskelet: false,
+            interval: 9,
+            interval_left: 0,
         }
     }
 }

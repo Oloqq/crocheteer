@@ -41,7 +41,7 @@ pub fn icp_similarity_transform(
 
     for _ in 0..max_iterations {
         let sim_step = register_similarity_transform(source, target);
-        println!("iteration sim step {:?}", sim_step);
+        // println!("iteration sim step {:?}", sim_step);
 
         // Apply this step to the source
         transform_cross_section(source, &sim_step);

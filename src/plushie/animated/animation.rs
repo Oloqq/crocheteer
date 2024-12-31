@@ -39,20 +39,27 @@ impl Plushie {
     }
 
     fn add_stuffing_force(&mut self) {
-        if self.params.skelet_stuffing.enable {
-            let s = &self.params.skelet_stuffing;
-            self.params.centroids.number = s.bones.len();
-            self.centroids.points = s.bones.clone();
-        }
-
         self.centroids
             .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
         sanity!(self.displacement.assert_no_nan("stuffing"));
 
         if self.params.skelet_stuffing.enable {
-            let s = &self.params.skelet_stuffing;
-            self.params.centroids.number = s.bones.len();
-            self.centroids.points = s.bones.clone();
+            if self.params.skelet_stuffing.autoskelet {
+                if self.params.skelet_stuffing.interval_left == 0 {
+                    self.params.skelet_stuffing.interval_left =
+                        self.params.skelet_stuffing.interval;
+                    self.params.skelet_stuffing.bones = crate::skeletonization::get_skelet(
+                        &self,
+                        self.params.skelet_stuffing.centroid_number,
+                        self.params.skelet_stuffing.must_include_points,
+                        self.params.skelet_stuffing.allowed_overlap,
+                    );
+                } else {
+                    self.params.skelet_stuffing.interval_left -= 1;
+                }
+            }
+            self.params.centroids.number = self.params.skelet_stuffing.bones.len();
+            self.centroids.points = self.params.skelet_stuffing.bones.clone();
         }
     }
 

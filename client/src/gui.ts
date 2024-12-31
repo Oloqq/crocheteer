@@ -164,6 +164,8 @@ export function initGui(
     centroid_number: 50,
     must_include_points: 0.95,
     allowed_overlap: 5.0,
+    autoskelet: false,
+    interval: 50,
     newskelet: () => {
       comms.send(`newskelet`);
     },
@@ -209,6 +211,8 @@ export function initGui(
       .add(skeletonData, "must_include_points", 0, 1)
       .onChange(sendSkelet);
     skeleton.add(skeletonData, "allowed_overlap", 0, 10).onChange(sendSkelet);
+    skeleton.add(skeletonData, "autoskelet").onChange(sendSkelet);
+    skeleton.add(skeletonData, "interval", 1, 100, 1).onChange(sendSkelet);
   }
 
   return gui;
