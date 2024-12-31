@@ -3,6 +3,7 @@ mod centroid;
 mod construction;
 mod expanding;
 mod nodes;
+pub mod perf;
 
 pub use self::construction::hook::leniency::Leniency;
 use self::{centroid::Centroids, nodes::Nodes};
@@ -22,6 +23,7 @@ pub struct Plushie {
     displacement: Vec<V>,
     force_node_construction_timer: f32,
     last_total_displacement: V,
+    pub perf: Vec<perf::Iteration>,
 }
 
 impl PlushieTrait for Plushie {

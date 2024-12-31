@@ -34,6 +34,7 @@ pub struct Params {
     pub minimum_displacement: f32,
 
     pub skelet_stuffing: SkeletParams,
+    pub track_performance: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -98,6 +99,7 @@ impl Params {
             minimum_displacement: 0.001,
             hook_leniency: Leniency::NoMercy,
             skelet_stuffing: Default::default(),
+            track_performance: false,
         }
     }
 

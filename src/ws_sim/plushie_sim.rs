@@ -158,6 +158,18 @@ impl PlushieSimulation {
                 }
             }
             "export-pointcloud" => self.send("export", &self.plushie.nodes_to_json().to_string()),
+            "getperf" => {
+                if self.plushie.params().track_performance {
+                    self.send(
+                        "perfdata",
+                        serde_json::to_string(&self.plushie.as_animated().unwrap().perf)
+                            .unwrap()
+                            .as_str(),
+                    );
+                } else {
+                    self.send("status", "performance not tracked");
+                }
+            }
             "import-pointcloud" => {
                 unimplemented!()
                 // let plushie = crate::plushie::Pointcloud::from_points_str(tokens.get(1).unwrap());
@@ -187,6 +199,7 @@ impl PlushieSimulation {
                     params.centroid_number,
                     params.must_include_points,
                     params.allowed_overlap,
+                    &mut None,
                 );
 
                 self.plushie.params_mut().skelet_stuffing.bones = bones;

@@ -81,12 +81,11 @@ export function initGui(
       .onChange(data.showEdgesCallback);
   }
 
+  const sendParams = () => {
+    comms.send(`setparams ${JSON.stringify(data.params)}`);
+  };
   const params = gui.addFolder("Params");
   {
-    const sendParams = () => {
-      comms.send(`setparams ${JSON.stringify(data.params)}`);
-    };
-
     params.open();
     const centroids = params.addFolder("Centroid stuffing");
     centroids.open();
@@ -157,6 +156,9 @@ export function initGui(
     optimparts: () => {
       comms.send(`optimparts`);
     },
+    getperfs: () => {
+      comms.send(`getperf`);
+    },
   };
 
   const skeletonData = {
@@ -215,6 +217,12 @@ export function initGui(
     skeleton.add(skeletonData, "interval", 1, 100, 1).onChange(sendSkelet);
   }
 
+  gui
+    .add(data.params, "track_performance")
+    .name("Track performance")
+    .onChange(sendParams);
+  gui.add(skeletonExperiments, "getperfs").name("Get performance");
+
   return gui;
 }
 
@@ -237,4 +245,5 @@ const paramsThatInitializeDatGuiWithCorrectTypes: crapi.Params = {
     max_relaxing_iterations: 50,
     acceptable_tension: 0.1,
   },
+  track_performance: false,
 };

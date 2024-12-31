@@ -1,24 +1,25 @@
-use super::Plushie;
+use std::time::Instant;
+
+use super::{perf, Plushie};
 use crate::{common::*, sanity};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 impl Plushie {
     pub fn step(&mut self, time: f32) -> V {
-        let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-        log::trace!("Nodes: {:?}", self.nodes);
+        let mut perf = self
+            .params
+            .track_performance
+            .then_some(perf::Iteration::zeros());
 
         self.displacement.fill(V::zeros());
         self.add_link_forces();
-        self.add_stuffing_force();
+        self.add_stuffing_force(&mut perf);
         self.add_gravity();
-
-        let end = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-        let elapsed = end - start;
-        log::trace!("Elapsed: {}", elapsed.as_nanos());
 
         self.last_total_displacement =
             self.nodes
                 .apply_forces(&mut self.displacement, time, &self.params);
+
+        perf.map(|p| self.perf.push(p));
 
         self.last_total_displacement
     }
@@ -38,9 +39,11 @@ impl Plushie {
         sanity!(self.displacement.assert_no_nan("link forces"));
     }
 
-    fn add_stuffing_force(&mut self) {
+    fn add_stuffing_force(&mut self, perf: &mut Option<perf::Iteration>) {
+        let start = Instant::now();
         self.centroids
             .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
+        perf.as_mut().map(|p| p.stuffing = start.elapsed());
         sanity!(self.displacement.assert_no_nan("stuffing"));
 
         if self.params.skelet_stuffing.enable {
@@ -53,6 +56,7 @@ impl Plushie {
                         self.params.skelet_stuffing.centroid_number,
                         self.params.skelet_stuffing.must_include_points,
                         self.params.skelet_stuffing.allowed_overlap,
+                        perf,
                     );
                 } else {
                     self.params.skelet_stuffing.interval_left -= 1;

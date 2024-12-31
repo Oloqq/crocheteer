@@ -115,10 +115,10 @@ pub fn detect_initial_cross_sections(
     clusters: usize,
     surface_normals: &Vec<V>,
 ) -> Vec<CrossSection> {
-    println!("clustering...");
+    log::trace!("clustering...");
     let (cluster_membership, centroids) = do_clustering(clusters, cloud);
     let seeds = select_seeds(cloud, &cluster_membership, &centroids);
-    println!("orienting...");
+    log::trace!("orienting...");
     orient_planes(cloud, surface_normals, edges, &seeds)
         .into_iter()
         .zip(seeds)

@@ -28,6 +28,8 @@ mod in_execution_order {
     pub use part_selection::PartSelectionParams;
 }
 
+use std::time::Instant;
+
 pub use in_execution_order::*;
 
 pub fn get_skelet(
@@ -35,24 +37,52 @@ pub fn get_skelet(
     cluster_num: usize,
     must_include_points: f32,
     allowed_overlap: f32,
+    perf: &mut Option<crate::plushie::perf::Iteration>,
 ) -> Vec<crate::common::Point> {
-    println!("getting skelet...");
+    log::trace!("getting skelet...");
+    let start = Instant::now();
+
     let cloud = &plushie.nodes.points;
     let connectivity = Connectivity::new(&plushie.edges);
-    println!("getting normals...");
+
+    log::trace!("getting normals...");
     let surface_normals = local_surface_normals_per_point(cloud);
-    println!("initial cross section...");
+    let t_normals = start.elapsed();
+
+    log::trace!("initial cross section...");
     let cross_sections =
         detect_initial_cross_sections(cloud, &connectivity, cluster_num, &surface_normals);
-    println!("growing...");
+    let t_sections = start.elapsed();
+
+    log::trace!("growing...");
     let parts: Vec<Part> = grow(cloud, &connectivity, cross_sections, &surface_normals);
-    println!("all parts: {}...", parts.len());
+    let t_growing = start.elapsed();
+
+    log::trace!("all parts: {}...", parts.len());
     let parts = select_parts(
         parts,
         PartSelectionParams::new(cloud.len(), must_include_points, allowed_overlap),
         cloud,
     );
-    println!("selected parts: {}", parts.len());
+    let t_selection = start.elapsed();
+    log::trace!("selected parts: {}", parts.len());
+
+    println!(
+        "normals: {:?}, initial_cross: {:?}, growing: {:?}, part_selection: {:?}, skeletonization: {:?}",
+        t_normals,
+        t_sections - t_normals,
+        t_growing - t_sections,
+        t_selection - t_growing,
+        t_selection
+    );
+
+    if let Some(perf) = perf {
+        perf.normals = t_normals;
+        perf.initial_cross = t_sections - t_normals;
+        perf.growing = t_growing - t_sections;
+        perf.part_selection = t_selection - t_growing;
+        perf.skeletonization = t_selection;
+    }
 
     parts
         .iter()

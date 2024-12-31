@@ -6,6 +6,7 @@ pub mod params;
 mod animated;
 mod pointcloud;
 
+pub use animated::perf;
 pub use animated::Plushie;
 pub use params::Params;
 

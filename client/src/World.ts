@@ -54,6 +54,9 @@ export default class World {
       case "export":
         download(data, "plushie.json", "json"); // TODO pcd
         break;
+      case "perfdata":
+        download(data, "perf.json", "json");
+        break;
       case "normals":
         this.plushie?.displayNormals(JSON.parse(data));
         break;

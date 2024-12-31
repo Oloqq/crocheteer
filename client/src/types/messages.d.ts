@@ -46,6 +46,7 @@ namespace crapi {
     initializer: string; // TODO enum
     hook_leniency: string; // TODO enum
     minimum_displacement: number;
+    track_performance: boolean;
   }
 
   interface ChangeColors {
