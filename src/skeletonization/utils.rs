@@ -25,7 +25,7 @@ impl Connectivity {
     }
 }
 
-fn get_connected(edges: &Connectivity, node: usize) -> Vec<usize> {
+fn get_connected(edges: &Connectivity, node: usize) -> HashSet<usize> {
     edges.backward[node]
         .clone()
         .into_iter()
@@ -33,7 +33,7 @@ fn get_connected(edges: &Connectivity, node: usize) -> Vec<usize> {
         .collect()
 }
 
-fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Connectivity) -> Vec<usize> {
+fn filter_connected(seed: usize, nodes: HashSet<usize>, edges: &Connectivity) -> Vec<usize> {
     let mut result: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut frontier: HashSet<usize> = HashSet::with_capacity(nodes.len());
     let mut closed: HashSet<usize> = HashSet::with_capacity(nodes.len());
@@ -44,15 +44,12 @@ fn filter_connected(seed: usize, nodes: Vec<usize>, edges: &Connectivity) -> Vec
         frontier.remove(&elem);
         closed.insert(elem);
 
-        let connected = get_connected(edges, elem);
-        for c in connected {
-            if nodes.contains(&c) && !result.contains(&c) {
-                result.insert(c);
-                if !frontier.contains(&c) && !closed.contains(&c) {
-                    frontier.insert(c);
-                }
-            }
-        }
+        let connected: HashSet<usize> = get_connected(edges, elem)
+            .intersection(&nodes)
+            .cloned()
+            .collect();
+        result.extend(&connected);
+        frontier.extend(connected.difference(&closed));
     }
 
     assert!(
@@ -72,7 +69,7 @@ fn get_inliers(
     normal_offset: &V,
 ) -> Vec<usize> {
     let d = normal_offset.dot(&cloud[seed].coords);
-    let close_to_plane: Vec<usize> = cloud
+    let close_to_plane: HashSet<usize> = cloud
         .iter()
         .enumerate()
         .filter_map(|(i, p)| ((normal_offset.dot(&p.coords) - d).abs() <= threshold).then_some(i))
