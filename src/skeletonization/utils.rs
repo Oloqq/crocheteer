@@ -25,7 +25,6 @@ impl Connectivity {
     }
 }
 
-// TODO could be better using reverse_edges O(1)
 fn get_connected(edges: &Connectivity, node: usize) -> Vec<usize> {
     edges.backward[node]
         .clone()

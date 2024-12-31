@@ -38,8 +38,6 @@ fn grow_single_part(
         .chain(forwards.into_iter())
         .collect();
 
-    // let sections = forwards;
-
     Part { sections }
 }
 

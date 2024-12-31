@@ -4,6 +4,7 @@ mod registration;
 use std::collections::HashSet;
 
 use optimization::solve_optimization;
+use registration::icp_similarity_transform;
 
 use super::Part;
 use crate::common::*;
@@ -26,9 +27,13 @@ impl PartSelectionParams {
     }
 }
 
-pub fn select_parts(parts: Vec<Part>, params: PartSelectionParams) -> Vec<Part> {
+pub fn select_parts(
+    parts: Vec<Part>,
+    params: PartSelectionParams,
+    nodes: &Vec<Point>,
+) -> Vec<Part> {
     // costs = c
-    let (parts, costs) = sort_by_cost(parts);
+    let (parts, costs) = sort_by_cost(parts, nodes);
     // a
     let points_per_part = parts
         .iter()
@@ -84,8 +89,8 @@ fn common_points(a: &Part, b: &Part) -> usize {
     a_points.intersection(&b_points).count()
 }
 
-pub fn sort_by_cost(parts: Vec<Part>) -> (Vec<Part>, Vec<f32>) {
-    let costs: Vec<Cost> = parts.iter().map(|p| get_cost(&p)).collect();
+pub fn sort_by_cost(parts: Vec<Part>, nodes: &Vec<Point>) -> (Vec<Part>, Vec<f32>) {
+    let costs: Vec<Cost> = parts.iter().map(|p| get_cost(&p, nodes)).collect();
     let costs: Vec<f32> = normalize_costs(costs);
     let mut part_cost: Vec<(Part, f32)> = parts.into_iter().zip(costs).collect();
 
@@ -96,10 +101,10 @@ pub fn sort_by_cost(parts: Vec<Part>) -> (Vec<Part>, Vec<f32>) {
     (parts, costs)
 }
 
-fn get_cost(part: &Part) -> Cost {
+fn get_cost(part: &Part, nodes: &Vec<Point>) -> Cost {
     let centers: Vec<&V> = part.sections.iter().map(|s| &s.center).collect();
     (
-        registration_cost(part),
+        registration_cost(part, nodes),
         fit_cost(part),
         part_length(part),
         turning_angle(&centers),
@@ -107,9 +112,30 @@ fn get_cost(part: &Part) -> Cost {
 }
 
 /// Sections are similar to each other
-/// Registration is complicated and has multiple pitfalls so gonna see if the algorithm works without this metric
-fn registration_cost(_part: &Part) -> Metric {
-    0.0
+fn registration_cost(part: &Part, nodes: &Vec<Point>) -> Metric {
+    match part.sections.len() {
+        0 => panic!("no sections in part"),
+        1 | 2 => 0.0,
+        _ => {
+            let quats: Vec<_> = part
+                .sections
+                .windows(2)
+                .map(|window| {
+                    let mut src_nodes =
+                        window[0].inliers.iter().map(|x| nodes[*x].coords).collect();
+                    let tgt_nodes = window[1].inliers.iter().map(|x| nodes[*x].coords).collect();
+
+                    icp_similarity_transform(&mut src_nodes, &tgt_nodes, 100, 0.1).rotation
+                })
+                .collect();
+            let diffsum: f32 = quats
+                .windows(2)
+                .map(|window| window[0].angle_to(&window[1]))
+                .sum();
+
+            diffsum / (quats.len() - 1) as f32
+        }
+    }
 }
 
 /// Mean orient_cost of sections

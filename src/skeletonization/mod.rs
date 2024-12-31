@@ -50,6 +50,7 @@ pub fn get_skelet(
     let parts = select_parts(
         parts,
         PartSelectionParams::new(cloud.len(), must_include_points, allowed_overlap),
+        cloud,
     );
     println!("selected parts: {}", parts.len());
 

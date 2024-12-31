@@ -391,7 +391,7 @@ impl PlushieSimulation {
                 );
                 let parts: Vec<skeletonization::Part> =
                     skeletonization::grow(cloud, &connectivity, cross_sections, &surface_normals);
-                let (parts, costs) = skeletonization::sort_by_cost(parts);
+                let (parts, costs) = skeletonization::sort_by_cost(parts, cloud);
                 println!("parts: {}", parts.len());
                 println!("costs: {:?}", costs);
 
@@ -461,6 +461,7 @@ impl PlushieSimulation {
                 let parts = skeletonization::select_parts(
                     parts,
                     skeletonization::PartSelectionParams::new(cloud.len(), 0.95, 5.0),
+                    cloud,
                 );
                 println!("selected parts: {}", parts.len());
 

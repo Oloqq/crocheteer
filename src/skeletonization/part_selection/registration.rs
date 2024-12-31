@@ -9,18 +9,19 @@ use na::Matrix3;
 use na::Rotation3;
 use na::UnitQuaternion;
 use na::Vector3;
-type CrossSection = Vec<na::Vector3<f64>>;
+type Num = f32;
+type CrossSection = Vec<na::Vector3<Num>>;
 
 #[derive(Debug, Clone)]
 pub struct Similarity3 {
-    pub scale: f64,
-    pub rotation: UnitQuaternion<f64>,
-    pub translation: Vector3<f64>,
+    pub scale: Num,
+    pub rotation: UnitQuaternion<Num>,
+    pub translation: Vector3<Num>,
 }
 
 impl Similarity3 {
     /// Apply this similarity transform to a 3D point.
-    pub fn transform_point(&self, p: &Vector3<f64>) -> Vector3<f64> {
+    pub fn transform_point(&self, p: &Vector3<Num>) -> Vector3<Num> {
         // p' = scale * (rotation * p) + translation
         self.scale * (self.rotation * p) + self.translation
     }
@@ -30,7 +31,7 @@ pub fn icp_similarity_transform(
     source: &mut CrossSection,
     target: &CrossSection,
     max_iterations: usize,
-    convergence_threshold: f64,
+    convergence_threshold: Num,
 ) -> Similarity3 {
     let mut accumulated = Similarity3 {
         scale: 1.0,
@@ -63,7 +64,7 @@ pub fn icp_similarity_transform(
 
 pub fn register_similarity_transform(source: &CrossSection, target: &CrossSection) -> Similarity3 {
     // 1) Build KD-tree for 'target'
-    let mut kd_tree = KdTree::<f64, 3>::new();
+    let mut kd_tree = KdTree::<Num, 3>::new();
     for (i, &pt) in target.iter().enumerate() {
         kd_tree.add(&[pt.x, pt.y, pt.z], i.try_into().unwrap());
     }
@@ -101,13 +102,13 @@ pub fn register_similarity_transform(source: &CrossSection, target: &CrossSectio
     let target_mean = mean_point(&target_matched);
 
     // Demean both sets
-    let source_demeaned: Vec<Vector3<f64>> =
+    let source_demeaned: Vec<Vector3<Num>> =
         source_matched.iter().map(|p| p - source_mean).collect();
-    let target_demeaned: Vec<Vector3<f64>> =
+    let target_demeaned: Vec<Vector3<Num>> =
         target_matched.iter().map(|p| p - target_mean).collect();
 
     // Build cross-covariance matrix: sum over i of (source_demeaned_i * target_demeaned_i^T).
-    let mut cov = Matrix3::<f64>::zeros();
+    let mut cov = Matrix3::<Num>::zeros();
     for (s, t) in source_demeaned.iter().zip(target_demeaned.iter()) {
         cov += s * t.transpose();
     }
@@ -151,11 +152,11 @@ pub fn register_similarity_transform(source: &CrossSection, target: &CrossSectio
     let numerator = target_demeaned
         .iter()
         .map(|t| t.norm_squared())
-        .sum::<f64>();
+        .sum::<Num>();
     let denominator = source_demeaned
         .iter()
         .map(|s| s.norm_squared())
-        .sum::<f64>();
+        .sum::<Num>();
 
     let scale = if denominator.abs() < 1e-12 {
         1.0
@@ -174,15 +175,15 @@ pub fn register_similarity_transform(source: &CrossSection, target: &CrossSectio
     }
 }
 
-fn mean_point(points: &[Vector3<f64>]) -> Vector3<f64> {
+fn mean_point(points: &[Vector3<Num>]) -> Vector3<Num> {
     if points.is_empty() {
         return Vector3::zeros();
     }
     let sum = points.iter().fold(Vector3::zeros(), |acc, &p| acc + p);
-    sum / (points.len() as f64)
+    sum / (points.len() as Num)
 }
 
-fn is_small_transform(sim: &Similarity3, eps: f64) -> bool {
+fn is_small_transform(sim: &Similarity3, eps: Num) -> bool {
     // 1) scale close to 1.0
     let ds = (sim.scale - 1.0).abs();
     // 2) translation is small
@@ -254,7 +255,7 @@ mod tests {
         let rot = UnitQuaternion::identity();
         let tx = Vector3::new(0.0, 1.0, 0.0);
 
-        let target: Vec<Vector3<f64>> = source.iter().map(|p| scale * (rot * p) + tx).collect();
+        let target: Vec<Vector3<Num>> = source.iter().map(|p| scale * (rot * p) + tx).collect();
 
         println!("pre icp");
         let sim = icp_similarity_transform(&mut source, &target, 100, 1e-10);
