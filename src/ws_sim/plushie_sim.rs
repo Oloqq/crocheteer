@@ -134,7 +134,6 @@ impl PlushieSimulation {
                 }
             }
             "setparams" => {
-                println!("got params");
                 let serialized = tokens.get(1)?;
                 let deserd = serde_json::from_str(serialized).map_err(|e| {
                     log::error!("{e}");

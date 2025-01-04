@@ -4,13 +4,17 @@ use serde_derive::{Deserialize, Serialize};
 
 pub use super::animated::Leniency;
 
+fn just_true() -> bool {
+    true
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Params {
     /// Multiplier to all forces in a single step
     pub timestep: f32,
     /// Set to true if creation is meant to stand on it's own to simulate a flat bottom
     /// Set to false if the creation is carried around, so that the bottom is not flat
-    #[serde(skip)]
+    #[serde(skip, default = "just_true")]
     pub floor: bool,
     /// Force pulling the nodes down
     #[serde(skip)]
@@ -24,7 +28,7 @@ pub struct Params {
     pub autostop: AutoStoppingParams,
     /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
     /// not applicable to LegacyPlushie
-    #[serde(skip)]
+    #[serde(skip, default = "just_true")]
     pub keep_root_at_origin: bool,
     /// Multipler for BLO/FLO force. If BLO/FLO behaves incorrectly, probably the sign is wrong.
     /// I assume it has to do with working the plushie clockwise vs counterclockwise.
