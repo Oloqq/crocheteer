@@ -10,17 +10,21 @@ pub struct Params {
     pub timestep: f32,
     /// Set to true if creation is meant to stand on it's own to simulate a flat bottom
     /// Set to false if the creation is carried around, so that the bottom is not flat
+    #[serde(skip)]
     pub floor: bool,
     /// Force pulling the nodes down
+    #[serde(skip)]
     pub gravity: f32,
     /// Distance between nodes that is considered "relaxed"
     pub desired_stitch_distance: f32,
     /// Configuration of centroid stuffing
     pub centroids: CentroidParams,
     /// Configuration of automatic simulation stopping
+    #[serde(skip)]
     pub autostop: AutoStoppingParams,
     /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
     /// not applicable to LegacyPlushie
+    #[serde(skip)]
     pub keep_root_at_origin: bool,
     /// Multipler for BLO/FLO force. If BLO/FLO behaves incorrectly, probably the sign is wrong.
     /// I assume it has to do with working the plushie clockwise vs counterclockwise.
@@ -28,7 +32,7 @@ pub struct Params {
     pub single_loop_force: f32,
     /// Method for setting initial positions of stitches
     pub initializer: Initializer,
-    ///
+    #[serde(skip)]
     pub hook_leniency: crate::plushie::animated::Leniency,
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
@@ -56,7 +60,7 @@ pub struct CentroidParams {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct SkeletParams {
     pub enable: bool,
-    pub centroid_number: usize,
+    pub cluster_number: usize,
     pub must_include_points: f32,
     pub allowed_overlap: f32,
     pub autoskelet: bool,
@@ -163,12 +167,12 @@ impl Default for SkeletParams {
     fn default() -> Self {
         Self {
             enable: false,
-            centroid_number: 49,
-            must_include_points: 0.9,
-            allowed_overlap: 6.8,
+            cluster_number: 50,
+            must_include_points: 0.95,
+            allowed_overlap: 5.0,
             bones: vec![],
-            autoskelet: false,
-            interval: 9,
+            autoskelet: true,
+            interval: 50,
             interval_left: 0,
         }
     }

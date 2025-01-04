@@ -53,7 +53,7 @@ impl Plushie {
                         self.params.skelet_stuffing.interval;
                     self.params.skelet_stuffing.bones = crate::skeletonization::get_skelet(
                         &self,
-                        self.params.skelet_stuffing.centroid_number,
+                        self.params.skelet_stuffing.cluster_number,
                         self.params.skelet_stuffing.must_include_points,
                         self.params.skelet_stuffing.allowed_overlap,
                         perf,

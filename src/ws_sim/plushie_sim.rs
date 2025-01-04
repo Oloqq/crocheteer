@@ -2,7 +2,6 @@ use serde_json::json;
 
 use super::sim::{Data, Simulation};
 use super::tokens::Tokens;
-use crate::plushie::params::SkeletParams;
 use crate::plushie::parse_to_any_plushie;
 use crate::plushie::PlushieTrait;
 use crate::{common::*, skeletonization, token_args};
@@ -135,12 +134,15 @@ impl PlushieSimulation {
                 }
             }
             "setparams" => {
+                println!("got params");
                 let serialized = tokens.get(1)?;
                 let deserd = serde_json::from_str(serialized).map_err(|e| {
                     log::error!("{e}");
                     super::tokens::Error::CantParseParams
                 })?;
+                let bones = self.plushie.params().skelet_stuffing.bones.clone();
                 self.plushie.set_params(deserd);
+                self.plushie.params_mut().skelet_stuffing.bones = bones;
             }
             "getparams" => {
                 let serialized = serde_json::to_string(self.plushie.params_mut()).unwrap();
@@ -177,16 +179,6 @@ impl PlushieSimulation {
                 // self.controls.need_init = true;
                 // self.send("status", "loaded pointcloud");
             }
-            "skeletparams" => {
-                let serialized = tokens.get(1)?;
-                let deserd: SkeletParams = serde_json::from_str(serialized).map_err(|e| {
-                    log::error!("{e}");
-                    super::tokens::Error::CantParseParams
-                })?;
-                let bones = self.plushie.params_mut().skelet_stuffing.bones.clone();
-                self.plushie.params_mut().skelet_stuffing = deserd;
-                self.plushie.params_mut().skelet_stuffing.bones = bones;
-            }
             "newskelet" => {
                 let params = &self.plushie.params().skelet_stuffing;
                 if !params.enable {
@@ -196,7 +188,7 @@ impl PlushieSimulation {
 
                 let bones = skeletonization::get_skelet(
                     &self.plushie.as_animated().unwrap(),
-                    params.centroid_number,
+                    params.cluster_number,
                     params.must_include_points,
                     params.allowed_overlap,
                     &mut None,

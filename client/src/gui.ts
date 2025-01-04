@@ -49,6 +49,10 @@ export class GuiData {
     val ? this.world.plushie?.drawLinks() : this.world.plushie?.clearLinks();
   };
 
+  newskelet = () => {
+    comms.send(`newskelet`);
+  };
+
   // Skeleton research
   inspectCluster: number = 0;
   clusterChanged: (val: number) => void = (_) => {};
@@ -113,11 +117,6 @@ export function initGui(
       () => "Desired stitch distance"
     );
 
-    params.add(data.params, "floor").name("Floored").onChange(sendParams);
-    params
-      .add(data.params, "keep_root_at_origin")
-      .name("Rooted")
-      .onChange(sendParams);
     setupTooltip(
       params
         .add(data.params, "single_loop_force", 0)
@@ -130,98 +129,82 @@ export function initGui(
       .add(data.params, "timestep", 0.1, 1.7)
       .name("Timestep")
       .onChange(sendParams);
-    params
-      .add(data.params, "minimum_displacement")
-      .name("Min displacement")
-      .onChange(sendParams);
-  }
-
-  const skeleton = gui.addFolder("Skeletonization");
-  const skeletonExperiments = {
-    calculateNormals: () => {
-      comms.send(`calculate-normals`);
-    },
-    clustering: () => {
-      comms.send(`do-clustering`);
-    },
-    initialCrossSections: () => {
-      comms.send(`initial-cross-sections`);
-    },
-    growing: () => {
-      comms.send(`growing`);
-    },
-    cost: () => {
-      comms.send(`cost`);
-    },
-    optimparts: () => {
-      comms.send(`optimparts`);
-    },
-    getperfs: () => {
-      comms.send(`getperf`);
-    },
-  };
-
-  const skeletonData = {
-    enable: false,
-    centroid_number: 50,
-    must_include_points: 0.95,
-    allowed_overlap: 5.0,
-    autoskelet: false,
-    interval: 50,
-    newskelet: () => {
-      comms.send(`newskelet`);
-    },
-  };
-  const sendSkelet = () => {
-    comms.send(`skeletparams ${JSON.stringify(skeletonData)}`);
-  };
-
-  skeleton.open();
-  {
-    const experiment = skeleton.addFolder("Experiment");
-    // experiment.open();
+    const skeleton = params.addFolder("Skeletonization");
     {
-      experiment
-        .add(skeletonExperiments, "calculateNormals")
-        .name("Calculate normals (takes time)");
+      skeleton
+        .add(data.params.skelet_stuffing, "enable")
+        .name("Skeleton stuffing")
+        .onChange(sendParams);
+      skeleton
+        .add(data.params.skelet_stuffing, "autoskelet")
+        .onChange(sendParams);
+      skeleton
+        .add(data.params.skelet_stuffing, "interval", 1, 100, 1)
+        .onChange(sendParams);
 
-      experiment.add(skeletonExperiments, "clustering").name("Perform kmeans");
-
-      experiment
-        .add(skeletonExperiments, "initialCrossSections")
-        .name("Initial cross sections (takes time)");
-
-      experiment
-        .add(data, "inspectCluster", 0)
-        .onChange((val) => data.clusterChanged(val));
-
-      experiment.add(skeletonExperiments, "growing").name("Growing");
-      experiment.add(skeletonExperiments, "cost").name("Calculate cost");
-      experiment.add(skeletonExperiments, "optimparts").name("Select parts");
+      skeleton.add(data, "newskelet").name("Recalc skelet");
+      skeleton
+        .add(data.params.skelet_stuffing, "cluster_number", 1, 200, 1)
+        .onChange(sendParams);
+      skeleton
+        .add(data.params.skelet_stuffing, "must_include_points", 0, 1)
+        .onChange(sendParams);
+      skeleton
+        .add(data.params.skelet_stuffing, "allowed_overlap", 0, 10)
+        .onChange(sendParams);
     }
-
-    skeleton
-      .add(skeletonData, "enable")
-      .name("Skeleton stuffing")
-      .onChange(sendSkelet);
-
-    skeleton.add(skeletonData, "newskelet").name("New skelet");
-    skeleton
-      .add(skeletonData, "centroid_number", 1, 200, 1)
-      .onChange(sendSkelet);
-    skeleton
-      .add(skeletonData, "must_include_points", 0, 1)
-      .onChange(sendSkelet);
-    skeleton.add(skeletonData, "allowed_overlap", 0, 10).onChange(sendSkelet);
-    skeleton.add(skeletonData, "autoskelet").onChange(sendSkelet);
-    skeleton.add(skeletonData, "interval", 1, 100, 1).onChange(sendSkelet);
   }
 
-  gui
-    .add(data.params, "track_performance")
-    .name("Track performance")
-    .onChange(sendParams);
-  gui.add(skeletonExperiments, "getperfs").name("Get performance");
+  const experimental = gui.addFolder("Experimental");
+  {
+    const experimentalData = {
+      calculateNormals: () => {
+        comms.send(`calculate-normals`);
+      },
+      clustering: () => {
+        comms.send(`do-clustering`);
+      },
+      initialCrossSections: () => {
+        comms.send(`initial-cross-sections`);
+      },
+      growing: () => {
+        comms.send(`growing`);
+      },
+      cost: () => {
+        comms.send(`cost`);
+      },
+      optimparts: () => {
+        comms.send(`optimparts`);
+      },
+      getperfs: () => {
+        comms.send(`getperf`);
+      },
+    };
+
+    experimental
+      .add(experimentalData, "calculateNormals")
+      .name("Calculate normals (takes time)");
+
+    experimental.add(experimentalData, "clustering").name("Perform kmeans");
+
+    experimental
+      .add(experimentalData, "initialCrossSections")
+      .name("Initial cross sections (takes time)");
+
+    experimental
+      .add(data, "inspectCluster", 0)
+      .onChange((val) => data.clusterChanged(val));
+
+    experimental.add(experimentalData, "growing").name("Growing");
+    experimental.add(experimentalData, "cost").name("Calculate cost");
+    experimental.add(experimentalData, "optimparts").name("Select parts");
+
+    experimental
+      .add(data.params, "track_performance")
+      .name("Track performance")
+      .onChange(sendParams);
+    experimental.add(experimentalData, "getperfs").name("Get performance");
+  }
 
   return gui;
 }
@@ -233,17 +216,17 @@ const paramsThatInitializeDatGuiWithCorrectTypes: crapi.Params = {
     number: 0,
   },
   desired_stitch_distance: 0.1, // decimal point here enables displaying decimal points later
-  floor: false,
-  gravity: 0.1,
-  keep_root_at_origin: false,
   single_loop_force: 0.1,
   timestep: 1.1,
   minimum_displacement: 0.001,
   initializer: "Cylinder",
-  hook_leniency: "NoMercy",
-  autostop: {
-    max_relaxing_iterations: 50,
-    acceptable_tension: 0.1,
-  },
   track_performance: false,
+  skelet_stuffing: {
+    enable: false,
+    autoskelet: true,
+    interval: 50,
+    cluster_number: 50,
+    must_include_points: 0.95,
+    allowed_overlap: 5.0,
+  },
 };

@@ -27,3 +27,9 @@ impl Leniency {
         }
     }
 }
+
+impl Default for Leniency {
+    fn default() -> Self {
+        Leniency::NoMercy
+    }
+}

@@ -11,8 +11,9 @@ namespace crapi {
     centroids: Centroids;
   }
 
+  type PushPlane = [number, number, number];
   type Peculiarities = {
-    [node: integer]: "Root" | "Tip";
+    [node: integer]: "Root" | "Tip" | { FLO: PushPlane } | { BLO: PushPlane };
   };
 
   interface Nodes {
@@ -32,21 +33,24 @@ namespace crapi {
 
   interface Params {
     timestep: number;
-    floor: boolean;
-    gravity: number;
     desired_stitch_distance: number;
     centroids: {
       number: integer;
       force: number;
       min_nodes_per_centroid: integer;
     };
-    autostop: { acceptable_tension: number; max_relaxing_iterations: integer };
-    keep_root_at_origin: boolean;
     single_loop_force: number;
-    initializer: string; // TODO enum
-    hook_leniency: string; // TODO enum
+    initializer: "Cylinder" | "OneByOne";
     minimum_displacement: number;
     track_performance: boolean;
+    skelet_stuffing: {
+      enable: boolean;
+      cluster_number: integer;
+      must_include_points: number;
+      allowed_overlap: number;
+      autoskelet: bool;
+      interval: integer;
+    };
   }
 
   interface ChangeColors {
