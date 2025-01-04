@@ -91,24 +91,6 @@ export function initGui(
   const params = gui.addFolder("Params");
   {
     params.open();
-    const centroids = params.addFolder("Centroid stuffing");
-    centroids.open();
-    {
-      centroids
-        .add(data.params.centroids, "force", 0)
-        .name("Force")
-        .onChange(sendParams);
-      centroids
-        .add(data.params.centroids, "min_nodes_per_centroid", 0)
-        .name("Nodes per centroid")
-        .onChange(sendParams);
-      centroids
-        .add(data.params.centroids, "number", 0, 20, 1)
-        .onChange((_val) => {
-          sendParams();
-        });
-    }
-
     setupTooltip(
       params
         .add(data.params, "desired_stitch_distance")
@@ -129,6 +111,25 @@ export function initGui(
       .add(data.params, "timestep", 0.1, 1.7)
       .name("Timestep")
       .onChange(sendParams);
+
+    const centroids = params.addFolder("Centroid stuffing");
+    centroids.open();
+    {
+      centroids
+        .add(data.params.centroids, "force", 0)
+        .name("Force")
+        .onChange(sendParams);
+      centroids
+        .add(data.params.centroids, "min_nodes_per_centroid", 0)
+        .name("Nodes per centroid")
+        .onChange(sendParams);
+      centroids
+        .add(data.params.centroids, "number", 0, 20, 1)
+        .name("Number")
+        .onChange((_val) => {
+          sendParams();
+        });
+    }
     const skeleton = params.addFolder("Skeletonization");
     {
       skeleton
@@ -137,20 +138,25 @@ export function initGui(
         .onChange(sendParams);
       skeleton
         .add(data.params.skelet_stuffing, "autoskelet")
+        .name("Autoskelet")
         .onChange(sendParams);
       skeleton
         .add(data.params.skelet_stuffing, "interval", 1, 100, 1)
+        .name("Interval")
         .onChange(sendParams);
 
       skeleton.add(data, "newskelet").name("Recalc skelet");
       skeleton
         .add(data.params.skelet_stuffing, "cluster_number", 1, 200, 1)
+        .name("Cluster number")
         .onChange(sendParams);
       skeleton
         .add(data.params.skelet_stuffing, "must_include_points", 0, 1)
+        .name("Optimization k1")
         .onChange(sendParams);
       skeleton
         .add(data.params.skelet_stuffing, "allowed_overlap", 0, 10)
+        .name("Optimization k2")
         .onChange(sendParams);
     }
   }
