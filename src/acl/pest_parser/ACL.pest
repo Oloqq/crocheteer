@@ -1,6 +1,6 @@
 program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
 
-parameter   = { "@" ~ IDENT ~ "=" ~ IDENT ~ LINEEND }
+parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 
 round       = { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
 roundspec   = {
@@ -67,6 +67,7 @@ R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
 IDENT       = @{ (ALPHA | DIGIT | "_")+ }
 NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
+FLOAT       = @{ (DIGIT)+ ~ "." ~ (DIGIT)+ }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
 WHITESPACE  = _{ " " }

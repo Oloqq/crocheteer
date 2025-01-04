@@ -121,7 +121,11 @@ impl Params {
 
     fn update_one(&mut self, key: &str, val: &str) -> Result<(), Box<dyn Error>> {
         match key {
+            "dsd" => self.desired_stitch_distance = val.parse()?,
             "centroids" => self.centroids.number = val.parse()?,
+            "stuffing_force" => self.centroids.force = val.parse()?,
+            "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
+            "single_loop_force" => self.single_loop_force = val.parse()?,
             "initializer" => {
                 self.initializer = match val {
                     "cylinder" => Initializer::Cylinder,
@@ -132,7 +136,15 @@ impl Params {
                     }
                 }
             }
-            "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
+            "skelet_interval" => {
+                self.skelet_stuffing.enable = true;
+                self.skelet_stuffing.autoskelet = true;
+                self.skelet_stuffing.interval = val.parse()?
+            }
+            "skelet_clusters" => self.skelet_stuffing.cluster_number = val.parse()?,
+            "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
+            "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
+
             _ => log::debug!("Unknown parameter: {}", key),
         }
         return Ok(());
