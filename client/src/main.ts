@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const syncPatternAndParams = () => {
-    send("getparams");
     sendPattern();
   };
 

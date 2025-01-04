@@ -119,6 +119,8 @@ impl PlushieSimulation {
                 Ok(_) => {
                     self.controls.need_init = true;
                     self.send("status", "Loaded the pattern");
+                    let serialized = serde_json::to_string(self.plushie.params()).unwrap();
+                    self.send("params", &serialized);
                 }
                 Err(error) => {
                     self.send("status", format!("Couldn't parse: {}", error).as_str());

@@ -3,20 +3,8 @@
 
 # Then
 
-# Backlog (need to do for thesis)
-
-- skeleton stuffing
-  - scale checking
-  - select optimal parts
-
-- debug mode that shows peculiarities
-
-- jump the creation to root when rooted changes values from false to true
-  - verify parameters displayed in the gui all make sense
-
-- toggle centroids visibility
-
 # After-inzynierka
+- error reporting for parameters
 
 - zmiana parametrow podczas obo zatrzymuje rosniecie
 
