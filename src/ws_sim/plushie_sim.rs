@@ -82,8 +82,10 @@ impl PlushieSimulation {
     fn change_pattern(&mut self, msg: &str) -> Result<(), String> {
         log::info!("Changing pattern...");
 
-        let (_, version_pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
-        let (selector, pattern) = version_pattern.split_once(" ").ok_or("frontend fuckup")?;
+        // let (_, version_pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
+        // let (selector, pattern) = version_pattern.split_once(" ").ok_or("frontend fuckup")?;
+        let selector = "flow";
+        let (_, pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
 
         self.plushie = parse_to_any_plushie(selector, pattern)?;
         Ok(())

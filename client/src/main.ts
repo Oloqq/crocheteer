@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   const sendPattern = () => {
-    send(`pattern flow ${guiData.getPattern()}`);
+    send(`pattern ${guiData.getPattern()}`);
   };
 
   const syncPatternAndParams = () => {
