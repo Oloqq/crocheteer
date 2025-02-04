@@ -69,7 +69,11 @@ export function initGui(
     gui.updateDisplay();
   };
 
-  gui.add(data, "paused").name("Pause").onChange(data.pausedCallback);
+  const pausedController = gui
+    .add(data, "paused")
+    .name("Pause")
+    .onChange(data.pausedCallback);
+  pausedController.domElement.id = "gui-paused";
   gui.add(data, "step").name("Step");
 
   const display = gui.addFolder("Display");

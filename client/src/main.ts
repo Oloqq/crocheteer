@@ -41,4 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("status-box")!,
     () => guiData.statusMessage
   );
+
+  setupTooltip(
+    document.getElementById("help")!,
+    () => `
+In the editor:
+  CTRL+Enter: visualize
+  CTRL+P: pause/unpause
+  `
+  );
 });

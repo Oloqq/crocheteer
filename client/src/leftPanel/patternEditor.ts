@@ -46,6 +46,20 @@ export function init(
     localStorage.setItem(STORAGE_KEY_EDITOR_CONTENT, editor.getValue());
   }, 5000);
 
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+    const visualizeButton = document.getElementById("visualize-button");
+    if (visualizeButton) {
+      visualizeButton.click();
+    }
+  });
+
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP, () => {
+    const elem = document.getElementById("gui-paused");
+    if (elem) {
+      elem.click();
+    }
+  });
+
   return editor;
 }
 
