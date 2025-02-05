@@ -1,0 +1,37 @@
+# https://www.crochet365knittoo.com/amigurumi-heart/
+# need support:
+# - [...] around
+# - slip stitch
+# - multiple starters
+# - inround FO, mark allowed after
+# - attach with one argument means chain of 0
+#   - attach to another piece must not try to split a round
+# - mark(second_hump) might be problematic (not sure) bcs attach modifies the mark before it
+
+# first hump on top of heart
+MR(6)
+R2: [inc] around (12)
+R3: [sc, inc] around (18)
+R4-R5: [sc] around (18)
+R6: slst, FO, mark(first_hump) (18) # leave a longer strand for sewing later
+
+# second hump on top of heart, continued to the end of the plushie
+MR(6)
+R2: [inc] around (12)
+R3: [sc, inc] around (18)
+R4-R5: [sc] around (18)
+# connect the humps
+R6: mark(second_hump), attach(first_hump), 17 sc, attach(second_hump), 17 sc (36)
+# use a needle and the strand left from the first hump to sew the hole shut
+R7: [4 sc, dec] around (30)
+R8: [sc] around (30)
+R9: [dec, 13 sc] around (28)
+R10: [dec, 5 sc] around (24)
+R11: 2 sc, [dec, 4 sc] x 3, dec, 2 sc (20)
+R12: [dec, 3 sc] around (16)
+R13: [dec, 2 sc] around (12)
+# start stuffing
+R14: [2 sc, dec] around (9)
+R15: [sc, dec] around (6)
+R16: [dec] around (3)
+FO
