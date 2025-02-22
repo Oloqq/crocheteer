@@ -196,6 +196,10 @@ impl Pattern {
                                 times
                             }
                             Rule::KW_AROUND => {
+                                if result.actions().len() > 0 {
+                                    return Err(error(AroundMustBeExclusiveInRound, &specifier));
+                                }
+
                                 let consumed = actions_to_repeat.anchors_consumed();
                                 let last_round_produced = *self.round_counts.last().unwrap(); // FIXME
                                 if last_round_produced % consumed != 0 {
@@ -478,7 +482,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "need to count rounds first"]
     fn test_repetition_allowed_only_as_the_only_instruction() {
         let prog = "
         : 6 sc
