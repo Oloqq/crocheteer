@@ -1,9 +1,12 @@
 # Next
-- gui needs to be updated after loading a pattern (e.g. if gui has centroids=0, then altering SLF will delete centroids)
 
 # Then
 
-# After-inzynierka
+# Backlog
+- the heart shape
+
+- gui needs to be updated after loading a pattern (e.g. if gui has centroids=0, then altering SLF will delete centroids)
+
 - error reporting for parameters
 
 - zmiana parametrow podczas obo zatrzymuje rosniecie

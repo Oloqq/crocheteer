@@ -14,6 +14,7 @@ struct PatParser;
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
     pub annotated_round_counts: Vec<Option<usize>>,
+    pub round_counts: Vec<u32>,
     labels: HashMap<String, usize>,
     label_cursor: usize,
     actions: Vec<Action>,
@@ -32,6 +33,7 @@ impl Pattern {
         let mut p = Self {
             parameters: HashMap::new(),
             annotated_round_counts: vec![],
+            round_counts: vec![],
             labels: HashMap::new(),
             label_cursor: 0,
             actions: vec![],

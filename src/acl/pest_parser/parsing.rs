@@ -3,6 +3,64 @@ use super::{Pattern, Rule};
 use crate::acl::actions::Action;
 use pest::iterators::{Pair, Pairs};
 
+mod protect_fields {
+    use super::Action;
+    #[derive(Debug)]
+    pub struct ActionSequence {
+        actions: Vec<Action>,
+        anchors_consumed: u32,
+        anchors_produced: u32,
+    }
+
+    impl ActionSequence {
+        pub fn new() -> Self {
+            ActionSequence {
+                actions: vec![],
+                anchors_consumed: 0, // TODO use to verify rounds
+                anchors_produced: 0,
+            }
+        }
+
+        pub fn actions(&self) -> &Vec<Action> {
+            &self.actions
+        }
+
+        pub fn anchors_consumed(&self) -> u32 {
+            self.anchors_consumed
+        }
+        pub fn anchors_produced(&self) -> u32 {
+            self.anchors_produced
+        }
+
+        pub fn append(&mut self, other: ActionSequence) {
+            self.append_repeated(other, 1);
+        }
+
+        pub fn append_repeated(&mut self, other: ActionSequence, times: u32) {
+            self.actions.reserve(other.actions.len() * times as usize);
+            for _ in 0..times {
+                self.actions.append(&mut other.actions.clone());
+            }
+            self.anchors_consumed += other.anchors_consumed * times as u32;
+            self.anchors_produced += other.anchors_produced * times as u32;
+        }
+
+        pub fn push(&mut self, action: Action) {
+            self.push_repeated(action, 1);
+        }
+
+        pub fn push_repeated(&mut self, action: Action, times: u32) {
+            self.actions.reserve(times as usize);
+            for _ in 0..times {
+                self.actions.push(action);
+            }
+            self.anchors_consumed += action.anchors_consumed() * times;
+            self.anchors_produced += action.anchors_produced() * times;
+        }
+    }
+}
+use protect_fields::ActionSequence;
+
 impl Pattern {
     pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
         for line_pair in pairs {
@@ -62,9 +120,10 @@ impl Pattern {
             _ => unreachable!(),
         };
 
-        let actions = self.stitches(stitches.into_inner())?;
+        let action_sequence = self.stitches(stitches.into_inner())?;
         for _ in 0..repetitions {
-            self.actions.append(&mut actions.clone());
+            self.actions.append(&mut action_sequence.actions().clone());
+            self.round_counts.push(action_sequence.anchors_produced());
         }
 
         self.annotated_round_counts.push({
@@ -81,8 +140,8 @@ impl Pattern {
         Ok(())
     }
 
-    fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<Vec<Action>, Error> {
-        let mut actions = vec![];
+    fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<ActionSequence, Error> {
+        let mut result = ActionSequence::new();
         for pair in sequences {
             let mut sequence = pair.into_inner();
             let first = sequence.next().unwrap();
@@ -92,45 +151,55 @@ impl Pattern {
                     let action = Action::parse(sequence.next().unwrap().as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
 
-                    actions.reserve(number);
-                    for _ in 0..number {
-                        actions.push(action);
-                    }
+                    result.push_repeated(action, number as u32);
                 }
                 Rule::KW_STITCH => {
                     let action = Action::parse(first.as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
-                    actions.push(action);
+                    result.push(action);
                 }
                 Rule::repetition => {
-                    let mut repetition = first.into_inner();
-
-                    let stitches = {
-                        let stitches_pair = repetition.next().unwrap();
-                        self.stitches(stitches_pair.into_inner())?
+                    let mut what_howmuch = first.into_inner();
+                    let actions_to_repeat = {
+                        let to_repeat = what_howmuch.next().unwrap();
+                        assert!(
+                            matches!(to_repeat.as_rule(), Rule::repeated),
+                            "{:?}",
+                            to_repeat
+                        );
+                        let stitches = to_repeat.into_inner().next().unwrap();
+                        self.stitches(stitches.into_inner())?
                     };
 
+                    let mut howmuch = what_howmuch;
                     let times = {
-                        let times_pair = repetition.next().unwrap();
-                        let times = integer(&times_pair)?;
-                        if times == 0 {
-                            return Err(error(RepetitionTimes0, &times_pair));
+                        match howmuch.next().unwrap().as_rule() {
+                            Rule::KW_TIMES => {
+                                let int_pair = howmuch.next().unwrap();
+                                let times = integer(&int_pair)?;
+                                if times == 0 {
+                                    return Err(error(RepetitionTimes0, &int_pair));
+                                }
+                                times
+                            }
+                            Rule::KW_AROUND => {
+                                todo!()
+                            }
+                            _ => unreachable!(),
                         }
-                        times
                     };
 
-                    actions.reserve(stitches.len() * times);
-                    for _ in 0..times {
-                        actions.append(&mut stitches.clone());
-                    }
+                    result.append_repeated(actions_to_repeat, times as u32);
                 }
                 Rule::interstitchable_action => {
-                    actions.append(&mut self.interstitchable_action(first.into_inner())?);
+                    let actions = self.interstitchable_action(first.into_inner())?;
+                    assert_eq!(actions.len(), 1);
+                    result.push(actions[0]);
                 }
                 _ => unreachable!("{}", first),
             }
         }
-        Ok(actions)
+        Ok(result)
     }
 
     fn control(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
@@ -142,6 +211,7 @@ impl Pattern {
                 Rule::KW_MR => {
                     let num = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
                     self.actions.push(Action::MR(num));
+                    self.round_counts.push(num as u32);
                 }
                 Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),
@@ -155,6 +225,7 @@ impl Pattern {
         Ok(())
     }
 
+    // FIXME return just 1?
     fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
         let first = tokens.next().unwrap();
         match first.as_rule() {
@@ -232,6 +303,7 @@ impl Pattern {
     }
 }
 
+// TODO return u32?
 fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
     Ok(pair
         .as_str()
@@ -284,6 +356,7 @@ mod tests {
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
         assert_eq!(pat.annotated_round_counts, vec![Some(1), Some(2)]);
+        assert_eq!(pat.round_counts, vec![1, 2]);
     }
 
     #[test]
@@ -305,6 +378,7 @@ mod tests {
         let prog = "R2-R4: sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+        assert_eq!(pat.round_counts, vec![1, 1, 1]);
     }
 
     #[test]
@@ -312,6 +386,7 @@ mod tests {
         let prog = "MR(6)";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6)]);
+        assert_eq!(pat.round_counts, vec![6]);
         let prog = "MR(6)\n: sc";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6), Sc]);
@@ -343,6 +418,7 @@ mod tests {
         let prog = ": [[sc, sc] x 2] x 3";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
+        assert_eq!(pat.round_counts, vec![12]);
     }
 
     #[test]
@@ -350,5 +426,32 @@ mod tests {
         let prog = "mark(anchor), attach(anchor, 3)";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Mark(0), Attach(0, 3)]);
+    }
+
+    #[test]
+    fn test_round_counting_with_attach() {
+        let prog = "
+        MR(6)
+        : 6 inc (12)
+        6: 12 sc (12)
+        : mark(anchor), 6 sc, mark(split), attach(anchor, 3) (9)
+        color(0, 0, 255)
+        2 : 9 sc (9)
+        goto(split)
+        color(255, 0, 0)
+        3: 9 sc (9)";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.round_counts, vec![6, 12, 12, 9, 9, 9, 9, 9, 9]);
+    }
+
+    #[test]
+    #[ignore = "need to count rounds first"]
+    fn test_repetition_around() {
+        let prog = "
+        : 6 sc
+        : [sc] around";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![Sc; 12]);
+        assert_eq!(pat.round_counts, vec![6, 6]);
     }
 }

@@ -14,11 +14,17 @@ round_end   =  { "(" ~ NUMBER ~ ")" }
 
 stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
 stitch_sequence  = {
-      (NUMBER ~ KW_STITCH)
-    | KW_STITCH
-    | interstitchable_action
-    | repetition }
-repetition = { "[" ~ stitches ~ "]" ~ "x" ~ NUMBER }
+    (NUMBER ~ KW_STITCH)
+  | KW_STITCH
+  | interstitchable_action
+  | repetition
+}
+
+repetition = {
+    repeated ~ KW_TIMES ~ NUMBER
+  | repeated ~ KW_AROUND
+}
+repeated   = { "[" ~ stitches ~ "]" }
 
 control = { action_sequence ~ LINEEND }
 action_sequence = { action ~ ("," ~ action)* }
@@ -54,7 +60,9 @@ KW_BL     = { "BL" }
 KW_CH     = { "ch" | "Ch" }
 KW_COLOR  = { "color" }
 KW_ATTACH = { "attach" }
-KW_STITCH =  { "sc" | "inc" | "dec" }
+KW_STITCH = { "sc" | "inc" | "dec" }
+KW_TIMES  = { "x" }
+KW_AROUND = { "around" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{

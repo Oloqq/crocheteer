@@ -231,46 +231,46 @@ fn transform_cross_section(cs: &mut CrossSection, sim: &Similarity3) {
 mod tests {
     use super::*;
 
-    #[ignore]
-    #[test]
-    fn test_register_similarity_transform() {
-        // Let's build a small synthetic example:
-        // Source points in a cross-section
-        let mut source = vec![
-            Vector3::new(1.0, 1.0, 1.0),
-            Vector3::new(2.0, 1.0, 1.0),
-            Vector3::new(1.0, 2.0, 1.0),
-            Vector3::new(2.0, 2.0, 1.0),
-            Vector3::new(3.0, 2.0, 1.0),
-            Vector3::new(4.0, 2.0, 1.0),
-            Vector3::new(5.0, 2.0, 1.0),
-            Vector3::new(6.0, 2.0, 1.0),
-            Vector3::new(7.0, 2.0, 1.0),
-        ];
+    // #[ignore]
+    // #[test]
+    // fn test_register_similarity_transform() {
+    //     // Let's build a small synthetic example:
+    //     // Source points in a cross-section
+    //     let mut source = vec![
+    //         Vector3::new(1.0, 1.0, 1.0),
+    //         Vector3::new(2.0, 1.0, 1.0),
+    //         Vector3::new(1.0, 2.0, 1.0),
+    //         Vector3::new(2.0, 2.0, 1.0),
+    //         Vector3::new(3.0, 2.0, 1.0),
+    //         Vector3::new(4.0, 2.0, 1.0),
+    //         Vector3::new(5.0, 2.0, 1.0),
+    //         Vector3::new(6.0, 2.0, 1.0),
+    //         Vector3::new(7.0, 2.0, 1.0),
+    //     ];
 
-        let scale = 1.0;
-        // let angle_rad = std::f64::consts::FRAC_PI_8;
-        // let angle_rad = 0.0;
-        // let rot = UnitQuaternion::from_euler_angles(0.0, 0.0, angle_rad);
-        let rot = UnitQuaternion::identity();
-        let tx = Vector3::new(0.0, 1.0, 0.0);
+    //     let scale = 1.0;
+    //     // let angle_rad = std::f64::consts::FRAC_PI_8;
+    //     // let angle_rad = 0.0;
+    //     // let rot = UnitQuaternion::from_euler_angles(0.0, 0.0, angle_rad);
+    //     let rot = UnitQuaternion::identity();
+    //     let tx = Vector3::new(0.0, 1.0, 0.0);
 
-        let target: Vec<Vector3<Num>> = source.iter().map(|p| scale * (rot * p) + tx).collect();
+    //     let target: Vec<Vector3<Num>> = source.iter().map(|p| scale * (rot * p) + tx).collect();
 
-        println!("pre icp");
-        let sim = icp_similarity_transform(&mut source, &target, 100, 1e-10);
-        println!("\nresult {:?}", sim);
+    //     println!("pre icp");
+    //     let sim = icp_similarity_transform(&mut source, &target, 100, 1e-10);
+    //     println!("\nresult {:?}", sim);
 
-        // Check that the estimated transform is close to what we applied
-        assert!(
-            (sim.scale - scale).abs() < 1e-7,
-            "Scale mismatch {}",
-            (sim.scale - scale)
-        );
-        assert!(
-            (sim.rotation.angle_to(&rot)).abs() < 1e-7,
-            "Rotation mismatch"
-        );
-        assert!((sim.translation - tx).norm() < 1e-7, "Translation mismatch");
-    }
+    //     // Check that the estimated transform is close to what we applied
+    //     assert!(
+    //         (sim.scale - scale).abs() < 1e-7,
+    //         "Scale mismatch {}",
+    //         (sim.scale - scale)
+    //     );
+    //     assert!(
+    //         (sim.rotation.angle_to(&rot)).abs() < 1e-7,
+    //         "Rotation mismatch"
+    //     );
+    //     assert!((sim.translation - tx).norm() < 1e-7, "Translation mismatch");
+    // }
 }

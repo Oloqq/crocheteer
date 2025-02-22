@@ -18,9 +18,11 @@
   - [ ] load arbitrary stl as target
   - [ ] simulation on GPU (gotta go fast)
 
-This project was used as an engineering thesis (*Fabric Simulation for Three-Dimensional Crochet Designs*), the thesis serves as a good documentation of how the visualization works. The final pdf is going to be linked in the repo soon; see the draft in [docs](./docs/draft).
+This project was used for a bachelor of engineering thesis (*Fabric Simulation for Three-Dimensional Crochet Designs*), the thesis may be used as a documentation of how the visualization works. The final pdf is going to be linked in the repo soon; see the draft in [docs](./docs/draft).
 
 See sample patterns that Crochetter understands in [patterns](./patterns/).
+
+<!-- TODO create a test suite that parses all of them -->
 
 # How to run
 This manual assumes you already have Rust's `cargo` and node's `npm` installed.

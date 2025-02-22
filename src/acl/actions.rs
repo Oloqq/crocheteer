@@ -7,11 +7,11 @@ pub enum Action {
     Sc,
     Inc,
     Dec,
-    Ch(usize),
+    Ch(usize), // FIXME supported?
     /// Create a chain, then attach it to a marked position
     Attach(Label, usize),
     /// Begin working in the other direction
-    Reverse,
+    Reverse, // FIXME unupported
     /// Front loop only
     FLO,
     /// Back loop only
@@ -31,6 +31,33 @@ pub enum Action {
 }
 
 impl Action {
+    pub fn anchors_consumed(&self) -> u32 {
+        use Action::*;
+        match self {
+            Sc | Inc => 1,
+            Dec => 2,
+            MR(_) => 0,
+            FO => 0, // FO in some way consumes the anchors, but it is handled in another way
+            Ch(_) | Reverse => unimplemented!(),
+            Attach(_, _) => todo!(),
+            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) => 0,
+        }
+    }
+
+    pub fn anchors_produced(&self) -> u32 {
+        use Action::*;
+        match self {
+            Sc | Dec => 1,
+            Inc => 2,
+            MR(x) => *x as u32,
+            FO => 0,
+            Ch(_) | Reverse => unimplemented!(),
+            Attach(_, chain_size) => *chain_size as u32,
+            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) => 0,
+        }
+    }
+
+    // FIXME used?
     pub fn parse(src: &str) -> Option<Self> {
         use Action::*;
         // println!("{src}");
