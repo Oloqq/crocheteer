@@ -75,7 +75,10 @@ impl Plushie {
     pub fn parse(src: &str) -> Result<Self, String> {
         let pattern = Pattern::parse(src)?;
         let mut params = Params::default();
-        params.update(&pattern.parameters);
+        let update_errors = params.update(&pattern.parameters);
+        if update_errors.len() > 0 {
+            return Err(update_errors[0].clone());
+        }
         Ok(Self::from_flow(pattern, params)?)
     }
 

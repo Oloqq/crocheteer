@@ -1,15 +1,25 @@
 # https://www.crochet365knittoo.com/amigurumi-heart/
 # need support:
-# - [...] around
+# - ✅[...] around
 # - slip stitch
 # - multiple starters
 # - inround FO, mark allowed after
 # - attach with one argument means chain of 0
 #   - attach to another piece must not try to split a round
 # - mark(second_hump) might be problematic (not sure) bcs attach modifies the mark before it
+# - flip Y in display
+
+# plan:
+# - add some parameters to MR
+# - allow to lock a point, i.e. its position is fixed. User can lock specific coordinates
+# at least one point must be always fully locked
+# - allow to turn off translation by root once a point is locked
 
 # first hump on top of heart
 MR(6)
+{
+    lock_y: 0
+}
 R2: [inc] around (12)
 R3: [sc, inc] around (18)
 R4-R5: [sc] around (18)
@@ -17,6 +27,9 @@ R6: slst, FO, mark(first_hump) (18) # leave a longer strand for sewing later
 
 # second hump on top of heart, continued to the end of the plushie
 MR(6)
+{
+    lock_y: 0
+}
 R2: [inc] around (12)
 R3: [sc, inc] around (18)
 R4-R5: [sc] around (18)

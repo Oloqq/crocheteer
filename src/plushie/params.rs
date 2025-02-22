@@ -92,6 +92,19 @@ pub struct OneByOneParams {
     pub force_expansion_after_time: f32,
 }
 
+#[derive(Debug)]
+pub enum ParamsError {
+    Unknown(String),
+}
+
+impl std::fmt::Display for ParamsError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
+}
+
+impl Error for ParamsError {}
+
 impl Params {
     pub fn unconstrained_floating() -> Self {
         Self {
@@ -126,6 +139,7 @@ impl Params {
             "stuffing_force" => self.centroids.force = val.parse()?,
             "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
             "single_loop_force" => self.single_loop_force = val.parse()?,
+            "floored" => self.floor = val.parse()?,
             "initializer" => {
                 self.initializer = match val {
                     "cylinder" => Initializer::Cylinder,
@@ -144,22 +158,32 @@ impl Params {
             "skelet_clusters" => self.skelet_stuffing.cluster_number = val.parse()?,
             "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
             "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
-
-            _ => log::debug!("Unknown parameter: {}", key),
+            _ => {
+                log::debug!("Unknown parameter: {}", key);
+                return Err(Box::new(ParamsError::Unknown(key.to_owned())));
+            }
         }
         return Ok(());
     }
 
     pub fn update(&mut self, src: &HashMap<String, String>) -> Vec<String> {
-        let mut _unknown = vec![];
+        let mut wrong = vec![];
         for (key, val) in src {
             match self.update_one(key, val) {
                 Ok(_) => (),
-                Err(_) => (),
-                // unknown.push(key.clone());
+                Err(err) => {
+                    if err.is::<ParamsError>() {
+                        match err.downcast::<ParamsError>().unwrap().as_ref() {
+                            ParamsError::Unknown(unk) => {
+                                wrong.push(format!("Unknown parameter: \"{}\"", unk))
+                            }
+                        }
+                    }
+                    wrong.push(format!("Bad value for parameter \"{}\" ({})", key, val))
+                }
             }
         }
-        _unknown
+        wrong
     }
 }
 

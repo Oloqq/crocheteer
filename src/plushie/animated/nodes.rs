@@ -125,7 +125,8 @@ impl Nodes {
         for (i, point) in self.points.iter_mut().enumerate() {
             if displacement[i].magnitude() > params.minimum_displacement {
                 total += displacement[i];
-                *point += (displacement[i] - translation_by_root) * time;
+                *point += (displacement[i]) * time;
+                // *point += (displacement[i] - translation_by_root) * time;
                 if params.floor {
                     point.y = point.y.max(0.0);
                 }
