@@ -1,8 +1,9 @@
 pub mod errors;
 mod parsing;
 
-pub use self::errors::Error;
 use crate::acl::{actions::Action, Flow};
+pub use errors::Error;
+pub use errors::Warning;
 use pest::Parser;
 use pest_derive::Parser;
 use std::collections::HashMap;
@@ -21,6 +22,7 @@ pub struct Pattern {
     actions: Vec<Action>,
     cursor: usize,
     current_loop: CurrentLoop,
+    warnings: Vec<Warning>,
 }
 
 #[derive(Debug)]
@@ -41,6 +43,7 @@ impl Pattern {
             actions: vec![],
             cursor: 0,
             current_loop: CurrentLoop::Both,
+            warnings: vec![],
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
         p.program(line_pairs)?;

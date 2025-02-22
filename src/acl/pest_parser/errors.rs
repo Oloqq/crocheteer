@@ -33,6 +33,24 @@ pub enum ErrorCode {
     UndefinedLabel(String),
 }
 
+#[derive(Debug)]
+#[allow(unused)]
+pub struct Warning {
+    pub code: WarningCode,
+    line: usize,
+    col: usize,
+}
+
+#[derive(Debug)]
+pub enum WarningCode {
+    RoundCountMismatch {
+        #[allow(unused)]
+        annotated: u32,
+        #[allow(unused)]
+        calculated: u32,
+    },
+}
+
 impl Error {
     pub fn lexer(e: pest::error::Error<Rule>) -> Self {
         Self {
@@ -50,6 +68,11 @@ pub fn error(code: ErrorCode, pair: &Pair<Rule>) -> Error {
 
 pub fn err(code: ErrorCode, pair: &Pair<Rule>) -> Result<(), Error> {
     Err(error(code, pair))
+}
+
+pub fn warning(code: WarningCode, pair: &Pair<Rule>) -> Warning {
+    let (line, col) = pair.line_col();
+    Warning { code, line, col }
 }
 
 impl Display for Error {

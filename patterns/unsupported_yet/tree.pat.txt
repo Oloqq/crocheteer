@@ -1,3 +1,6 @@
+# need support:
+# - track generalized cylinders / parts as Volumes, assign centroids to volumes
+
 @centroids = 6
 @initializer = obo
 @points_per_centroid = 30

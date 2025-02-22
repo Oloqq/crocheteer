@@ -1,5 +1,6 @@
 @centroids = 4
-@bruh = yes
+@stuffing_force = 0.5
+
 MR(6)
 R2: 6 inc (12)
 R3: 6 inc, 6 sc (18)

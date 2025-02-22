@@ -1,7 +1,5 @@
 body
-circle 18
 
 tongue
 
-MR 3
 
