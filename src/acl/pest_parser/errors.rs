@@ -19,9 +19,17 @@ pub enum ErrorCode {
     UnknownStitch(String),
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
-    DuplicateMeta(String),
+    DuplicateMeta(String), // FIXME meta -> control
     RepetitionTimes0,
-    DuplicateLabel { label: String, first_defined: usize },
+    /// Division leaves a remainder
+    CantRepeatAround {
+        last_round_anchors: u32,
+        anchors_consumed_by_sequence: u32,
+    },
+    DuplicateLabel {
+        label: String,
+        first_defined: usize,
+    },
     UndefinedLabel(String),
 }
 

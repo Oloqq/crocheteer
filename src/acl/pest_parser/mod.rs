@@ -11,6 +11,7 @@ use std::collections::HashMap;
 #[grammar = "acl/pest_parser/ACL.pest"]
 struct PatParser;
 
+#[derive(Debug)]
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
     pub annotated_round_counts: Vec<Option<usize>>,
@@ -22,6 +23,7 @@ pub struct Pattern {
     current_loop: CurrentLoop,
 }
 
+#[derive(Debug)]
 enum CurrentLoop {
     Back,
     Front,

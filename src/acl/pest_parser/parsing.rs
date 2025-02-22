@@ -173,7 +173,8 @@ impl Pattern {
 
                     let mut howmuch = what_howmuch;
                     let times = {
-                        match howmuch.next().unwrap().as_rule() {
+                        let specifier = howmuch.next().unwrap();
+                        match specifier.as_rule() {
                             Rule::KW_TIMES => {
                                 let int_pair = howmuch.next().unwrap();
                                 let times = integer(&int_pair)?;
@@ -183,7 +184,18 @@ impl Pattern {
                                 times
                             }
                             Rule::KW_AROUND => {
-                                todo!()
+                                let consumed = actions_to_repeat.anchors_consumed();
+                                let last_round_produced = *self.round_counts.last().unwrap(); // FIXME
+                                if last_round_produced % consumed != 0 {
+                                    return Err(error(
+                                        CantRepeatAround {
+                                            last_round_anchors: last_round_produced,
+                                            anchors_consumed_by_sequence: consumed,
+                                        },
+                                        &specifier,
+                                    ));
+                                }
+                                (last_round_produced / consumed) as usize
                             }
                             _ => unreachable!(),
                         }
@@ -433,19 +445,17 @@ mod tests {
         let prog = "
         MR(6)
         : 6 inc (12)
-        6: 12 sc (12)
         : mark(anchor), 6 sc, mark(split), attach(anchor, 3) (9)
         color(0, 0, 255)
         2 : 9 sc (9)
         goto(split)
         color(255, 0, 0)
-        3: 9 sc (9)";
+        : inc, 8 sc (10)";
         let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.round_counts, vec![6, 12, 12, 9, 9, 9, 9, 9, 9]);
+        assert_eq!(pat.round_counts, vec![6, 12, 9, 9, 9, 10]);
     }
 
     #[test]
-    #[ignore = "need to count rounds first"]
     fn test_repetition_around() {
         let prog = "
         : 6 sc
@@ -453,5 +463,14 @@ mod tests {
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
         assert_eq!(pat.round_counts, vec![6, 6]);
+    }
+
+    #[test]
+    #[ignore = "need to count rounds first"]
+    fn test_repetition_allowed_only_as_the_only_instruction() {
+        let prog = "
+        : 6 sc
+        : sc, [sc] around";
+        let _ = Pattern::parse(prog).expect_err("");
     }
 }

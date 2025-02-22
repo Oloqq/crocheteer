@@ -39,7 +39,7 @@ impl Action {
             MR(_) => 0,
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
             Ch(_) | Reverse => unimplemented!(),
-            Attach(_, _) => todo!(),
+            Attach(_, _) => 0,
             FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) => 0,
         }
     }
