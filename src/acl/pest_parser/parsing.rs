@@ -223,9 +223,8 @@ impl Pattern {
                     result.append_repeated(actions_to_repeat, times as u32);
                 }
                 Rule::interstitchable_action => {
-                    let actions = self.interstitchable_action(first.into_inner())?;
-                    assert_eq!(actions.len(), 1);
-                    result.push(actions[0]);
+                    let action = self.interstitchable_action(first.into_inner())?;
+                    result.push(action);
                 }
                 _ => unreachable!("{}", first),
             }
@@ -248,8 +247,8 @@ impl Pattern {
                 Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),
                 Rule::interstitchable_action => {
-                    let mut new = self.interstitchable_action(opcode.into_inner())?;
-                    self.actions.append(&mut new);
+                    let action = self.interstitchable_action(opcode.into_inner())?;
+                    self.actions.push(action);
                 }
                 _ => unreachable!("{opcode}"),
             }
@@ -257,15 +256,13 @@ impl Pattern {
         Ok(())
     }
 
-    // FIXME return just 1?
     // TODO labels with usize is useless, even genetic stuff can be done with a retroactive mapping from genetic usizes to strings
-    fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
+    fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Action, Error> {
         let first = tokens.next().unwrap();
-        match first.as_rule() {
+        Ok(match first.as_rule() {
             Rule::KW_MARK => {
                 let label = self.register_label(tokens.next().unwrap())?;
-                let result = Action::Mark(label);
-                Ok(vec![result])
+                Action::Mark(label)
             }
             Rule::KW_GOTO => {
                 let label_pair = tokens.next().unwrap();
@@ -274,29 +271,29 @@ impl Pattern {
                     .labels
                     .get(&label)
                     .ok_or(error(UndefinedLabel(label), &label_pair))?;
-                Ok(vec![Action::Goto(*index)])
+                Action::Goto(*index)
             }
             Rule::KW_FLO => {
                 self.current_loop = CurrentLoop::Front;
-                Ok(vec![Action::FLO])
+                Action::FLO
             }
             Rule::KW_BLO => {
                 self.current_loop = CurrentLoop::Back;
-                Ok(vec![Action::BLO])
+                Action::BLO
             }
             Rule::KW_BL => {
                 self.current_loop = CurrentLoop::Both;
-                Ok(vec![Action::BL])
+                Action::BL
             }
             Rule::KW_COLOR => {
                 let r = integer(&tokens.next().unwrap())?;
                 let g = integer(&tokens.next().unwrap())?;
                 let b = integer(&tokens.next().unwrap())?;
-                Ok(vec![Action::Color((r, g, b))])
+                Action::Color((r, g, b))
             }
             Rule::KW_CH => {
                 let count = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
-                Ok(vec![Action::Ch(count)])
+                Action::Ch(count)
             }
             Rule::KW_ATTACH => {
                 let args_pair = tokens.next().unwrap();
@@ -308,10 +305,10 @@ impl Pattern {
                     .labels
                     .get(&label)
                     .ok_or(error(UndefinedLabel(label), &args_pair))?;
-                Ok(vec![Action::Attach(*index, chain_size)])
+                Action::Attach(*index, chain_size)
             }
             _ => unreachable!(),
-        }
+        })
     }
 
     fn parameter(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {

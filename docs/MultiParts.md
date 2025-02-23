@@ -11,7 +11,18 @@ Allowing multiple MRs introduces problems:
 
 "Keep root at origin" makes no sense with MultiPart. But we need to lock some points in space. ACL should allow to designate specific points to be locked in space. ACL should allow setting precise coordinates for the points. There should be a mechanism to unlock points, e.g. when a certain another stitch has been completed. This could be implemented using marks.
 
-Allow user to move the locked points in the GUI. Display new coordinates in a way that a user can copy them
+Allow user to move the locked points in the GUI. Display new coordinates in a way that a user can copy them.
+
+# Hook
+Hook is designed to work from a single starter.
+- Do we adjust Hook so it handles multiple starters?
+- Do we use multiple Hooks in a plushie that are eventually joined into one?
+Plushies started from different starters need to be able to get joined.
+Plushies have to be able to get simulated without being joined.
+Node ids in the simulation must stay unique.
+Hook needs to retain mark information between joins
+
+## Solution 1
 
 
 # Additions

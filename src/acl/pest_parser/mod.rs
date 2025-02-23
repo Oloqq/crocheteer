@@ -21,6 +21,7 @@ pub struct Pattern {
     label_cursor: usize,
     actions: Vec<Action>,
     cursor: usize,
+    /// Kept for the purpose of auto inserting BL at start of round
     current_loop: CurrentLoop,
     warnings: Vec<Warning>,
 }
