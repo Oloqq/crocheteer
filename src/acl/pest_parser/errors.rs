@@ -26,6 +26,7 @@ pub enum ErrorCode {
         last_round_anchors: u32,
         anchors_consumed_by_sequence: u32,
     },
+    AroundMustBeExclusiveInRound,
     DuplicateLabel {
         label: String,
         first_defined: usize,

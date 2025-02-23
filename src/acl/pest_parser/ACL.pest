@@ -1,4 +1,4 @@
-program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | part_config | NEWLINE)+ ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 
@@ -29,6 +29,7 @@ repeated   = { "[" ~ stitches ~ "]" }
 control = { action_sequence ~ LINEEND }
 action_sequence = { action ~ ("," ~ action)* }
 arg_int   =  { "(" ~ NUMBER ~ ")" }
+arg_int_opt_ident   =  { "(" ~ NUMBER ~ ("," ~ IDENT)? ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
 arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
@@ -36,7 +37,7 @@ arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
 
 action = {
       interstitchable_action
-    | (KW_MR ~ arg_int)
+    | (KW_MR ~ arg_int_opt_ident)
     |  KW_FO
 }
 interstitchable_action = {
@@ -48,6 +49,13 @@ interstitchable_action = {
     | (KW_COLOR ~ arg_int_3)
     | (KW_CH ~ arg_int)
     | (KW_ATTACH ~ arg_ident_int)
+}
+
+part_config = {
+  IDENT ~ NEWLINE* ~ "{" ~ NEWLINE* ~ config_entry ~ ("," ~ NEWLINE* ~ config_entry)* ~ ","? ~ NEWLINE* ~ "}"
+}
+config_entry = {
+  IDENT ~ "=" ~ (FLOAT | IDENT)
 }
 
 KW_MR     = { "MR" }
@@ -70,12 +78,11 @@ not_newline = _{
 }
 
 LINEEND     =  { NEWLINE | comment | EOI }
-PLACEHOLDER =  { "_" }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
 IDENT       = @{ (ALPHA | DIGIT | "_")+ }
 NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
-FLOAT       = @{ (DIGIT)+ ~ "." ~ (DIGIT)+ }
+FLOAT       = @{ "-"? ~ (DIGIT)+ ~ ("." ~ (DIGIT)+)? }
 NONZERO     = _{ '1'..'9' }
 DIGIT       = _{ '0'..'9' }
 WHITESPACE  = _{ " " }

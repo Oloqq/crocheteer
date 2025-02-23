@@ -72,6 +72,9 @@ impl Pattern {
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
+                    Rule::part_config => {
+                        println!("config: {:?}", pair);
+                    }
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
@@ -237,7 +240,8 @@ impl Pattern {
             let opcode = tokens.next().unwrap();
             match opcode.as_rule() {
                 Rule::KW_MR => {
-                    let num = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
+                    let mut args = tokens.next().unwrap().into_inner();
+                    let num = integer(&args.next().unwrap())?;
                     self.actions.push(Action::MR(num));
                     self.round_counts.push(num as u32);
                 }
@@ -254,23 +258,13 @@ impl Pattern {
     }
 
     // FIXME return just 1?
+    // TODO labels with usize is useless, even genetic stuff can be done with a retroactive mapping from genetic usizes to strings
     fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Vec<Action>, Error> {
         let first = tokens.next().unwrap();
         match first.as_rule() {
             Rule::KW_MARK => {
-                let label_pair = tokens.next().unwrap();
-                let label = ident(label_pair.clone())?;
-                if let Some(x) = self.labels.insert(label.clone(), self.label_cursor) {
-                    err(
-                        DuplicateLabel {
-                            label,
-                            first_defined: x,
-                        },
-                        &label_pair,
-                    )?;
-                }
-                let result = Action::Mark(self.label_cursor);
-                self.label_cursor += 1;
+                let label = self.register_label(tokens.next().unwrap())?;
+                let result = Action::Mark(label);
                 Ok(vec![result])
             }
             Rule::KW_GOTO => {
@@ -328,6 +322,22 @@ impl Pattern {
             Some(_) => err(DuplicateMeta(key.to_string()), &key_pair),
             None => Ok(()),
         }
+    }
+
+    fn register_label(&mut self, label_pair: Pair<Rule>) -> Result<usize, Error> {
+        let label = ident(label_pair.clone())?;
+        if let Some(x) = self.labels.insert(label.clone(), self.label_cursor) {
+            err(
+                DuplicateLabel {
+                    label,
+                    first_defined: x,
+                },
+                &label_pair,
+            )?;
+        }
+        let ret = Ok(self.label_cursor);
+        self.label_cursor += 1;
+        ret
     }
 }
 

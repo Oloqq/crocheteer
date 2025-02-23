@@ -57,7 +57,7 @@ impl Action {
         }
     }
 
-    // FIXME used?
+    // FIXME used? -> used but it should be a function in parsing.rs
     pub fn parse(src: &str) -> Option<Self> {
         use Action::*;
         // println!("{src}");
@@ -76,16 +76,7 @@ impl Action {
             // "bl," => BL,
             // "goto(Label)," => Goto,
             // "mark(Label)," => Mark,
-            "MR" => {
-                let num: usize = match tokens.next() {
-                    Some(x) => match x.parse() {
-                        Ok(x) => x,
-                        Err(_) => return None,
-                    },
-                    None => return None,
-                };
-                MR(num)
-            }
+            "MR" => unreachable!(),
             // "fo," => FO,
             // "color(Color)," => Color,
             _ => return None,

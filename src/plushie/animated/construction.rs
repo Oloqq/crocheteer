@@ -79,6 +79,11 @@ impl Plushie {
         if update_errors.len() > 0 {
             return Err(update_errors[0].clone());
         }
+
+        if !params.keep_root_at_origin {
+            // TODO ensure at least one point is locked
+        }
+
         Ok(Self::from_flow(pattern, params)?)
     }
 

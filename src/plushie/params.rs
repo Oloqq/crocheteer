@@ -16,7 +16,7 @@ pub struct Params {
     /// Set to false if the creation is carried around, so that the bottom is not flat
     #[serde(skip, default = "just_true")]
     pub floor: bool,
-    /// Force pulling the nodes down
+    /// Force that pulls the nodes down
     #[serde(skip)]
     pub gravity: f32,
     /// Distance between nodes that is considered "relaxed"
@@ -139,6 +139,7 @@ impl Params {
             "stuffing_force" => self.centroids.force = val.parse()?,
             "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
             "single_loop_force" => self.single_loop_force = val.parse()?,
+            "rooted" => self.keep_root_at_origin = val.parse()?,
             "floored" => self.floor = val.parse()?,
             "initializer" => {
                 self.initializer = match val {
