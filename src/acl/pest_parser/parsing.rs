@@ -73,7 +73,7 @@ impl Pattern {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
                     Rule::part_config => {
-                        println!("config: {:?}", pair);
+                        // println!("config: {:?}", pair);
                     }
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
@@ -163,13 +163,13 @@ impl Pattern {
             match first.as_rule() {
                 Rule::NUMBER => {
                     let number = integer(&first)?;
-                    let action = Action::parse(sequence.next().unwrap().as_str())
+                    let action = stitch(sequence.next().unwrap().as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
 
                     result.push_repeated(action, number as u32);
                 }
                 Rule::KW_STITCH => {
-                    let action = Action::parse(first.as_str())
+                    let action = stitch(first.as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
                     result.push(action);
                 }
@@ -339,6 +339,20 @@ impl Pattern {
         self.label_cursor += 1;
         ret
     }
+}
+
+pub fn stitch(src: &str) -> Option<Action> {
+    use Action::*;
+    let mut tokens = src.split(" "); // wtf have I done here
+    let first = tokens.next().unwrap();
+    assert!(tokens.next().is_none()); // If this assert never failed after some time, remove the stupid split, if it fails investigate and edit the comment
+
+    Some(match first {
+        "sc" => Sc,
+        "inc" => Inc,
+        "dec" => Dec,
+        _ => return None,
+    })
 }
 
 // TODO return u32?

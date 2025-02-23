@@ -56,30 +56,4 @@ impl Action {
             FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) => 0,
         }
     }
-
-    // FIXME used? -> used but it should be a function in parsing.rs
-    pub fn parse(src: &str) -> Option<Self> {
-        use Action::*;
-        // println!("{src}");
-        let mut tokens = src.split(" ");
-        let first = tokens.next().unwrap();
-
-        Some(match first {
-            "sc" => Sc,
-            "inc" => Inc,
-            "dec" => Dec,
-            // "ch(usize)," => Ch,
-            // "attach(Label)," => Attach,
-            // "reverse," => Reverse,
-            // "flo," => FLO,
-            // "blo," => BLO,
-            // "bl," => BL,
-            // "goto(Label)," => Goto,
-            // "mark(Label)," => Mark,
-            "MR" => unreachable!(),
-            // "fo," => FO,
-            // "color(Color)," => Color,
-            _ => return None,
-        })
-    }
 }
