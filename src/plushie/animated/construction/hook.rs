@@ -262,10 +262,7 @@ mod tests {
     fn test_start_with_magic_ring_configurable() {
         let h = Hook::start_with(&MRConfigurable(3, "main".into()), COLOR).unwrap();
         q!(h.peculiar.len(), 1);
-        assert!(matches!(
-            h.peculiar.get(&0).unwrap(),
-            Peculiarity::Constrained(..)
-        ));
+        assert!(matches!(h.peculiar.get(&0).unwrap(), Peculiarity::Locked));
 
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);

@@ -13,6 +13,18 @@ Allowing multiple MRs introduces problems:
 
 Allow user to move the locked points in the GUI. Display new coordinates in a way that a user can copy them.
 
+# Locking
+Simple and naive locking of points without redirecting the forces acting on the locked points may lead to artifacts (the locked point "collapses" inwards). The forces should be redirected just as they are when plushie is @rooted. In this case Peculiarity::Root becomes redundant. Peculiarity::Constrained does not make sense anymore (why would be want to slow down movement of a node).
+Refactor Peculiarity::Constrained into Peculiarity::Locked, and merge the logic of Peculiarity::Root and Peculiarity::Locked (remove Peculiarity::Root).
+
+@multipart = true
+@floored = false
+@reflect_locked = true
+with a single part should be equivalent to
+@multipart = false
+@floored = false
+@rooted = true
+
 # Hook
 Hook is designed to work from a single starter.
 - Do we adjust Hook so it handles multiple starters?
@@ -30,3 +42,4 @@ Hook needs to retain mark information between joins
 - "floored", "rooted" as ACL parameters
   - TODO when rooted = false, ensure there is at least one fully locked point, raise error otherwise
 - fasten off with tip could be replaced with a few links between the stitches of the last round?
+- Constrained -> Locked

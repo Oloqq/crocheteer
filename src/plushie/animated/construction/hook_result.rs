@@ -1,10 +1,10 @@
+use std::{collections::HashMap, f32::consts::PI};
+
+use colors::Color;
 use log::{log_enabled, Level};
 use serde_derive::Serialize;
 
 use crate::common::*;
-use colors::Color;
-
-use std::{collections::HashMap, f32::consts::PI};
 
 #[derive(Debug, Clone)]
 pub struct Edges {
@@ -108,11 +108,10 @@ pub type PointsOnPushPlane = (usize, usize, usize);
 
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub enum Peculiarity {
-    Root,
+    Locked,
     Tip,
     BLO(PointsOnPushPlane),
     FLO(PointsOnPushPlane),
-    Constrained(V),
 }
 
 fn fill_round_span(edges: &Edges, round_spans: &mut Vec<(usize, usize)>) {
@@ -165,6 +164,13 @@ fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
     // assumption: only one radial axis, how to handle shape of letter Y?
     let mut y = 0.0;
     let mut nodes = vec![];
+
+    let mut round_spans = round_spans.into_iter();
+    let mr_round = round_spans.next().unwrap();
+    assert_eq!(mr_round.0, 0);
+    nodes.append(&mut vec![Point::new(0.0, 0.0, 0.0)]);
+    nodes.append(&mut ring(mr_round.1 - mr_round.0, y, 1.0));
+    y += 0.7;
 
     for (from, to) in round_spans {
         let count = to - from + 1;

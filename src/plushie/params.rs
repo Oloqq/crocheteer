@@ -29,7 +29,7 @@ pub struct Params {
     /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
     /// not applicable to LegacyPlushie
     #[serde(skip, default = "just_true")]
-    pub keep_root_at_origin: bool,
+    pub reflect_locked: bool,
     /// Multipler for BLO/FLO force. If BLO/FLO behaves incorrectly, probably the sign is wrong.
     /// I assume it has to do with working the plushie clockwise vs counterclockwise.
     /// It has yet to be investigated.
@@ -40,6 +40,9 @@ pub struct Params {
     pub hook_leniency: crate::plushie::animated::Leniency,
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
+
+    /// Experimental multipart support
+    pub multipart: bool,
 
     pub skelet_stuffing: SkeletParams,
     pub track_performance: bool,
@@ -114,20 +117,21 @@ impl Params {
             floor: false,
             gravity: 0.0,
             desired_stitch_distance: 1.0,
-            keep_root_at_origin: false,
+            reflect_locked: false,
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
             hook_leniency: Leniency::NoMercy,
             skelet_stuffing: Default::default(),
             track_performance: false,
+            multipart: false,
         }
     }
 
     pub fn floored() -> Self {
         Self {
             floor: true,
-            keep_root_at_origin: true,
+            reflect_locked: true,
             ..Self::unconstrained_floating()
         }
     }
@@ -139,7 +143,7 @@ impl Params {
             "stuffing_force" => self.centroids.force = val.parse()?,
             "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
             "single_loop_force" => self.single_loop_force = val.parse()?,
-            "rooted" => self.keep_root_at_origin = val.parse()?,
+            "rooted" | "reflect_locked" => self.reflect_locked = val.parse()?,
             "floored" => self.floor = val.parse()?,
             "initializer" => {
                 self.initializer = match val {
@@ -159,6 +163,7 @@ impl Params {
             "skelet_clusters" => self.skelet_stuffing.cluster_number = val.parse()?,
             "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
             "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
+            "multipart" => self.multipart = val.parse()?,
             _ => {
                 log::debug!("Unknown parameter: {}", key);
                 return Err(Box::new(ParamsError::Unknown(key.to_owned())));

@@ -15,9 +15,13 @@ impl Plushie {
         self.add_stuffing_force(&mut perf);
         self.add_gravity();
 
-        self.last_total_displacement =
+        self.last_total_displacement = if self.params.multipart {
             self.nodes
-                .apply_forces(&mut self.displacement, time, &self.params);
+                .apply_forces(&mut self.displacement, time, &self.params)
+        } else {
+            self.nodes
+                .apply_forces_old(&mut self.displacement, time, &self.params)
+        };
 
         perf.map(|p| self.perf.push(p));
 

@@ -27,9 +27,8 @@ impl Hook {
     pub fn start_with(action: &Action, color: colors::Color) -> Result<Self, HookError> {
         match action {
             MRConfigurable(x, _label) => {
-                let mut hook = Self::start_with(&MR(*x), color)?;
-                hook.peculiar
-                    .insert(0, Peculiarity::Constrained(V::new(0.0, 0.0, 0.0)));
+                let hook = Self::start_with(&MR(*x), color)?;
+                assert_eq!(hook.peculiar.get(&0), Some(&Peculiarity::Locked));
                 Ok(hook)
             }
             MR(x) => {
@@ -51,7 +50,7 @@ impl Hook {
 
                 Ok(Self {
                     edges: Edges::from(edges),
-                    peculiar: HashMap::from([(0, Peculiarity::Root)]),
+                    peculiar: HashMap::from([(0, Peculiarity::Locked)]),
                     now: Moment {
                         round_count: 0,
                         round_left: *x,
@@ -70,40 +69,41 @@ impl Hook {
                     leniency: Leniency::NoMercy,
                 })
             }
-            Ch(x) => {
-                let edges: Vec<Vec<usize>> = {
-                    let mut edges: Vec<Vec<usize>> = (1..*x).map(|i| vec![i]).collect();
-                    edges.push(vec![]);
-                    edges.push(vec![]);
-                    edges
-                };
+            Ch(_x) => {
+                todo!("Chain starter requires locking a single coordinate");
+                // let edges: Vec<Vec<usize>> = {
+                //     let mut edges: Vec<Vec<usize>> = (1..*x).map(|i| vec![i]).collect();
+                //     edges.push(vec![]);
+                //     edges.push(vec![]);
+                //     edges
+                // };
 
-                let mut peculiar = HashMap::new();
-                for i in 0..*x {
-                    peculiar.insert(i, Peculiarity::Constrained(V::new(1.0, 0.0, 1.0)));
-                }
-                let colors: Vec<Color> = (0..*x).map(|_| color).collect();
+                // let mut peculiar = HashMap::new();
+                // for i in 0..*x {
+                //     peculiar.insert(i, Peculiarity::Locked(V::new(1.0, 0.0, 1.0)));
+                // }
+                // let colors: Vec<Color> = (0..*x).map(|_| color).collect();
 
-                Ok(Self {
-                    edges: Edges::from(edges),
-                    peculiar,
-                    now: Moment {
-                        round_count: 0,
-                        round_left: *x,
-                        anchors: Queue::from_iter(0..*x),
-                        cursor: *x,
-                        working_on: WorkingLoops::Both,
-                    },
-                    round_spans: vec![(0, *x - 1)],
-                    parents: vec![None; *x],
-                    labels: HashMap::new(),
-                    override_previous_stitch: None,
-                    color,
-                    colors,
-                    last_stitch: None,
-                    last_mark: None,
-                    leniency: Leniency::NoMercy,
-                })
+                // Ok(Self {
+                //     edges: Edges::from(edges),
+                //     peculiar,
+                //     now: Moment {
+                //         round_count: 0,
+                //         round_left: *x,
+                //         anchors: Queue::from_iter(0..*x),
+                //         cursor: *x,
+                //         working_on: WorkingLoops::Both,
+                //     },
+                //     round_spans: vec![(0, *x - 1)],
+                //     parents: vec![None; *x],
+                //     labels: HashMap::new(),
+                //     override_previous_stitch: None,
+                //     color,
+                //     colors,
+                //     last_stitch: None,
+                //     last_mark: None,
+                //     leniency: Leniency::NoMercy,
+                // })
             }
             _ => Err(HookError::BadStarter),
         }

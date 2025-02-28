@@ -1,18 +1,17 @@
 pub mod hook;
 mod hook_result;
 
-use self::hook::Hook;
-use self::hook_result::HookResult;
-pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
-use super::centroid::Centroids;
-use super::nodes::Nodes;
-use super::Plushie;
-use super::{Initializer, Params};
-use crate::acl::pest_parser::Pattern;
-use crate::acl::Flow;
-use crate::common::*;
-use colors::Color;
 use std::collections::HashMap;
+
+use colors::Color;
+
+pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
+use self::{hook::Hook, hook_result::HookResult};
+use super::{centroid::Centroids, nodes::Nodes, Initializer, Params, Plushie};
+use crate::{
+    acl::{pest_parser::Pattern, Flow},
+    common::*,
+};
 
 impl Plushie {
     fn for_one_by_one(
@@ -80,7 +79,7 @@ impl Plushie {
             return Err(update_errors[0].clone());
         }
 
-        if !params.keep_root_at_origin {
+        if !params.reflect_locked {
             // TODO ensure at least one point is locked
         }
 
