@@ -43,9 +43,17 @@ pub struct Params {
 
     /// Experimental multipart support
     pub multipart: bool,
+    pub nodes: HashMap<String, NodeParam>,
 
     pub skelet_stuffing: SkeletParams,
     pub track_performance: bool,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct NodeParam {
+    pub lock_x: Option<f32>,
+    pub lock_y: Option<f32>,
+    pub lock_z: Option<f32>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -125,6 +133,7 @@ impl Params {
             skelet_stuffing: Default::default(),
             track_performance: false,
             multipart: false,
+            nodes: HashMap::new(),
         }
     }
 

@@ -5,11 +5,14 @@ mod expanding;
 mod nodes;
 pub mod perf;
 
+use std::collections::HashMap;
+
+use serde_derive::Serialize;
+
 pub use self::construction::hook::leniency::Leniency;
 use self::{centroid::Centroids, nodes::Nodes};
 use super::{params::Initializer, Params, PlushieTrait};
 use crate::{common::*, sanity};
-use serde_derive::Serialize;
 
 type Edges = Vec<Vec<usize>>;
 
@@ -24,6 +27,7 @@ pub struct Plushie {
     force_node_construction_timer: f32,
     last_total_displacement: V,
     pub perf: Vec<perf::Iteration>,
+    mark_to_node: HashMap<String, usize>,
 }
 
 impl PlushieTrait for Plushie {

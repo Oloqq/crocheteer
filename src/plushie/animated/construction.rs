@@ -14,6 +14,7 @@ use super::{centroid::Centroids, nodes::Nodes, Initializer, Params, Plushie};
 use crate::{
     acl::{pest_parser::Pattern, Flow},
     common::*,
+    plushie::params::NodeParam,
     sanity,
 };
 
@@ -23,6 +24,7 @@ impl Plushie {
         peculiarities: HashMap<usize, Peculiarity>,
         colors: Vec<Color>,
         edges: Vec<Vec<usize>>,
+        mark_to_node: HashMap<String, usize>,
     ) -> Self {
         let mut displacement = Vec::with_capacity(edges.len());
         displacement.push(V::zeros());
@@ -37,6 +39,7 @@ impl Plushie {
             // initializing with INF so it won't come as relaxed before first step by accident
             last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
             perf: vec![],
+            mark_to_node,
         }
     }
 
@@ -45,6 +48,7 @@ impl Plushie {
         peculiarities: HashMap<usize, Peculiarity>,
         colors: Vec<Color>,
         edges: Vec<Vec<usize>>,
+        mark_to_node: HashMap<String, usize>,
         nodes: Vec<Point>,
         height: f32,
     ) -> Self {
@@ -61,18 +65,34 @@ impl Plushie {
             // initializing with INF so it won't come as relaxed before first step by accident
             last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
             perf: vec![],
+            mark_to_node,
         }
     }
 
     pub fn from_flow(flow: impl Flow, params: Params) -> Result<Self, String> {
+        //TEMP
+        let params = {
+            let mut params = params;
+            params.nodes.insert(
+                "part_first_hump".into(),
+                NodeParam {
+                    lock_x: Some(2.0),
+                    lock_y: Some(0.0),
+                    lock_z: Some(0.0),
+                },
+            );
+            params
+        };
+
         let hook_result = Hook::parse(flow, &params.hook_leniency)?;
 
-        Ok(match params.initializer {
+        let mut plushie = match params.initializer {
             Initializer::OneByOne(_) => Plushie::for_one_by_one(
                 params,
                 hook_result.peculiarities,
                 hook_result.colors,
                 hook_result.edges.into(),
+                hook_result.mark_to_node,
             ),
             Initializer::Cylinder => {
                 let (nodes, highest) = arrange_cylinder(hook_result.round_spans);
@@ -83,11 +103,15 @@ impl Plushie {
                     hook_result.peculiarities,
                     hook_result.colors,
                     hook_result.edges.into(),
+                    hook_result.mark_to_node,
                     nodes,
                     highest,
                 )
             }
-        })
+        };
+        plushie.apply_node_params();
+
+        Ok(plushie)
     }
 
     pub fn parse(src: &str) -> Result<Self, String> {

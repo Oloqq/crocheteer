@@ -98,6 +98,7 @@ pub struct HookResult {
     pub peculiarities: HashMap<usize, Peculiarity>,
     pub colors: Vec<Color>,
     pub round_spans: Vec<(usize, usize)>,
+    pub mark_to_node: HashMap<String, usize>,
 }
 
 pub type PointsOnPushPlane = (usize, usize, usize);
@@ -126,6 +127,7 @@ impl HookResult {
         peculiar: HashMap<usize, Peculiarity>,
         mut round_spans: Vec<(usize, usize)>,
         colors: Vec<Color>,
+        mark_to_node: HashMap<String, usize>,
     ) -> Self {
         log::trace!("round spans: {:?}", round_spans);
         fill_round_span(&edges, &mut round_spans);
@@ -135,6 +137,7 @@ impl HookResult {
             peculiarities: peculiar,
             colors,
             round_spans,
+            mark_to_node,
         }
     }
 }

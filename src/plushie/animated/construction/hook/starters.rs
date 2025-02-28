@@ -26,9 +26,14 @@ impl Hook {
 
     pub fn start_with(action: &Action, color: colors::Color) -> Result<Self, HookError> {
         match action {
-            MRConfigurable(x, _label) => {
-                let hook = Self::start_with(&MR(*x), color)?;
+            MRConfigurable(x, label) => {
+                let mut hook = Self::start_with(&MR(*x), color)?;
                 assert_eq!(hook.peculiar.get(&0), Some(&Peculiarity::Locked));
+                hook.mark_to_node.insert(label.clone(), 0);
+
+                // TEMP
+                // hook.peculiar.insert(40, Peculiarity::Locked);
+
                 Ok(hook)
             }
             MR(x) => {
@@ -67,6 +72,7 @@ impl Hook {
                     last_stitch: None,
                     last_mark: None,
                     leniency: Leniency::NoMercy,
+                    mark_to_node: HashMap::new(),
                 })
             }
             Ch(_x) => {
