@@ -64,6 +64,11 @@ function dragObject(event: MouseEvent) {
     selectedObject.position.copy(intersection);
     draggedPosition = new THREE.Vector3();
     draggedPosition.copy(intersection);
+    world.onThingMoved(
+      selectedObject.kind,
+      selectedObject.index,
+      draggedPosition
+    );
   }
 }
 
