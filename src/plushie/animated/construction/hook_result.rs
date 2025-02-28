@@ -65,6 +65,10 @@ impl Edges {
         assert!(self.edges.last().unwrap().len() == 0);
         self.edges.pop();
     }
+
+    pub fn last(&self) -> Option<&Vec<usize>> {
+        self.edges.last()
+    }
 }
 
 impl Into<Vec<Vec<usize>>> for Edges {

@@ -1,15 +1,18 @@
-pub use crate::acl::actions::{Action, Label};
-pub use crate::common::*;
-pub use crate::plushie::animated::construction::Peculiarity;
 pub use std::collections::VecDeque as Queue;
 
 pub use Action::*;
+
+pub use crate::{
+    acl::actions::{Action, Label},
+    common::*,
+    plushie::animated::construction::Peculiarity,
+};
 
 #[derive(Debug)]
 pub enum HookError {
     Empty,
     BadStarter,
-    StarterInTheMiddle,
+    AnonymousMrInTheMiddle,
     DuplicateLabel(Label),
     UnknownLabel(Label),
     /// Tried to mark at a place where no anchors are available
@@ -27,7 +30,28 @@ pub enum HookError {
 
 impl From<HookError> for String {
     fn from(value: HookError) -> Self {
-        format!("{value:?}")
+        use HookError::*;
+        match value {
+            // Empty => todo!(),
+            // BadStarter => todo!(),
+            AnonymousMrInTheMiddle => "MR in the middle of the pattern
+is only allowed with second argument being an identifier
+and with @multipart=true
+e.g. MR(6, second_part)"
+                .into(),
+
+            // DuplicateLabel(_) => todo!(),
+            // UnknownLabel(_) => todo!(),
+            // UselessMark => todo!(),
+            // NoAnchorToPullThrough => todo!(),
+            // FORequires2Anchors => todo!(),
+            // SingleLoopOnNonAnchored => todo!(),
+            // SingleLoopNoGrandparent => todo!(),
+            // ChainOfZero => todo!(),
+            // ChainAfterChain => todo!(),
+            // TooManyAnchorsForFO => todo!(),
+            _ => format!("{value:?}"),
+        }
     }
 }
 
