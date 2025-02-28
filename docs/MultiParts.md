@@ -36,6 +36,15 @@ Need a way to set a specific position programatically
 
 Dragging does not really work with @reflect_locked = true
 
+## Stuffing
+Centroids need to be restricted to certain parts.
+
+Global @centroids does not make sense with @multipart, unless the global number of centroids is distributed between the parts
+- easy mode: based on node number
+- hard mode: distributed dynamically based on sum of weight for centroids in parts?
+
+Let's introduce a concept of a `Limb`, that is, a piece of Plushies skin (skin = nodes = stitches) with their own centroids (since we were already calling centroids bones in the context of skeletonization, I feel that Limb is more expressive that Part)
+
 # Hook
 Hook is designed to work from a single starter.
 - Do we adjust Hook so it handles multiple starters?

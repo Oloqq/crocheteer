@@ -5,7 +5,7 @@ mod expanding;
 mod nodes;
 pub mod perf;
 
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Range};
 
 use serde_derive::Serialize;
 
@@ -22,12 +22,19 @@ pub struct Plushie {
     pub edges: Edges,
     edges_goal: Vec<Vec<usize>>, // ideally this would be replaced with a Queue, but right now frontend gets list of edges just once at the beginning
     pub params: Params,
-    pub centroids: Centroids,
     displacement: Vec<V>,
     force_node_construction_timer: f32,
     last_total_displacement: V,
     pub perf: Vec<perf::Iteration>,
     mark_to_node: HashMap<String, usize>,
+    limbs: Vec<Limb>,
+}
+
+#[derive(Clone, Serialize)]
+struct Limb {
+    skin_start: usize,
+    skin_end: usize,
+    centroids: Centroids,
 }
 
 impl PlushieTrait for Plushie {
@@ -58,14 +65,24 @@ impl PlushieTrait for Plushie {
     }
 
     fn centroids_to_json(&self) -> JSON {
-        serde_json::json!(self.centroids)
+        let all_bones: Vec<&Point> = self
+            .limbs
+            .iter()
+            .flat_map(|limb| &limb.centroids.points)
+            .collect();
+        serde_json::json!({ "points": all_bones })
     }
 
     fn init_data(&self) -> JSON {
+        let all_bones: Vec<&Point> = self
+            .limbs
+            .iter()
+            .flat_map(|limb| &limb.centroids.points)
+            .collect();
         serde_json::json!({
             "nodes": serde_json::json!(self.nodes),
             "edges": serde_json::json!(self.edges_goal), // OneByOne initializer swaps memory, so multiple tries to init the same plushie will fail
-            "centroids": serde_json::json!(self.centroids)
+            "centroids": serde_json::json!({ "points": all_bones })
         })
     }
 
