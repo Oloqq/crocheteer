@@ -76,9 +76,17 @@ impl Plushie {
             params.nodes.insert(
                 "part_first_hump".into(),
                 NodeParam {
-                    lock_x: Some(2.0),
+                    lock_x: Some(0.0),
                     lock_y: Some(0.0),
-                    lock_z: Some(0.0),
+                    lock_z: Some(-2.0),
+                },
+            );
+            params.nodes.insert(
+                "part_second_hump".into(),
+                NodeParam {
+                    lock_x: Some(0.0),
+                    lock_y: Some(0.0),
+                    lock_z: Some(2.0),
                 },
             );
             params

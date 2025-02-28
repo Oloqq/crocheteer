@@ -25,6 +25,8 @@ with a single part should be equivalent to
 @floored = false
 @rooted = true
 
+reflect_locked does not work when two parts are not connected
+
 ## Dragging
 Gui should allow to disable the dragging behavior so it does not mess up camera controls when not needed.
 

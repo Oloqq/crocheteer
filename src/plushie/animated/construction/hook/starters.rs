@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use colors::Color;
-
 use super::{leniency::Leniency, utils::*, Edges, Hook, Moment, Queue};
 use crate::acl::Flow;
 
@@ -37,43 +35,34 @@ impl Hook {
                 Ok(hook)
             }
             MR(x) => {
-                let edges: Vec<Vec<usize>> = {
-                    let edges_from_root: Vec<usize> = (1..=*x).collect();
-                    let ring_edges = (2..=*x).map(|i| vec![i]);
-                    let mut edges = vec![edges_from_root];
-                    edges.extend(ring_edges);
-                    edges.push(vec![]);
-                    edges.push(vec![]);
-                    edges
-                };
-                let parents: Vec<Option<usize>> = {
-                    let mut tmp = vec![None];
-                    tmp.append(&mut vec![Some(0); *x]);
+                let edges = {
+                    let mut tmp = Edges::new();
+                    tmp.grow();
                     tmp
                 };
-                let colors: Vec<Color> = (0..=*x).map(|_| color).collect();
-
-                Ok(Self {
-                    edges: Edges::from(edges),
-                    peculiar: HashMap::from([(0, Peculiarity::Locked)]),
+                let mut result = Self {
+                    edges,
+                    peculiar: HashMap::new(),
                     now: Moment {
                         round_count: 0,
-                        round_left: *x,
-                        anchors: Queue::from_iter(1..=*x), // 1 because root takes index 0
-                        cursor: x + 1,                     // + 1 because root takes index 0
+                        round_left: 0,
+                        anchors: Queue::new(),
+                        cursor: 0,
                         working_on: WorkingLoops::Both,
                     },
-                    round_spans: vec![(0, *x)],
-                    parents,
+                    round_spans: vec![],
+                    parents: vec![],
                     labels: HashMap::new(),
                     override_previous_stitch: None,
                     color,
-                    colors,
+                    colors: vec![],
                     last_stitch: None,
                     last_mark: None,
                     leniency: Leniency::NoMercy,
                     mark_to_node: HashMap::new(),
-                })
+                };
+                result.magic_ring(*x);
+                Ok(result)
             }
             Ch(_x) => {
                 todo!("Chain starter requires locking a single coordinate");

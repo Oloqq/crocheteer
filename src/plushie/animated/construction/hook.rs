@@ -179,7 +179,11 @@ impl Hook {
             BL => self.now.working_on = WorkingLoops::Both,
             Goto(label) => self.restore(*label)?,
             Mark(label) => self.save(*label)?,
-            MR(_) | MRConfigurable(..) => return Err(StarterInTheMiddle),
+            MR(_) => return Err(AnonymousMrInTheMiddle),
+            MRConfigurable(x, label) => {
+                self.mark_to_node.insert(label.clone(), self.now.cursor);
+                self.magic_ring(*x);
+            }
             FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
@@ -226,6 +230,45 @@ impl Hook {
         //     .finish()
         //     .unwrap();
         (self, moment_b)
+    }
+
+    fn magic_ring(&mut self, size: usize) {
+        assert_eq!(self.edges.last().unwrap().len(), 0);
+
+        let ring_root = self.now.cursor;
+        let ring_end = ring_root + size;
+
+        // spot for ring root in edges is already created
+        self.parents.push(None); // ring root has no parent
+        self.colors.push(self.color);
+        for _ in 0..size {
+            self.edges.grow();
+            self.parents.push(Some(ring_root));
+            self.colors.push(self.color);
+        }
+        self.edges.grow(); // prepare place for the next node
+
+        // connect outer nodes to ring root
+        for connected_to_root in ring_root + 1..=ring_end {
+            self.edges.link(ring_root, connected_to_root);
+        }
+        // connect outer nodes to each other
+        for outer_ring_stitch in ring_root + 1..ring_end {
+            self.edges.link(outer_ring_stitch, outer_ring_stitch + 1);
+        }
+
+        self.peculiar.insert(ring_root, Peculiarity::Locked);
+        self.round_spans.push((ring_root, ring_end));
+
+        self.now = Moment {
+            round_count: 0,
+            round_left: size,
+            anchors: Queue::from_iter(ring_root + 1..=ring_end),
+            cursor: ring_end + 1,
+            working_on: WorkingLoops::Both,
+        };
+
+        assert_eq!(self.edges.last().unwrap().len(), 0);
     }
 }
 
