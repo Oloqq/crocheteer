@@ -40,7 +40,8 @@ export default class PlushieBody {
     this.peculiarities = data.nodes.peculiarities;
     this.nodes = [];
     for (let [i, point] of data.nodes.points.entries()) {
-      let newSphere = create.sphere(this.scene, point, 0.1, this.nodeColor(i));
+      let [radius, color] = this.nodeDisplay(i);
+      let newSphere = create.sphere(this.scene, point, radius, color);
       this.nodes.push(newSphere);
     }
 
@@ -177,7 +178,8 @@ export default class PlushieBody {
     if (points.length > this.nodes.length) {
       for (let i = this.nodes.length; i < points.length; i++) {
         let point = points[i];
-        let sph = create.sphere(this.scene, point, 0.1, this.nodeColor(i));
+        let [radius, color] = this.nodeDisplay(i);
+        let sph = create.sphere(this.scene, point, radius, color);
         this.nodes.push(sph);
       }
     }
@@ -249,12 +251,23 @@ export default class PlushieBody {
     this.links = [];
   }
 
-  nodeColor(index: number): THREE.Color {
-    const color = this.nodeColors[index];
-    return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
+  nodeDisplay(index: number): [number, THREE.Color] {
+    let radius = 0.1;
+    let color = this.nodeColors[index];
+
+    const peculiarity = this.peculiarities[index];
+    if (peculiarity == "Locked") {
+      radius = 0.3;
+      color = [120, 120, 120];
+    }
+
+    return [
+      radius,
+      new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255),
+    ];
   }
 
-  linkColor(_from: any, to: any): THREE.Color {
+  linkColor(_from: any, _to: any): THREE.Color {
     if (this.displayMode == "debug") {
       return new THREE.Color(52 / 255, 51 / 255, 48 / 255);
     }
@@ -303,7 +316,9 @@ export default class PlushieBody {
   updateColors(colors: crapi.RGB[]) {
     this.nodeColors = colors;
     for (let i = 0; i < this.nodes.length; i++) {
-      (this.nodes[i].material as any).color = this.nodeColor(i);
+      // TODO update radius
+      let [_radius, color] = this.nodeDisplay(i);
+      (this.nodes[i].material as any).color = color;
     }
   }
 }

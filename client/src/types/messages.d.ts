@@ -13,7 +13,7 @@ namespace crapi {
 
   type PushPlane = [number, number, number];
   type Peculiarities = {
-    [node: integer]: "Root" | "Tip" | { FLO: PushPlane } | { BLO: PushPlane };
+    [node: integer]: "Locked" | "Tip" | { FLO: PushPlane } | { BLO: PushPlane };
   };
 
   interface Nodes {
