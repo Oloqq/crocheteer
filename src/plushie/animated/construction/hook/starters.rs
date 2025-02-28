@@ -60,6 +60,7 @@ impl Hook {
                     last_mark: None,
                     leniency: Leniency::NoMercy,
                     mark_to_node: HashMap::new(),
+                    part_limits: vec![],
                 };
                 result.magic_ring(*x);
                 Ok(result)

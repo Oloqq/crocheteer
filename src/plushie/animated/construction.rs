@@ -1,74 +1,17 @@
 pub mod hook;
 mod hook_result;
-
-use std::{
-    collections::{HashMap, HashSet},
-    f32::consts::PI,
-};
-
-use colors::Color;
+mod initializer;
 
 use self::hook::Hook;
 pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
-use super::{centroid::Centroids, nodes::Nodes, Initializer, Params, Plushie};
+use super::{centroid::Centroids, Params, Plushie};
 use crate::{
     acl::{pest_parser::Pattern, Flow},
     common::*,
     plushie::params::NodeParam,
-    sanity,
 };
 
 impl Plushie {
-    fn for_one_by_one(
-        params: Params,
-        peculiarities: HashMap<usize, Peculiarity>,
-        colors: Vec<Color>,
-        edges: Vec<Vec<usize>>,
-        mark_to_node: HashMap<String, usize>,
-    ) -> Self {
-        let mut displacement = Vec::with_capacity(edges.len());
-        displacement.push(V::zeros());
-        Self {
-            nodes: Nodes::new(vec![Point::new(0.0, 0.0, 0.0)], peculiarities, colors),
-            edges: vec![vec![]],
-            edges_goal: edges,
-            params,
-            centroids: Centroids::new(0, 0.0),
-            displacement,
-            force_node_construction_timer: 0.0,
-            // initializing with INF so it won't come as relaxed before first step by accident
-            last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
-            perf: vec![],
-            mark_to_node,
-        }
-    }
-
-    fn with_initial_positions(
-        params: Params,
-        peculiarities: HashMap<usize, Peculiarity>,
-        colors: Vec<Color>,
-        edges: Vec<Vec<usize>>,
-        mark_to_node: HashMap<String, usize>,
-        nodes: Vec<Point>,
-        height: f32,
-    ) -> Self {
-        let edges: Vec<Vec<usize>> = edges.into();
-        let nodes = Nodes::new(nodes, peculiarities, colors);
-        Self {
-            displacement: vec![V::zeros(); edges.len()],
-            edges_goal: edges.clone(),
-            edges,
-            centroids: Centroids::new(params.centroids.number, height),
-            params,
-            nodes,
-            force_node_construction_timer: 0.0,
-            // initializing with INF so it won't come as relaxed before first step by accident
-            last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
-            perf: vec![],
-            mark_to_node,
-        }
-    }
-
     pub fn from_flow(flow: impl Flow, params: Params) -> Result<Self, String> {
         //TEMP
         let params = {
@@ -93,29 +36,22 @@ impl Plushie {
         };
 
         let hook_result = Hook::parse(flow, &params.hook_leniency)?;
+        let mark_to_node = hook_result.mark_to_node.clone();
+        let _part_limits = hook_result.part_limits.clone();
+        let (nodes, edges, edges_goal, displacement) = params.initializer.apply_to(hook_result);
 
-        let mut plushie = match params.initializer {
-            Initializer::OneByOne(_) => Plushie::for_one_by_one(
-                params,
-                hook_result.peculiarities,
-                hook_result.colors,
-                hook_result.edges.into(),
-                hook_result.mark_to_node,
-            ),
-            Initializer::Cylinder => {
-                let (nodes, highest) = arrange_cylinder(hook_result.round_spans);
-                assert_eq!(nodes.len(), hook_result.colors.len());
-
-                Plushie::with_initial_positions(
-                    params,
-                    hook_result.peculiarities,
-                    hook_result.colors,
-                    hook_result.edges.into(),
-                    hook_result.mark_to_node,
-                    nodes,
-                    highest,
-                )
-            }
+        let mut plushie = Self {
+            displacement,
+            edges_goal,
+            edges,
+            centroids: Centroids::new(0, 0.0),
+            params,
+            nodes,
+            force_node_construction_timer: 0.0,
+            // initializing with INF so it won't come as relaxed before first step by accident
+            last_total_displacement: V::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
+            perf: vec![],
+            mark_to_node,
         };
         plushie.apply_node_params();
 
@@ -135,72 +71,5 @@ impl Plushie {
         }
 
         Ok(Self::from_flow(pattern, params)?)
-    }
-
-    pub fn _position_based_on(&mut self, _other: &Self) {
-        todo!()
-    }
-}
-
-fn arrange_cylinder(round_spans: Vec<(usize, usize)>) -> (Vec<Point>, f32) {
-    fn is_uniq(vec: &Vec<Point>) -> bool {
-        let uniq = vec
-            .into_iter()
-            .map(|v| format!("{:?}", v.coords))
-            .collect::<HashSet<_>>();
-        uniq.len() == vec.len()
-    }
-
-    let mut y = 0.0;
-    let mut nodes = vec![];
-
-    let mut round_spans = round_spans.into_iter();
-    let mr_round = round_spans.next().unwrap();
-    assert_eq!(mr_round.0, 0);
-    nodes.append(&mut vec![Point::new(0.0, 0.0, 0.0)]);
-    nodes.append(&mut ring(mr_round.1 - mr_round.0, y, 1.0));
-    y += 0.7;
-
-    for (from, to) in round_spans {
-        let count = to - from + 1;
-        nodes.append(&mut ring(count, y, 1.0));
-        y += 0.7;
-    }
-
-    sanity!(assert!(is_uniq(&nodes), "hook created duplicate positions"));
-
-    (nodes, y)
-}
-
-fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
-    let circumference = (nodes + 1) as f32 * desired_stitch_distance;
-    let radius = circumference / (2.0 * PI) / 4.0;
-
-    let interval = 2.0 * PI / nodes as f32;
-    let mut result: Vec<Point> = vec![];
-
-    for i in 0..nodes {
-        let rads = interval * i as f32;
-        let x = rads.cos() * radius;
-        let z = rads.sin() * radius;
-        let point = Point::new(x, y, z);
-        result.push(point);
-    }
-    result
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_arrange_cylinder() {
-        let rounds_spans = vec![(0, 4)];
-        let (res, _) = arrange_cylinder(rounds_spans);
-        assert_eq!(res.len(), 5);
-
-        let rounds_spans = vec![(0, 4), (5, 8)];
-        let (res, _) = arrange_cylinder(rounds_spans);
-        assert_eq!(res.len(), 9);
     }
 }

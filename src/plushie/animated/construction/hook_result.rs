@@ -97,11 +97,12 @@ impl PartialEq for Edges {
     }
 }
 
-pub struct HookResult {
+pub struct InitialGraph {
     pub edges: Edges,
     pub peculiarities: HashMap<usize, Peculiarity>,
     pub colors: Vec<Color>,
     pub round_spans: Vec<(usize, usize)>,
+    pub part_limits: Vec<usize>,
     pub mark_to_node: HashMap<String, usize>,
 }
 
@@ -124,12 +125,12 @@ fn fill_round_span(edges: &Edges, round_spans: &mut Vec<(usize, usize)>) {
     }
 }
 
-impl HookResult {
-    /// Creates and places points in initial positions
+impl InitialGraph {
     pub fn from_hook(
         edges: Edges,
         peculiar: HashMap<usize, Peculiarity>,
         mut round_spans: Vec<(usize, usize)>,
+        part_limits: Vec<usize>,
         colors: Vec<Color>,
         mark_to_node: HashMap<String, usize>,
     ) -> Self {
@@ -142,6 +143,7 @@ impl HookResult {
             colors,
             round_spans,
             mark_to_node,
+            part_limits,
         }
     }
 }
