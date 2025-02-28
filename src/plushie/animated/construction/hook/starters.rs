@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
-use crate::acl::Flow;
-
-use super::leniency::Leniency;
-use super::{utils::*, Edges, Hook, Moment, Queue};
 use colors::Color;
+
+use super::{leniency::Leniency, utils::*, Edges, Hook, Moment, Queue};
+use crate::acl::Flow;
 
 const DEFAULT_COLOR: colors::Color = (255, 0, 255);
 

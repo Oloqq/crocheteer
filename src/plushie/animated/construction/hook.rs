@@ -6,9 +6,7 @@ mod working_stitch;
 
 use leniency::Leniency;
 
-use self::utils::*;
-use self::working_stitch::Stitch;
-use self::HookError::*;
+use self::{utils::*, working_stitch::Stitch, HookError::*};
 use super::hook_result::{Edges, HookResult};
 use crate::{
     acl::{
