@@ -3,7 +3,7 @@ use serde_derive::Serialize;
 
 use crate::{
     common::{CheckNan, Point, V},
-    plushie::{animated::nodes::Nodes, params::CentroidParams},
+    plushie::params::CentroidParams,
     sanity,
 };
 
@@ -24,9 +24,9 @@ impl Centroids {
         Self { points: centroids }
     }
 
-    fn adjust_centroid_number(&mut self, params: &CentroidParams, nodes: &Nodes) {
+    fn adjust_centroid_number(&mut self, params: &CentroidParams, skin: &[Point]) {
         let has_too_little = self.points.len() < params.number;
-        let is_ready_to_add = nodes.len() >= params.min_nodes_per_centroid * (self.points.len());
+        let is_ready_to_add = skin.len() >= params.min_nodes_per_centroid * (self.points.len());
 
         if has_too_little {
             if is_ready_to_add {
@@ -35,10 +35,8 @@ impl Centroids {
                     let c1 = self.points[1];
                     Point::from((c0.coords + c1.coords) / 2.0)
                 } else {
-                    nodes
-                        .points
-                        .last()
-                        .expect("Centroid logic running on empty nodes?")
+                    skin.last()
+                        .expect("Some nodes to exist before centroid logic is running")
                         .clone()
                 };
                 self.points.push(new);
@@ -51,23 +49,23 @@ impl Centroids {
         sanity!(self.points.assert_no_nan("after adjusting number"));
     }
 
-    pub fn stuff(&mut self, params: &CentroidParams, nodes: &Nodes, displacement: &mut Vec<V>) {
-        self.adjust_centroid_number(params, nodes);
+    pub fn stuff(&mut self, params: &CentroidParams, skin: &[Point], displacement: &mut [V]) {
+        self.adjust_centroid_number(params, skin);
 
         if !self.points.is_empty() {
-            let centroid2points =
-                push_and_map(nodes.as_vec(), &self.points, params.force, displacement);
-            recalculate_centroids(nodes.as_vec(), &mut self.points, centroid2points);
+            let centroid2points = push_and_map(skin, &self.points, params.force, displacement);
+            recalculate_centroids(skin, &mut self.points, centroid2points);
         }
     }
 }
 
 fn push_and_map(
-    nodes: &Vec<Point>,
+    nodes: &[Point],
     centroids: &Vec<Point>,
     centroid_force: f32,
-    displacement: &mut Vec<V>,
+    displacement: &mut [V],
 ) -> Vec<Vec<usize>> {
+    assert_eq!(nodes.len(), displacement.len());
     let mut centroid2points = vec![vec![]; centroids.len()];
     for (i_p, point) in nodes.iter().enumerate() {
         let mut closest_i = 0;
@@ -85,7 +83,7 @@ fn push_and_map(
 }
 
 fn recalculate_centroids(
-    nodes: &Vec<Point>,
+    nodes: &[Point],
     centroids: &mut Vec<Point>,
     centroid2points: Vec<Vec<usize>>,
 ) {

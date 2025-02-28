@@ -4,7 +4,7 @@ mod initializer;
 
 use self::hook::Hook;
 pub use self::hook_result::{Peculiarity, PointsOnPushPlane};
-use super::{centroid::Centroids, Params, Plushie};
+use super::{centroid::Centroids, Limb, Params, Plushie};
 use crate::{
     acl::{pest_parser::Pattern, Flow},
     common::*,
@@ -37,14 +37,37 @@ impl Plushie {
 
         let hook_result = Hook::parse(flow, &params.hook_leniency)?;
         let mark_to_node = hook_result.mark_to_node.clone();
-        let _part_limits = hook_result.part_limits.clone();
+        let limbs = {
+            if !params.multipart {
+                assert_eq!(
+                    hook_result.part_limits.len(),
+                    2,
+                    "Single part without multipart"
+                );
+                vec![Limb {
+                    skin_start: 0,
+                    skin_end: hook_result.colors.len(),
+                    centroids: Centroids::new(0, 0.0),
+                }]
+            } else {
+                hook_result
+                    .part_limits
+                    .windows(2)
+                    .map(|win| Limb {
+                        skin_start: win[0],
+                        skin_end: win[1],
+                        centroids: Centroids::new(0, 0.0),
+                    })
+                    .collect()
+            }
+        };
         let (nodes, edges, edges_goal, displacement) = params.initializer.apply_to(hook_result);
 
         let mut plushie = Self {
+            limbs,
             displacement,
             edges_goal,
             edges,
-            centroids: Centroids::new(0, 0.0),
             params,
             nodes,
             force_node_construction_timer: 0.0,
@@ -68,6 +91,10 @@ impl Plushie {
 
         if !params.reflect_locked {
             // TODO ensure at least one point is locked
+        }
+
+        if params.skelet_stuffing.enable && params.multipart {
+            return Err("Cannot combine skeletonization and multipart".into());
         }
 
         Ok(Self::from_flow(pattern, params)?)

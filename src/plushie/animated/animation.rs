@@ -45,8 +45,31 @@ impl Plushie {
 
     fn add_stuffing_force(&mut self, perf: &mut Option<perf::Iteration>) {
         let start = Instant::now();
-        self.centroids
-            .stuff(&self.params.centroids, &self.nodes, &mut self.displacement);
+        if self.params.multipart {
+            for limb in &mut self.limbs {
+                // minima needed for one by one
+                // let start = limb.skin_start.min(self.nodes.len());
+                // let end = limb.skin_end.min(self.nodes.len());
+                let start = limb.skin_start;
+                let end = limb.skin_end;
+                // if start <= self.nodes.len() {
+                //     continue;
+                // }
+
+                limb.centroids.stuff(
+                    &self.params.centroids,
+                    &self.nodes.points[start..end],
+                    &mut self.displacement[start..end],
+                );
+            }
+        } else {
+            assert_eq!(self.limbs.len(), 1, "One limb supported without @multipart");
+            self.limbs[0].centroids.stuff(
+                &self.params.centroids,
+                &self.nodes.points,
+                &mut self.displacement,
+            );
+        }
         perf.as_mut().map(|p| p.stuffing = start.elapsed());
         sanity!(self.displacement.assert_no_nan("stuffing"));
 
@@ -67,7 +90,16 @@ impl Plushie {
                 }
             }
             self.params.centroids.number = self.params.skelet_stuffing.bones.len();
-            self.centroids.points = self.params.skelet_stuffing.bones.clone();
+            assert!(
+                !self.params.multipart,
+                "Skeletonization not supported with multipart"
+            );
+            assert_eq!(
+                self.limbs.len(),
+                1,
+                "Skeletonization supported with one limb"
+            );
+            self.limbs[0].centroids.points = self.params.skelet_stuffing.bones.clone();
         }
     }
 
