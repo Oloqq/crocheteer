@@ -4,18 +4,15 @@ mod state_mgmt;
 mod utils;
 mod working_stitch;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use leniency::Leniency;
 
 use self::{utils::*, working_stitch::Stitch, HookError::*};
 use super::hook_result::{Edges, HookResult};
-use crate::{
-    acl::{
-        actions::{Action, Label},
-        Flow,
-    },
-    sanity,
+use crate::acl::{
+    actions::{Action, Label},
+    Flow,
 };
 
 #[derive(Clone, Debug)]
@@ -53,14 +50,6 @@ pub struct Hook {
     last_stitch: Option<Action>,
     /// Was the last action a mark?
     last_mark: Option<Action>,
-}
-
-fn is_uniq(vec: &Vec<Point>) -> bool {
-    let uniq = vec
-        .into_iter()
-        .map(|v| format!("{:?}", v.coords))
-        .collect::<HashSet<_>>();
-    uniq.len() == vec.len()
 }
 
 fn split_moment(
@@ -115,10 +104,6 @@ impl Hook {
         }
 
         let result = hook.finish();
-        sanity!(assert!(
-            is_uniq(&result.nodes),
-            "hook created duplicate positions"
-        ));
         Ok(result)
     }
 
@@ -276,6 +261,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "chain starter is disabled"]
     fn test_start_with_chain() {
         let h = Hook::start_with(&Ch(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([0, 1, 2]));
@@ -645,8 +631,7 @@ mod tests {
         h = h.perform(&Sc).unwrap();
         h = h.perform(&Sc).unwrap();
 
-        let result = h.finish();
-        q!(result.nodes.len(), result.colors.len());
+        h.finish();
     }
 
     #[test]

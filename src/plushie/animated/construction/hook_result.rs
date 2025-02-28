@@ -1,7 +1,6 @@
-use std::{collections::HashMap, f32::consts::PI};
+use std::collections::HashMap;
 
 use colors::Color;
-use log::{log_enabled, Level};
 use serde_derive::Serialize;
 
 use crate::common::*;
@@ -94,14 +93,11 @@ impl PartialEq for Edges {
     }
 }
 
-pub type Nodes = Vec<Point>;
-
 pub struct HookResult {
     pub edges: Edges,
-    pub nodes: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
-    pub approximate_height: f32,
     pub colors: Vec<Color>,
+    pub round_spans: Vec<(usize, usize)>,
 }
 
 pub type PointsOnPushPlane = (usize, usize, usize);
@@ -133,85 +129,19 @@ impl HookResult {
     ) -> Self {
         log::trace!("round spans: {:?}", round_spans);
         fill_round_span(&edges, &mut round_spans);
-        let (nodes, highest) = make_nodes(round_spans);
-        assert_eq!(colors.len(), nodes.len());
-
-        if log_enabled!(Level::Warn) {
-            let edgelen = edges.len();
-            let nodelen = nodes.len();
-            log::debug!("edges: {:?}, len: {}", edges, edgelen);
-            log::debug!("nodes len: {}", nodelen);
-            if edgelen != nodelen {
-                log::warn!(
-                    "nodes and edges vecs came out with unequal length ({} vs {})",
-                    nodelen,
-                    edgelen
-                );
-            }
-        }
 
         Self {
             edges,
-            nodes,
             peculiarities: peculiar,
-            approximate_height: highest,
             colors,
+            round_spans,
         }
     }
-}
-
-fn make_nodes(round_spans: Vec<(usize, usize)>) -> (Nodes, f32) {
-    // assumption: only one radial axis, how to handle shape of letter Y?
-    let mut y = 0.0;
-    let mut nodes = vec![];
-
-    let mut round_spans = round_spans.into_iter();
-    let mr_round = round_spans.next().unwrap();
-    assert_eq!(mr_round.0, 0);
-    nodes.append(&mut vec![Point::new(0.0, 0.0, 0.0)]);
-    nodes.append(&mut ring(mr_round.1 - mr_round.0, y, 1.0));
-    y += 0.7;
-
-    for (from, to) in round_spans {
-        let count = to - from + 1;
-        nodes.append(&mut ring(count, y, 1.0));
-        y += 0.7;
-    }
-
-    (nodes, y)
-}
-
-fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
-    let circumference = (nodes + 1) as f32 * desired_stitch_distance;
-    let radius = circumference / (2.0 * PI) / 4.0;
-
-    let interval = 2.0 * PI / nodes as f32;
-    let mut result: Vec<Point> = vec![];
-
-    for i in 0..nodes {
-        let rads = interval * i as f32;
-        let x = rads.cos() * radius;
-        let z = rads.sin() * radius;
-        let point = Point::new(x, y, z);
-        result.push(point);
-    }
-    result
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_make_nodes() {
-        let rounds_spans = vec![(0, 4)];
-        let (res, _) = make_nodes(rounds_spans);
-        assert_eq!(res.len(), 5);
-
-        let rounds_spans = vec![(0, 4), (5, 8)];
-        let (res, _) = make_nodes(rounds_spans);
-        assert_eq!(res.len(), 9);
-    }
 
     #[test]
     fn test_edges_from() {
