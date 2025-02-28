@@ -103,9 +103,11 @@ fn split_moment(
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow, leniency: &Leniency) -> Result<HookResult, HookError> {
-        let first = flow.next().ok_or(Empty)?;
-        let mut hook = Hook::with_leniency(&first, leniency)?;
+    pub fn parse(mut flow: impl Flow, _leniency: &Leniency) -> Result<HookResult, HookError> {
+        if flow.peek().is_none() {
+            return Err(Empty);
+        }
+        let mut hook = Hook::from_starting_sequence(&mut flow)?;
         let mut i: u32 = 0;
         while let Some(action) = flow.next() {
             log::trace!("Performing [{i}] {action:?}");
@@ -185,7 +187,7 @@ impl Hook {
             BL => self.now.working_on = WorkingLoops::Both,
             Goto(label) => self.restore(*label)?,
             Mark(label) => self.save(*label)?,
-            MR(_) => return Err(StarterInTheMiddle),
+            MR(_) | MRLabeled(_, _) => return Err(StarterInTheMiddle),
             FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
@@ -240,9 +242,11 @@ mod tests {
     use super::*;
     use pretty_assertions::assert_eq as q;
 
+    const COLOR: colors::Color = colors::RED;
+
     #[test]
     fn test_start_with_magic_ring() {
-        let h = Hook::start_with(&MR(3)).unwrap();
+        let h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.now.round_count, 0);
@@ -256,7 +260,7 @@ mod tests {
 
     #[test]
     fn test_start_with_chain() {
-        let h = Hook::start_with(&Ch(3)).unwrap();
+        let h = Hook::start_with(&Ch(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([0, 1, 2]));
         q!(h.now.cursor, 3);
         q!(h.now.round_count, 0);
@@ -271,7 +275,7 @@ mod tests {
 
     #[test]
     fn test_perform_sc() {
-        let mut h = Hook::start_with(&MR(6)).unwrap();
+        let mut h = Hook::start_with(&MR(6), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
         h = h.perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6, 7]));
@@ -290,7 +294,7 @@ mod tests {
 
     #[test]
     fn test_next_round() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.round_spans.len(), 1);
         h = h.perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3)]);
@@ -309,7 +313,7 @@ mod tests {
 
     #[test]
     fn test_perform_inc() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         h = h.perform(&Inc).unwrap();
         q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
         q!(h.now.cursor, 6);
@@ -332,7 +336,7 @@ mod tests {
 
     #[test]
     fn test_perform_dec() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Dec).unwrap();
         q!(h.now.anchors, Queue::from([3, 4]));
@@ -344,7 +348,7 @@ mod tests {
 
     #[test]
     fn test_perform_fo_after_full_round() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.edges.len(), 5);
@@ -391,7 +395,7 @@ mod tests {
 
     #[test]
     fn test_round_spans_with_dec() {
-        let mut h = Hook::start_with(&MR(4)).unwrap();
+        let mut h = Hook::start_with(&MR(4), COLOR).unwrap();
         h = h.perform(&Dec).unwrap();
         h = h.perform(&Dec).unwrap();
         assert_eq!(h.round_spans, vec![(0, 4), (5, 6)]);
@@ -399,7 +403,7 @@ mod tests {
 
     #[test]
     fn test_error_on_stitch_after_fo() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         h = h.perform(&FO).unwrap();
         h.clone().perform(&Sc).expect_err("Can't continue after FO");
         h.clone()
@@ -412,7 +416,7 @@ mod tests {
 
     #[test]
     fn test_goto_after_fo() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.perform(&Mark(0)).unwrap();
         h = h.perform(&Sc).unwrap();
@@ -478,7 +482,7 @@ mod tests {
 
     #[test]
     fn test_chain_simple() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         h = h.perform(&Ch(3)).unwrap();
         q!(
             h.edges,
@@ -497,7 +501,7 @@ mod tests {
 
     #[test]
     fn test_attach1() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         let attach_here = 0;
         let return_here = 1;
         h = h.perform(&Mark(attach_here)).unwrap();
@@ -549,7 +553,7 @@ mod tests {
 
     #[test]
     fn test_sc_after_attach() {
-        let mut h = Hook::start_with(&MR(3)).unwrap();
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         let attach_here = 0;
         let return_here = 1;
         h = h.perform(&Mark(attach_here)).unwrap();
@@ -642,4 +646,106 @@ mod tests {
         q!(moment_a.anchors.len(), 9);
         q!(moment_b.anchors.len(), 9);
     }
+
+    #[test]
+    fn test_starting_from_color() {
+        let mut flow =
+            crate::acl::simple_flow::SimpleFlow::new(vec![Color(colors::RED), MR(3), Ch(3)]);
+        let mut h = Hook::from_starting_sequence(&mut flow).unwrap();
+        h = h.perform(&flow.next().unwrap()).unwrap();
+        q!(
+            h.edges,
+            Edges::from(vec![
+                vec![1, 2, 3],
+                vec![2],
+                vec![3],
+                vec![4],
+                vec![5],
+                vec![6],
+                vec![],
+                vec![],
+            ])
+        );
+    }
+
+    // #[test]
+    // fn test_multipart_start() {
+    //     let mut h = Hook::start_with(&MR(3)).unwrap();
+    //     let attach_here = 0;
+    //     let return_here = 1;
+    //     h = h.perform(&Mark(attach_here)).unwrap();
+    //     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
+    //     q!(h.now.round_count, 0);
+    //     h = h.perform(&Sc).unwrap();
+    //     h = h.perform(&Mark(return_here)).unwrap();
+    //     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
+    //     q!(h.now.round_count, 1);
+    //     q!(h.now.round_left, 2);
+    //     q!(
+    //         h.edges,
+    //         Edges::from(vec![
+    //             vec![],     // 0: root
+    //             vec![0],    // 1: mr 1
+    //             vec![0, 1], // 2: mr 2
+    //             vec![0, 2], // 3: mr 3, mark
+    //             vec![1, 3], // 4: sc
+    //             vec![],
+    //         ])
+    //     );
+    //     h = h.perform(&Attach(attach_here, 3)).unwrap();
+    //     q!(
+    //         h.edges,
+    //         Edges::from(vec![
+    //             vec![],     // 0: root
+    //             vec![0],    // 1: mr 1
+    //             vec![0, 1], // 2: mr 2
+    //             vec![0, 2], // 3: mr 3, mark
+    //             vec![1, 3], // 4: sc 1
+    //             vec![4],    // 5: ch 1
+    //             vec![5],    // 6: ch 2
+    //             vec![6],    // 7: ch 3
+    //             vec![3, 7], // 8
+    //             vec![],
+    //         ])
+    //     );
+    //     {
+    //         let part_a = &h.now;
+
+    //         q!(part_a.anchors, Queue::from(vec![4, 5, 6, 7]));
+    //         q!(part_a.round_count, 0);
+    //         q!(part_a.round_left, 4);
+    //     }
+
+    //     h = h.perform(&Sc).unwrap();
+    //     q!(h.now.anchors, Queue::from(vec![5, 6, 7, 9]));
+    //     q!(h.now.round_count, 1);
+    //     q!(h.now.round_left, 3);
+
+    //     q!(
+    //         h.edges,
+    //         Edges::from(vec![
+    //             vec![],     // 0: root
+    //             vec![0],    // 1: mr 1
+    //             vec![0, 1], // 2: mr 2
+    //             vec![0, 2], // 3: mr 3, mark
+    //             vec![1, 3], // 4: sc 1
+    //             vec![4],    // 5: ch 1
+    //             vec![5],    // 6: ch 2
+    //             vec![6],    // 7: ch 3
+    //             vec![3, 7], // 8: attaching
+    //             vec![4, 8], // 9: sc
+    //             vec![],
+    //         ])
+    //     );
+
+    //     h = h.perform(&Sc).unwrap();
+    //     q!(h.now.anchors, Queue::from(vec![6, 7, 9, 10]));
+    //     h = h.perform(&Sc).unwrap();
+    //     q!(h.now.anchors, Queue::from(vec![7, 9, 10, 11]));
+    //     h = h.perform(&Sc).unwrap();
+    //     h = h.perform(&Sc).unwrap();
+
+    //     let result = h.finish();
+    //     q!(result.nodes.len(), result.colors.len());
+    // }
 }

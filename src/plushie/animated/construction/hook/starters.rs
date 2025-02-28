@@ -1,18 +1,31 @@
 use std::collections::HashMap;
 
+use crate::acl::Flow;
+
 use super::leniency::Leniency;
 use super::{utils::*, Edges, Hook, Moment, Queue};
 use colors::Color;
 
+const DEFAULT_COLOR: colors::Color = (255, 0, 255);
+
 impl Hook {
     pub fn with_leniency(action: &Action, leniency: &Leniency) -> Result<Self, HookError> {
-        let mut res = Self::start_with(action)?;
+        let mut res = Self::start_with(action, DEFAULT_COLOR)?;
         res.leniency = leniency.clone();
         Ok(res)
     }
 
-    pub fn start_with(action: &Action) -> Result<Self, HookError> {
-        let color = (255, 0, 255);
+    pub fn from_starting_sequence(flow: &mut impl Flow) -> Result<Self, HookError> {
+        let mut action = flow.next().unwrap();
+        let mut color = DEFAULT_COLOR;
+        if let Color(c) = action {
+            color = c;
+            action = flow.next().unwrap();
+        }
+        Self::start_with(&action, color)
+    }
+
+    pub fn start_with(action: &Action, color: colors::Color) -> Result<Self, HookError> {
         match action {
             MR(x) => {
                 let edges: Vec<Vec<usize>> = {

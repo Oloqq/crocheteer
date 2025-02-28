@@ -20,10 +20,13 @@ pub enum Action {
     BL,
     /// Let go of the yarn, start working elsewhere
     Goto(Label),
-    /// Mark a spot that will be important later
+    /// Mark a spot that will be important later.
+    /// Mark preceding an attach will point to the round that was left behind.
     Mark(Label),
     /// Magic ring
     MR(usize),
+    ///
+    MRLabeled(usize, Label),
     /// Fasten off
     FO,
     /// Change yarn color
@@ -36,7 +39,7 @@ impl Action {
         match self {
             Sc | Inc => 1,
             Dec => 2,
-            MR(_) => 0,
+            MR(_) | MRLabeled(_, _) => 0,
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
             Ch(_) | Reverse => unimplemented!(),
             Attach(_, _) => 0,
@@ -49,7 +52,7 @@ impl Action {
         match self {
             Sc | Dec => 1,
             Inc => 2,
-            MR(x) => *x as u32,
+            MR(x) | MRLabeled(x, _) => *x as u32,
             FO => 0,
             Ch(_) | Reverse => unimplemented!(),
             Attach(_, chain_size) => *chain_size as u32,

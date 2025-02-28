@@ -203,8 +203,10 @@ mod tests {
     // test interaction of single-loop and chains (chains are not anchored)
     // test parents and grandparents around single-loop
 
+    const COLOR: colors::Color = colors::RED;
+
     fn mr3() -> Hook {
-        let h = Hook::start_with(&MR(3)).unwrap();
+        let h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.now.round_count, 0);
