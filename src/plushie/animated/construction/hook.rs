@@ -50,6 +50,8 @@ pub struct Hook {
     last_stitch: Option<Action>,
     /// Was the last action a mark?
     last_mark: Option<Action>,
+    /// Map from labels the index of the node they affect. For now works with just MRConfigurable.
+    mark_to_node: HashMap<String, usize>,
 }
 
 fn split_moment(
@@ -109,7 +111,13 @@ impl Hook {
 
     fn finish(mut self) -> HookResult {
         self.edges.cleanup();
-        HookResult::from_hook(self.edges, self.peculiar, self.round_spans, self.colors)
+        HookResult::from_hook(
+            self.edges,
+            self.peculiar,
+            self.round_spans,
+            self.colors,
+            self.mark_to_node,
+        )
     }
 
     fn do_perform(mut self, action: &Action) -> Result<Self, HookError> {

@@ -77,6 +77,28 @@ impl Plushie {
         }
         sanity!(self.displacement.assert_no_nan("gravity"));
     }
+
+    pub fn apply_node_params(&mut self) {
+        for (label, node_param) in &self.params.nodes {
+            let Some(i) = self.mark_to_node.get(label) else {
+                // TODO at parsing, check this does not happen
+                continue;
+            };
+            let Some(node) = self.nodes.points.get_mut(*i) else {
+                // will happen regularly with one by one initializer
+                continue;
+            };
+            if let Some(x) = node_param.lock_x {
+                node.x = x;
+            }
+            if let Some(y) = node_param.lock_y {
+                node.y = y;
+            }
+            if let Some(z) = node_param.lock_z {
+                node.z = z;
+            }
+        }
+    }
 }
 
 fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
