@@ -48,13 +48,11 @@ impl Plushie {
         if self.params.multipart {
             for limb in &mut self.limbs {
                 // minima needed for one by one
-                // let start = limb.skin_start.min(self.nodes.len());
-                // let end = limb.skin_end.min(self.nodes.len());
                 let start = limb.skin_start;
-                let end = limb.skin_end;
-                // if start <= self.nodes.len() {
-                //     continue;
-                // }
+                if start >= self.nodes.len() {
+                    continue;
+                }
+                let end = limb.skin_end.min(self.nodes.len());
 
                 limb.centroids.stuff(
                     &self.params.centroids,

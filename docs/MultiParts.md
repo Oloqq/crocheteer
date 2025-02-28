@@ -27,6 +27,8 @@ with a single part should be equivalent to
 
 reflect_locked does not work when two parts are not connected
 
+Let's set aside locking arbitrary points now and stick to MR roots.
+
 ## Dragging
 Gui should allow to disable the dragging behavior so it does not mess up camera controls when not needed.
 
@@ -44,6 +46,9 @@ Global @centroids does not make sense with @multipart, unless the global number 
 - hard mode: distributed dynamically based on sum of weight for centroids in parts?
 
 Let's introduce a concept of a `Limb`, that is, a piece of Plushies skin (skin = nodes = stitches) with their own centroids (since we were already calling centroids bones in the context of skeletonization, I feel that Limb is more expressive that Part)
+
+##
+Cylinder initializer could be adjusted for multipart
 
 # Hook
 Hook is designed to work from a single starter.
