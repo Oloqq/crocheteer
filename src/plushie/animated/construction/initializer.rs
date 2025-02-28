@@ -14,7 +14,7 @@ impl Initializer {
     ) -> (Nodes, Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<V>) {
         let nodes = Nodes::new(
             match self {
-                Initializer::OneByOne(_) => vec![Point::new(0.0, 0.0, 0.0)],
+                Initializer::OneByOne(_) => vec![],
                 Initializer::Cylinder => arrange_cylinder(graph.round_spans),
             },
             graph.peculiarities,
@@ -26,7 +26,7 @@ impl Initializer {
         let mut displacement = Vec::with_capacity(graph.edges.len());
         match self {
             Initializer::OneByOne(_) => {
-                edges = vec![vec![]];
+                edges = vec![];
                 edges_goal = graph.edges.into();
                 displacement.push(V::zeros());
             }

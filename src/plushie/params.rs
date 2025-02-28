@@ -43,14 +43,14 @@ pub struct Params {
 
     /// Experimental multipart support
     pub multipart: bool,
-    pub nodes: HashMap<String, NodeParam>,
+    pub nodes: HashMap<String, LimbParam>,
 
     pub skelet_stuffing: SkeletParams,
     pub track_performance: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct NodeParam {
+pub struct LimbParam {
     pub lock_x: Option<f32>,
     pub lock_y: Option<f32>,
     pub lock_z: Option<f32>,

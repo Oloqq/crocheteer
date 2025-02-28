@@ -5,7 +5,7 @@ mod expanding;
 mod nodes;
 pub mod perf;
 
-use std::{collections::HashMap, ops::Range};
+use std::collections::HashMap;
 
 use serde_derive::Serialize;
 

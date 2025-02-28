@@ -50,6 +50,10 @@ impl Centroids {
     }
 
     pub fn stuff(&mut self, params: &CentroidParams, skin: &[Point], displacement: &mut [V]) {
+        if skin.len() < 5 {
+            return;
+        }
+
         self.adjust_centroid_number(params, skin);
 
         if !self.points.is_empty() {
