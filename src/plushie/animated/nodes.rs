@@ -1,12 +1,17 @@
+use std::{
+    collections::HashMap,
+    ops::{Index, IndexMut},
+};
+
+use serde_derive::Serialize;
+
 use super::{
     construction::{Peculiarity, PointsOnPushPlane},
     Params,
 };
-use crate::{common::colors::*, common::*, sanity};
-use serde_derive::Serialize;
-use std::{
-    collections::HashMap,
-    ops::{Index, IndexMut},
+use crate::{
+    common::{colors::*, *},
+    sanity,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -118,6 +123,81 @@ impl Nodes {
     }
 
     pub fn apply_forces(&mut self, displacement: &mut Vec<V>, time: f32, params: &Params) -> V {
+        let mut total = V::zeros();
+
+        let root_displacement = self.apply_peculiarities(displacement, params);
+        let translation_by_root = if params.keep_root_at_origin {
+            root_displacement
+        } else {
+            V::zeros()
+        };
+
+        for (i, point) in self.points.iter_mut().enumerate() {
+            if displacement[i].magnitude() > params.minimum_displacement {
+                total += displacement[i];
+                *point += (displacement[i] - translation_by_root) * time;
+                if params.floor {
+                    point.y = point.y.max(0.0);
+                }
+            }
+        }
+        total
+    }
+
+    fn apply_peculiarities_multipart(&self, displacement: &mut Vec<V>, params: &Params) -> V {
+        let mut root_index = None;
+        const FULL_SINGLE_LOOP_FORCE_AFTER: usize = 20;
+        for (i, peculiarity) in self.peculiarities.iter() {
+            if *i >= displacement.len() {
+                continue;
+            }
+
+            let dist_from_end = displacement.len() - i;
+            let single_loop_constraint = if dist_from_end > FULL_SINGLE_LOOP_FORCE_AFTER {
+                // TODO or plushie already has all the points
+                1.0
+            } else {
+                // dist_from_end as f32 / FULL_SINGLE_LOOP_FORCE_AFTER as f32
+                0.0
+            };
+
+            use Peculiarity::*;
+            match peculiarity {
+                Root => {
+                    assert!(root_index.is_none(), "Multiple nodes got marked as root");
+                    root_index = Some(i);
+                }
+                Tip => (),
+                Constrained(v) => displacement[*i].component_mul_assign(&v),
+                BLO(plane_spec) => self.apply_single_loop(
+                    &mut displacement[*i],
+                    plane_spec,
+                    single_loop_constraint,
+                    params,
+                ),
+                FLO(plane_spec) => self.apply_single_loop(
+                    &mut displacement[*i],
+                    plane_spec,
+                    -single_loop_constraint,
+                    params,
+                ),
+            }
+        }
+
+        match (params.keep_root_at_origin, root_index) {
+            (true, Some(i)) => displacement[*i],
+            // (true, None) => todo!("Keep plushies started from a chain in the middle somehow"),
+            (true, None) => V::zeros(),
+            (false, _) => V::zeros(),
+        }
+    }
+
+    pub fn apply_forces_multipart(
+        &mut self,
+        displacement: &mut Vec<V>,
+        time: f32,
+        params: &Params,
+    ) -> V {
         let mut total = V::zeros();
 
         let root_displacement = self.apply_peculiarities(displacement, params);
