@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use leniency::Leniency;
 
 use self::{utils::*, working_stitch::Stitch, HookError::*};
-use super::hook_result::{Edges, HookResult};
+use super::hook_result::{Edges, InitialGraph};
 use crate::acl::{
     actions::{Action, Label},
     Flow,
@@ -52,6 +52,8 @@ pub struct Hook {
     last_mark: Option<Action>,
     /// Map from labels the index of the node they affect. For now works with just MRConfigurable.
     mark_to_node: HashMap<String, usize>,
+    /// Indexes where parts begin and end. At the end, first element should be zero, last element should be colors.len()
+    part_limits: Vec<usize>,
 }
 
 fn split_moment(
@@ -93,7 +95,7 @@ fn split_moment(
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow, _leniency: &Leniency) -> Result<HookResult, HookError> {
+    pub fn parse(mut flow: impl Flow, _leniency: &Leniency) -> Result<InitialGraph, HookError> {
         if flow.peek().is_none() {
             return Err(Empty);
         }
@@ -109,12 +111,14 @@ impl Hook {
         Ok(result)
     }
 
-    fn finish(mut self) -> HookResult {
+    fn finish(mut self) -> InitialGraph {
         self.edges.cleanup();
-        HookResult::from_hook(
+        self.part_limits.push(self.now.cursor);
+        InitialGraph::from_hook(
             self.edges,
             self.peculiar,
             self.round_spans,
+            self.part_limits,
             self.colors,
             self.mark_to_node,
         )
@@ -235,6 +239,7 @@ impl Hook {
     fn magic_ring(&mut self, size: usize) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
+        self.part_limits.push(self.now.cursor);
         let ring_root = self.now.cursor;
         let ring_end = ring_root + size;
 
@@ -292,6 +297,17 @@ mod tests {
             h.edges,
             Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
         );
+        q!(h.part_limits, vec![0]);
+    }
+
+    #[test]
+    fn test_part_limits_gets_filled() {
+        let h = Hook::start_with(&MR(3), COLOR).unwrap();
+        q!(h.part_limits, vec![0]);
+        let h = h.perform(&MRConfigurable(6, "main".into())).unwrap();
+        q!(h.part_limits, vec![0, 4]);
+        let result = h.finish();
+        q!(result.part_limits, vec![0, 4, 11]);
     }
 
     #[test]
