@@ -39,10 +39,10 @@ impl Action {
         match self {
             Sc | Inc => 1,
             Dec => 2,
-            MR(_) | MRLabeled(_, _) => 0,
+            MR(_) | MRLabeled(..) => 0,
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
             Ch(_) | Reverse => unimplemented!(),
-            Attach(_, _) => 0,
+            Attach(..) => 0,
             FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) => 0,
         }
     }

@@ -187,7 +187,7 @@ impl Hook {
             BL => self.now.working_on = WorkingLoops::Both,
             Goto(label) => self.restore(*label)?,
             Mark(label) => self.save(*label)?,
-            MR(_) | MRLabeled(_, _) => return Err(StarterInTheMiddle),
+            MR(_) | MRLabeled(..) => return Err(StarterInTheMiddle),
             FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
