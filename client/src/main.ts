@@ -4,6 +4,7 @@ import World from "./World.ts";
 import * as leftPanel from "./leftPanel/panel.ts";
 import { send } from "./comms.ts";
 import { setupTooltip } from "./utils/tooltip.ts";
+import * as dragging from "./dragging.ts";
 
 document.addEventListener("DOMContentLoaded", () => {
   const editor = leftPanel.init();
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     syncPatternAndParams
   );
   initGui(display3d, guiData, world);
+  dragging.init(world);
 
   const visualizeButton = document.getElementById("visualize-button")!;
   visualizeButton.addEventListener("click", sendPattern);

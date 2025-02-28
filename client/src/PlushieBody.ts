@@ -15,10 +15,16 @@ const normalsColor = new THREE.Color(1, 0, 0);
 const planeColor = new THREE.Color(1, 1, 1);
 const planeOpacity = 0.5;
 
+export type PlushieMemberId = {
+  kind: string;
+  index: number;
+};
+export type PlushieMember = THREE.Mesh & PlushieMemberId;
+
 export default class PlushieBody {
   scene: THREE.Scene;
-  nodes: Mesh[];
-  centroids: Mesh[];
+  nodes: PlushieMember[];
+  centroids: PlushieMember[];
   links: Mesh[] = [];
   edges: number[][];
   nodeColors: crapi.RGB[];
@@ -42,20 +48,29 @@ export default class PlushieBody {
     for (let [i, point] of data.nodes.points.entries()) {
       let [radius, color] = this.nodeDisplay(i);
       let newSphere = create.sphere(this.scene, point, radius, color);
-      this.nodes.push(newSphere);
+      const id = {
+        kind: "skin",
+        index: i,
+      };
+      const sphereWithId = Object.assign(newSphere, id);
+      this.nodes.push(sphereWithId);
     }
 
     this.centroids = [];
-    for (let i in data.centroids.points) {
+    for (let i_string in data.centroids.points) {
+      let i = parseInt(i_string);
       let centroidPoint = data.centroids.points[i];
-      this.centroids.push(
-        create.sphere(
-          this.scene,
-          centroidPoint,
-          0.3,
-          this.centroidColor(parseInt(i))
-        )
+      let sph = create.sphere(
+        this.scene,
+        centroidPoint,
+        0.3,
+        this.centroidColor(i)
       );
+      let member = Object.assign(sph, {
+        kind: "centroid",
+        index: i,
+      });
+      this.centroids.push(member);
     }
 
     this.edges = data.edges;
@@ -180,7 +195,12 @@ export default class PlushieBody {
         let point = points[i];
         let [radius, color] = this.nodeDisplay(i);
         let sph = create.sphere(this.scene, point, radius, color);
-        this.nodes.push(sph);
+        const id = {
+          kind: "skin",
+          index: i,
+        };
+        const sphereWithId = Object.assign(sph, id);
+        this.nodes.push(sphereWithId);
       }
     }
 
@@ -189,14 +209,17 @@ export default class PlushieBody {
 
   updateCentroids(centroids: crapi.Point[]) {
     while (this.centroids.length < centroids.length) {
-      this.centroids.push(
-        create.sphere(
-          this.scene,
-          [0, 0, 0],
-          0.3,
-          this.centroidColor(this.centroids.length)
-        )
+      let sph = create.sphere(
+        this.scene,
+        [0, 0, 0],
+        0.3,
+        this.centroidColor(this.centroids.length)
       );
+      let member = Object.assign(sph, {
+        kind: "centroid",
+        index: this.centroids.length,
+      });
+      this.centroids.push(member);
     }
     while (this.centroids.length > centroids.length) {
       create.destroy(this.scene, this.centroids.pop()!);

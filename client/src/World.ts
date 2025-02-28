@@ -1,9 +1,11 @@
+import * as THREE from "three";
 import { connect } from "./comms";
 import { GuiData } from "./gui";
 import PlushieBody from "./PlushieBody";
 import { Display } from "./render3d";
 import jq from "jquery";
 import { download } from "./utils/download";
+import * as comms from "./comms";
 
 // TEMP for skeletonization research
 import * as create from "./utils/create";
@@ -86,6 +88,14 @@ export default class World {
         break;
       default:
         console.error("unhandled message", key);
+    }
+  }
+
+  onThingMoved(kind: string, index: number, to: THREE.Vector3) {
+    if (kind === "centroid") return;
+
+    if (kind === "skin") {
+      comms.send(`move node ${index} ${to.x} ${to.y} ${to.z}`);
     }
   }
 }

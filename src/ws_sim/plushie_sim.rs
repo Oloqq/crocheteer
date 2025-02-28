@@ -1,13 +1,19 @@
+use std::{
+    fs,
+    sync::{Arc, Mutex},
+};
+
 use serde_json::json;
 
-use super::sim::{Data, Simulation};
-use super::tokens::Tokens;
-use crate::plushie::parse_to_any_plushie;
-use crate::plushie::PlushieTrait;
-use crate::{common::*, skeletonization, token_args};
-
-use std::fs;
-use std::sync::{Arc, Mutex};
+use super::{
+    sim::{Data, Simulation},
+    tokens::Tokens,
+};
+use crate::{
+    common::*,
+    plushie::{parse_to_any_plushie, PlushieTrait},
+    skeletonization, token_args,
+};
 
 #[derive(Clone)]
 pub enum RunState {
@@ -113,9 +119,12 @@ impl PlushieSimulation {
         let controls = &mut self.controls;
 
         match command {
-            "pos" => {
-                let (id, x, y, z) = token_args!(tokens, usize, f32, f32, f32);
-                self.plushie.set_point_position(id, Point::new(x, y, z));
+            "move" => {
+                let (kind, id, x, y, z) = token_args!(tokens, String, usize, f32, f32, f32);
+                match kind.as_str() {
+                    "node" => self.plushie.set_point_position(id, Point::new(x, y, z)),
+                    _ => log::error!("Unexpected kind of thing to move"),
+                }
             }
             "pattern" => match self.change_pattern(msg) {
                 Ok(_) => {

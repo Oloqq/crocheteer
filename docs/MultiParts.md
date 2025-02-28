@@ -25,6 +25,13 @@ with a single part should be equivalent to
 @floored = false
 @rooted = true
 
+## Dragging
+Gui should allow to disable the dragging behavior so it does not mess up camera controls when not needed.
+
+Dragging a node far away messes up the simulation
+
+Need a way to set a specific position programatically
+
 # Hook
 Hook is designed to work from a single starter.
 - Do we adjust Hook so it handles multiple starters?

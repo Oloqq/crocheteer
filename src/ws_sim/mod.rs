@@ -2,15 +2,22 @@ pub mod plushie_sim;
 mod sim;
 mod tokens;
 
-use futures_util::stream::SplitSink;
-use futures_util::FutureExt;
-use futures_util::{select, sink::SinkExt, stream::StreamExt};
+use futures_util::{
+    select,
+    sink::SinkExt,
+    stream::{SplitSink, StreamExt},
+    FutureExt,
+};
 use pin_utils::pin_mut;
-use tokio::net::{TcpListener, TcpStream};
-use tokio::time::{Duration, Instant};
-use tokio_tungstenite::tungstenite::protocol::Message;
-use tokio_tungstenite::tungstenite::Error;
-use tokio_tungstenite::{accept_async, WebSocketStream};
+use tokio::{
+    net::{TcpListener, TcpStream},
+    time::{Duration, Instant},
+};
+use tokio_tungstenite::{
+    accept_async,
+    tungstenite::{protocol::Message, Error},
+    WebSocketStream,
+};
 
 use self::sim::*;
 
@@ -70,13 +77,7 @@ async fn tick(
         }
     }
 
-    match simulation.step(dt) {
-        Some(data) => match write.send(Message::Text(data)).await {
-            Ok(_) => Action::UpdateInterval,
-            Err(_) => Action::Quit,
-        },
-        None => Action::UpdateInterval,
-    }
+    Action::UpdateInterval
 }
 
 async fn handle_connection(stream: tokio::net::TcpStream, simulation: impl Simulation) {
