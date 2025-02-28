@@ -1,12 +1,13 @@
 pub mod errors;
 mod parsing;
 
-use crate::acl::{actions::Action, Flow};
-pub use errors::Error;
-pub use errors::Warning;
+use std::collections::HashMap;
+
+pub use errors::{Error, Warning};
 use pest::Parser;
 use pest_derive::Parser;
-use std::collections::HashMap;
+
+use crate::acl::{actions::Action, Flow};
 
 #[derive(Parser)]
 #[grammar = "acl/pest_parser/ACL.pest"]
@@ -55,7 +56,7 @@ impl Pattern {
 impl Flow for Pattern {
     fn next(&mut self) -> Option<Action> {
         if self.cursor < self.actions.len() {
-            let got = self.actions[self.cursor];
+            let got = self.actions[self.cursor].clone();
             self.cursor += 1;
             Some(got)
         } else {
@@ -65,7 +66,7 @@ impl Flow for Pattern {
 
     fn peek(&self) -> Option<Action> {
         if self.cursor < self.actions.len() {
-            let got = self.actions[self.cursor];
+            let got = self.actions[self.cursor].clone();
             Some(got)
         } else {
             None

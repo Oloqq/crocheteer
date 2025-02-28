@@ -4,6 +4,8 @@ mod state_mgmt;
 mod utils;
 mod working_stitch;
 
+use std::collections::{HashMap, HashSet};
+
 use leniency::Leniency;
 
 use self::{utils::*, working_stitch::Stitch, HookError::*};
@@ -15,7 +17,6 @@ use crate::{
     },
     sanity,
 };
-use std::collections::{HashMap, HashSet};
 
 #[derive(Clone, Debug)]
 struct Moment {
@@ -185,16 +186,16 @@ impl Hook {
             BL => self.now.working_on = WorkingLoops::Both,
             Goto(label) => self.restore(*label)?,
             Mark(label) => self.save(*label)?,
-            MR(_) | MRLabeled(..) => return Err(StarterInTheMiddle),
+            MR(_) | MRConfigurable(..) => return Err(StarterInTheMiddle),
             FO => self = Stitch::fasten_off_with_tip(self)?,
             Color(c) => self.color = *c,
         };
 
         match action {
             Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) => self.last_mark = None,
-            Mark(_) => self.last_mark = Some(*action),
+            Mark(_) => self.last_mark = Some(action.clone()),
             _ => {
-                self.last_stitch = Some(*action);
+                self.last_stitch = Some(action.clone());
                 self.last_mark = None
             }
         }
@@ -237,14 +238,35 @@ impl Hook {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use pretty_assertions::assert_eq as q;
+
+    use super::*;
 
     const COLOR: colors::Color = colors::RED;
 
     #[test]
     fn test_start_with_magic_ring() {
         let h = Hook::start_with(&MR(3), COLOR).unwrap();
+        q!(h.now.anchors, Queue::from([1, 2, 3]));
+        q!(h.now.cursor, 4);
+        q!(h.now.round_count, 0);
+        q!(h.now.round_left, 3);
+        q!(h.round_spans.len(), 1);
+        q!(
+            h.edges,
+            Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+        );
+    }
+
+    #[test]
+    fn test_start_with_magic_ring_configurable() {
+        let h = Hook::start_with(&MRConfigurable(3, "main".into()), COLOR).unwrap();
+        q!(h.peculiar.len(), 1);
+        assert!(matches!(
+            h.peculiar.get(&0).unwrap(),
+            Peculiarity::Constrained(..)
+        ));
+
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.now.round_count, 0);

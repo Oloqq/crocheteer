@@ -2,7 +2,7 @@ use crate::common::colors;
 
 pub type Label = usize;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Action {
     Sc,
     Inc,
@@ -26,7 +26,7 @@ pub enum Action {
     /// Magic ring
     MR(usize),
     ///
-    MRLabeled(usize, Label),
+    MRConfigurable(usize, String),
     /// Fasten off
     FO,
     /// Change yarn color
@@ -39,7 +39,7 @@ impl Action {
         match self {
             Sc | Inc => 1,
             Dec => 2,
-            MR(_) | MRLabeled(..) => 0,
+            MR(_) | MRConfigurable(..) => 0,
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
             Ch(_) | Reverse => unimplemented!(),
             Attach(..) => 0,
@@ -52,7 +52,7 @@ impl Action {
         match self {
             Sc | Dec => 1,
             Inc => 2,
-            MR(x) | MRLabeled(x, _) => *x as u32,
+            MR(x) | MRConfigurable(x, _) => *x as u32,
             FO => 0,
             Ch(_) | Reverse => unimplemented!(),
             Attach(_, chain_size) => *chain_size as u32,

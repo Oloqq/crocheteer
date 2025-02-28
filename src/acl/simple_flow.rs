@@ -14,7 +14,7 @@ impl SimpleFlow {
 impl Flow for SimpleFlow {
     fn next(&mut self) -> Option<Action> {
         if self.i < self.actions.len() {
-            let got = self.actions[self.i];
+            let got = self.actions[self.i].clone();
             self.i += 1;
             Some(got)
         } else {
@@ -24,7 +24,7 @@ impl Flow for SimpleFlow {
 
     fn peek(&self) -> Option<Action> {
         if self.i < self.actions.len() {
-            let got = self.actions[self.i];
+            let got = self.actions[self.i].clone();
             Some(got)
         } else {
             None

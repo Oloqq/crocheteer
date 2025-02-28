@@ -26,6 +26,12 @@ impl Hook {
 
     pub fn start_with(action: &Action, color: colors::Color) -> Result<Self, HookError> {
         match action {
+            MRConfigurable(x, _label) => {
+                let mut hook = Self::start_with(&MR(*x), color)?;
+                hook.peculiar
+                    .insert(0, Peculiarity::Constrained(V::new(0.0, 0.0, 0.0)));
+                Ok(hook)
+            }
             MR(x) => {
                 let edges: Vec<Vec<usize>> = {
                     let edges_from_root: Vec<usize> = (1..=*x).collect();

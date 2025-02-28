@@ -1,6 +1,6 @@
-use super::{actions::Action, Flow};
-
 use std::ops::{Add, AddAssign, Mul};
+
+use super::{actions::Action, Flow};
 
 #[derive(Clone)]
 pub struct ErgoFlow {
@@ -27,7 +27,7 @@ impl ErgoFlow {
 impl Flow for ErgoFlow {
     fn next(&mut self) -> Option<Action> {
         if self.i < self.actions.len() {
-            let got = self.actions[self.i];
+            let got = self.actions[self.i].clone();
             self.i += 1;
             Some(got)
         } else {
@@ -37,7 +37,7 @@ impl Flow for ErgoFlow {
 
     fn peek(&self) -> Option<Action> {
         if self.i < self.actions.len() {
-            let got = self.actions[self.i];
+            let got = self.actions[self.i].clone();
             Some(got)
         } else {
             None
@@ -121,10 +121,10 @@ impl AddAssign<Action> for ErgoFlow {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use pretty_assertions::assert_eq;
     use Action::*;
 
-    use pretty_assertions::assert_eq;
+    use super::*;
 
     #[test]
     fn test_grzib() {

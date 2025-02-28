@@ -1,7 +1,7 @@
-use super::{errors::*, CurrentLoop};
-use super::{Pattern, Rule};
-use crate::acl::actions::Action;
 use pest::iterators::{Pair, Pairs};
+
+use super::{errors::*, CurrentLoop, Pattern, Rule};
+use crate::acl::actions::Action;
 
 mod protect_fields {
     use super::Action;
@@ -52,7 +52,7 @@ mod protect_fields {
         pub fn push_repeated(&mut self, action: Action, times: u32) {
             self.actions.reserve(times as usize);
             for _ in 0..times {
-                self.actions.push(action);
+                self.actions.push(action.clone());
             }
             self.anchors_consumed += action.anchors_consumed() * times;
             self.anchors_produced += action.anchors_produced() * times;
@@ -241,7 +241,12 @@ impl Pattern {
                 Rule::KW_MR => {
                     let mut args = tokens.next().unwrap().into_inner();
                     let num = integer(&args.next().unwrap())?;
-                    self.actions.push(Action::MR(num));
+                    if let Some(name) = args.next() {
+                        let label = name.as_str().to_owned();
+                        self.actions.push(Action::MRConfigurable(num, label));
+                    } else {
+                        self.actions.push(Action::MR(num));
+                    }
                     self.round_counts.push(num as u32);
                 }
                 Rule::KW_FO => self.actions.push(Action::FO),
@@ -366,9 +371,10 @@ fn ident(pair: Pair<Rule>) -> Result<String, Error> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use pretty_assertions::assert_eq;
     use Action::*;
+
+    use super::*;
     #[test]
     fn test_sc() {
         let prog = ": sc\n";
@@ -508,5 +514,14 @@ mod tests {
         : 6 sc
         : sc, [sc] around";
         let _ = Pattern::parse(prog).expect_err("");
+    }
+
+    #[test]
+    fn test_mr_configurable() {
+        let prog = "
+        MR(6, bruh)
+        ";
+        let pat = Pattern::parse(prog).unwrap();
+        assert_eq!(pat.actions, vec![MRConfigurable(6, "bruh".into())]);
     }
 }
