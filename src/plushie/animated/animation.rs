@@ -85,7 +85,7 @@ fn attract(this: &Point, other: &Point, desired_distance: f32) -> V {
     let d = desired_distance;
 
     let fx: f32 = (x - d).powi(3) / (x / 2.0 + d).powi(3);
-    let res = -diff.normalize() * fx;
+    let res = -diff.normalize() * fx.min(1.0);
     sanity!(res.assert_no_nan(format!("attract {this:?} to {other:?}").as_str()));
     res
 }

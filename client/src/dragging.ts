@@ -70,7 +70,6 @@ function dragObject(event: MouseEvent) {
 function releaseObject(_event: MouseEvent) {
   if (selectedObject) {
     const x = selectedObject as PlushieMember;
-    console.log("moved a thing", x.kind, x.position);
     if (draggedPosition) {
       world.onThingMoved(x.kind, x.index, draggedPosition);
     } else {

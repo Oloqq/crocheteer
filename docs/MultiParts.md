@@ -50,3 +50,6 @@ Hook needs to retain mark information between joins
   - TODO when rooted = false, ensure there is at least one fully locked point, raise error otherwise
 - fasten off with tip could be replaced with a few links between the stitches of the last round?
 - Constrained -> Locked
+- Rooted -> Locked
+- Limit of stuffing force has been adjusted from 1000.0 to 1.0
+- Introduced limit for link force (1.0)
