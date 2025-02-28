@@ -32,6 +32,8 @@ Dragging a node far away messes up the simulation
 
 Need a way to set a specific position programatically
 
+Dragging does not really work with @reflect_locked = true
+
 # Hook
 Hook is designed to work from a single starter.
 - Do we adjust Hook so it handles multiple starters?

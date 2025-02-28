@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { GuiData, initGui } from "./gui.ts";
 import * as render from "./render3d.ts";
 import World from "./World.ts";
@@ -52,4 +53,22 @@ In the editor:
   CTRL+P: pause/unpause
   `
   );
+
+  function call(method: string, ...args: any[]) {
+    if (method === "move") {
+      let id = args[0];
+      let x = args[1];
+      let y = args[2];
+      let z = args[3];
+      world.onThingMoved("skin", id, new THREE.Vector3(x, y, z));
+      return null;
+    } else if (method === "pos") {
+      let id = args[0];
+      return world.plushie!.nodes[id].position;
+    } else {
+      console.warn("Unrecognized: ", method, args);
+    }
+  }
+
+  (window as any).call = call;
 });
