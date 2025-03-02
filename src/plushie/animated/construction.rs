@@ -21,7 +21,7 @@ impl Plushie {
                 LimbParam {
                     lock_x: Some(0.0),
                     lock_y: Some(0.0),
-                    lock_z: Some(-2.0),
+                    lock_z: Some(2.0),
                 },
             );
             params.nodes.insert(
@@ -29,7 +29,7 @@ impl Plushie {
                 LimbParam {
                     lock_x: Some(0.0),
                     lock_y: Some(0.0),
-                    lock_z: Some(2.0),
+                    lock_z: Some(-6.0),
                 },
             );
             params

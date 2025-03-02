@@ -68,7 +68,7 @@ KW_BL     = { "BL" }
 KW_CH     = { "ch" | "Ch" }
 KW_COLOR  = { "color" }
 KW_ATTACH = { "attach" }
-KW_STITCH = { "sc" | "inc" | "dec" }
+KW_STITCH = { "sc" | "inc" | "dec" | "slst" }
 KW_TIMES  = { "x" }
 KW_AROUND = { "around" }
 

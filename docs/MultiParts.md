@@ -38,7 +38,7 @@ Need a way to set a specific position programatically
 
 Dragging does not really work with @reflect_locked = true
 
-## Stuffing
+# Stuffing
 Centroids need to be restricted to certain parts.
 
 Global @centroids does not make sense with @multipart, unless the global number of centroids is distributed between the parts
@@ -46,9 +46,6 @@ Global @centroids does not make sense with @multipart, unless the global number 
 - hard mode: distributed dynamically based on sum of weight for centroids in parts?
 
 Let's introduce a concept of a `Limb`, that is, a piece of Plushies skin (skin = nodes = stitches) with their own centroids (since we were already calling centroids bones in the context of skeletonization, I feel that Limb is more expressive that Part)
-
-##
-Cylinder initializer could be adjusted for multipart
 
 # Hook
 Hook is designed to work from a single starter.
@@ -59,10 +56,38 @@ Plushies have to be able to get simulated without being joined.
 Node ids in the simulation must stay unique.
 Hook needs to retain mark information between joins
 
-## Solution 1
+# Slip stitch
+The problem pattern uses a slip stitch
+- Option 1
+  - Be realistic, create another node in the graph
+  - Use a different desired stitch distance for the node
+    - could be useful for MR and FO (not sure)
+      - any other use case?
+  - What does "different desired stitch distance for the node" mean
+    - say we have node L created as a slip stitch, its predecessor P and anchor A
+    - it can't be just a multiplier of link force
+      - the shape will still end up the same, just take longer time
+    - so we need to start calculating link force individually instead of in pairs
+    - there is no reason to disallow slip stitches on one loop, so peculiarities (as they are now) do not work
+      - but could work if each node could have a vector of peculiarities
+      - but it would still need to be checked outside of normal peculiarity processing
+    - but then, if simulation has just L and P, they would just fly off on the vector L->P
+      - (the comfort position of P is a "too far" position for L)
+    - the "fly off" issue exists anyway (FLO/BLO), so we demand a locked point, so it is acceptable
+    - this should not even be a problem since the 2 connected node will balance it out
+- Option 2
+  - Link the previous node to the next anchor
+  - Pretend that anchor was not used (at least round count has to stay realistic)
+  - result is less realistic than option 1
+  - result is trivially computable
+  - since one anchor acts as two, marks could get messed up
+  - apart from root/tip nodes (that are on the limits of the plushie, so are easy to ignore) this is the first deviation between real and simulated number of stitches
+- going with option 2
 
+# New in backlog
+Cylinder initializer could be adjusted for multipart
 
-# Additions
+# Notable other implemented things
 - "around" keyword
 - "floored", "rooted" as ACL parameters
   - TODO when rooted = false, ensure there is at least one fully locked point, raise error otherwise

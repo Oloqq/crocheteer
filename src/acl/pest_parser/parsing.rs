@@ -353,6 +353,7 @@ pub fn stitch(src: &str) -> Option<Action> {
         "sc" => Sc,
         "inc" => Inc,
         "dec" => Dec,
+        "slst" => Slst,
         _ => return None,
     })
 }

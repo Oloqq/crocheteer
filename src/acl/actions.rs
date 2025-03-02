@@ -7,6 +7,8 @@ pub enum Action {
     Sc,
     Inc,
     Dec,
+    /// Slip stitch
+    Slst,
     Ch(usize), // FIXME supported?
     /// Create a chain, then attach it to a marked position
     Attach(Label, usize),
@@ -37,7 +39,7 @@ impl Action {
     pub fn anchors_consumed(&self) -> u32 {
         use Action::*;
         match self {
-            Sc | Inc => 1,
+            Sc | Inc | Slst => 1,
             Dec => 2,
             MR(_) | MRConfigurable(..) => 0,
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
@@ -50,7 +52,7 @@ impl Action {
     pub fn anchors_produced(&self) -> u32 {
         use Action::*;
         match self {
-            Sc | Dec => 1,
+            Sc | Dec | Slst => 1,
             Inc => 2,
             MR(x) | MRConfigurable(x, _) => *x as u32,
             FO => 0,

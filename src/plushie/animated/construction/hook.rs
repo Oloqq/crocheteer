@@ -4,7 +4,7 @@ mod state_mgmt;
 mod utils;
 mod working_stitch;
 
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 use leniency::Leniency;
 
@@ -147,6 +147,11 @@ impl Hook {
                     .pull_through()?
                     .pull_over()?
                     .finish()?;
+            }
+            Slst => {
+                let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
+                self.edges.link(self.now.cursor - 1, anchor);
+                self.now.anchors.push_back(anchor);
             }
             Ch(x) => {
                 if matches!(self.last_stitch, Some(Ch(_))) {

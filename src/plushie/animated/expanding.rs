@@ -60,7 +60,6 @@ impl Plushie {
     fn construct_node_or_3(&mut self) {
         let index = self.edges.len();
         let basis = &self.edges_goal[index];
-        println!("basis {basis:?}");
         if basis.len() == 0 {
             let positions = self.mr_starter_positions(index);
             self.construct_node(index, positions[0]);
