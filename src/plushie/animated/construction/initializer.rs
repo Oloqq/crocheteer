@@ -72,7 +72,7 @@ fn arrange_cylinder(round_spans: Vec<(usize, usize)>) -> Vec<Point> {
 }
 
 fn ring(nodes: usize, y: f32, desired_stitch_distance: f32) -> Vec<Point> {
-    let circumference = (nodes + 1) as f32 * desired_stitch_distance;
+    let circumference = (nodes + 1) as f32 * desired_stitch_distance * 5.0;
     let radius = circumference / (2.0 * PI) / 4.0;
 
     let interval = 2.0 * PI / nodes as f32;

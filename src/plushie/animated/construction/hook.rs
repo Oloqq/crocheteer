@@ -172,6 +172,7 @@ impl Hook {
                 self = Stitch::linger(self)?.chain(*x)?;
             }
             Attach(label, chain_size) => {
+                log::debug!("attach to label: {label}");
                 // FIXME for now, assuming that chain_size > 0 connects to the same limb
                 // and chain_size = 0 connects to another limb
                 // TEMP attach_merge
@@ -201,6 +202,16 @@ impl Hook {
                 }
             }
             Color(c) => self.color = *c,
+            EnforceAnchors(expected, location) => {
+                let actual = self.now.anchors.len();
+                if params.enforce_counts && actual != *expected {
+                    return Err(HookError::WrongAnnotation {
+                        expected: *expected,
+                        actual,
+                        location: *location,
+                    });
+                }
+            }
         };
 
         match action {
@@ -292,6 +303,7 @@ impl Hook {
         self.override_previous_stitch = Some(self.previous_stitch());
         target.cursor = self.now.cursor;
         target.anchors.append(&mut self.now.anchors);
+        // target.round_left += self.now.round_left;
         self.now = target;
 
         Ok(self)

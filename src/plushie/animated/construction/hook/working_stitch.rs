@@ -34,7 +34,7 @@ impl Stitch {
         let hook = &mut self.hook;
         hook.now.anchors.pop_front().expect("there was an anchor");
         hook.now.round_left -= 1;
-        log::trace!("round_left: {}", hook.now.round_left);
+        log::debug!("round_left: {}", hook.now.round_left);
         if hook.now.round_left == 0 {
             let new_span = (hook.now.cursor - hook.now.round_count, hook.now.cursor - 1);
             log::debug!("Pushing round_span: {new_span:?}");

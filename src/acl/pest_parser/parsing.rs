@@ -84,13 +84,7 @@ impl Pattern {
     }
 
     fn round(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
-        match self.current_loop {
-            CurrentLoop::Back | CurrentLoop::Front => {
-                self.actions.push(Action::BL);
-                self.current_loop = CurrentLoop::Both;
-            }
-            CurrentLoop::Both => (),
-        }
+        self.reset_to_both_loops();
 
         let first = pairs.next().unwrap();
         let (repetitions, stitches) = match first.as_rule() {
@@ -125,7 +119,7 @@ impl Pattern {
 
         let action_sequence = self.stitches(stitches.into_inner())?;
 
-        let annotated = {
+        let (annotated, location) = {
             let mby_round_end = pairs.peek().unwrap();
             if let Rule::round_end = mby_round_end.as_rule() {
                 let round_end_pair = pairs.next().unwrap();
@@ -140,9 +134,9 @@ impl Pattern {
                         &count_pair,
                     ))
                 }
-                Some(count)
+                (Some(count), Some(count_pair.line_col()))
             } else {
-                None
+                (None, None)
             }
         };
 
@@ -152,7 +146,23 @@ impl Pattern {
             self.annotated_round_counts.push(annotated);
         }
 
+        if let Some(count) = annotated {
+            if let Some(location) = location {
+                self.actions.push(Action::EnforceAnchors(count, location));
+            }
+        }
+
         Ok(())
+    }
+
+    fn reset_to_both_loops(&mut self) {
+        match self.current_loop {
+            CurrentLoop::Back | CurrentLoop::Front => {
+                self.actions.push(Action::BL);
+                self.current_loop = CurrentLoop::Both;
+            }
+            CurrentLoop::Both => (),
+        }
     }
 
     fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<ActionSequence, Error> {

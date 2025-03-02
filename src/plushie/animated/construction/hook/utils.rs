@@ -26,6 +26,12 @@ pub enum HookError {
     ChainAfterChain,
     /// Simulation can't handle a node with too many links
     TooManyAnchorsForFO,
+    /// Annotation says the user expected a different number of available anchors at this point
+    WrongAnnotation {
+        expected: usize,
+        actual: usize,
+        location: (usize, usize),
+    },
 }
 
 impl From<HookError> for String {

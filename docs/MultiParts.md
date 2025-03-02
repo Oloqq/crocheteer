@@ -101,6 +101,15 @@ Make attach use size 0 by default (make argument optional)
 the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook. There is no reason to restrict it to the end of the round.
 If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook.
 
+# Attach
+Attach currently does not create a node by itself.
+Some assumptions are therefore made in hook.
+If user puts `attach(..), goto(..)` the state may get corrupted.
+
+# State
+Hook does not remove or mark used labels in any way.
+Duplicate `goto/attach` may caused undefined behavior.
+
 # Notable other implemented things
 - "around" keyword
 - "floored", "rooted" as ACL parameters
