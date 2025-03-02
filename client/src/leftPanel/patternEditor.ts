@@ -76,7 +76,7 @@ function defineLanguage() {
 
         // Keywords
         [
-          /\b(MR|FO|mark|goto|FLO|BLO|BL|ch|Ch|color|sc|inc|dec|attach)\b/,
+          /\b(MR|FO|mark|goto|FLO|BLO|BL|ch|Ch|color|sc|inc|dec|attach|slst)\b/,
           "keyword",
         ],
 
