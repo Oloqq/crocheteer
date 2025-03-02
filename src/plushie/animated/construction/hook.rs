@@ -174,7 +174,7 @@ impl Hook {
                 // and chain_size = 0 connects to another limb
                 // TEMP attach_merge
                 if *chain_size == 997 {
-                    todo!()
+                    self = self.attach_merge(label)?;
                 } else if *chain_size > 0 {
                     self = self.attach_with_chain(label, chain_size)?;
                 } else {
@@ -279,6 +279,18 @@ impl Hook {
         let x = self.previous_stitch();
         self.restore(*label)?;
         self.override_previous_stitch = Some(x);
+
+        Ok(self)
+    }
+
+    fn attach_merge(mut self, label: &usize) -> Result<Self, HookError> {
+        let mut target = self.labels.get(&label).ok_or(UnknownLabel(*label))?.clone();
+        assert!(self.now.limb_ownerhip == target.limb_ownerhip);
+
+        self.override_previous_stitch = Some(self.previous_stitch());
+        target.cursor = self.now.cursor;
+        target.anchors.append(&mut self.now.anchors);
+        self.now = target;
 
         Ok(self)
     }
