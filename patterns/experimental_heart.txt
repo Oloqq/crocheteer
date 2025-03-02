@@ -2,7 +2,7 @@
 
 @floored = false
 # @centroids = 0
-@centroids = 2
+@centroids = 4
 
 # @multipart = false
 # @rooted = true
@@ -28,7 +28,19 @@ R3: [sc, inc] around (18)
 R4-R5: [sc] around (18)
 # connect the humps
 R6: color(255, 255, 0), mark(second_hump), attach(first_hump, 0), 17 sc, color(255, 255, 125), attach(second_hump, 997), 17 sc (36)
-: 80 sc
+
+R7: [4 sc, dec] x 6 (30)
+R8: [sc] around (30)
+R9: [dec, 13 sc] around (28)
+R10: [dec, 5 sc] around (24)
+R11: 2 sc, [dec, 4 sc] x 3, dec, 2 sc (20)
+# R12: [dec, 3 sc] around (16)
+# R13: [dec, 2 sc] around (12)
+# start stuffing
+# use a needle and the strand left from the first hump to sew the hole shut
+# R14: [2 sc, dec] around (9)
+# R15: [sc, dec] around (6)
+# R16: [dec] around (3)
 
 part_first_hump {
     x = -2,

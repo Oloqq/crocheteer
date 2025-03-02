@@ -1,11 +1,11 @@
 # https://www.crochet365knittoo.com/amigurumi-heart/
 # need support:
 # - ✅[...] around
-# - slip stitch
-# - multiple starters
-# - inround FO, mark allowed after
-# - attach with one argument means chain of 0
-#   - attach to another piece must not try to split a round
+# - ✅slip stitch
+# - ✅multiple starters
+# - ✅inround FO, mark allowed after
+# - ✅attach with one argument means chain of 0
+#   - ✅attach to another piece must not try to split a round
 # - mark(second_hump) might be problematic (not sure) bcs attach modifies the mark before it
 # - flip Y in display
 

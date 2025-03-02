@@ -19,17 +19,17 @@ impl Plushie {
             params.nodes.insert(
                 "part_first_hump".into(),
                 LimbParams {
-                    lock_x: Some(-4.0),
+                    lock_x: Some(-1.0),
                     lock_y: Some(0.0),
-                    lock_z: Some(-5.0),
+                    lock_z: Some(-1.0),
                 },
             );
             params.nodes.insert(
                 "part_second_hump".into(),
                 LimbParams {
-                    lock_x: Some(2.0),
+                    lock_x: Some(1.0),
                     lock_y: Some(0.0),
-                    lock_z: Some(2.0),
+                    lock_z: Some(1.0),
                 },
             );
             params

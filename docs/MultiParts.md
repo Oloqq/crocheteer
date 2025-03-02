@@ -97,6 +97,10 @@ Leniency is really obsolete
 ChainOfZero (and probably others) does not display line number
 Make attach use size 0 by default (make argument optional)
 
+# ACL clarification
+the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook. There is no reason to restrict it to the end of the round.
+If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook.
+
 # Notable other implemented things
 - "around" keyword
 - "floored", "rooted" as ACL parameters

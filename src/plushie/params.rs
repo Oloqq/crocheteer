@@ -60,6 +60,7 @@ pub struct LimbParams {
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct HookParams {
     pub tip_from_fo: bool,
+    pub enforce_counts: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -218,7 +219,10 @@ impl Default for Params {
 
 impl Default for HookParams {
     fn default() -> Self {
-        Self { tip_from_fo: true }
+        Self {
+            tip_from_fo: true,
+            enforce_counts: true,
+        }
     }
 }
 
