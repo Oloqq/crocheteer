@@ -194,6 +194,7 @@ impl Hook {
             Mark(label) => self.save(*label)?,
             MR(_) => return Err(AnonymousMrInTheMiddle),
             MRConfigurable(x, label) => {
+                self.override_previous_stitch = None;
                 self.mark_to_node.insert(label.clone(), self.now.cursor);
                 self.magic_ring(*x);
             }
@@ -206,6 +207,7 @@ impl Hook {
         };
 
         match action {
+            MR(..) => unreachable!("MR allowed inside the pattern is stored as MRConfigurable"),
             Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) => self.last_mark = None,
             Mark(_) => self.last_mark = Some(action.clone()),
             _ => {
