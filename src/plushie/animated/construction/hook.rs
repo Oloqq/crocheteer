@@ -25,8 +25,6 @@ struct Moment {
     /// Node index to be created
     cursor: usize,
     anchors: Queue<usize>,
-    round_count: usize,
-    round_left: usize,
     working_on: WorkingLoops,
     /// Moments on unconnected graphs will have different number
     limb_ownerhip: usize,
@@ -67,8 +65,7 @@ fn split_moment(
     source: &mut Moment,
     attachment_anchor: usize,
     new_anchors: Vec<usize>,
-) -> (Moment, Moment, (usize, usize)) {
-    let new_span = (source.cursor - source.round_count, source.cursor - 1);
+) -> (Moment, Moment) {
     let attachment_i = source
         .anchors
         .iter()
@@ -83,8 +80,6 @@ fn split_moment(
     new_anchors.pop();
     ring_a.append(&mut new_anchors.into());
     let moment_a = Moment {
-        round_count: 0,
-        round_left: ring_a.len(),
         cursor: source.cursor,
         anchors: ring_a,
         working_on: WorkingLoops::Both,
@@ -92,15 +87,13 @@ fn split_moment(
     };
 
     let moment_b = Moment {
-        round_count: 0,
-        round_left: ring_b.len(),
         cursor: source.cursor,
         anchors: ring_b.clone(),
         working_on: WorkingLoops::Both,
         limb_ownerhip: source.limb_ownerhip,
     };
 
-    (moment_a, moment_b, new_span)
+    (moment_a, moment_b)
 }
 
 impl Hook {
@@ -315,9 +308,7 @@ impl Hook {
     }
 
     fn split_moment(mut self, attachment_anchor: usize, new_anchors: Vec<usize>) -> (Self, Moment) {
-        let (moment_a, moment_b, new_span) =
-            split_moment(&mut self.now, attachment_anchor, new_anchors);
-        log::debug!("Pushing round_span: {new_span:?}");
+        let (moment_a, moment_b) = split_moment(&mut self.now, attachment_anchor, new_anchors);
         self.now = moment_a;
         (self, moment_b)
     }
@@ -351,8 +342,6 @@ impl Hook {
         self.peculiar.insert(ring_root, Peculiarity::Locked);
 
         self.now = Moment {
-            round_count: 0,
-            round_left: size,
             anchors: Queue::from_iter(ring_root + 1..=ring_end),
             cursor: ring_end + 1,
             working_on: WorkingLoops::Both,

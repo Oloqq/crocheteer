@@ -33,14 +33,6 @@ impl Stitch {
     pub fn next_anchor(mut self) -> Progress {
         let hook = &mut self.hook;
         hook.now.anchors.pop_front().expect("there was an anchor");
-        hook.now.round_left -= 1;
-        log::debug!("round_left: {}", hook.now.round_left);
-        if hook.now.round_left == 0 {
-            let new_span = (hook.now.cursor - hook.now.round_count, hook.now.cursor - 1);
-            log::debug!("Pushing round_span: {new_span:?}");
-            hook.now.round_left = hook.now.round_count;
-            hook.now.round_count = 0;
-        }
         Ok(self)
     }
 
@@ -49,7 +41,6 @@ impl Stitch {
         self.hook.colors.push(self.hook.color);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
-        self.hook.now.round_count += 1;
         Ok(self)
     }
 
@@ -195,8 +186,6 @@ mod tests {
         let h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
-        q!(h.now.round_count, 0);
-        q!(h.now.round_left, 3);
         q!(
             h.edges,
             Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -267,18 +256,5 @@ mod tests {
                 vec![]
             ])
         );
-    }
-
-    #[test]
-    fn test_fo_completes_previous_round() {
-        let mut h = mr3();
-        h = h.test_perform(&Sc).unwrap();
-        h = h.test_perform(&Sc).unwrap();
-        q!(h.now.round_left, 1);
-        h = h.test_perform(&Sc).unwrap();
-        q!(h.now.round_left, 3);
-        h = h.test_perform(&Sc).unwrap();
-        h = h.test_perform(&Sc).unwrap();
-        q!(h.now.round_left, 1);
     }
 }

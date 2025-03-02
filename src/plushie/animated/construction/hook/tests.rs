@@ -15,8 +15,6 @@ fn test_start_with_magic_ring() {
     let h = Hook::start_with(&MR(3), COLOR).unwrap();
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
-    q!(h.now.round_count, 0);
-    q!(h.now.round_left, 3);
     q!(
         h.edges,
         Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -42,8 +40,6 @@ fn test_start_with_magic_ring_configurable() {
 
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
-    q!(h.now.round_count, 0);
-    q!(h.now.round_left, 3);
     q!(
         h.edges,
         Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -56,8 +52,6 @@ fn test_start_with_chain() {
     let h = Hook::start_with(&Ch(3), COLOR).unwrap();
     q!(h.now.anchors, Queue::from([0, 1, 2]));
     q!(h.now.cursor, 3);
-    q!(h.now.round_count, 0);
-    q!(h.now.round_left, 3);
     q!(h.edges, Edges::from(vec![vec![1], vec![2], vec![], vec![]]));
     q!(
         h.edges,
@@ -72,28 +66,10 @@ fn test_test_perform_sc() {
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6, 7]));
     q!(h.now.cursor, 8);
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 5);
 
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([3, 4, 5, 6, 7, 8]));
     q!(h.now.cursor, 9);
-    q!(h.now.round_count, 2);
-    q!(h.now.round_left, 4);
-}
-
-#[test]
-fn test_next_round() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    h = h.test_perform(&Sc).unwrap();
-    h = h.test_perform(&Sc).unwrap();
-    h = h.test_perform(&Sc).unwrap();
-    q!(h.now.round_count, 0);
-    q!(h.now.round_left, 3);
-
-    h = h.test_perform(&Sc).unwrap();
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 2);
 }
 
 #[test]
@@ -102,8 +78,6 @@ fn test_test_perform_inc() {
     h = h.test_perform(&Inc).unwrap();
     q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
     q!(h.now.cursor, 6);
-    q!(h.now.round_count, 2);
-    q!(h.now.round_left, 2);
     q!(
         h.edges,
         Edges::from_unchecked(vec![
@@ -125,8 +99,6 @@ fn test_test_perform_dec() {
     h = h.test_perform(&Dec).unwrap();
     q!(h.now.anchors, Queue::from([3, 4]));
     q!(h.now.cursor, 5);
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 1);
 }
 
 #[test]
@@ -140,8 +112,6 @@ fn test_test_perform_fo_after_full_round() {
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([4, 5, 6]));
     q!(h.now.cursor, 7);
-    q!(h.now.round_count, 0);
-    q!(h.now.round_left, 3);
     q!(h.edges.len(), 8);
     q!(
         h.edges,
@@ -279,12 +249,9 @@ fn test_attach1() {
     let return_here = 1;
     h = h.test_perform(&Mark(attach_here)).unwrap();
     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
-    q!(h.now.round_count, 0);
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Mark(return_here)).unwrap();
     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 2);
     q!(
         h.edges,
         Edges::from(vec![
@@ -316,12 +283,8 @@ fn test_attach1() {
     let part_b = h.labels.get(&return_here).unwrap();
 
     q!(part_a.anchors, Queue::from(vec![4, 5, 6, 7]));
-    q!(part_a.round_count, 0);
-    q!(part_a.round_left, 4);
 
     q!(part_b.anchors, Queue::from(vec![2, 8, 7, 6, 5]));
-    q!(part_b.round_count, 0);
-    q!(part_b.round_left, 5);
 }
 
 #[test]
@@ -331,12 +294,9 @@ fn test_sc_after_attach() {
     let return_here = 1;
     h = h.test_perform(&Mark(attach_here)).unwrap();
     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
-    q!(h.now.round_count, 0);
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Mark(return_here)).unwrap();
     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 2);
     q!(
         h.edges,
         Edges::from(vec![
@@ -368,14 +328,10 @@ fn test_sc_after_attach() {
         let part_a = &h.now;
 
         q!(part_a.anchors, Queue::from(vec![4, 5, 6, 7]));
-        q!(part_a.round_count, 0);
-        q!(part_a.round_left, 4);
     }
 
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from(vec![5, 6, 7, 9]));
-    q!(h.now.round_count, 1);
-    q!(h.now.round_left, 3);
 
     q!(
         h.edges,
@@ -409,12 +365,10 @@ fn test_split_moment() {
     let mut source = Moment {
         cursor: 20,
         anchors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].into(),
-        round_count: 0,
-        round_left: 10,
         working_on: WorkingLoops::Both,
         limb_ownerhip: 0,
     };
-    let (moment_a, moment_b, _new_span) = split_moment(&mut source, 6, [13, 14, 15, 16].into());
+    let (moment_a, moment_b) = split_moment(&mut source, 6, [13, 14, 15, 16].into());
     println!("{:?} {:?}", moment_a.anchors, moment_b.anchors);
     q!(moment_a.anchors.len(), 9);
     q!(moment_b.anchors.len(), 9);
@@ -447,11 +401,9 @@ fn test_starting_from_color() {
 //     let return_here = 1;
 //     h = h.perform(&Mark(attach_here)).unwrap();
 //     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
-//     q!(h.now.round_count, 0);
 //     h = h.perform(&Sc).unwrap();
 //     h = h.perform(&Mark(return_here)).unwrap();
 //     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
-//     q!(h.now.round_count, 1);
 //     q!(h.now.round_left, 2);
 //     q!(
 //         h.edges,
@@ -484,13 +436,11 @@ fn test_starting_from_color() {
 //         let part_a = &h.now;
 
 //         q!(part_a.anchors, Queue::from(vec![4, 5, 6, 7]));
-//         q!(part_a.round_count, 0);
 //         q!(part_a.round_left, 4);
 //     }
 
 //     h = h.perform(&Sc).unwrap();
 //     q!(h.now.anchors, Queue::from(vec![5, 6, 7, 9]));
-//     q!(h.now.round_count, 1);
 //     q!(h.now.round_left, 3);
 
 //     q!(
