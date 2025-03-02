@@ -1,0 +1,34 @@
+@initializer = obo
+@centroids = 8
+
+MR(6)
+: 6 inc (12)
+6: 12 sc (12)
+: [inc, sc] x 6 (18)
+: mark(anchor_arm1), 6 sc, mark(split_arm1), attach(anchor_arm1, 3) (9)
+color(0, 0, 255)
+: 9 sc (9)
+mark(arm1_stub)
+
+goto(split_arm1)
+color(255, 0, 0)
+: 3 sc, mark(anchor_arm2), 6 sc, mark(split_arm2), attach(anchor_arm2, 3) (9)
+: 9 sc (9)
+mark(arm2_stub)
+
+goto(split_arm2)
+color(0, 255, 0)
+: 12 sc (12)
+: [inc, sc] x 6 (18)
+2: 18 sc (18)
+: 9 dec (9)
+: [sc, dec] x 3 (3)
+FO
+
+goto(arm1_stub)
+color(0, 0, 255)
+5: 9 sc
+
+goto(arm2_stub)
+color(255, 0, 0)
+5: 9 sc
