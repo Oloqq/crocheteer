@@ -346,14 +346,15 @@ impl Pattern {
 pub fn stitch(src: &str) -> Option<Action> {
     use Action::*;
     let mut tokens = src.split(" "); // wtf have I done here
-    let first = tokens.next().unwrap();
+    let first = tokens.next().unwrap().to_lowercase();
     assert!(tokens.next().is_none()); // If this assert never failed after some time, remove the stupid split, if it fails investigate and edit the comment
 
-    Some(match first {
+    Some(match first.as_str() {
         "sc" => Sc,
         "inc" => Inc,
         "dec" => Dec,
         "slst" => Slst,
+        "fo" => FO,
         _ => return None,
     })
 }

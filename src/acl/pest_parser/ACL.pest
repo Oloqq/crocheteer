@@ -12,8 +12,8 @@ round_index = @{ R ~ NUMBER }
 round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
 round_end   =  { "(" ~ NUMBER ~ ")" }
 
-stitches   = { stitch_sequence ~ ("," ~ stitch_sequence)* }
-stitch_sequence  = {
+stitches   = { in_round_acion ~ ("," ~ in_round_acion)* }
+in_round_acion  = {
     (NUMBER ~ KW_STITCH)
   | KW_STITCH
   | interstitchable_action
@@ -68,7 +68,7 @@ KW_BL     = { "BL" }
 KW_CH     = { "ch" | "Ch" }
 KW_COLOR  = { "color" }
 KW_ATTACH = { "attach" }
-KW_STITCH = { "sc" | "inc" | "dec" | "slst" }
+KW_STITCH = { "sc" | "inc" | "dec" | "slst" | KW_FO }
 KW_TIMES  = { "x" }
 KW_AROUND = { "around" }
 

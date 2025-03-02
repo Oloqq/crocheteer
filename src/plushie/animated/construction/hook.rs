@@ -26,6 +26,8 @@ struct Moment {
     round_count: usize,
     round_left: usize,
     working_on: WorkingLoops,
+    /// Moments on unconnected graphs will have different number
+    limb_ownerhip: usize,
 }
 
 /// Responsible for building the graph used in the simulation
@@ -57,6 +59,8 @@ pub struct Hook {
     mark_to_node: HashMap<String, usize>,
     /// Indexes where parts begin and end. At the end, first element should be zero, last element should be colors.len()
     part_limits: Vec<usize>,
+    /// Used to track unconnected limbs
+    mr_count: usize,
 }
 
 fn split_moment(
@@ -84,6 +88,7 @@ fn split_moment(
         cursor: source.cursor,
         anchors: ring_a,
         working_on: WorkingLoops::Both,
+        limb_ownerhip: source.limb_ownerhip,
     };
 
     let moment_b = Moment {
@@ -92,6 +97,7 @@ fn split_moment(
         cursor: source.cursor,
         anchors: ring_b.clone(),
         working_on: WorkingLoops::Both,
+        limb_ownerhip: source.limb_ownerhip,
     };
 
     (moment_a, moment_b, new_span)
@@ -164,26 +170,15 @@ impl Hook {
                 self = Stitch::linger(self)?.chain(*x)?;
             }
             Attach(label, chain_size) => {
-                // create a chain
-                // attach it to given point
-                // assumption: user marked a spot X right before an attach
-                // after attaching, the plushie splits into 2 working rings: A and B
-                // A is the one that user will work when doing rounds normally
-                // ring B can be accessed by goto(X)
-
-                let starting_anchor = self.now.cursor;
-                let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
-                let new_anchors: Vec<usize>;
-                (new_anchors, self) =
-                    Stitch::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
-                let mut moment_b;
-                (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
-                // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);
-
-                if let Some(Mark(ring_b_label)) = self.last_mark {
-                    assert!(self.labels.contains_key(&ring_b_label));
-                    moment_b.cursor = starting_anchor;
-                    self.labels.insert(ring_b_label, moment_b);
+                // FIXME for now, assuming that chain_size > 0 connects to the same limb
+                // and chain_size = 0 connects to another limb
+                // TEMP attach_merge
+                if *chain_size == 997 {
+                    todo!()
+                } else if *chain_size > 0 {
+                    self = self.attach_with_chain(label, chain_size)?;
+                } else {
+                    self = self.attach_directly(label)?;
                 }
             }
             Reverse => unimplemented!(),
@@ -231,6 +226,68 @@ impl Hook {
                 }
             }
             Leniency::GeneticFixups => todo!(),
+        }
+    }
+
+    fn previous_stitch(&mut self) -> usize {
+        match self.override_previous_stitch {
+            Some(x) => {
+                self.override_previous_stitch = None;
+                x
+            }
+            None => self.now.cursor - 1,
+        }
+    }
+
+    fn attach_with_chain(mut self, label: &usize, chain_size: &usize) -> Result<Self, HookError> {
+        // FIXME this should probably affect part_limits
+        // FIXME part_limits should prolly be limb_limits
+        // create a chain
+        // attach it to given point
+        // assumption: user marked a spot X right before an attach
+        // after attaching, the plushie splits into 2 working rings: A and B
+        // A is the one that user will work when doing rounds normally
+        // ring B can be accessed by goto(X)
+
+        let starting_anchor = self.now.cursor;
+        // TODO won't this panic?
+        let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
+        let new_anchors: Vec<usize>;
+        (new_anchors, self) =
+            Stitch::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
+        let mut moment_b;
+        (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
+        // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);
+
+        if let Some(Mark(ring_b_label)) = self.last_mark {
+            assert!(self.labels.contains_key(&ring_b_label));
+            moment_b.cursor = starting_anchor;
+            self.labels.insert(ring_b_label, moment_b);
+        }
+        Ok(self)
+    }
+
+    fn attach_directly(mut self, label: &usize) -> Result<Self, HookError> {
+        let cursor_at = self.now.cursor;
+        let target = self.labels.get(&label).ok_or(UnknownLabel(*label))?;
+        if self.now.limb_ownerhip != target.limb_ownerhip {
+            // this action connects previously unconnected graphs
+            self.part_limits.push(cursor_at);
+            self.merge_limb_ownership(self.now.limb_ownerhip, target.limb_ownerhip);
+        }
+
+        let x = self.previous_stitch();
+        self.restore(*label)?;
+        self.override_previous_stitch = Some(x);
+
+        Ok(self)
+    }
+
+    fn merge_limb_ownership(&mut self, main: usize, appendix: usize) {
+        for (_, moment) in &mut self.labels {
+            if moment.limb_ownerhip == appendix {
+                moment.limb_ownerhip = main;
+            }
         }
     }
 
@@ -286,7 +343,9 @@ impl Hook {
             anchors: Queue::from_iter(ring_root + 1..=ring_end),
             cursor: ring_end + 1,
             working_on: WorkingLoops::Both,
+            limb_ownerhip: self.mr_count,
         };
+        self.mr_count += 1;
 
         assert_eq!(self.edges.last().unwrap().len(), 0);
     }
@@ -732,6 +791,7 @@ mod tests {
             round_count: 0,
             round_left: 10,
             working_on: WorkingLoops::Both,
+            limb_ownerhip: 0,
         };
         let (moment_a, moment_b, _new_span) = split_moment(&mut source, 6, [13, 14, 15, 16].into());
         println!("{:?} {:?}", moment_a.anchors, moment_b.anchors);

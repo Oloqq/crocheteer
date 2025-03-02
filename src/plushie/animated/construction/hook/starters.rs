@@ -40,16 +40,20 @@ impl Hook {
                     tmp.grow();
                     tmp
                 };
-                let mut result = Self {
-                    edges,
-                    peculiar: HashMap::new(),
-                    now: Moment {
+                let this_will_be_overwritten_how_do_i_design_it_readably_bruh_please_tell_me_via_pr_thanks =
+                    Moment {
                         round_count: 0,
                         round_left: 0,
                         anchors: Queue::new(),
                         cursor: 0,
                         working_on: WorkingLoops::Both,
-                    },
+                        limb_ownerhip: 0,
+                    };
+
+                let mut result = Self {
+                    edges,
+                    peculiar: HashMap::new(),
+                    now: this_will_be_overwritten_how_do_i_design_it_readably_bruh_please_tell_me_via_pr_thanks,
                     round_spans: vec![],
                     parents: vec![],
                     labels: HashMap::new(),
@@ -61,6 +65,7 @@ impl Hook {
                     leniency: Leniency::NoMercy,
                     mark_to_node: HashMap::new(),
                     part_limits: vec![],
+                    mr_count: 0,
                 };
                 result.magic_ring(*x);
                 Ok(result)

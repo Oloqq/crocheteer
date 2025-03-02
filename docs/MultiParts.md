@@ -83,6 +83,7 @@ The problem pattern uses a slip stitch
   - since one anchor acts as two, marks could get messed up
   - apart from root/tip nodes (that are on the limits of the plushie, so are easy to ignore) this is the first deviation between real and simulated number of stitches
 - going with option 2
+- it might mess up part_limits (aka limb_limits)
 
 # FO
 I see no way to distinguish in-round FO from the tip FO
@@ -93,6 +94,8 @@ do it under @tip_from_fo
 # New in backlog
 Cylinder initializer could be adjusted for multipart
 Leniency is really obsolete
+ChainOfZero (and probably others) does not display line number
+Make attach use size 0 by default (make argument optional)
 
 # Notable other implemented things
 - "around" keyword

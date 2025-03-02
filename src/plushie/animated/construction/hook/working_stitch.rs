@@ -56,7 +56,7 @@ impl Stitch {
 
     fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress {
         if self.lingering {
-            let prev = previous_stitch(&mut self.hook);
+            let prev = self.hook.previous_stitch();
             self.hook.edges.link(prev, self.hook.now.cursor);
         }
 
@@ -178,16 +178,6 @@ impl Stitch {
                 panic!("BLO/FLO point is already peculiar. was: {prev:?} new: {peculiarity:?}")
             });
         Ok(())
-    }
-}
-
-fn previous_stitch(hook: &mut Hook) -> usize {
-    match hook.override_previous_stitch {
-        Some(x) => {
-            hook.override_previous_stitch = None;
-            x
-        }
-        None => hook.now.cursor - 1,
     }
 }
 
