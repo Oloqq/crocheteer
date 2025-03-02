@@ -101,7 +101,6 @@ pub struct InitialGraph {
     pub edges: Edges,
     pub peculiarities: HashMap<usize, Peculiarity>,
     pub colors: Vec<Color>,
-    pub round_spans: Vec<(usize, usize)>,
     pub part_limits: Vec<usize>,
     pub mark_to_node: HashMap<String, usize>,
 }
@@ -114,38 +113,6 @@ pub enum Peculiarity {
     Tip,
     BLO(PointsOnPushPlane),
     FLO(PointsOnPushPlane),
-}
-
-fn fill_round_span(edges: &Edges, round_spans: &mut Vec<(usize, usize)>) {
-    let nodenum = edges.len();
-    let lastspan = round_spans.last().unwrap();
-    let end = lastspan.1;
-    if end < nodenum - 1 {
-        round_spans.push((end + 1, nodenum - 1));
-    }
-}
-
-impl InitialGraph {
-    pub fn from_hook(
-        edges: Edges,
-        peculiar: HashMap<usize, Peculiarity>,
-        mut round_spans: Vec<(usize, usize)>,
-        part_limits: Vec<usize>,
-        colors: Vec<Color>,
-        mark_to_node: HashMap<String, usize>,
-    ) -> Self {
-        log::trace!("round spans: {:?}", round_spans);
-        fill_round_span(&edges, &mut round_spans);
-
-        Self {
-            edges,
-            peculiarities: peculiar,
-            colors,
-            round_spans,
-            mark_to_node,
-            part_limits,
-        }
-    }
 }
 
 #[cfg(test)]

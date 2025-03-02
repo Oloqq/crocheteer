@@ -54,7 +54,6 @@ impl Hook {
                     edges,
                     peculiar: HashMap::new(),
                     now: this_will_be_overwritten_how_do_i_design_it_readably_bruh_please_tell_me_via_pr_thanks,
-                    round_spans: vec![],
                     parents: vec![],
                     labels: HashMap::new(),
                     override_previous_stitch: None,

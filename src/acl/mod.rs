@@ -16,13 +16,15 @@ pub trait Flow {
 
 #[cfg(test)]
 mod tests {
-    use super::ergoflow::ErgoFlow;
-    use super::pest_parser::errors::ErrorCode;
-    use super::pest_parser::Pattern;
-    use super::simple_flow::SimpleFlow;
-    use super::*;
     use pretty_assertions::assert_eq;
     use Action::*;
+
+    use super::{
+        ergoflow::ErgoFlow,
+        pest_parser::{errors::ErrorCode, Pattern},
+        simple_flow::SimpleFlow,
+        *,
+    };
 
     fn assert_equal_flows(mut left: impl Flow, mut right: impl Flow) {
         let left_actions = {
@@ -138,17 +140,17 @@ mod tests {
 
         let pattern = {
             let src = "MR(6)
-            : 6 inc (12)
-            3: 12 sc (12)
+            : 6 inc
+            3: 12 sc
             mark(cap_start)
-            : BLO, 6 dec (6)
+            : BLO, 6 dec
             FO
 
             goto(cap_start), color(255, 255, 0)
-            : FLO, 12 inc (24)
-            2: 24 sc (24)
-            : 12 dec (12)
-            : 6 dec (6)
+            : FLO, 12 inc
+            2: 24 sc
+            : 12 dec
+            : 6 dec
             FO";
             match Pattern::parse(src) {
                 Ok(x) => x,

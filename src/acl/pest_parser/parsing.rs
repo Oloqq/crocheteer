@@ -421,7 +421,16 @@ mod tests {
     fn test_round_end_present() {
         let prog = ": sc (1)\n: sc, sc (2)\n";
         let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
+        assert_eq!(
+            pat.actions,
+            vec![
+                Sc,
+                EnforceAnchors(1, (1, 7)),
+                Sc,
+                Sc,
+                EnforceAnchors(2, (2, 11))
+            ]
+        );
         assert_eq!(pat.annotated_round_counts, vec![Some(1), Some(2)]);
         assert_eq!(pat.round_counts, vec![1, 2]);
     }

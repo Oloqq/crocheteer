@@ -17,7 +17,6 @@ fn test_start_with_magic_ring() {
     q!(h.now.cursor, 4);
     q!(h.now.round_count, 0);
     q!(h.now.round_left, 3);
-    q!(h.round_spans.len(), 1);
     q!(
         h.edges,
         Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -45,7 +44,6 @@ fn test_start_with_magic_ring_configurable() {
     q!(h.now.cursor, 4);
     q!(h.now.round_count, 0);
     q!(h.now.round_left, 3);
-    q!(h.round_spans.len(), 1);
     q!(
         h.edges,
         Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -60,7 +58,6 @@ fn test_start_with_chain() {
     q!(h.now.cursor, 3);
     q!(h.now.round_count, 0);
     q!(h.now.round_left, 3);
-    q!(h.round_spans.len(), 1);
     q!(h.edges, Edges::from(vec![vec![1], vec![2], vec![], vec![]]));
     q!(
         h.edges,
@@ -77,31 +74,24 @@ fn test_test_perform_sc() {
     q!(h.now.cursor, 8);
     q!(h.now.round_count, 1);
     q!(h.now.round_left, 5);
-    q!(h.round_spans, vec![(0, 6)]);
 
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([3, 4, 5, 6, 7, 8]));
     q!(h.now.cursor, 9);
     q!(h.now.round_count, 2);
     q!(h.now.round_left, 4);
-    q!(h.round_spans, vec![(0, 6)]);
 }
 
 #[test]
 fn test_next_round() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    q!(h.round_spans.len(), 1);
     h = h.test_perform(&Sc).unwrap();
-    q!(h.round_spans, vec![(0, 3)]);
     h = h.test_perform(&Sc).unwrap();
-    q!(h.round_spans, vec![(0, 3)]);
     h = h.test_perform(&Sc).unwrap();
-    q!(h.round_spans, vec![(0, 3), (4, 6)]);
     q!(h.now.round_count, 0);
     q!(h.now.round_left, 3);
 
     h = h.test_perform(&Sc).unwrap();
-    q!(h.round_spans, vec![(0, 3), (4, 6)]);
     q!(h.now.round_count, 1);
     q!(h.now.round_left, 2);
 }
@@ -114,7 +104,6 @@ fn test_test_perform_inc() {
     q!(h.now.cursor, 6);
     q!(h.now.round_count, 2);
     q!(h.now.round_left, 2);
-    q!(h.round_spans, vec![(0, 3)]);
     q!(
         h.edges,
         Edges::from_unchecked(vec![
@@ -138,7 +127,6 @@ fn test_test_perform_dec() {
     q!(h.now.cursor, 5);
     q!(h.now.round_count, 1);
     q!(h.now.round_left, 1);
-    q!(h.round_spans, vec![(0, 3)]);
 }
 
 #[test]
@@ -154,7 +142,6 @@ fn test_test_perform_fo_after_full_round() {
     q!(h.now.cursor, 7);
     q!(h.now.round_count, 0);
     q!(h.now.round_left, 3);
-    q!(h.round_spans, vec![(0, 3), (4, 6)]);
     q!(h.edges.len(), 8);
     q!(
         h.edges,
@@ -185,15 +172,6 @@ fn test_test_perform_fo_after_full_round() {
             vec![]
         ])
     );
-    q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
-}
-
-#[test]
-fn test_round_spans_with_dec() {
-    let mut h = Hook::start_with(&MR(4), COLOR).unwrap();
-    h = h.test_perform(&Dec).unwrap();
-    h = h.test_perform(&Dec).unwrap();
-    assert_eq!(h.round_spans, vec![(0, 4), (5, 6)]);
 }
 
 #[test]
@@ -220,7 +198,6 @@ fn test_goto_after_fo() {
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([4, 5, 6]));
-    q!(h.round_spans, vec![(0, 3), (4, 6)]);
     q!(
         h.edges,
         Edges::from(vec![
@@ -249,7 +226,6 @@ fn test_goto_after_fo() {
             vec![]
         ])
     );
-    q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
     q!(h.now.anchors, Queue::from([]));
     h = h.test_perform(&Goto(0)).unwrap();
     q!(h.now.cursor, 8);

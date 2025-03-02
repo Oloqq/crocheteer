@@ -1,10 +1,9 @@
-use std::{collections::HashSet, f32::consts::PI};
+use std::f32::consts::PI;
 
 use super::hook_result::InitialGraph;
 use crate::{
     common::*,
     plushie::{animated::nodes::Nodes, params::Initializer},
-    sanity,
 };
 
 impl Initializer {
@@ -15,7 +14,7 @@ impl Initializer {
         let nodes = Nodes::new(
             match self {
                 Initializer::OneByOne(_) => vec![],
-                Initializer::Cylinder => arrange_cylinder(graph.round_spans),
+                Initializer::Cylinder => arrange_cylinder(graph.colors.len()),
             },
             graph.peculiarities,
             graph.colors,
@@ -41,33 +40,18 @@ impl Initializer {
     }
 }
 
-fn arrange_cylinder(round_spans: Vec<(usize, usize)>) -> Vec<Point> {
-    fn is_uniq(vec: &Vec<Point>) -> bool {
-        let uniq = vec
-            .into_iter()
-            .map(|v| format!("{:?}", v.coords))
-            .collect::<HashSet<_>>();
-        uniq.len() == vec.len()
-    }
-
+fn arrange_cylinder(node_num: usize) -> Vec<Point> {
     let mut y = 0.0;
     let mut nodes = vec![];
+    let mut included = 0;
+    let batch = 12;
 
-    let mut round_spans = round_spans.into_iter();
-    let mr_round = round_spans.next().unwrap();
-    assert_eq!(mr_round.0, 0);
-    nodes.append(&mut vec![Point::new(0.0, 0.0, 0.0)]);
-    nodes.append(&mut ring(mr_round.1 - mr_round.0, y, 1.0));
-    y += 0.7;
-
-    for (from, to) in round_spans {
-        let count = to - from + 1;
-        nodes.append(&mut ring(count, y, 1.0));
-        y += 0.7;
+    while node_num - included > batch {
+        nodes.append(&mut ring(batch, y, 1.0));
+        y += 1.0;
+        included += batch;
     }
-
-    sanity!(assert!(is_uniq(&nodes), "hook created duplicate positions"));
-
+    nodes.append(&mut ring(node_num - included, y, 1.0));
     nodes
 }
 
@@ -94,12 +78,16 @@ mod tests {
 
     #[test]
     fn test_arrange_cylinder() {
-        let rounds_spans = vec![(0, 4)];
-        let res = arrange_cylinder(rounds_spans);
+        let res = arrange_cylinder(5);
         assert_eq!(res.len(), 5);
 
-        let rounds_spans = vec![(0, 4), (5, 8)];
-        let res = arrange_cylinder(rounds_spans);
+        let res = arrange_cylinder(9);
         assert_eq!(res.len(), 9);
+
+        let res = arrange_cylinder(21);
+        assert_eq!(res.len(), 21);
+
+        let res = arrange_cylinder(12);
+        assert_eq!(res.len(), 12);
     }
 }

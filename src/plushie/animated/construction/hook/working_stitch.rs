@@ -38,7 +38,6 @@ impl Stitch {
         if hook.now.round_left == 0 {
             let new_span = (hook.now.cursor - hook.now.round_count, hook.now.cursor - 1);
             log::debug!("Pushing round_span: {new_span:?}");
-            hook.round_spans.push(new_span);
             hook.now.round_left = hook.now.round_count;
             hook.now.round_count = 0;
         }
@@ -147,14 +146,8 @@ impl Stitch {
             hook.edges.link(anchor, tip);
         }
 
-        if hook.now.round_count > 0 {
-            hook.round_spans
-                .push((hook.now.cursor - hook.now.round_count, hook.now.cursor - 1));
-        }
-
         hook.edges.grow();
         hook.peculiar.insert(tip, Peculiarity::Tip);
-        hook.round_spans.push((tip, tip));
         hook.colors.push(hook.color);
         hook.now.cursor += 1;
         Ok(hook)
@@ -204,7 +197,6 @@ mod tests {
         q!(h.now.cursor, 4);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
-        q!(h.round_spans.len(), 1);
         q!(
             h.edges,
             Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
@@ -285,11 +277,8 @@ mod tests {
         q!(h.now.round_left, 1);
         h = h.test_perform(&Sc).unwrap();
         q!(h.now.round_left, 3);
-        q!(h.round_spans, vec![(0, 3), (4, 6)]);
         h = h.test_perform(&Sc).unwrap();
         h = h.test_perform(&Sc).unwrap();
         q!(h.now.round_left, 1);
-        h = h.test_perform(&FO).unwrap();
-        q!(h.round_spans, vec![(0, 3), (4, 6), (7, 8), (9, 9)]);
     }
 }

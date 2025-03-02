@@ -38,8 +38,6 @@ pub struct Hook {
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
     now: Moment,
-    /// Contains first and last stitch of each round. Treated as a range, both extremes are inclusive.
-    round_spans: Vec<(usize, usize)>,
     /// Storage of index -> it's anchor, used for single loop forces
     parents: Vec<Option<usize>>,
     /// Storage of spots for Mark and Goto
@@ -125,14 +123,13 @@ impl Hook {
     fn finish(mut self) -> InitialGraph {
         self.edges.cleanup();
         self.part_limits.push(self.now.cursor);
-        InitialGraph::from_hook(
-            self.edges,
-            self.peculiar,
-            self.round_spans,
-            self.part_limits,
-            self.colors,
-            self.mark_to_node,
-        )
+        InitialGraph {
+            edges: self.edges,
+            peculiarities: self.peculiar,
+            colors: self.colors,
+            mark_to_node: self.mark_to_node,
+            part_limits: self.part_limits,
+        }
     }
 
     fn do_perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
@@ -321,16 +318,7 @@ impl Hook {
         let (moment_a, moment_b, new_span) =
             split_moment(&mut self.now, attachment_anchor, new_anchors);
         log::debug!("Pushing round_span: {new_span:?}");
-        self.round_spans.push(new_span);
         self.now = moment_a;
-        // self = Stitch::linger(self)
-        //     .unwrap()
-        //     .pull_through()
-        //     .unwrap()
-        //     .pull_over()
-        //     .unwrap()
-        //     .finish()
-        //     .unwrap();
         (self, moment_b)
     }
 
@@ -361,7 +349,6 @@ impl Hook {
         }
 
         self.peculiar.insert(ring_root, Peculiarity::Locked);
-        self.round_spans.push((ring_root, ring_end));
 
         self.now = Moment {
             round_count: 0,
