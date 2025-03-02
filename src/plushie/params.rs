@@ -43,17 +43,23 @@ pub struct Params {
 
     /// Experimental multipart support
     pub multipart: bool,
-    pub nodes: HashMap<String, LimbParam>,
+    pub nodes: HashMap<String, LimbParams>,
+    pub hook: HookParams,
 
     pub skelet_stuffing: SkeletParams,
     pub track_performance: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct LimbParam {
+pub struct LimbParams {
     pub lock_x: Option<f32>,
     pub lock_y: Option<f32>,
     pub lock_z: Option<f32>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct HookParams {
+    pub tip_from_fo: bool,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -133,6 +139,7 @@ impl Params {
             skelet_stuffing: Default::default(),
             track_performance: false,
             multipart: false,
+            hook: Default::default(),
             nodes: HashMap::new(),
         }
     }
@@ -173,6 +180,7 @@ impl Params {
             "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
             "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
             "multipart" => self.multipart = val.parse()?,
+            "tip_from_fo" => self.hook.tip_from_fo = val.parse()?,
             _ => {
                 log::debug!("Unknown parameter: {}", key);
                 return Err(Box::new(ParamsError::Unknown(key.to_owned())));
@@ -205,6 +213,12 @@ impl Params {
 impl Default for Params {
     fn default() -> Self {
         Self::floored()
+    }
+}
+
+impl Default for HookParams {
+    fn default() -> Self {
+        Self { tip_from_fo: true }
     }
 }
 

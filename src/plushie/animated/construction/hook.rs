@@ -10,9 +10,12 @@ use leniency::Leniency;
 
 use self::{utils::*, working_stitch::Stitch, HookError::*};
 use super::hook_result::{Edges, InitialGraph};
-use crate::acl::{
-    actions::{Action, Label},
-    Flow,
+use crate::{
+    acl::{
+        actions::{Action, Label},
+        Flow,
+    },
+    plushie::params::HookParams,
 };
 
 #[derive(Clone, Debug)]
@@ -95,7 +98,7 @@ fn split_moment(
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow, _leniency: &Leniency) -> Result<InitialGraph, HookError> {
+    pub fn parse(mut flow: impl Flow, params: &HookParams) -> Result<InitialGraph, HookError> {
         if flow.peek().is_none() {
             return Err(Empty);
         }
@@ -104,7 +107,7 @@ impl Hook {
         while let Some(action) = flow.next() {
             log::trace!("Performing [{i}] {action:?}");
             i += 1;
-            hook = hook.perform(&action)?;
+            hook = hook.perform(&action, params)?;
         }
 
         let result = hook.finish();
@@ -124,7 +127,7 @@ impl Hook {
         )
     }
 
-    fn do_perform(mut self, action: &Action) -> Result<Self, HookError> {
+    fn do_perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
         match action {
             Sc => {
                 self = Stitch::linger(self)?
@@ -194,7 +197,11 @@ impl Hook {
                 self.mark_to_node.insert(label.clone(), self.now.cursor);
                 self.magic_ring(*x);
             }
-            FO => self = Stitch::fasten_off_with_tip(self)?,
+            FO => {
+                if params.tip_from_fo {
+                    self = Stitch::fasten_off_with_tip(self)?
+                }
+            }
             Color(c) => self.color = *c,
         };
 
@@ -210,13 +217,13 @@ impl Hook {
         Ok(self)
     }
 
-    pub fn perform(self, action: &Action) -> Result<Self, HookError> {
+    pub fn perform(self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
         match self.leniency {
-            Leniency::NoMercy => self.do_perform(action),
+            Leniency::NoMercy => self.do_perform(action, params),
             Leniency::SkipIncorrect => {
                 // If this approach turns out to be actually useful, a more efficient implementation is necessary
                 let copy = self.clone();
-                match copy.do_perform(action) {
+                match copy.do_perform(action, params) {
                     Ok(hook) => Ok(hook),
                     Err(_) => Ok(self),
                 }
@@ -291,6 +298,12 @@ mod tests {
 
     const COLOR: colors::Color = colors::RED;
 
+    impl Hook {
+        pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
+            self.perform(action, &HookParams::default())
+        }
+    }
+
     #[test]
     fn test_start_with_magic_ring() {
         let h = Hook::start_with(&MR(3), COLOR).unwrap();
@@ -310,7 +323,7 @@ mod tests {
     fn test_part_limits_gets_filled() {
         let h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.part_limits, vec![0]);
-        let h = h.perform(&MRConfigurable(6, "main".into())).unwrap();
+        let h = h.test_perform(&MRConfigurable(6, "main".into())).unwrap();
         q!(h.part_limits, vec![0, 4]);
         let result = h.finish();
         q!(result.part_limits, vec![0, 4, 11]);
@@ -350,17 +363,17 @@ mod tests {
     }
 
     #[test]
-    fn test_perform_sc() {
+    fn test_test_perform_sc() {
         let mut h = Hook::start_with(&MR(6), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6, 7]));
         q!(h.now.cursor, 8);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 5);
         q!(h.round_spans, vec![(0, 6)]);
 
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([3, 4, 5, 6, 7, 8]));
         q!(h.now.cursor, 9);
         q!(h.now.round_count, 2);
@@ -372,25 +385,25 @@ mod tests {
     fn test_next_round() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.round_spans.len(), 1);
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3)]);
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3)]);
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.now.round_count, 0);
         q!(h.now.round_left, 3);
 
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 2);
     }
 
     #[test]
-    fn test_perform_inc() {
+    fn test_test_perform_inc() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        h = h.perform(&Inc).unwrap();
+        h = h.test_perform(&Inc).unwrap();
         q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
         q!(h.now.cursor, 6);
         q!(h.now.round_count, 2);
@@ -411,10 +424,10 @@ mod tests {
     }
 
     #[test]
-    fn test_perform_dec() {
+    fn test_test_perform_dec() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
-        h = h.perform(&Dec).unwrap();
+        h = h.test_perform(&Dec).unwrap();
         q!(h.now.anchors, Queue::from([3, 4]));
         q!(h.now.cursor, 5);
         q!(h.now.round_count, 1);
@@ -423,14 +436,14 @@ mod tests {
     }
 
     #[test]
-    fn test_perform_fo_after_full_round() {
+    fn test_test_perform_fo_after_full_round() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(h.edges.len(), 5);
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.now.cursor, 7);
         q!(h.now.round_count, 0);
@@ -450,7 +463,7 @@ mod tests {
                 vec![]
             ])
         );
-        h = h.perform(&FO).unwrap();
+        h = h.test_perform(&FO).unwrap();
         q!(h.now.anchors, Queue::from([]));
         q!(
             h.edges,
@@ -472,21 +485,23 @@ mod tests {
     #[test]
     fn test_round_spans_with_dec() {
         let mut h = Hook::start_with(&MR(4), COLOR).unwrap();
-        h = h.perform(&Dec).unwrap();
-        h = h.perform(&Dec).unwrap();
+        h = h.test_perform(&Dec).unwrap();
+        h = h.test_perform(&Dec).unwrap();
         assert_eq!(h.round_spans, vec![(0, 4), (5, 6)]);
     }
 
     #[test]
     fn test_error_on_stitch_after_fo() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        h = h.perform(&FO).unwrap();
-        h.clone().perform(&Sc).expect_err("Can't continue after FO");
+        h = h.test_perform(&FO).unwrap();
         h.clone()
-            .perform(&Inc)
+            .test_perform(&Sc)
             .expect_err("Can't continue after FO");
         h.clone()
-            .perform(&Dec)
+            .test_perform(&Inc)
+            .expect_err("Can't continue after FO");
+        h.clone()
+            .test_perform(&Dec)
             .expect_err("Can't continue after FO");
     }
 
@@ -494,10 +509,10 @@ mod tests {
     fn test_goto_after_fo() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
-        h = h.perform(&Mark(0)).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Mark(0)).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
         q!(
@@ -513,7 +528,7 @@ mod tests {
                 vec![]
             ])
         );
-        h = h.perform(&FO).unwrap();
+        h = h.test_perform(&FO).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -530,13 +545,13 @@ mod tests {
         );
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 7)]);
         q!(h.now.anchors, Queue::from([]));
-        h = h.perform(&Goto(0)).unwrap();
+        h = h.test_perform(&Goto(0)).unwrap();
         q!(h.now.cursor, 8);
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.override_previous_stitch, Some(3));
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -559,7 +574,7 @@ mod tests {
     #[test]
     fn test_chain_simple() {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        h = h.perform(&Ch(3)).unwrap();
+        h = h.test_perform(&Ch(3)).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -580,11 +595,11 @@ mod tests {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         let attach_here = 0;
         let return_here = 1;
-        h = h.perform(&Mark(attach_here)).unwrap();
+        h = h.test_perform(&Mark(attach_here)).unwrap();
         q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
         q!(h.now.round_count, 0);
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Mark(return_here)).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Mark(return_here)).unwrap();
         q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 2);
@@ -599,7 +614,7 @@ mod tests {
                 vec![],
             ])
         );
-        h = h.perform(&Attach(attach_here, 3)).unwrap();
+        h = h.test_perform(&Attach(attach_here, 3)).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -632,11 +647,11 @@ mod tests {
         let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
         let attach_here = 0;
         let return_here = 1;
-        h = h.perform(&Mark(attach_here)).unwrap();
+        h = h.test_perform(&Mark(attach_here)).unwrap();
         q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
         q!(h.now.round_count, 0);
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Mark(return_here)).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Mark(return_here)).unwrap();
         q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 2);
@@ -651,7 +666,7 @@ mod tests {
                 vec![],
             ])
         );
-        h = h.perform(&Attach(attach_here, 3)).unwrap();
+        h = h.test_perform(&Attach(attach_here, 3)).unwrap();
         q!(
             h.edges,
             Edges::from(vec![
@@ -675,7 +690,7 @@ mod tests {
             q!(part_a.round_left, 4);
         }
 
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from(vec![5, 6, 7, 9]));
         q!(h.now.round_count, 1);
         q!(h.now.round_left, 3);
@@ -697,12 +712,12 @@ mod tests {
             ])
         );
 
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from(vec![6, 7, 9, 10]));
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from(vec![7, 9, 10, 11]));
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
 
         h.finish();
     }
@@ -727,7 +742,7 @@ mod tests {
         let mut flow =
             crate::acl::simple_flow::SimpleFlow::new(vec![Color(colors::RED), MR(3), Ch(3)]);
         let mut h = Hook::from_starting_sequence(&mut flow).unwrap();
-        h = h.perform(&flow.next().unwrap()).unwrap();
+        h = h.test_perform(&flow.next().unwrap()).unwrap();
         q!(
             h.edges,
             Edges::from(vec![

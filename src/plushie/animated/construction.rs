@@ -8,7 +8,7 @@ use super::{centroid::Centroids, Limb, Params, Plushie};
 use crate::{
     acl::{pest_parser::Pattern, Flow},
     common::*,
-    plushie::params::LimbParam,
+    plushie::params::LimbParams,
 };
 
 impl Plushie {
@@ -18,7 +18,7 @@ impl Plushie {
             let mut params = params;
             params.nodes.insert(
                 "part_first_hump".into(),
-                LimbParam {
+                LimbParams {
                     lock_x: Some(0.0),
                     lock_y: Some(0.0),
                     lock_z: Some(2.0),
@@ -26,7 +26,7 @@ impl Plushie {
             );
             params.nodes.insert(
                 "part_second_hump".into(),
-                LimbParam {
+                LimbParams {
                     lock_x: Some(0.0),
                     lock_y: Some(0.0),
                     lock_z: Some(-6.0),
@@ -35,7 +35,7 @@ impl Plushie {
             params
         };
 
-        let hook_result = Hook::parse(flow, &params.hook_leniency)?;
+        let hook_result = Hook::parse(flow, &params.hook)?;
         let mark_to_node = hook_result.mark_to_node.clone();
         let limbs = {
             if !params.multipart {

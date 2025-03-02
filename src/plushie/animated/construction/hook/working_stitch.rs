@@ -1,7 +1,9 @@
-use super::utils::{HookError, Peculiarity, WorkingLoops};
-use super::Hook;
-
 use HookError::*;
+
+use super::{
+    utils::{HookError, Peculiarity, WorkingLoops},
+    Hook,
+};
 
 pub struct Stitch {
     hook: Hook,
@@ -191,11 +193,12 @@ fn previous_stitch(hook: &mut Hook) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::hook_result::Edges;
-    use super::super::utils::*;
-
-    use super::*;
     use pretty_assertions::assert_eq as q;
+
+    use super::{
+        super::{super::hook_result::Edges, utils::*},
+        *,
+    };
 
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
@@ -222,25 +225,25 @@ mod tests {
     #[test]
     fn test_goto_without_fo() {
         let mut h = mr3();
-        h = h.perform(&Mark(0)).unwrap();
+        h = h.test_perform(&Mark(0)).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.now.cursor, 7);
-        h = h.perform(&Goto(0)).unwrap();
+        h = h.test_perform(&Goto(0)).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 7);
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([7, 8, 9]));
     }
 
     fn chain() -> Hook {
         let mut h = mr3();
-        h = h.perform(&Ch(3)).unwrap();
+        h = h.test_perform(&Ch(3)).unwrap();
         q!(h.now.anchors, Queue::from([5, 4, 1, 2, 3]));
         q!(
             h.edges,
@@ -263,7 +266,7 @@ mod tests {
     #[test]
     fn test_sc_after_chain() {
         let mut h = chain();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([4, 1, 2, 3, 7]));
         q!(
             h.edges,
@@ -287,16 +290,16 @@ mod tests {
     #[test]
     fn test_fo_completes_previous_round() {
         let mut h = mr3();
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.round_left, 1);
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.round_left, 3);
         q!(h.round_spans, vec![(0, 3), (4, 6)]);
-        h = h.perform(&Sc).unwrap();
-        h = h.perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
         q!(h.now.round_left, 1);
-        h = h.perform(&FO).unwrap();
+        h = h.test_perform(&FO).unwrap();
         q!(h.round_spans, vec![(0, 3), (4, 6), (7, 8), (9, 9)]);
     }
 }
