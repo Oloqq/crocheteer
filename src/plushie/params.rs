@@ -220,7 +220,7 @@ impl Default for Params {
 impl Default for HookParams {
     fn default() -> Self {
         Self {
-            tip_from_fo: true,
+            tip_from_fo: false,
             enforce_counts: true,
         }
     }

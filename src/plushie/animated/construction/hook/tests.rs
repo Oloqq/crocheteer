@@ -126,7 +126,15 @@ fn test_test_perform_fo_after_full_round() {
             vec![]
         ])
     );
-    h = h.test_perform(&FO).unwrap();
+    h = h
+        .perform(
+            &FO,
+            &HookParams {
+                tip_from_fo: true,
+                enforce_counts: false,
+            },
+        )
+        .unwrap();
     q!(h.now.anchors, Queue::from([]));
     q!(
         h.edges,
@@ -147,7 +155,15 @@ fn test_test_perform_fo_after_full_round() {
 #[test]
 fn test_error_on_stitch_after_fo() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    h = h.test_perform(&FO).unwrap();
+    h = h
+        .perform(
+            &FO,
+            &HookParams {
+                tip_from_fo: true,
+                enforce_counts: false,
+            },
+        )
+        .unwrap();
     h.clone()
         .test_perform(&Sc)
         .expect_err("Can't continue after FO");
@@ -181,7 +197,15 @@ fn test_goto_after_fo() {
             vec![]
         ])
     );
-    h = h.test_perform(&FO).unwrap();
+    h = h
+        .perform(
+            &FO,
+            &HookParams {
+                tip_from_fo: true,
+                enforce_counts: false,
+            },
+        )
+        .unwrap();
     q!(
         h.edges,
         Edges::from(vec![

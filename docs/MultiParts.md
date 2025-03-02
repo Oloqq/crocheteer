@@ -85,26 +85,21 @@ The problem pattern uses a slip stitch
 - going with option 2
 - it might mess up part_limits (aka limb_limits)
 
-# FO
-I see no way to distinguish in-round FO from the tip FO
-I was already dubious of creating the tip
-Disable tip, make FO essentialy a noop
-do it under @tip_from_fo
-
 # New in backlog
-Cylinder initializer could be adjusted for multipart
 Leniency is really obsolete
 ChainOfZero (and probably others) does not display line number
 Make attach use size 0 by default (make argument optional)
 
-# ACL clarification
-the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook. There is no reason to restrict it to the end of the round.
+# Annotated round counts
+the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook.
+Hook does not care whether it is at the end of the round. There is no reason to restrict it to the end of the round. Grammar has to be adjusted to allow using it at arbitrary positions
 If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook.
 
 # Attach
 Attach currently does not create a node by itself.
 Some assumptions are therefore made in hook.
 If user puts `attach(..), goto(..)` the state may get corrupted.
+This only applies to direct_attach and attach_merge.
 
 # State
 Hook does not remove or mark used labels in any way.
@@ -119,3 +114,14 @@ Duplicate `goto/attach` may caused undefined behavior.
 - Rooted -> Locked
 - Limit of stuffing force has been adjusted from 1000.0 to 1.0
 - Introduced limit for link force (1.0)
+- Cylinder initializer was trivialized.
+  - Round counts are not taken into account anymore
+  - Round counting was complex and added massive cognitive load to Hook
+  - The initial shape was arbitrary either way
+- Tip for FO
+  - it was always dubious whether it is useful
+  - I see no way to distinguish in-round FO from the tip FO
+    - in-round FO is necesasry for multipart, even if it does not matter for the simulator, it does for the human reading
+  - @tip_from_fo=true restores building the tip
+    - saving for experiments, prolly gonna remove
+-
