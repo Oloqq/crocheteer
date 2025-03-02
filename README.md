@@ -1,3 +1,5 @@
+![](./docs/dude.gif)
+
 # Crocheteer
 - Visualize amigurumi/crochet patterns as 3D models
   - [x] simulation + stuffing
@@ -23,6 +25,8 @@ This project was used for a bachelor of engineering thesis (*Fabric Simulation f
 See sample patterns that Crochetter understands in [patterns](./patterns/).
 
 <!-- TODO create a test suite that parses all of them -->
+
+![alt text](images/image.png)
 
 # How to run
 This manual assumes you already have Rust's `cargo` and node's `npm` installed.
