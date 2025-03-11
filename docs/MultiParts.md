@@ -93,7 +93,7 @@ Make attach use size 0 by default (make argument optional)
 # Annotated round counts
 the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook.
 Hook does not care whether it is at the end of the round. There is no reason to restrict it to the end of the round. Grammar has to be adjusted to allow using it at arbitrary positions
-If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook.
+If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook. This can be either done by introducing `Action::Around(Vec<Action>)`, which is problematic since it would prevent Clone, or by introducing `AroundStart` and `AroundEnd` (basically parentheses)
 
 # Attach
 Attach currently does not create a node by itself.
