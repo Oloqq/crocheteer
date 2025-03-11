@@ -52,8 +52,20 @@ interstitchable_action = {
 }
 
 part_config = {
-  IDENT ~ NEWLINE* ~ "{" ~ NEWLINE* ~ config_entry ~ ("," ~ NEWLINE* ~ config_entry)* ~ ","? ~ NEWLINE* ~ "}"
+  IDENT ~ LINEEND?
+  ~ "{" ~ LINEEND?
+    ~ config_entries
+  ~ "}" ~ LINEEND
 }
+
+config_entries = {
+  comment*
+  ~ config_entry
+    ~ ("," ~ LINEEND? ~ (comment)* ~ LINEEND? ~ config_entry)*
+  ~ ","? ~ LINEEND
+  ~ comment*
+}
+
 config_entry = {
   IDENT ~ "=" ~ (FLOAT | IDENT)
 }
@@ -77,7 +89,7 @@ not_newline = _{
     !(NEWLINE) ~ ANY
 }
 
-LINEEND     =  { NEWLINE | comment | EOI }
+LINEEND     = _{ NEWLINE | comment | EOI }
 R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
 IDENT       = @{ (ALPHA | DIGIT | "_")+ }

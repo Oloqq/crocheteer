@@ -85,6 +85,10 @@ The problem pattern uses a slip stitch
 - going with option 2
 - it might mess up part_limits (aka limb_limits)
 
+# Stuffing
+<!-- TODO -->
+- need to configure centroid number per Limb
+
 # New in backlog
 Leniency is really obsolete
 ChainOfZero (and probably others) does not display line number

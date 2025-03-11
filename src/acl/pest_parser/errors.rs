@@ -1,8 +1,9 @@
 use std::fmt::Display;
 
-use super::Rule;
 use pest::iterators::Pair;
 pub use ErrorCode::*;
+
+use super::Rule;
 
 #[derive(Debug)]
 pub struct Error {
@@ -32,6 +33,8 @@ pub enum ErrorCode {
         first_defined: usize,
     },
     UndefinedLabel(String),
+    InvalidConfigEntry(String),
+    DuplicatePart(String),
 }
 
 #[derive(Debug)]

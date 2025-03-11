@@ -269,6 +269,16 @@ impl Default for AutoStoppingParams {
     }
 }
 
+impl Default for LimbParams {
+    fn default() -> Self {
+        Self {
+            lock_x: None,
+            lock_y: None,
+            lock_z: None,
+        }
+    }
+}
+
 #[allow(unused)]
 pub mod handpicked {
     use super::*;

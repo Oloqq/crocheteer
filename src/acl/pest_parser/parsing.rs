@@ -1,7 +1,7 @@
 use pest::iterators::{Pair, Pairs};
 
 use super::{errors::*, CurrentLoop, Pattern, Rule};
-use crate::acl::actions::Action;
+use crate::{acl::actions::Action, plushie::params::LimbParams};
 
 mod protect_fields {
     use super::Action;
@@ -72,14 +72,33 @@ impl Pattern {
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
-                    Rule::part_config => {
-                        // println!("config: {:?}", pair);
-                    }
+                    Rule::part_config => self.part_config(pair.into_inner())?,
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
             }
         }
+        Ok(())
+    }
+
+    fn part_config(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+        let part_name_pair = pairs.next().unwrap();
+        let part_name = part_name_pair.as_str().to_owned();
+        if self.limbs.contains_key(&part_name) {
+            return err(DuplicatePart(part_name), &part_name_pair);
+        }
+
+        let mut params = LimbParams::default();
+        for entry in pairs.next().unwrap().into_inner() {
+            assert!(matches!(entry.as_rule(), Rule::config_entry));
+            let mut name_val = entry.into_inner();
+            let name_pair = name_val.next().unwrap();
+            let name = name_pair.as_str();
+            let val = name_val.next().unwrap().as_str();
+            config_entry(&mut params, name, val)
+                .map_err(|_| error(InvalidConfigEntry(name.to_owned()), &name_pair))?;
+        }
+        self.limbs.insert(part_name, params);
         Ok(())
     }
 
@@ -379,6 +398,21 @@ fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
 
 fn ident(pair: Pair<Rule>) -> Result<String, Error> {
     Ok(pair.into_inner().as_str().to_owned())
+}
+
+fn config_entry(
+    params: &mut LimbParams,
+    name: &str,
+    val: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    match name {
+        "x" => params.lock_x = Some(val.parse()?),
+        "y" => params.lock_y = Some(val.parse()?),
+        "z" => params.lock_z = Some(val.parse()?),
+        "centroids" => todo!(),
+        _ => return Err("unknown name".into()),
+    }
+    Ok(())
 }
 
 #[cfg(test)]

@@ -7,7 +7,10 @@ pub use errors::{Error, Warning};
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::acl::{actions::Action, Flow};
+use crate::{
+    acl::{actions::Action, Flow},
+    plushie::params::LimbParams,
+};
 
 #[derive(Parser)]
 #[grammar = "acl/pest_parser/ACL.pest"]
@@ -16,6 +19,7 @@ struct PatParser;
 #[derive(Debug)]
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
+    pub limbs: HashMap<String, LimbParams>,
     pub annotated_round_counts: Vec<Option<usize>>,
     pub round_counts: Vec<u32>,
     labels: HashMap<String, usize>,
@@ -38,6 +42,7 @@ impl Pattern {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
         let mut p = Self {
             parameters: HashMap::new(),
+            limbs: HashMap::new(),
             annotated_round_counts: vec![],
             round_counts: vec![],
             labels: HashMap::new(),

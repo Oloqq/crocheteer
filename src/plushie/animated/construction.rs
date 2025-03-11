@@ -8,33 +8,10 @@ use super::{centroid::Centroids, Limb, Params, Plushie};
 use crate::{
     acl::{pest_parser::Pattern, Flow},
     common::*,
-    plushie::params::LimbParams,
 };
 
 impl Plushie {
     pub fn from_flow(flow: impl Flow, params: Params) -> Result<Self, String> {
-        //TEMP
-        let params = {
-            let mut params = params;
-            params.nodes.insert(
-                "part_first_hump".into(),
-                LimbParams {
-                    lock_x: Some(-1.0),
-                    lock_y: Some(0.0),
-                    lock_z: Some(-1.0),
-                },
-            );
-            params.nodes.insert(
-                "part_second_hump".into(),
-                LimbParams {
-                    lock_x: Some(1.0),
-                    lock_y: Some(0.0),
-                    lock_z: Some(1.0),
-                },
-            );
-            params
-        };
-
         let hook_result = Hook::parse(flow, &params.hook)?;
         let mark_to_node = hook_result.mark_to_node.clone();
         let limbs = {
@@ -95,6 +72,10 @@ impl Plushie {
 
         if params.skelet_stuffing.enable && params.multipart {
             return Err("Cannot combine skeletonization and multipart".into());
+        }
+
+        if params.multipart {
+            params.nodes = pattern.limbs.clone();
         }
 
         Ok(Self::from_flow(pattern, params)?)
