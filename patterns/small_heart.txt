@@ -2,7 +2,7 @@
 
 @floored = false
 # @centroids = 0
-@centroids = 1
+@centroids = 4
 
 # @multipart = false
 # @rooted = true
@@ -16,31 +16,34 @@
 # first hump on top of heart
 color(255, 0, 0)
 MR(6, part_first_hump)
-: 6 sc (6)
+: [sc] around (6)
 R6: slst, FO, mark(first_hump) (6)
 
-color(0, 0, 255)
+color(255, 120, 0)
 MR(6, part_second_hump)
-: 6 sc (6)
-R6: color(0, 255, 0), mark(second_hump), attach(first_hump, 0), 6 sc, color(120, 255, 0), attach(second_hump, 997), 6 sc (12)
-: 12 sc (12)
+: [sc] around (6)
 
-# R7: [4 sc, dec] x 6 (30)
-# R8: [sc] around (30)
-# R9: [dec, 13 sc] around (28)
-# R10: [dec, 5 sc] around (24)
-# R11: 2 sc, [dec, 4 sc] x 3, dec, 2 sc (20)
-# R12: [dec, 3 sc] around (16)
-# R13: [dec, 2 sc] around (12)
-# start stuffing
-# use a needle and the strand left from the first hump to sew the hole shut
-# R14: [2 sc, dec] around (9)
-# R15: [sc, dec] around (6)
-# R16: [dec] around (3)
+color(255, 255, 0)
+R6: mark(second_hump), attach(first_hump, 0), sc, 5 sc, attach(second_hump, 997), sc, 5 sc (12)
+
+color(255, 255, 125)
+R7: [4 sc, dec] x 2 (10)
+R8: [sc] around (10)
+R9: [dec, sc] x 3, sc (7)
+R10: dec, 5 sc (6)
+R11: dec, dec, dec (3)
 
 part_first_hump {
-    x = -2,
+    # bruh
+    x = -1, # cmt
     y = 0,
-    z = 0,
-    centroids = 1
+    # broh
+    z = -1,
+    # centroids = 1
+}
+
+part_second_hump {
+    x = 1,
+    y = 0,
+    z = 3,
 }

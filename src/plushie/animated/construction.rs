@@ -75,7 +75,7 @@ impl Plushie {
         }
 
         if params.multipart {
-            params.nodes = pattern.limbs.clone();
+            params.limbs = pattern.limbs.clone();
         }
 
         Ok(Self::from_flow(pattern, params)?)

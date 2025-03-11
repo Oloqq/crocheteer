@@ -109,7 +109,7 @@ impl Plushie {
     }
 
     pub fn apply_node_params(&mut self) {
-        for (label, node_param) in &self.params.nodes {
+        for (label, node_param) in &self.params.limbs {
             let Some(i) = self.mark_to_node.get(label) else {
                 // TODO at parsing, check this does not happen
                 continue;

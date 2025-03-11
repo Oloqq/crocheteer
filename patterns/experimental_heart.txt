@@ -34,17 +34,24 @@ R8: [sc] around (30)
 R9: [dec, 13 sc] around (28)
 R10: [dec, 5 sc] around (24)
 R11: 2 sc, [dec, 4 sc] x 3, dec, 2 sc (20)
-# R12: [dec, 3 sc] around (16)
-# R13: [dec, 2 sc] around (12)
+R12: [dec, 3 sc] around (16)
+R13: [dec, 2 sc] around (12)
 # start stuffing
 # use a needle and the strand left from the first hump to sew the hole shut
-# R14: [2 sc, dec] around (9)
-# R15: [sc, dec] around (6)
-# R16: [dec] around (3)
+R14: [2 sc, dec] around (9)
+R15: [sc, dec] around (6)
+R16: [dec] around (3)
 
 part_first_hump {
-    x = -2,
+    x = 7,
     y = 0,
     z = 0,
-    centroids = 1
+    # centroids = 1
+}
+
+part_second_hump {
+    x = -7,
+    y = 0,
+    z = 0,
+    # centroids = 1
 }

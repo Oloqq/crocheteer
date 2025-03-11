@@ -3,39 +3,65 @@ The experimental pattern is the heart.
 
 To build it, first one hump is crocheted, then the user starts working on the second hump from a new magic ring, and joins those 2 together.
 
-Allowing multiple MRs introduces problems:
-- which node should be the root?
-- should there even be a root?
-  - yes, Plushies may fly offscreen otherwise
-  - but another way is to lock at least one point in space
+To allow multiple MRs we need to rethink a couple things.
 
-"Keep root at origin" makes no sense with MultiPart. But we need to lock some points in space. ACL should allow to designate specific points to be locked in space. ACL should allow setting precise coordinates for the points. There should be a mechanism to unlock points, e.g. when a certain another stitch has been completed. This could be implemented using marks.
+# Limbs
+Let's introduce the concept of a `Limb`, that is, a piece of Plushies skin (skin = nodes = stitches) with their own centroids (we were already calling centroids "bones" in the context of skeletonization, and I feel that "Limb" is more expressive than "Part", and explains the typical use case better).
+<!-- TODO rename centroids to bones -->
 
-Allow user to move the locked points in the GUI. Display new coordinates in a way that a user can copy them.
+# Root node
+The first node (virtual node in the middle of MR) used to be marked as root.
+The root node was necessary because with certain techniques (SLO), or when Plushies are not closed, the creation would fly away.
+Forces were calculated for the root node in ordinary way. However, Root was a special case as the whole Plushie would be translated by the forces that acted on the Root, so the Root was never allowed to leave origin.
 
-# Locking
-Simple and naive locking of points without redirecting the forces acting on the locked points may lead to artifacts (the locked point "collapses" inwards). The forces should be redirected just as they are when plushie is @rooted. In this case Peculiarity::Root becomes redundant. Peculiarity::Constrained does not make sense anymore (why would be want to slow down movement of a node).
-Refactor Peculiarity::Constrained into Peculiarity::Locked, and merge the logic of Peculiarity::Root and Peculiarity::Locked (remove Peculiarity::Root).
+This treatment can only be applied to a single node (as experiments proved).
 
-@multipart = true
-@floored = false
-@reflect_locked = true
-with a single part should be equivalent to
-@multipart = false
-@floored = false
-@rooted = true
+Theoretically, the first node of the first MR (first `Limb`) could be Root, and the virtual nodes of the next MRs (next `Limbs`) could be treated normally. But this approach only works if the `Limbs` eventually get joined. (We don't want even a single Limb to fly away).
 
-reflect_locked does not work when two parts are not connected
+## Peculiarity::Locked
+Any Root logic shall be removed. The Plushie will instead be kept on screen by placing `Peculiarity::Locked` on the virtual nodes of each MRs. Locked nodes cannot move from their starting position. Those positions have to be selected somehow, so ACL needs to be extended.
 
-Let's set aside locking arbitrary points now and stick to MR roots.
+If more than one MR is present in the pattern, each MR must be provided 2 arguments: *ring size* and *limb label*, like so:
+```
+MR(6, limb_first_hump)
+```
 
-## Dragging
+<!-- TODO rename part_config to limb_config -->
+
+Then, elsewhere in the pattern the parameters (`limb_config`) for that Limb may be specified:
+```
+limb_first_hump {
+  x = 7,
+  y = 0,
+  z = 0,
+}
+```
+I would like to keep the ACL parts that are relevant to a human and those only relevant in simulation separate (as much as possible).
+
+The parameters must include:
+- x, y, z coordinates
+- TODO rotation of the part
+  - applied only when creating the first 3 nodes
+- TODO centroid number for the part, and possibly other stuffing parameters?
+
+## Draft
+There should be a mechanism to unlock points, e.g. when a certain another stitch has been completed, or Limbs got joined. This could be implemented using marks.
+
+
+# Node dragging
+The new `Peculiarity::Locked` allows us to implement sensible dragging.
+
+Allow user to move the locked points in the GUI.
+
+TODO Display new coordinates in a way that a user can copy them (useful for setting `limb_config`).
+
 Gui should allow to disable the dragging behavior so it does not mess up camera controls when not needed.
 
-Dragging a node far away messes up the simulation
+Dragging a node far away used to mess up the simulation. Max attract force was implemented
 
-Need a way to set a specific position programatically
+Need a way to set a specific position programatically. (see `main.ts` call function)
 
+<!-- TODO reflect_locked is a failed endeavor, clean up -->
 Dragging does not really work with @reflect_locked = true
 
 # Stuffing
@@ -44,8 +70,6 @@ Centroids need to be restricted to certain parts.
 Global @centroids does not make sense with @multipart, unless the global number of centroids is distributed between the parts
 - easy mode: based on node number
 - hard mode: distributed dynamically based on sum of weight for centroids in parts?
-
-Let's introduce a concept of a `Limb`, that is, a piece of Plushies skin (skin = nodes = stitches) with their own centroids (since we were already calling centroids bones in the context of skeletonization, I feel that Limb is more expressive that Part)
 
 # Hook
 Hook is designed to work from a single starter.
@@ -88,6 +112,7 @@ The problem pattern uses a slip stitch
 # Stuffing
 <!-- TODO -->
 - need to configure centroid number per Limb
+  - also need to add rotations
 
 # New in backlog
 Leniency is really obsolete

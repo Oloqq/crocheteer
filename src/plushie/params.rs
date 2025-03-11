@@ -43,7 +43,7 @@ pub struct Params {
 
     /// Experimental multipart support
     pub multipart: bool,
-    pub nodes: HashMap<String, LimbParams>,
+    pub limbs: HashMap<String, LimbParams>,
     pub hook: HookParams,
 
     pub skelet_stuffing: SkeletParams,
@@ -141,7 +141,7 @@ impl Params {
             track_performance: false,
             multipart: false,
             hook: Default::default(),
-            nodes: HashMap::new(),
+            limbs: HashMap::new(),
         }
     }
 

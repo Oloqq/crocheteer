@@ -29,7 +29,7 @@ impl Plushie {
         let mark_of_this = self.mark_to_node.iter().find(|x| *x.1 == index);
         let mut ring_root = V::zeros();
         if let Some((name, _)) = mark_of_this {
-            if let Some(node_param) = self.params.nodes.get(name) {
+            if let Some(node_param) = self.params.limbs.get(name) {
                 if let Some(x) = node_param.lock_x {
                     ring_root.x = x;
                 }
