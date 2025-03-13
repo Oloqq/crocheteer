@@ -49,7 +49,6 @@ interstitchable_action = {
     | (KW_MARK ~ arg_ident)
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
-    | (KW_CH ~ arg_int)
     | (KW_ATTACH ~ arg_ident_int)
 }
 

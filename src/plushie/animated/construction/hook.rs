@@ -151,12 +151,6 @@ impl Hook {
                 self.override_previous_stitch = Some(anchor);
                 self.now.anchors.push_back(anchor);
             }
-            Ch(x) => {
-                if matches!(self.last_stitch, Some(Ch(_))) {
-                    return Err(ChainAfterChain);
-                }
-                self = Stitch::linger(self)?.chain(*x)?;
-            }
             Attach(label, chain_size) => {
                 log::debug!("attach to label: {label}");
                 // FIXME for now, assuming that chain_size > 0 connects to the same limb
@@ -170,7 +164,6 @@ impl Hook {
                     self = self.attach_directly(label)?;
                 }
             }
-            Reverse => unimplemented!(),
             FLO => self.now.working_on = WorkingLoops::Front,
             BLO => self.now.working_on = WorkingLoops::Back,
             BL => self.now.working_on = WorkingLoops::Both,
@@ -212,9 +205,7 @@ impl Hook {
 
         match action {
             MR(..) => unreachable!("MR allowed inside the pattern is stored as MRConfigurable"),
-            Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) | Sew(..) => {
-                self.last_mark = None
-            }
+            FLO | BLO | BL | Goto(_) | FO | Action::Color(_) | Sew(..) => self.last_mark = None,
             Mark(_) => self.last_mark = Some(action.clone()),
             _ => {
                 self.last_stitch = Some(action.clone());

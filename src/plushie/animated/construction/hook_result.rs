@@ -69,6 +69,10 @@ impl Edges {
     pub fn last(&self) -> Option<&Vec<usize>> {
         self.edges.last()
     }
+
+    pub fn data(&self) -> &Vec<Vec<usize>> {
+        &self.edges
+    }
 }
 
 impl Into<Vec<Vec<usize>>> for Edges {

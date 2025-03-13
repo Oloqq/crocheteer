@@ -47,19 +47,6 @@ fn test_start_with_magic_ring_configurable() {
 }
 
 #[test]
-#[ignore = "chain starter is disabled"]
-fn test_start_with_chain() {
-    let h = Hook::start_with(&Ch(3), COLOR).unwrap();
-    q!(h.now.anchors, Queue::from([0, 1, 2]));
-    q!(h.now.cursor, 3);
-    q!(h.edges, Edges::from(vec![vec![1], vec![2], vec![], vec![]]));
-    q!(
-        h.edges,
-        Edges::from_unchecked(vec![vec![], vec![0], vec![1], vec![]])
-    );
-}
-
-#[test]
 fn test_test_perform_sc() {
     let mut h = Hook::start_with(&MR(6), COLOR).unwrap();
     q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
@@ -248,25 +235,6 @@ fn test_goto_after_fo() {
 }
 
 #[test]
-fn test_chain_simple() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    h = h.test_perform(&Ch(3)).unwrap();
-    q!(
-        h.edges,
-        Edges::from(vec![
-            vec![1, 2, 3],
-            vec![2],
-            vec![3],
-            vec![4],
-            vec![5],
-            vec![6],
-            vec![],
-            vec![],
-        ])
-    );
-}
-
-#[test]
 fn test_attach1() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
     let attach_here = 0;
@@ -400,21 +368,13 @@ fn test_split_moment() {
 
 #[test]
 fn test_starting_from_color() {
-    let mut flow = crate::acl::simple_flow::SimpleFlow::new(vec![Color(colors::RED), MR(3), Ch(3)]);
+    let mut flow =
+        crate::acl::simple_flow::SimpleFlow::new(vec![Color(colors::RED), MR(3), Sc, Sc, Sc]);
     let mut h = Hook::from_starting_sequence(&mut flow).unwrap();
     h = h.test_perform(&flow.next().unwrap()).unwrap();
     q!(
-        h.edges,
-        Edges::from(vec![
-            vec![1, 2, 3],
-            vec![2],
-            vec![3],
-            vec![4],
-            vec![5],
-            vec![6],
-            vec![],
-            vec![],
-        ])
+        &h.edges.data()[0..4],
+        &[vec![], vec![0], vec![0, 1], vec![0, 2]]
     );
 }
 

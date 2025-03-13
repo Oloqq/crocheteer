@@ -58,42 +58,6 @@ impl Hook {
                 result.magic_ring(*x);
                 Ok(result)
             }
-            Ch(_x) => {
-                todo!("Chain starter requires locking a single coordinate");
-                // let edges: Vec<Vec<usize>> = {
-                //     let mut edges: Vec<Vec<usize>> = (1..*x).map(|i| vec![i]).collect();
-                //     edges.push(vec![]);
-                //     edges.push(vec![]);
-                //     edges
-                // };
-
-                // let mut peculiar = HashMap::new();
-                // for i in 0..*x {
-                //     peculiar.insert(i, Peculiarity::Locked(V::new(1.0, 0.0, 1.0)));
-                // }
-                // let colors: Vec<Color> = (0..*x).map(|_| color).collect();
-
-                // Ok(Self {
-                //     edges: Edges::from(edges),
-                //     peculiar,
-                //     now: Moment {
-                //         round_count: 0,
-                //         round_left: *x,
-                //         anchors: Queue::from_iter(0..*x),
-                //         cursor: *x,
-                //         working_on: WorkingLoops::Both,
-                //     },
-                //     round_spans: vec![(0, *x - 1)],
-                //     parents: vec![None; *x],
-                //     labels: HashMap::new(),
-                //     override_previous_stitch: None,
-                //     color,
-                //     colors,
-                //     last_stitch: None,
-                //     last_mark: None,
-                //     leniency: Leniency::NoMercy,
-                // })
-            }
             _ => Err(HookError::BadStarter),
         }
     }

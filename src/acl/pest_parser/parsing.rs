@@ -295,10 +295,6 @@ impl Pattern {
                 let b = integer(&tokens.next().unwrap())?;
                 Action::Color((r, g, b))
             }
-            Rule::KW_CH => {
-                let count = integer(&tokens.next().unwrap().into_inner().next().unwrap())?;
-                Action::Ch(count)
-            }
             Rule::KW_ATTACH => {
                 let args_pair = tokens.next().unwrap();
                 let mut args = args_pair.clone().into_inner();

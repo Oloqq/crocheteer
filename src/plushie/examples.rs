@@ -1,11 +1,12 @@
 #![allow(unused)]
 
-use super::{Params, Plushie};
-use crate::acl::actions::Action;
-use crate::acl::ergoflow::ErgoFlow;
-use crate::acl::simple_flow::SimpleFlow;
-use crate::common::*;
 use Action::*;
+
+use super::{Params, Plushie};
+use crate::{
+    acl::{actions::Action, ergoflow::ErgoFlow, simple_flow::SimpleFlow},
+    common::*,
+};
 
 pub fn vase_simple_flow() -> Plushie {
     let mut actions: Vec<Action> = vec![MR(6)];
@@ -21,8 +22,9 @@ pub fn vase_simple_flow() -> Plushie {
 }
 
 pub fn pillar_simple_flow() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
     let full_round = vec![Sc; 12];
@@ -37,8 +39,9 @@ pub fn pillar_simple_flow() -> Plushie {
 }
 
 pub fn pillar_blo() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
     let full_round = vec![Sc; 12];
@@ -60,56 +63,10 @@ pub fn pillar_blo() -> Plushie {
     plushie
 }
 
-pub fn hat() -> Plushie {
-    use crate::acl::actions::Action;
-    use Action::*;
-
-    let mut actions: Vec<Action> = vec![Ch(12)];
-    let full_round = vec![Sc; 12];
-    for _ in 0..6 {
-        actions.append(&mut full_round.clone());
-    }
-    actions.push(FO);
-
-    let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
-    plushie
-}
-
-pub fn flailer() -> Plushie {
-    use crate::acl::actions::Action;
-    use Action::*;
-
-    let mut actions: Vec<Action> = vec![MR(6)];
-    actions.append(&mut vec![Inc; 6]);
-    for _ in 0..3 {
-        actions.append(&mut vec![Sc; 12]);
-    }
-    actions.push(Ch(6));
-
-    let flow = SimpleFlow::new(actions);
-    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
-    plushie
-}
-
-pub fn fatflailer() -> Plushie {
-    use crate::acl::actions::Action;
-    use crate::common::colors::*;
-    use Action::*;
-
-    let mut flow = ErgoFlow::new();
-    flow += MR(6);
-    flow += 6 * Inc;
-    flow += 12 * 3 * Sc;
-    flow += Color(RED) + Ch(6) + Color(GREEN) + Sc * 6;
-    flow += Sc * 8;
-    let plushie = Plushie::from_flow(flow, Params::default()).unwrap();
-    plushie
-}
-
 pub fn grzib() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
 
     let mut actions: Vec<Action> = vec![MR(6)];
     actions.append(&mut vec![Inc; 6]);
@@ -139,8 +96,9 @@ pub fn grzib() -> Plushie {
 }
 
 pub fn ergogrzib() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
 
     let mut flow = ErgoFlow::new();
     flow += MR(6);
@@ -157,8 +115,9 @@ pub fn ergogrzib() -> Plushie {
 }
 
 pub fn ergogrzob() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
 
     let mut flow = ErgoFlow::new();
     flow += MR(6);
@@ -175,8 +134,9 @@ pub fn ergogrzob() -> Plushie {
 }
 
 pub fn pillar() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
 
     let mut flow = ErgoFlow::new();
     flow += MR(6);
@@ -187,8 +147,9 @@ pub fn pillar() -> Plushie {
 }
 
 pub fn disk() -> Plushie {
-    use crate::acl::actions::Action;
     use Action::*;
+
+    use crate::acl::actions::Action;
 
     let mut flow = ErgoFlow::new();
     flow += MR(6);
