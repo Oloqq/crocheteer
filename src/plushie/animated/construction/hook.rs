@@ -55,6 +55,8 @@ pub struct Hook {
     last_mark: Option<Action>,
     /// Map from labels the index of the node they affect. For now works with just MRConfigurable.
     mark_to_node: HashMap<String, usize>,
+    /// Temporary: remake Label into String, then merge this and mark_to_node
+    tmp_mark_to_node: HashMap<Label, usize>,
     /// Indexes where parts begin and end. At the end, first element should be zero, last element should be colors.len()
     part_limits: Vec<usize>,
     /// Used to track unconnected limbs
@@ -202,11 +204,23 @@ impl Hook {
                     });
                 }
             }
+            Sew(left, right) => {
+                let Some(left) = self.tmp_mark_to_node.get(left) else {
+                    return Err(UnknownLabel(*left));
+                };
+                let Some(right) = self.tmp_mark_to_node.get(right) else {
+                    return Err(UnknownLabel(*right));
+                };
+
+                self.edges.link(*left, *right);
+            }
         };
 
         match action {
             MR(..) => unreachable!("MR allowed inside the pattern is stored as MRConfigurable"),
-            Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) => self.last_mark = None,
+            Reverse | FLO | BLO | BL | Goto(_) | FO | Action::Color(_) | Sew(..) => {
+                self.last_mark = None
+            }
             Mark(_) => self.last_mark = Some(action.clone()),
             _ => {
                 self.last_stitch = Some(action.clone());

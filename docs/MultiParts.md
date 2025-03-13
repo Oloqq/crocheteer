@@ -26,8 +26,6 @@ If more than one MR is present in the pattern, each MR must be provided 2 argume
 MR(6, limb_first_hump)
 ```
 
-<!-- TODO rename part_config to limb_config -->
-
 Then, elsewhere in the pattern the parameters (`limb_config`) for that Limb may be specified:
 ```
 limb_first_hump {
@@ -47,6 +45,29 @@ The parameters must include:
 ## Draft
 There should be a mechanism to unlock points, e.g. when a certain another stitch has been completed, or Limbs got joined. This could be implemented using marks.
 
+# Joining the limbs
+There are 2 ways to join limbs
+- combine working rounds into one, thus beginning the work on another limb
+- finish the limbs independently, sew them together
+
+## Joining by combining rounds (Attach)
+<!-- TODO --> The implementation needs to be cleaned up and tested
+Attach currently does not create a node by itself.
+Some assumptions are therefore made in hook.
+If user puts `attach(..), goto(..)` the state may get corrupted.
+This only applies to direct_attach and attach_merge.
+
+## Joining independently created limbs
+### Proof of concept
+Mark nodes with ACL's `mark`. Introduce an action `sew` that connects 2 marked nodes.
+
+### Real solution
+Handling as specified in the PoC is tedious.
+For example consider a limb that has 40 stitches in the last round. No one is placing 40 marks in that round. And no one is placing 40 marks on the other Plushie. Especially that they would need to be placed across rounds. There needs to be an algorithmic solution that determines the stitches that get connected.
+
+Can this be done in Hook? Maybe the graph is enough?
+Maybe it can only be done while the simulation is running?
+If we do this part programatically, how does the user know how to connect the parts in real life creation? Is it acceptable to give them just the visualization as reference?
 
 # Node dragging
 The new `Peculiarity::Locked` allows us to implement sensible dragging.
@@ -123,12 +144,6 @@ Make attach use size 0 by default (make argument optional)
 the annotated round count, speaking precisely, shall be the number of anchors available at a given point. It is too complex to be checked in the parser. It must happen in Hook.
 Hook does not care whether it is at the end of the round. There is no reason to restrict it to the end of the round. Grammar has to be adjusted to allow using it at arbitrary positions
 If we accept that anchor number tracking is too complex for parser, the "around" keyword has to be handled in Hook. This can be either done by introducing `Action::Around(Vec<Action>)`, which is problematic since it would prevent Clone, or by introducing `AroundStart` and `AroundEnd` (basically parentheses)
-
-# Attach
-Attach currently does not create a node by itself.
-Some assumptions are therefore made in hook.
-If user puts `attach(..), goto(..)` the state may get corrupted.
-This only applies to direct_attach and attach_merge.
 
 # State
 Hook does not remove or mark used labels in any way.

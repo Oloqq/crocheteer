@@ -1,4 +1,4 @@
-program = { SOI ~ (round | comment | parameter | control | part_config | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | labeled_config | NEWLINE)+ ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 
@@ -33,12 +33,14 @@ arg_int_opt_ident   =  { "(" ~ NUMBER ~ ("," ~ IDENT)? ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
 arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
+arg_ident_ident =  { "(" ~ IDENT ~ "," ~ IDENT ~ ")" }
 
 
 action = {
       interstitchable_action
     | (KW_MR ~ arg_int_opt_ident)
     |  KW_FO
+    | (KW_SEW ~ arg_ident_ident)
 }
 interstitchable_action = {
       KW_BLO
@@ -51,7 +53,7 @@ interstitchable_action = {
     | (KW_ATTACH ~ arg_ident_int)
 }
 
-part_config = {
+labeled_config = {
   IDENT ~ LINEEND?
   ~ "{" ~ LINEEND?
     ~ config_entries
@@ -83,6 +85,7 @@ KW_ATTACH = { "attach" }
 KW_STITCH = { "sc" | "inc" | "dec" | "slst" | KW_FO }
 KW_TIMES  = { "x" }
 KW_AROUND = { "around" }
+KW_SEW    = { "sew" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{

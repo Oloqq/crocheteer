@@ -72,7 +72,7 @@ impl Pattern {
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
-                    Rule::part_config => self.part_config(pair.into_inner())?,
+                    Rule::labeled_config => self.part_config(pair.into_inner())?,
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
@@ -283,6 +283,26 @@ impl Pattern {
                 Rule::interstitchable_action => {
                     let action = self.interstitchable_action(opcode.into_inner())?;
                     self.actions.push(action);
+                }
+                Rule::KW_SEW => {
+                    let args = tokens.next().unwrap();
+                    assert!(matches!(args.as_rule(), Rule::arg_ident_ident));
+                    let mut tokens = args.into_inner();
+                    let node1pair = tokens.next().unwrap();
+                    println!("n1p {node1pair}");
+                    let node1 = node1pair.as_str().to_owned();
+                    let node1index = self
+                        .labels
+                        .get(&node1)
+                        .ok_or(error(UndefinedLabel(node1), &node1pair))?;
+
+                    let node2pair = tokens.next().unwrap();
+                    let node2 = node2pair.as_str().to_owned();
+                    let node2index = self
+                        .labels
+                        .get(&node2)
+                        .ok_or(error(UndefinedLabel(node2), &node2pair))?;
+                    self.actions.push(Action::Sew(*node1index, *node2index));
                 }
                 _ => unreachable!("{opcode}"),
             }

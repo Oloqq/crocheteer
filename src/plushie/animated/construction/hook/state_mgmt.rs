@@ -12,6 +12,9 @@ impl Hook {
     }
 
     pub fn save(&mut self, label: Label) -> Result<(), HookError> {
+        let last_created = self.previous_stitch();
+        self.tmp_mark_to_node.insert(label, last_created);
+
         if self.now.anchors.len() == 0 {
             return Err(UselessMark);
         }

@@ -33,6 +33,8 @@ pub enum Action {
     FO,
     /// Change yarn color
     Color(colors::Color),
+    /// Connect two stitches
+    Sew(Label, Label),
     /// Verify the number of available anchors
     EnforceAnchors(usize, (usize, usize)),
 }
@@ -47,7 +49,7 @@ impl Action {
             FO => 0, // FO in some way consumes the anchors, but it is handled in another way
             Ch(_) | Reverse => unimplemented!(),
             Attach(..) => 0,
-            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) | EnforceAnchors(..) => 0,
+            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) | EnforceAnchors(..) | Sew(..) => 0,
         }
     }
 
@@ -60,7 +62,7 @@ impl Action {
             FO => 0,
             Ch(_) | Reverse => unimplemented!(),
             Attach(_, chain_size) => *chain_size as u32,
-            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) | EnforceAnchors(..) => 0,
+            FLO | BLO | BL | Goto(_) | Mark(_) | Color(_) | EnforceAnchors(..) | Sew(..) => 0,
         }
     }
 }
