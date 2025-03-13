@@ -9,7 +9,6 @@ use std::collections::HashMap;
 
 use serde_derive::Serialize;
 
-pub use self::construction::hook::leniency::Leniency;
 use self::{centroid::Centroids, nodes::Nodes};
 use super::{params::Initializer, Params, PlushieTrait};
 use crate::{common::*, sanity};

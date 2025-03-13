@@ -1,4 +1,3 @@
-pub mod leniency;
 mod starters;
 mod state_mgmt;
 #[cfg(test)]
@@ -7,8 +6,6 @@ mod utils;
 mod working_stitch;
 
 use std::collections::HashMap;
-
-use leniency::Leniency;
 
 use self::{utils::*, working_stitch::Stitch, HookError::*};
 use super::hook_result::{Edges, InitialGraph};
@@ -46,9 +43,6 @@ pub struct Hook {
     colors: Vec<colors::Color>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_stitch: Option<usize>,
-    /// Leniency policy, may allow recovery after `HookError`s. Some leniency is beneficial with genetic algorithms
-    leniency: Leniency,
-
     /// Last stitch created (not counting actions like mark, goto)
     last_stitch: Option<Action>,
     /// Was the last action a mark?
@@ -127,7 +121,7 @@ impl Hook {
         }
     }
 
-    fn do_perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
+    pub fn perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
         match action {
             Sc => {
                 self = Stitch::linger(self)?
@@ -229,21 +223,6 @@ impl Hook {
         }
 
         Ok(self)
-    }
-
-    pub fn perform(self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
-        match self.leniency {
-            Leniency::NoMercy => self.do_perform(action, params),
-            Leniency::SkipIncorrect => {
-                // If this approach turns out to be actually useful, a more efficient implementation is necessary
-                let copy = self.clone();
-                match copy.do_perform(action, params) {
-                    Ok(hook) => Ok(hook),
-                    Err(_) => Ok(self),
-                }
-            }
-            Leniency::GeneticFixups => todo!(),
-        }
     }
 
     fn previous_stitch(&mut self) -> usize {

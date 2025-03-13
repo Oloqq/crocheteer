@@ -120,7 +120,7 @@ impl Stitch {
     pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");
-            hook = hook.leniency.clone().handle(hook, FORequires2Anchors)?;
+            return Err(FORequires2Anchors);
         }
 
         let tip = hook.now.cursor;
@@ -130,7 +130,7 @@ impl Stitch {
             log::debug!(
                 "Too many anchors for FO (limit: {ANCHORS_FOR_FO_LIMIT}, got: {anchors_num})"
             );
-            hook = hook.leniency.clone().handle(hook, TooManyAnchorsForFO)?;
+            return Err(TooManyAnchorsForFO);
         }
 
         while let Some(anchor) = hook.now.anchors.pop_front() {

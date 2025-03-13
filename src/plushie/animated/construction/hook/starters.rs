@@ -1,17 +1,11 @@
 use std::collections::HashMap;
 
-use super::{leniency::Leniency, utils::*, Edges, Hook, Moment, Queue};
+use super::{utils::*, Edges, Hook, Moment, Queue};
 use crate::acl::Flow;
 
 const DEFAULT_COLOR: colors::Color = (255, 0, 255);
 
 impl Hook {
-    pub fn with_leniency(action: &Action, leniency: &Leniency) -> Result<Self, HookError> {
-        let mut res = Self::start_with(action, DEFAULT_COLOR)?;
-        res.leniency = leniency.clone();
-        Ok(res)
-    }
-
     pub fn from_starting_sequence(flow: &mut impl Flow) -> Result<Self, HookError> {
         let mut action = flow.next().unwrap();
         let mut color = DEFAULT_COLOR;
@@ -28,9 +22,6 @@ impl Hook {
                 let mut hook = Self::start_with(&MR(*x), color)?;
                 assert_eq!(hook.peculiar.get(&0), Some(&Peculiarity::Locked));
                 hook.mark_to_node.insert(label.clone(), 0);
-
-                // TEMP
-                // hook.peculiar.insert(40, Peculiarity::Locked);
 
                 Ok(hook)
             }
@@ -59,7 +50,6 @@ impl Hook {
                     colors: vec![],
                     last_stitch: None,
                     last_mark: None,
-                    leniency: Leniency::NoMercy,
                     mark_to_node: HashMap::new(),
                     tmp_mark_to_node: HashMap::new(),
                     part_limits: vec![],

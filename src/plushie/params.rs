@@ -2,8 +2,6 @@ use std::{collections::HashMap, error::Error};
 
 use serde_derive::{Deserialize, Serialize};
 
-pub use super::animated::Leniency;
-
 fn just_true() -> bool {
     true
 }
@@ -36,8 +34,6 @@ pub struct Params {
     pub single_loop_force: f32,
     /// Method for setting initial positions of stitches
     pub initializer: Initializer,
-    #[serde(skip)]
-    pub hook_leniency: crate::plushie::animated::Leniency,
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
 
@@ -136,7 +132,6 @@ impl Params {
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
-            hook_leniency: Leniency::NoMercy,
             skelet_stuffing: Default::default(),
             track_performance: false,
             multipart: false,
