@@ -42,20 +42,6 @@ mod tests {
             res
         };
         assert_eq!(left_actions, right_actions);
-        // let mut i = 0;
-        // let mut left_action = left.next();
-        // let mut right_action = right.next();
-        // while left_action.is_some() {
-        //     assert!(right_action.is_some(), "[{i}] Righthand flow is shorter.");
-        //     assert!(
-        //         left_action == right_action,
-        //         "[{i}] Action mismatch: {left_action:?} vs {right_action:?}"
-        //     );
-        //     left_action = left.next();
-        //     right_action = right.next();
-        //     i += 1;
-        // }
-        // assert!(right_action.is_none(), "[{i}] Lefthand flow is shorter.");
     }
 
     #[test]
@@ -65,9 +51,9 @@ mod tests {
             flow += MR(6);
             flow += 6 * Inc;
             flow += 12 * 3 * Sc;
-            flow += Mark(0) + BLO;
+            flow += Mark("0".into()) + BLO;
             flow += 6 * Dec + FO;
-            flow += Goto(0) + FLO + Color((255, 255, 0));
+            flow += Goto("0".into()) + FLO + Color((255, 255, 0));
             flow += 12 * Inc;
             flow += BL + 24 * 2 * Sc;
             flow += 12 * Dec + 6 * Dec + FO;
@@ -85,12 +71,12 @@ mod tests {
             for _ in 0..3 {
                 actions.append(&mut full_round.clone());
             }
-            actions.push(Mark(0));
+            actions.push(Mark("0".into()));
             actions.push(BLO);
             actions.append(&mut vec![Dec; 6]);
             actions.push(FO);
 
-            actions.push(Goto(0));
+            actions.push(Goto("0".into()));
             actions.push(FLO);
             actions.push(Color((255, 255, 0)));
             actions.append(&mut vec![Inc; 12]);
@@ -108,9 +94,9 @@ mod tests {
             flow += MR(6);
             flow += 6 * Inc;
             flow += 12 * 3 * Sc;
-            flow += Mark(0) + BLO;
+            flow += Mark("0".into()) + BLO;
             flow += 6 * Dec + FO;
-            flow += Goto(0) + FLO + Color((255, 255, 0));
+            flow += Goto("0".into()) + FLO + Color((255, 255, 0));
             flow += 12 * Inc;
             flow += BL + 24 * 2 * Sc;
             flow += 12 * Dec + 6 * Dec + FO;
@@ -127,9 +113,9 @@ mod tests {
             flow += MR(6);
             flow += 6 * Inc;
             flow += 12 * 3 * Sc;
-            flow += Mark(0) + BLO;
+            flow += Mark("cap_start".into()) + BLO;
             flow += 6 * Dec + FO;
-            flow += Goto(0) + Color((255, 255, 0));
+            flow += Goto("cap_start".into()) + Color((255, 255, 0));
             flow += BL; // this is to account for automatic returns to BothLoop at the start of a round
             flow += FLO;
             flow += 12 * Inc;

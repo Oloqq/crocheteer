@@ -1,7 +1,7 @@
 pub mod errors;
 mod parsing;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub use errors::Error;
 use pest::Parser;
@@ -20,10 +20,9 @@ struct PatParser;
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
     pub limbs: HashMap<String, LimbParams>,
-    labels: HashMap<String, usize>,
-    label_cursor: usize,
+    labels: HashSet<String>,
     actions: Vec<Action>,
-    cursor: usize,
+    cursor: usize, // FIXME why
     /// Kept for the purpose of auto inserting BL at start of round
     current_loop: CurrentLoop,
 }
@@ -38,10 +37,9 @@ enum CurrentLoop {
 impl Pattern {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
         let mut p = Self {
-            parameters: HashMap::new(),
-            limbs: HashMap::new(),
-            labels: HashMap::new(),
-            label_cursor: 0,
+            parameters: Default::default(),
+            limbs: Default::default(),
+            labels: Default::default(),
             actions: vec![],
             cursor: 0,
             current_loop: CurrentLoop::Both,

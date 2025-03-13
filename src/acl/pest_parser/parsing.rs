@@ -1,7 +1,10 @@
 use pest::iterators::{Pair, Pairs};
 
 use super::{errors::*, CurrentLoop, Pattern, Rule};
-use crate::{acl::actions::Action, plushie::params::LimbParams};
+use crate::{
+    acl::actions::{Action, Label},
+    plushie::params::LimbParams,
+};
 
 mod protect_fields {
     use super::Action;
@@ -241,18 +244,16 @@ impl Pattern {
                     let mut tokens = args.into_inner();
                     let node1pair = tokens.next().unwrap();
                     let node1 = node1pair.as_str().to_owned();
-                    let node1index = self
-                        .labels
-                        .get(&node1)
-                        .ok_or(error(UndefinedLabel(node1), &node1pair))?;
+                    if !self.labels.contains(&node1) {
+                        return err(UndefinedLabel(node1), &node1pair);
+                    }
 
                     let node2pair = tokens.next().unwrap();
                     let node2 = node2pair.as_str().to_owned();
-                    let node2index = self
-                        .labels
-                        .get(&node2)
-                        .ok_or(error(UndefinedLabel(node2), &node2pair))?;
-                    self.actions.push(Action::Sew(*node1index, *node2index));
+                    if !self.labels.contains(&node2) {
+                        return err(UndefinedLabel(node2), &node1pair);
+                    }
+                    self.actions.push(Action::Sew(node1, node2));
                 }
                 _ => unreachable!("{opcode}"),
             }
@@ -265,17 +266,12 @@ impl Pattern {
         let first = tokens.next().unwrap();
         Ok(match first.as_rule() {
             Rule::KW_MARK => {
-                let label = self.register_label(tokens.next().unwrap())?;
+                let label = self.new_mark(tokens.next().unwrap().into_inner().next().unwrap())?;
                 Action::Mark(label)
             }
             Rule::KW_GOTO => {
-                let label_pair = tokens.next().unwrap();
-                let label = ident(label_pair.clone())?;
-                let index = self
-                    .labels
-                    .get(&label)
-                    .ok_or(error(UndefinedLabel(label), &label_pair))?;
-                Action::Goto(*index)
+                let label = self.use_mark(tokens.next().unwrap().into_inner().next().unwrap())?;
+                Action::Goto(label)
             }
             Rule::KW_FLO => {
                 self.current_loop = CurrentLoop::Front;
@@ -298,14 +294,10 @@ impl Pattern {
             Rule::KW_ATTACH => {
                 let args_pair = tokens.next().unwrap();
                 let mut args = args_pair.clone().into_inner();
-                let label = args.next().unwrap().as_str().to_owned();
+                // let label = args.next().unwrap().as_str().to_owned();
+                let label = self.use_mark(args.next().unwrap())?;
                 let chain_size = integer(&args.next().unwrap())?;
-
-                let index = self
-                    .labels
-                    .get(&label)
-                    .ok_or(error(UndefinedLabel(label), &args_pair))?;
-                Action::Attach(*index, chain_size)
+                Action::Attach(label, chain_size)
             }
             _ => unreachable!(),
         })
@@ -321,20 +313,22 @@ impl Pattern {
         }
     }
 
-    fn register_label(&mut self, label_pair: Pair<Rule>) -> Result<usize, Error> {
+    fn new_mark(&mut self, label_pair: Pair<Rule>) -> Result<Label, Error> {
         let label = ident(label_pair.clone())?;
-        if let Some(x) = self.labels.insert(label.clone(), self.label_cursor) {
-            err(
-                DuplicateLabel {
-                    label,
-                    first_defined: x,
-                },
-                &label_pair,
-            )?;
+
+        if !self.labels.insert(label.clone()) {
+            return Err(error(DuplicateLabel(label), &label_pair));
         }
-        let ret = Ok(self.label_cursor);
-        self.label_cursor += 1;
-        ret
+
+        Ok(label)
+    }
+
+    fn use_mark(&mut self, label_pair: Pair<Rule>) -> Result<Label, Error> {
+        let label = ident(label_pair.clone())?;
+        if !self.labels.contains(&label) {
+            return Err(error(UndefinedLabel(label), &label_pair));
+        }
+        Ok(label)
     }
 }
 
@@ -363,7 +357,7 @@ fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
 }
 
 fn ident(pair: Pair<Rule>) -> Result<String, Error> {
-    Ok(pair.into_inner().as_str().to_owned())
+    Ok(pair.as_str().to_owned())
 }
 
 fn config_entry(
@@ -493,7 +487,10 @@ mod tests {
     fn test_attach() {
         let prog = "mark(anchor), attach(anchor, 3)";
         let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.actions, vec![Mark(0), Attach(0, 3)]);
+        assert_eq!(
+            pat.actions,
+            vec![Mark("anchor".into()), Attach("anchor".into(), 3)]
+        );
     }
 
     #[test]

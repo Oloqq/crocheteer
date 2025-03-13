@@ -196,14 +196,14 @@ mod tests {
     #[test]
     fn test_goto_without_fo() {
         let mut h = mr3();
-        h = h.test_perform(&Mark(0)).unwrap();
+        h = h.test_perform(&Mark("0".into())).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         h = h.test_perform(&Sc).unwrap();
         h = h.test_perform(&Sc).unwrap();
         h = h.test_perform(&Sc).unwrap();
         q!(h.now.anchors, Queue::from([4, 5, 6]));
         q!(h.now.cursor, 7);
-        h = h.test_perform(&Goto(0)).unwrap();
+        h = h.test_perform(&Goto("0".into())).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 7);
         h = h.test_perform(&Sc).unwrap();

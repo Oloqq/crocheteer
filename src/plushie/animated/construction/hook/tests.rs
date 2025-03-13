@@ -166,7 +166,7 @@ fn test_error_on_stitch_after_fo() {
 fn test_goto_after_fo() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
     q!(h.now.anchors, Queue::from([1, 2, 3]));
-    h = h.test_perform(&Mark(0)).unwrap();
+    h = h.test_perform(&Mark("0".into())).unwrap();
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Sc).unwrap();
@@ -208,7 +208,7 @@ fn test_goto_after_fo() {
         ])
     );
     q!(h.now.anchors, Queue::from([]));
-    h = h.test_perform(&Goto(0)).unwrap();
+    h = h.test_perform(&Goto("0".into())).unwrap();
     q!(h.now.cursor, 8);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.override_previous_stitch, Some(3));
@@ -237,12 +237,12 @@ fn test_goto_after_fo() {
 #[test]
 fn test_attach1() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    let attach_here = 0;
-    let return_here = 1;
-    h = h.test_perform(&Mark(attach_here)).unwrap();
+    let attach_here: Label = "0".into();
+    let return_here: Label = "1".into();
+    h = h.test_perform(&Mark(attach_here.clone())).unwrap();
     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
     h = h.test_perform(&Sc).unwrap();
-    h = h.test_perform(&Mark(return_here)).unwrap();
+    h = h.test_perform(&Mark(return_here.clone())).unwrap();
     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
     q!(
         h.edges,
@@ -282,12 +282,12 @@ fn test_attach1() {
 #[test]
 fn test_sc_after_attach() {
     let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    let attach_here = 0;
-    let return_here = 1;
-    h = h.test_perform(&Mark(attach_here)).unwrap();
+    let attach_here: Label = "0".into();
+    let return_here: Label = "1".into();
+    h = h.test_perform(&Mark(attach_here.clone())).unwrap();
     q!(h.now.anchors, Queue::from(vec![1, 2, 3]));
     h = h.test_perform(&Sc).unwrap();
-    h = h.test_perform(&Mark(return_here)).unwrap();
+    h = h.test_perform(&Mark(return_here.clone())).unwrap();
     q!(h.now.anchors, Queue::from(vec![2, 3, 4]));
     q!(
         h.edges,

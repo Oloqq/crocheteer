@@ -127,14 +127,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_grzib() {
+    fn test_ergoflow_produces_expected_actions() {
         let mut flow = ErgoFlow::new();
         flow += MR(6);
         flow += 6 * Inc;
         flow += 12 * 3 * Sc;
-        flow += Mark(0) + BLO;
+        flow += Mark("0".into()) + BLO;
         flow += 6 * Dec + FO;
-        flow += Goto(0) + FLO + Color((255, 255, 0));
+        flow += Goto("0".into()) + FLO + Color((255, 255, 0));
         flow += 12 * Inc;
         flow += BL + (24 * Sc * 2);
         flow += 12 * Dec + 6 * Dec + FO;
@@ -145,12 +145,12 @@ mod tests {
         for _ in 0..3 {
             actions.append(&mut full_round.clone());
         }
-        actions.push(Mark(0));
+        actions.push(Mark("0".into()));
         actions.push(BLO);
         actions.append(&mut vec![Dec; 6]);
         actions.push(FO);
 
-        actions.push(Goto(0));
+        actions.push(Goto("0".into()));
         actions.push(FLO);
         actions.push(Color((255, 255, 0)));
         actions.append(&mut vec![Inc; 12]);

@@ -1,6 +1,6 @@
 use crate::common::colors;
 
-pub type Label = usize;
+pub type Label = String;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Action {

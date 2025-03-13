@@ -167,8 +167,8 @@ impl Hook {
             FLO => self.now.working_on = WorkingLoops::Front,
             BLO => self.now.working_on = WorkingLoops::Back,
             BL => self.now.working_on = WorkingLoops::Both,
-            Goto(label) => self.restore(*label)?,
-            Mark(label) => self.save(*label)?,
+            Goto(label) => self.restore(label)?,
+            Mark(label) => self.save(label)?,
             MR(_) => return Err(AnonymousMrInTheMiddle),
             MRConfigurable(x, label) => {
                 self.override_previous_stitch = None;
@@ -193,10 +193,10 @@ impl Hook {
             }
             Sew(left, right) => {
                 let Some(left) = self.tmp_mark_to_node.get(left) else {
-                    return Err(UnknownLabel(*left));
+                    return Err(UnknownLabel(left.clone()));
                 };
                 let Some(right) = self.tmp_mark_to_node.get(right) else {
-                    return Err(UnknownLabel(*right));
+                    return Err(UnknownLabel(right.clone()));
                 };
 
                 self.edges.link(*left, *right);
@@ -226,7 +226,7 @@ impl Hook {
         }
     }
 
-    fn attach_with_chain(mut self, label: &usize, chain_size: &usize) -> Result<Self, HookError> {
+    fn attach_with_chain(mut self, label: &Label, chain_size: &usize) -> Result<Self, HookError> {
         // FIXME this should probably affect part_limits
         // FIXME part_limits should prolly be limb_limits
         // create a chain
@@ -246,17 +246,20 @@ impl Hook {
         (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
         // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);
 
-        if let Some(Mark(ring_b_label)) = self.last_mark {
-            assert!(self.labels.contains_key(&ring_b_label));
+        if let Some(Mark(ring_b_label)) = &self.last_mark {
+            assert!(self.labels.contains_key(ring_b_label));
             moment_b.cursor = starting_anchor;
-            self.labels.insert(ring_b_label, moment_b);
+            self.labels.insert(ring_b_label.clone(), moment_b);
         }
         Ok(self)
     }
 
-    fn attach_directly(mut self, label: &usize) -> Result<Self, HookError> {
+    fn attach_directly(mut self, label: &Label) -> Result<Self, HookError> {
         let cursor_at = self.now.cursor;
-        let target = self.labels.get(&label).ok_or(UnknownLabel(*label))?;
+        let target = self
+            .labels
+            .get(label)
+            .ok_or_else(|| UnknownLabel(label.clone()))?;
         if self.now.limb_ownerhip != target.limb_ownerhip {
             // this action connects previously unconnected graphs
             self.part_limits.push(cursor_at);
@@ -264,14 +267,18 @@ impl Hook {
         }
 
         let x = self.previous_stitch();
-        self.restore(*label)?;
+        self.restore(label)?;
         self.override_previous_stitch = Some(x);
 
         Ok(self)
     }
 
-    fn attach_merge(mut self, label: &usize) -> Result<Self, HookError> {
-        let mut target = self.labels.get(&label).ok_or(UnknownLabel(*label))?.clone();
+    fn attach_merge(mut self, label: &Label) -> Result<Self, HookError> {
+        let mut target = self
+            .labels
+            .get(label)
+            .ok_or_else(|| UnknownLabel(label.clone()))?
+            .clone();
         assert!(self.now.limb_ownerhip == target.limb_ownerhip);
 
         self.override_previous_stitch = Some(self.previous_stitch());

@@ -28,10 +28,7 @@ pub enum ErrorCode {
         anchors_consumed_by_sequence: u32,
     },
     AroundMustBeExclusiveInRound,
-    DuplicateLabel {
-        label: String,
-        first_defined: usize,
-    },
+    DuplicateLabel(String),
     UndefinedLabel(String),
     InvalidConfigEntry(String),
     DuplicatePart(String),
