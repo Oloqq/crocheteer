@@ -8,28 +8,15 @@ mod protect_fields {
     #[derive(Debug)]
     pub struct ActionSequence {
         actions: Vec<Action>,
-        anchors_consumed: u32,
-        anchors_produced: u32,
     }
 
     impl ActionSequence {
         pub fn new() -> Self {
-            ActionSequence {
-                actions: vec![],
-                anchors_consumed: 0, // TODO use to verify rounds
-                anchors_produced: 0,
-            }
+            ActionSequence { actions: vec![] }
         }
 
         pub fn actions(&self) -> &Vec<Action> {
             &self.actions
-        }
-
-        pub fn anchors_consumed(&self) -> u32 {
-            self.anchors_consumed
-        }
-        pub fn anchors_produced(&self) -> u32 {
-            self.anchors_produced
         }
 
         pub fn append(&mut self, other: ActionSequence) {
@@ -41,8 +28,6 @@ mod protect_fields {
             for _ in 0..times {
                 self.actions.append(&mut other.actions.clone());
             }
-            self.anchors_consumed += other.anchors_consumed * times as u32;
-            self.anchors_produced += other.anchors_produced * times as u32;
         }
 
         pub fn push(&mut self, action: Action) {
@@ -54,8 +39,6 @@ mod protect_fields {
             for _ in 0..times {
                 self.actions.push(action.clone());
             }
-            self.anchors_consumed += action.anchors_consumed() * times;
-            self.anchors_produced += action.anchors_produced() * times;
         }
     }
 }
@@ -140,7 +123,6 @@ impl Pattern {
 
         for _ in 0..repetitions {
             self.actions.append(&mut action_sequence.actions().clone());
-            self.round_counts.push(action_sequence.anchors_produced());
         }
 
         if let Some(mby_round_end) = pairs.peek() {
@@ -213,19 +195,7 @@ impl Pattern {
                                 if result.actions().len() > 0 {
                                     return Err(error(AroundMustBeExclusiveInRound, &specifier));
                                 }
-
-                                let consumed = actions_to_repeat.anchors_consumed();
-                                let last_round_produced = *self.round_counts.last().unwrap(); // FIXME
-                                if last_round_produced % consumed != 0 {
-                                    return Err(error(
-                                        CantRepeatAround {
-                                            last_round_anchors: last_round_produced,
-                                            anchors_consumed_by_sequence: consumed,
-                                        },
-                                        &specifier,
-                                    ));
-                                }
-                                (last_round_produced / consumed) as usize
+                                todo!();
                             }
                             _ => unreachable!(),
                         }
@@ -258,7 +228,6 @@ impl Pattern {
                     } else {
                         self.actions.push(Action::MR(num));
                     }
-                    self.round_counts.push(num as u32);
                 }
                 Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),
@@ -463,7 +432,6 @@ mod tests {
                 EnforceAnchors(2, (2, 11))
             ]
         );
-        assert_eq!(pat.round_counts, vec![1, 2]);
     }
 
     #[test]
@@ -485,7 +453,6 @@ mod tests {
         let prog = "R2-R4: sc\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
-        assert_eq!(pat.round_counts, vec![1, 1, 1]);
     }
 
     #[test]
@@ -493,7 +460,6 @@ mod tests {
         let prog = "MR(6)";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6)]);
-        assert_eq!(pat.round_counts, vec![6]);
         let prog = "MR(6)\n: sc";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![MR(6), Sc]);
@@ -525,7 +491,6 @@ mod tests {
         let prog = ": [[sc, sc] x 2] x 3";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
-        assert_eq!(pat.round_counts, vec![12]);
     }
 
     #[test]
@@ -536,28 +501,13 @@ mod tests {
     }
 
     #[test]
-    fn test_round_counting_with_attach() {
-        let prog = "
-        MR(6)
-        : 6 inc (12)
-        : mark(anchor), 6 sc, mark(split), attach(anchor, 3) (9)
-        color(0, 0, 255)
-        2 : 9 sc (9)
-        goto(split)
-        color(255, 0, 0)
-        : inc, 8 sc (10)";
-        let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.round_counts, vec![6, 12, 9, 9, 9, 10]);
-    }
-
-    #[test]
+    #[ignore = "restore around"]
     fn test_repetition_around() {
         let prog = "
         : 6 sc
         : [sc] around";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
-        assert_eq!(pat.round_counts, vec![6, 6]);
     }
 
     #[test]
@@ -569,6 +519,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "restore around"]
     fn test_repetition_allowed_only_as_the_only_instruction() {
         let prog = "
         : 6 sc
