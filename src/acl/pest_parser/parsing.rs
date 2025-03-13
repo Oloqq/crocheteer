@@ -139,21 +139,24 @@ impl Pattern {
         let action_sequence = self.stitches(stitches.into_inner())?;
 
         let (annotated, location) = {
-            let mby_round_end = pairs.peek().unwrap();
-            if let Rule::round_end = mby_round_end.as_rule() {
-                let round_end_pair = pairs.next().unwrap();
-                let count_pair = round_end_pair.into_inner().next().unwrap();
-                let count = integer(&count_pair)?;
-                if count as u32 != action_sequence.anchors_produced() {
-                    self.warnings.push(warning(
-                        WarningCode::RoundCountMismatch {
-                            annotated: count as u32,
-                            calculated: action_sequence.anchors_produced(),
-                        },
-                        &count_pair,
-                    ))
+            if let Some(mby_round_end) = pairs.peek() {
+                if let Rule::round_end = mby_round_end.as_rule() {
+                    let round_end_pair = pairs.next().unwrap();
+                    let count_pair = round_end_pair.into_inner().next().unwrap();
+                    let count = integer(&count_pair)?;
+                    if count as u32 != action_sequence.anchors_produced() {
+                        self.warnings.push(warning(
+                            WarningCode::RoundCountMismatch {
+                                annotated: count as u32,
+                                calculated: action_sequence.anchors_produced(),
+                            },
+                            &count_pair,
+                        ))
+                    }
+                    (Some(count), Some(count_pair.line_col()))
+                } else {
+                    (None, None)
                 }
-                (Some(count), Some(count_pair.line_col()))
             } else {
                 (None, None)
             }
@@ -581,6 +584,14 @@ mod tests {
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc; 12]);
         assert_eq!(pat.round_counts, vec![6, 6]);
+    }
+
+    #[test]
+    fn test_no_round_end() {
+        let prog = "
+        : 6 sc
+        : 6 sc";
+        Pattern::parse(prog).unwrap();
     }
 
     #[test]
