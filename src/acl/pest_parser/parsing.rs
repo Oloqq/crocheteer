@@ -138,39 +138,18 @@ impl Pattern {
 
         let action_sequence = self.stitches(stitches.into_inner())?;
 
-        let (annotated, location) = {
-            if let Some(mby_round_end) = pairs.peek() {
-                if let Rule::round_end = mby_round_end.as_rule() {
-                    let round_end_pair = pairs.next().unwrap();
-                    let count_pair = round_end_pair.into_inner().next().unwrap();
-                    let count = integer(&count_pair)?;
-                    if count as u32 != action_sequence.anchors_produced() {
-                        self.warnings.push(warning(
-                            WarningCode::RoundCountMismatch {
-                                annotated: count as u32,
-                                calculated: action_sequence.anchors_produced(),
-                            },
-                            &count_pair,
-                        ))
-                    }
-                    (Some(count), Some(count_pair.line_col()))
-                } else {
-                    (None, None)
-                }
-            } else {
-                (None, None)
-            }
-        };
-
         for _ in 0..repetitions {
             self.actions.append(&mut action_sequence.actions().clone());
             self.round_counts.push(action_sequence.anchors_produced());
-            self.annotated_round_counts.push(annotated);
         }
 
-        if let Some(count) = annotated {
-            if let Some(location) = location {
-                self.actions.push(Action::EnforceAnchors(count, location));
+        if let Some(mby_round_end) = pairs.peek() {
+            if let Rule::round_end = mby_round_end.as_rule() {
+                let round_end_pair = pairs.next().unwrap();
+                let count_pair = round_end_pair.into_inner().next().unwrap();
+                let count = integer(&count_pair)?;
+                self.actions
+                    .push(Action::EnforceAnchors(count, count_pair.line_col()));
             }
         }
 
@@ -292,7 +271,6 @@ impl Pattern {
                     assert!(matches!(args.as_rule(), Rule::arg_ident_ident));
                     let mut tokens = args.into_inner();
                     let node1pair = tokens.next().unwrap();
-                    println!("n1p {node1pair}");
                     let node1 = node1pair.as_str().to_owned();
                     let node1index = self
                         .labels
@@ -456,15 +434,12 @@ mod tests {
         let prog = ": sc\n: sc";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc, Sc]);
-        assert_eq!(pat.annotated_round_counts, vec![None, None]);
         let prog = ": sc";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc]);
-        assert_eq!(pat.annotated_round_counts, vec![None]);
         let prog = ": sc # bruh\n";
         let pat = Pattern::parse(prog).unwrap();
         assert_eq!(pat.actions, vec![Sc]);
-        assert_eq!(pat.annotated_round_counts, vec![None]);
     }
 
     #[test]
@@ -488,7 +463,6 @@ mod tests {
                 EnforceAnchors(2, (2, 11))
             ]
         );
-        assert_eq!(pat.annotated_round_counts, vec![Some(1), Some(2)]);
         assert_eq!(pat.round_counts, vec![1, 2]);
     }
 

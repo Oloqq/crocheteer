@@ -3,7 +3,7 @@ mod parsing;
 
 use std::collections::HashMap;
 
-pub use errors::{Error, Warning};
+pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
@@ -20,15 +20,13 @@ struct PatParser;
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
     pub limbs: HashMap<String, LimbParams>,
-    pub annotated_round_counts: Vec<Option<usize>>,
-    pub round_counts: Vec<u32>,
+    round_counts: Vec<u32>,
     labels: HashMap<String, usize>,
     label_cursor: usize,
     actions: Vec<Action>,
     cursor: usize,
     /// Kept for the purpose of auto inserting BL at start of round
     current_loop: CurrentLoop,
-    warnings: Vec<Warning>,
 }
 
 #[derive(Debug)]
@@ -43,14 +41,12 @@ impl Pattern {
         let mut p = Self {
             parameters: HashMap::new(),
             limbs: HashMap::new(),
-            annotated_round_counts: vec![],
             round_counts: vec![],
             labels: HashMap::new(),
             label_cursor: 0,
             actions: vec![],
             cursor: 0,
             current_loop: CurrentLoop::Both,
-            warnings: vec![],
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
         p.program(line_pairs)?;
