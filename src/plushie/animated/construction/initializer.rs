@@ -41,9 +41,11 @@ impl Initializer {
 }
 
 fn arrange_cylinder(node_num: usize) -> Vec<Point> {
+    assert!(node_num > 0);
+
     let mut y = 0.0;
-    let mut nodes = vec![];
-    let mut included = 0;
+    let mut nodes = vec![Point::new(0.0, 0.0, 0.0)]; // for the magic ring
+    let mut included = 1;
     let batch = 12;
 
     while node_num - included > batch {
