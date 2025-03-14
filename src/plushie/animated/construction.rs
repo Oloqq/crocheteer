@@ -15,28 +15,15 @@ impl Plushie {
         let hook_result = Hook::parse(flow, &params.hook)?;
         let mark_to_node = hook_result.mark_to_node.clone();
         let limbs = {
-            if !params.multipart {
-                assert_eq!(
-                    hook_result.part_limits.len(),
-                    2,
-                    "Single part without multipart"
-                );
-                vec![Limb {
-                    skin_start: 0,
-                    skin_end: hook_result.colors.len(),
+            hook_result
+                .part_limits
+                .windows(2)
+                .map(|win| Limb {
+                    skin_start: win[0],
+                    skin_end: win[1],
                     centroids: Centroids::new(0, 0.0),
-                }]
-            } else {
-                hook_result
-                    .part_limits
-                    .windows(2)
-                    .map(|win| Limb {
-                        skin_start: win[0],
-                        skin_end: win[1],
-                        centroids: Centroids::new(0, 0.0),
-                    })
-                    .collect()
-            }
+                })
+                .collect()
         };
         let (nodes, edges, edges_goal, displacement) = params.initializer.apply_to(hook_result);
 
@@ -70,13 +57,11 @@ impl Plushie {
             // TODO ensure at least one point is locked
         }
 
-        if params.skelet_stuffing.enable && params.multipart {
-            return Err("Cannot combine skeletonization and multipart".into());
+        if params.skelet_stuffing.enable {
+            return Err("Skeletonization with multipart has not been tested".into());
         }
 
-        if params.multipart {
-            params.limbs = pattern.limbs.clone();
-        }
+        params.limbs = pattern.limbs.clone();
 
         Ok(Self::from_flow(pattern, params)?)
     }

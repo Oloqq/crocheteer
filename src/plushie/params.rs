@@ -37,8 +37,6 @@ pub struct Params {
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
 
-    /// Experimental multipart support
-    pub multipart: bool,
     pub limbs: HashMap<String, LimbParams>,
     pub hook: HookParams,
 
@@ -134,7 +132,6 @@ impl Params {
             minimum_displacement: 0.001,
             skelet_stuffing: Default::default(),
             track_performance: false,
-            multipart: false,
             hook: Default::default(),
             limbs: HashMap::new(),
         }
@@ -175,7 +172,6 @@ impl Params {
             "skelet_clusters" => self.skelet_stuffing.cluster_number = val.parse()?,
             "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
             "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
-            "multipart" => self.multipart = val.parse()?,
             "tip_from_fo" => self.hook.tip_from_fo = val.parse()?,
             _ => {
                 log::debug!("Unknown parameter: {}", key);

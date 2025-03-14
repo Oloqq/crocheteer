@@ -15,13 +15,9 @@ impl Plushie {
         self.add_stuffing_force(&mut perf);
         self.add_gravity();
 
-        self.last_total_displacement = if self.params.multipart {
+        self.last_total_displacement =
             self.nodes
-                .apply_forces(&mut self.displacement, time, &self.params)
-        } else {
-            self.nodes
-                .apply_forces_old(&mut self.displacement, time, &self.params)
-        };
+                .apply_forces(&mut self.displacement, time, &self.params);
 
         perf.map(|p| self.perf.push(p));
 
@@ -45,59 +41,43 @@ impl Plushie {
 
     fn add_stuffing_force(&mut self, perf: &mut Option<perf::Iteration>) {
         let start = Instant::now();
-        if self.params.multipart {
-            for limb in &mut self.limbs {
-                // minima needed for one by one
-                let start = limb.skin_start;
-                if start >= self.nodes.len() {
-                    continue;
-                }
-                let end = limb.skin_end.min(self.nodes.len());
-
-                limb.centroids.stuff(
-                    &self.params.centroids,
-                    &self.nodes.points[start..end],
-                    &mut self.displacement[start..end],
-                );
+        for limb in &mut self.limbs {
+            // minima needed for one by one
+            let start = limb.skin_start;
+            if start >= self.nodes.len() {
+                continue;
             }
-        } else {
-            assert_eq!(self.limbs.len(), 1, "One limb supported without @multipart");
-            self.limbs[0].centroids.stuff(
+            let end = limb.skin_end.min(self.nodes.len());
+
+            limb.centroids.stuff(
                 &self.params.centroids,
-                &self.nodes.points,
-                &mut self.displacement,
+                &self.nodes.points[start..end],
+                &mut self.displacement[start..end],
             );
         }
+
         perf.as_mut().map(|p| p.stuffing = start.elapsed());
         sanity!(self.displacement.assert_no_nan("stuffing"));
 
         if self.params.skelet_stuffing.enable {
-            if self.params.skelet_stuffing.autoskelet {
-                if self.params.skelet_stuffing.interval_left == 0 {
-                    self.params.skelet_stuffing.interval_left =
-                        self.params.skelet_stuffing.interval;
-                    self.params.skelet_stuffing.bones = crate::skeletonization::get_skelet(
-                        &self,
-                        self.params.skelet_stuffing.cluster_number,
-                        self.params.skelet_stuffing.must_include_points,
-                        self.params.skelet_stuffing.allowed_overlap,
-                        perf,
-                    );
-                } else {
-                    self.params.skelet_stuffing.interval_left -= 1;
-                }
-            }
-            self.params.centroids.number = self.params.skelet_stuffing.bones.len();
-            assert!(
-                !self.params.multipart,
-                "Skeletonization not supported with multipart"
-            );
-            assert_eq!(
-                self.limbs.len(),
-                1,
-                "Skeletonization supported with one limb"
-            );
-            self.limbs[0].centroids.points = self.params.skelet_stuffing.bones.clone();
+            unimplemented!("Skeletonization with multipart has not been tested");
+            // if self.params.skelet_stuffing.autoskelet {
+            //     if self.params.skelet_stuffing.interval_left == 0 {
+            //         self.params.skelet_stuffing.interval_left =
+            //             self.params.skelet_stuffing.interval;
+            //         self.params.skelet_stuffing.bones = crate::skeletonization::get_skelet(
+            //             &self,
+            //             self.params.skelet_stuffing.cluster_number,
+            //             self.params.skelet_stuffing.must_include_points,
+            //             self.params.skelet_stuffing.allowed_overlap,
+            //             perf,
+            //         );
+            //     } else {
+            //         self.params.skelet_stuffing.interval_left -= 1;
+            //     }
+            // }
+            // self.params.centroids.number = self.params.skelet_stuffing.bones.len();
+            // self.limbs[0].centroids.points = self.params.skelet_stuffing.bones.clone();
         }
     }
 
