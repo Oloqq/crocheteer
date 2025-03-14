@@ -22,7 +22,8 @@ pub struct Pattern {
     pub limbs: HashMap<String, LimbParams>,
     labels: HashSet<String>,
     actions: Vec<Action>,
-    cursor: usize, // FIXME why
+    /// For Flow implementation
+    cursor: usize,
     /// Kept for the purpose of auto inserting BL at start of round
     current_loop: CurrentLoop,
 }

@@ -28,7 +28,7 @@ R3: [sc, inc] around (18)
 R4-R5: [sc] around (18)
 # connect the humps
 R6: color(255, 255, 0), mark(second_hump), attach(first_hump, 0), 17 sc, color(255, 255, 125), attach(second_hump, 997), 17 sc (36)
-
+sew(first_hump, second_hump)
 R7: [4 sc, dec] x 6 (30)
 R8: [sc] around (30)
 R9: [dec, 13 sc] around (28)
@@ -51,7 +51,7 @@ part_first_hump {
 
 part_second_hump {
     x = -7,
-    y = 0,
-    z = 0,
+    # y = 0,
+    # z = 0,
     # centroids = 1
 }
