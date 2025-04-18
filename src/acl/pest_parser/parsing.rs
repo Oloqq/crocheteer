@@ -183,28 +183,27 @@ impl Pattern {
                     };
 
                     let mut howmuch = what_howmuch;
-                    let times = {
-                        let specifier = howmuch.next().unwrap();
-                        match specifier.as_rule() {
-                            Rule::KW_TIMES => {
-                                let int_pair = howmuch.next().unwrap();
-                                let times = integer(&int_pair)?;
-                                if times == 0 {
-                                    return Err(error(RepetitionTimes0, &int_pair));
-                                }
-                                times
-                            }
-                            Rule::KW_AROUND => {
-                                if result.actions().len() > 0 {
-                                    return Err(error(AroundMustBeExclusiveInRound, &specifier));
-                                }
-                                todo!();
-                            }
-                            _ => unreachable!(),
-                        }
-                    };
 
-                    result.append_repeated(actions_to_repeat, times as u32);
+                    let specifier = howmuch.next().unwrap();
+                    match specifier.as_rule() {
+                        Rule::KW_TIMES => {
+                            let int_pair = howmuch.next().unwrap();
+                            let times = integer(&int_pair)?;
+                            if times == 0 {
+                                return Err(error(RepetitionTimes0, &int_pair));
+                            }
+                            result.append_repeated(actions_to_repeat, times as u32);
+                        }
+                        Rule::KW_AROUND => {
+                            if result.actions().len() > 0 {
+                                return Err(error(AroundMustBeExclusiveInRound, &specifier));
+                            }
+                            result.push(Action::AroundStart);
+                            result.append(actions_to_repeat);
+                            result.push(Action::AroundEnd);
+                        }
+                        _ => unreachable!(),
+                    }
                 }
                 Rule::interstitchable_action => {
                     let action = self.interstitchable_action(first.into_inner())?;
@@ -494,13 +493,15 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "restore around"]
     fn test_repetition_around() {
         let prog = "
         : 6 sc
         : [sc] around";
         let pat = Pattern::parse(prog).unwrap();
-        assert_eq!(pat.actions, vec![Sc; 12]);
+        assert_eq!(
+            pat.actions,
+            vec![Sc, Sc, Sc, Sc, Sc, Sc, AroundStart, Sc, AroundEnd]
+        );
     }
 
     #[test]
@@ -512,7 +513,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "restore around"]
     fn test_repetition_allowed_only_as_the_only_instruction() {
         let prog = "
         : 6 sc

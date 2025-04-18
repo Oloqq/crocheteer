@@ -55,6 +55,8 @@ pub struct Hook {
     part_limits: Vec<usize>,
     /// Used to track unconnected limbs
     mr_count: usize,
+    /// Actions to be repeated through the whole round
+    repeat_buffer: Option<Vec<Action>>,
 }
 
 fn split_moment(
@@ -122,6 +124,17 @@ impl Hook {
     }
 
     pub fn perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
+        if let Some(buf) = &mut self.repeat_buffer {
+            if *action != Action::AroundEnd {
+                if action.is_physical_stitch() {
+                    buf.push(action.clone());
+                    return Ok(self);
+                } else {
+                    return Err(IllegalActionInRepetition);
+                }
+            }
+        }
+
         match action {
             Sc => {
                 self = Stitch::linger(self)?
@@ -201,10 +214,37 @@ impl Hook {
 
                 self.edges.link(*left, *right);
             }
+            AroundStart => {
+                if self.repeat_buffer.is_some() {
+                    return Err(NestedAround);
+                }
+                self.repeat_buffer = Some(vec![]);
+            }
+            AroundEnd => {
+                let Some(actions) = self.repeat_buffer else {
+                    return Err(UnexpectedAroundEnd);
+                };
+                self.repeat_buffer = None;
+
+                let anchors_to_consume = self.now.anchors.len();
+                let starting_anchor = self.now.anchors.front().unwrap().clone();
+                while self.now.anchors.front().unwrap() - starting_anchor < anchors_to_consume {
+                    for action in &actions {
+                        self = self.perform(&action, params)?;
+                    }
+                    if *self.now.anchors.front().unwrap() == starting_anchor {
+                        return Err(InsideOfAroundDoesNotProduceStitches);
+                    }
+                    if self.now.anchors.front().unwrap() - starting_anchor > anchors_to_consume {
+                        return Err(CantDoCleanAround);
+                    }
+                }
+            }
         };
 
         match action {
             MR(..) => unreachable!("MR allowed inside the pattern is stored as MRConfigurable"),
+            AroundStart | AroundEnd => (),
             FLO | BLO | BL | Goto(_) | FO | Action::Color(_) | Sew(..) => self.last_mark = None,
             Mark(_) => self.last_mark = Some(action.clone()),
             _ => {

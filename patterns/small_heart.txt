@@ -7,7 +7,6 @@
 # @multipart = false
 # @rooted = true
 
-@multipart = true
 @reflect_locked = false
 @tip_from_fo = false
 

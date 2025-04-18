@@ -54,6 +54,7 @@ impl Hook {
                     tmp_mark_to_node: HashMap::new(),
                     part_limits: vec![],
                     mr_count: 0,
+                    repeat_buffer: None,
                 };
                 result.magic_ring(*x);
                 Ok(result)

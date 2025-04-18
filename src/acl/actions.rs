@@ -37,4 +37,18 @@ pub enum Action {
     Sew(Label, Label),
     /// Verify the number of available anchors
     EnforceAnchors(usize, (usize, usize)),
+    /// Beginning of a sequence going all around the round
+    AroundStart,
+    /// End of a sequence going all around the round
+    AroundEnd,
+}
+
+impl Action {
+    pub fn is_physical_stitch(&self) -> bool {
+        use Action::*;
+        match self {
+            Sc | Inc | Dec | Slst => true,
+            _ => false,
+        }
+    }
 }

@@ -378,6 +378,46 @@ fn test_starting_from_color() {
     );
 }
 
+#[test]
+fn test_around() {
+    let buffer = 2;
+
+    {
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+        q!(h.edges.len(), 3 + buffer);
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        h = h.test_perform(&Sc).unwrap();
+        q!(h.edges.len(), 6 + buffer);
+    }
+    {
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+        q!(h.edges.len(), 3 + buffer);
+        h = h.test_perform(&AroundStart).unwrap();
+        q!(h.edges.len(), 3 + buffer);
+        h = h.test_perform(&Sc).unwrap();
+        q!(h.edges.len(), 3 + buffer);
+        h = h.test_perform(&AroundEnd).unwrap();
+        q!(h.edges.len(), 6 + buffer);
+    }
+    {
+        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+        q!(h.edges.len(), 3 + buffer);
+        h = h.test_perform(&AroundStart).unwrap();
+        h = h.test_perform(&Inc).unwrap();
+        h = h.test_perform(&AroundEnd).unwrap();
+        q!(h.edges.len(), 3 + 6 + buffer);
+    }
+    {
+        let mut h = Hook::start_with(&MR(4), COLOR).unwrap();
+        q!(h.edges.len(), 4 + buffer);
+        h = h.test_perform(&AroundStart).unwrap();
+        h = h.test_perform(&Dec).unwrap();
+        h = h.test_perform(&AroundEnd).unwrap();
+        q!(h.edges.len(), 4 + 2 + buffer);
+    }
+}
+
 // #[test]
 // fn test_multipart_start() {
 //     let mut h = Hook::start_with(&MR(3)).unwrap();
