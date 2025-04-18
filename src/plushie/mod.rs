@@ -6,8 +6,7 @@ pub mod params;
 mod animated;
 mod pointcloud;
 
-pub use animated::perf;
-pub use animated::Plushie;
+pub use animated::{perf, Plushie};
 pub use params::Params;
 
 use crate::common::*;
@@ -35,15 +34,4 @@ pub trait PlushieTrait: Send + 'static {
     fn clonebox(&self) -> Box<dyn PlushieTrait>;
 
     fn as_animated(&self) -> Option<&animated::Plushie>;
-}
-
-pub fn parse_to_any_plushie(
-    selector: &str,
-    pattern: &str,
-) -> Result<Box<dyn PlushieTrait>, String> {
-    let inner: Box<dyn PlushieTrait> = match selector {
-        "flow" => Box::new(Plushie::parse(pattern)?),
-        _ => return Err(format!("unrecognized plushie version: {selector}")),
-    };
-    Ok(inner)
 }

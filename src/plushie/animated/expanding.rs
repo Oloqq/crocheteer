@@ -1,5 +1,3 @@
-use std::mem;
-
 use super::Plushie;
 use crate::{common::*, plushie::params::OneByOneParams};
 
@@ -50,9 +48,8 @@ impl Plushie {
         ]
     }
 
-    fn construct_node(&mut self, index: usize, position: Point) {
-        self.edges.push(vec![]);
-        mem::swap(&mut self.edges[index], &mut self.edges_goal[index]);
+    pub fn construct_node(&mut self, index: usize, position: Point) {
+        self.edges.push(self.edges_goal[index].clone());
         self.nodes.points.push(position);
         self.displacement.push(V::zeros());
     }

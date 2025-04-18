@@ -35,6 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const visualizeButton = document.getElementById("visualize-button")!;
   visualizeButton.addEventListener("click", sendPattern);
 
+  const updateButton = document.getElementById("update-button")!;
+  updateButton.addEventListener("click", () => {
+    send(`update ${guiData.getPattern()}`);
+  });
+
   const exportButton = document.getElementById("export-button")!;
   exportButton.addEventListener("click", () => {
     send(`export-pointcloud`);
@@ -49,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("help")!,
     () => `
 In the editor:
-  CTRL+Enter: visualize
+  CTRL+Enter: update pattern
   CTRL+P: pause/unpause
   `
   );

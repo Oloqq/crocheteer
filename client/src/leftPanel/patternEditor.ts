@@ -47,9 +47,9 @@ export function init(
   }, 5000);
 
   editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-    const visualizeButton = document.getElementById("visualize-button");
-    if (visualizeButton) {
-      visualizeButton.click();
+    const updateButton = document.getElementById("update-button");
+    if (updateButton) {
+      updateButton.click();
     }
   });
 

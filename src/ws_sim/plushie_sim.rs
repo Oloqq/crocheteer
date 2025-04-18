@@ -11,7 +11,7 @@ use super::{
 };
 use crate::{
     common::*,
-    plushie::{parse_to_any_plushie, PlushieTrait},
+    plushie::{Plushie, PlushieTrait},
     skeletonization, token_args,
 };
 
@@ -87,13 +87,18 @@ impl PlushieSimulation {
 
     fn change_pattern(&mut self, msg: &str) -> Result<(), String> {
         log::info!("Changing pattern...");
-
-        // let (_, version_pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
-        // let (selector, pattern) = version_pattern.split_once(" ").ok_or("frontend fuckup")?;
-        let selector = "flow";
         let (_, pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
+        self.plushie = Box::new(Plushie::parse(pattern)?);
+        Ok(())
+    }
 
-        self.plushie = parse_to_any_plushie(selector, pattern)?;
+    fn update_pattern(&mut self, msg: &str) -> Result<(), String> {
+        log::info!("Updating pattern...");
+        let (_, pattern) = msg.split_once(" ").ok_or("frontend fuckup")?;
+        let old = &self.plushie.as_animated().unwrap();
+        let mut new = Box::new(Plushie::parse(pattern)?);
+        new.inherit_from(&old);
+        self.plushie = new;
         Ok(())
     }
 
@@ -130,6 +135,17 @@ impl PlushieSimulation {
                 Ok(_) => {
                     self.controls.need_init = true;
                     self.send("status", "Loaded the pattern");
+                    let serialized = serde_json::to_string(self.plushie.params()).unwrap();
+                    self.send("params", &serialized);
+                }
+                Err(error) => {
+                    self.send("status", format!("Couldn't parse: {}", error).as_str());
+                }
+            },
+            "update" => match self.update_pattern(msg) {
+                Ok(_) => {
+                    self.controls.need_init = true;
+                    self.send("status", "Updated the pattern");
                     let serialized = serde_json::to_string(self.plushie.params()).unwrap();
                     self.send("params", &serialized);
                 }
