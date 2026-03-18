@@ -1,0 +1,25 @@
+[package]
+name = "crocheteer"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+members = [
+    "crates/app",
+    "crates/crochetlib",
+    # "third-party/forked_crate_a",
+    # "third-party/forked_crate_b",
+]
+resolver = "2"
+
+[workspace.dependencies]
+glam = "0.30.10" # same as used by bevy
+
+[dependencies]
+crochetlib = { path = "crates/crochetlib" }
+
+[profile.dev]
+opt-level = 1 # enable bevy dynamic linking
+
+[profile.dev.package."*"]
+opt-level = 3 # enable bevy dynamic linking
