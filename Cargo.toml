@@ -1,22 +1,25 @@
 [package]
 name = "crocheteer"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2024"
 
 [workspace]
 members = [
-    "crates/app",
-    "crates/crochetlib",
-    # "third-party/forked_crate_a",
-    # "third-party/forked_crate_b",
+    # crochet algorithms
+    "crates/crochet",
+    # fork to change control scheme TODO init submodule
+    "crates/bevy_editor_cam",
+    # fork for semantic highlighting TODO init submodule
+    "crates/egui_code_editor",
 ]
 resolver = "2"
 
 [workspace.dependencies]
-glam = "0.30.10" # same as used by bevy
+glam = "0.30.10" # should be same as used by bevy
 
 [dependencies]
-crochetlib = { path = "crates/crochetlib" }
+crochet = { path = "crates/crochet" }
+bevy = { version = "0.17.3", features = ["dynamic_linking"] }
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking

@@ -1,0 +1,6 @@
+[submodule "crates/bevy_editor_cam"]
+	path = crates/bevy_editor_cam
+	url = https://github.com/Oloqq/bevy_editor_cam.git
+[submodule "crates/egui_code_editor"]
+	path = crates/egui_code_editor
+	url = git@github.com:Oloqq/egui_code_editor.git
