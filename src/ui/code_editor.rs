@@ -14,11 +14,6 @@ pub fn code_editor_ui(
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
 
-    ctx.style_mut(|style| {
-        style.animation_time = 0.05; // default is 0.1 seconds
-        style.interaction.interact_radius = 0.0;
-    });
-
     egui::SidePanel::show_animated_between(
         ctx,
         state.expanded,

@@ -4,9 +4,9 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::data::CodeEditorState;
+use crate::ui::input_capture::InputCaptured;
 
-pub fn top_panel(mut contexts: EguiContexts, state: Res<CodeEditorState>) -> Result {
+pub fn top_panel(mut contexts: EguiContexts, captured: Res<InputCaptured>) -> Result {
     let ctx = contexts.ctx_mut()?;
 
     egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
@@ -57,40 +57,14 @@ pub fn top_panel(mut contexts: EguiContexts, state: Res<CodeEditorState>) -> Res
                     ui.close();
                 }
             });
-
-            // ui.allocate_ui(egui::Vec2::ZERO, |ui| {
-            //     let dummy_text = &mut String::new();
-            //     let _ = ui.add_visible(
-            //         false,
-            //         egui::TextEdit::singleline(dummy_text).id(state.dummy),
-            //     );
-            // })
-            ui.scope_builder(
-                egui::UiBuilder::new().max_rect(egui::Rect::from_min_size(
-                    egui::pos2(-1000.0, -1000.0),
-                    egui::Vec2::ZERO,
-                )),
-                |ui| {
-                    let dummy_text = &mut String::new();
-                    let _ = ui.add(egui::TextEdit::singleline(dummy_text).id(state.dummy));
-                },
-            );
         });
     });
 
-    // this is stupid, let's just fire messages
     let ctrls = ctx
         .input_mut(|i| i.consume_shortcut(&KeyboardShortcut::new(Modifiers::CTRL, egui::Key::S)));
 
     if ctrls {
-        info!("save");
-        ctx.memory_mut(|m| m.request_focus(state.dummy));
-    } else {
-        ctx.memory_mut(|m| {
-            if m.has_focus(state.dummy) {
-                m.surrender_focus(state.dummy);
-            }
-        })
+        captured.capture();
     }
 
     Ok(())

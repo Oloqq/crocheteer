@@ -3,20 +3,8 @@ use crate::ui::input_capture::InputCaptured;
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
-    egui::{self, style::ScrollStyle},
+    egui::{self},
 };
-
-pub fn configure_visuals_system(mut contexts: EguiContexts) -> Result {
-    contexts.ctx_mut()?.set_visuals(egui::Visuals {
-        window_corner_radius: 0.0.into(),
-        ..Default::default()
-    });
-    Ok(())
-}
-
-pub fn configure_ui_state_system(mut ui_state: ResMut<UiState>) {
-    ui_state.value = 7;
-}
 
 fn full_height_button(ui: &mut egui::Ui, rect: egui::Rect, label: &str) -> egui::Response {
     let response = ui.interact(rect, ui.id().with("collapse_toggle"), egui::Sense::click());
@@ -99,12 +87,6 @@ pub fn ui_example_system(
     captured: Res<InputCaptured>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
-
-    ctx.style_mut(|style| {
-        style.animation_time = 0.05; // default is 0.1 seconds
-        style.spacing.scroll = ScrollStyle::solid();
-        style.interaction.interact_radius = 0.0;
-    });
 
     egui::SidePanel::show_animated_between(
         ctx,
