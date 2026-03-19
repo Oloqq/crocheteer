@@ -15,25 +15,26 @@ pub fn code_editor_ui(
     mut contexts: EguiContexts,
     mut state: ResMut<CodeEditorState>,
     captured: Res<InputCaptured>,
+    mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
     let extended_panel_id = egui::Id::new("left_side_panel_extended");
 
     egui::SidePanel::show_animated_between(
         ctx,
-        state.expanded,
+        *collapsed,
+        egui::SidePanel::left(extended_panel_id).resizable(true),
         egui::SidePanel::left("left_side_panel_collapsed")
             .exact_width(24.0)
             .resizable(false),
-        egui::SidePanel::left(extended_panel_id).resizable(true),
-        |ui, expansion| {
-            if expansion > 0.5 {
+        |ui, shrinkation| {
+            if shrinkation < 0.5 {
                 ui.with_layout(egui::Layout::top_down(egui::Align::Min), |ui| {
                     // Toolbar
                     ui.horizontal(|ui| {
                         ui.heading("Pattern");
                         if ui.button("◀").clicked() {
-                            state.expanded = false;
+                            *collapsed = true;
                         }
                         if ui.button("💾 Save").clicked() { /* ... */ }
                         if ui.button("💾 Load").clicked() { /* ... */ }
@@ -89,14 +90,14 @@ pub fn code_editor_ui(
                     "▶",
                 );
                 if response.clicked() {
-                    state.expanded = true;
+                    *collapsed = false;
                 }
             }
         },
     );
 
     // hacky hack to ensure grabbing the resize bar is registered as an input "wanted by egui"
-    if state.expanded && using_resizer(ctx, extended_panel_id, Side::Left) {
+    if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Left) {
         captured.capture();
     }
 

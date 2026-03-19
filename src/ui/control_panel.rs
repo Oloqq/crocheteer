@@ -8,12 +8,12 @@ use bevy_egui::{
     egui::{self},
 };
 
-fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState) {
+fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
     ui.horizontal(|ui| {
         ui.heading("Side Panel");
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if ui.button("▶").clicked() {
-                state.expanded = false;
+                *collapsed = true;
             }
         });
     });
@@ -64,21 +64,20 @@ pub fn ui_example_system(
     mut ui_state: ResMut<UiState>,
     mut contexts: EguiContexts,
     captured: Res<InputCaptured>,
+    mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
     let extended_panel_id = egui::Id::new("side_panel_extended");
 
     egui::SidePanel::show_animated_between(
         ctx,
-        ui_state.expanded,
+        *collapsed,
+        egui::SidePanel::right(extended_panel_id).resizable(true),
         egui::SidePanel::right("side_panel_collapsed")
             .exact_width(24.0)
             .resizable(false),
-        egui::SidePanel::right(extended_panel_id).resizable(true),
         |ui, _| {
-            if ui_state.expanded {
-                expanded_ui(ui, &mut ui_state);
-            } else {
+            if *collapsed {
                 let response = full_height_button(
                     ui,
                     ui.id().with("collapse_toggle_right"),
@@ -86,14 +85,16 @@ pub fn ui_example_system(
                     "◀",
                 );
                 if response.clicked() {
-                    ui_state.expanded = true;
+                    *collapsed = false;
                 }
+            } else {
+                expanded_ui(ui, &mut ui_state, &mut collapsed);
             }
         },
     );
 
     // hacky hack to ensure grabbing the resize bar is registered as an input "wanted by egui"
-    if ui_state.expanded && using_resizer(ctx, extended_panel_id, Side::Right) {
+    if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Right) {
         captured.capture();
     }
 
