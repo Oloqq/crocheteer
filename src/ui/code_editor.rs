@@ -1,11 +1,15 @@
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
-    egui::{self, PopupAnchor},
+    egui::{self, PopupAnchor, panel::Side},
 };
 use egui_code_editor::CodeEditor;
 
-use crate::ui::{data::CodeEditorState, input_capture::InputCaptured};
+use crate::ui::{
+    data::CodeEditorState,
+    input_capture::InputCaptured,
+    utils::{full_height_button, using_resizer},
+};
 
 pub fn code_editor_ui(
     mut contexts: EguiContexts,
@@ -13,6 +17,7 @@ pub fn code_editor_ui(
     captured: Res<InputCaptured>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
+    let extended_panel_id = egui::Id::new("left_side_panel_extended");
 
     egui::SidePanel::show_animated_between(
         ctx,
@@ -20,7 +25,7 @@ pub fn code_editor_ui(
         egui::SidePanel::left("left_side_panel_collapsed")
             .exact_width(24.0)
             .resizable(false),
-        egui::SidePanel::left("left_side_panel_extended").resizable(true),
+        egui::SidePanel::left(extended_panel_id).resizable(true),
         |ui, expansion| {
             if expansion > 0.5 {
                 ui.with_layout(egui::Layout::top_down(egui::Align::Min), |ui| {
@@ -77,7 +82,12 @@ pub fn code_editor_ui(
                     });
                 });
             } else {
-                let response = full_height_button(ui, ui.clip_rect(), "▶");
+                let response = full_height_button(
+                    ui,
+                    ui.id().with("collapse_toggle_left"),
+                    ui.clip_rect(),
+                    "▶",
+                );
                 if response.clicked() {
                     state.expanded = true;
                 }
@@ -86,58 +96,9 @@ pub fn code_editor_ui(
     );
 
     // hacky hack to ensure grabbing the resize bar is registered as an input "wanted by egui"
-    let panel_id = egui::Id::new("left_side_panel_extended");
-    let grab_radius =
-        ctx.style().interaction.resize_grab_radius_side + ctx.style().interaction.interact_radius;
-
-    if state.expanded
-        && ctx
-            .input(|i| i.pointer.hover_pos())
-            .and_then(|pointer_pos| {
-                ctx.memory(|mem| {
-                    mem.data
-                        .get_temp::<egui::containers::panel::PanelState>(panel_id)
-                        .map(|panel| {
-                            egui::Rect::from_min_max(
-                                panel.rect.min - egui::vec2(grab_radius, 0.0),
-                                panel.rect.max,
-                            )
-                            .contains(pointer_pos)
-                        })
-                })
-            })
-            .unwrap_or(false)
-    {
+    if state.expanded && using_resizer(ctx, extended_panel_id, Side::Left) {
         captured.capture();
     }
 
     Ok(())
-}
-
-fn full_height_button(ui: &mut egui::Ui, rect: egui::Rect, label: &str) -> egui::Response {
-    let response = ui.interact(
-        rect,
-        ui.id().with("left_collapse_toggle"),
-        egui::Sense::click(),
-    );
-
-    let fill = if response.is_pointer_button_down_on() {
-        ui.visuals().widgets.active.bg_fill
-    } else if response.hovered() {
-        ui.visuals().widgets.hovered.bg_fill
-    } else {
-        egui::Color32::TRANSPARENT
-    };
-    ui.painter().rect_filled(rect, 0.0, fill);
-
-    // Draw your label/arrow however you want (no hitbox for events)
-    ui.painter().text(
-        rect.center(),
-        egui::Align2::CENTER_CENTER,
-        label,
-        egui::FontId::proportional(14.0),
-        ui.visuals().text_color(),
-    );
-
-    return response;
 }

@@ -3,6 +3,7 @@ mod control_panel;
 mod data;
 mod input_capture;
 mod menu_bar;
+mod utils;
 
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
@@ -14,6 +15,8 @@ use crate::ui::{
     data::{CodeEditorState, UiState},
     menu_bar::top_panel,
 };
+
+pub use input_capture::world_input;
 
 pub struct UiPlugin;
 
