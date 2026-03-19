@@ -25,6 +25,7 @@ bevy_framepace = "0.20"
 bevy_infinite_grid = "0.17"
 crochet = { path = "crates/crochet" }
 egui_code_editor = { path = "crates/egui_code_editor" }
+indoc = "2.0.7"
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking

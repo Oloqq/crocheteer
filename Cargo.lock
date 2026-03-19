@@ -2359,6 +2359,7 @@ dependencies = [
  "bevy_infinite_grid",
  "crochet",
  "egui_code_editor",
+ "indoc",
 ]
 
 [[package]]
