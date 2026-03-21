@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+/// Represents a Pull-Through, or "the little V"
 #[derive(Component)]
 pub struct Node {}
 

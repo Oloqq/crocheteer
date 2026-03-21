@@ -7,14 +7,14 @@ use egui_code_editor::CodeEditor;
 
 use crate::ui::{
     data::CodeEditorState,
-    input_capture::InputCaptured,
+    input_capture::UiUsedInput,
     utils::{full_height_button, using_resizer},
 };
 
 pub fn code_editor_ui(
     mut contexts: EguiContexts,
     mut state: ResMut<CodeEditorState>,
-    captured: Res<InputCaptured>,
+    captured: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;

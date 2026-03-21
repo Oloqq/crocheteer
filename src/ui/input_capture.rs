@@ -3,23 +3,28 @@ use bevy_egui::input::{EguiWantsInput, egui_wants_any_input};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 #[derive(Resource, Default)]
-pub struct InputCaptured(AtomicBool);
+pub struct UiUsedInput(AtomicBool);
 
-pub fn reset(captured: Res<InputCaptured>) {
+pub fn reset(captured: Res<UiUsedInput>) {
     captured.0.store(false, Ordering::Relaxed);
 }
 
-impl InputCaptured {
+impl UiUsedInput {
     pub fn capture(&self) {
         self.0.store(true, Ordering::Relaxed);
     }
+
+    pub fn used(&self) -> bool {
+        self.0.load(Ordering::Relaxed)
+    }
 }
 
-pub fn world_input(
-    captured: Option<Res<InputCaptured>>,
-    wants_input: Option<Res<EguiWantsInput>>,
-) -> bool {
-    let relevant_to_ui = wants_input.is_some_and(|w| egui_wants_any_input(w))
-        || captured.is_some_and(|n| n.0.load(Ordering::Relaxed));
-    return !relevant_to_ui;
+pub fn mark_input_as_captued_if_egui_wants_it(a: Res<UiUsedInput>, b: Res<EguiWantsInput>) {
+    if egui_wants_any_input(b) {
+        a.capture();
+    }
+}
+
+pub fn world_input(ui_input: Res<UiUsedInput>) -> bool {
+    return !ui_input.used();
 }

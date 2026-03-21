@@ -4,9 +4,9 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::input_capture::InputCaptured;
+use crate::ui::input_capture::UiUsedInput;
 
-pub fn top_panel(mut contexts: EguiContexts, captured: Res<InputCaptured>) -> Result {
+pub fn top_panel(mut contexts: EguiContexts, captured: Res<UiUsedInput>) -> Result {
     let ctx = contexts.ctx_mut()?;
 
     egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {

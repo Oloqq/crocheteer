@@ -1,4 +1,4 @@
-use crate::ui::input_capture::InputCaptured;
+use crate::ui::input_capture::UiUsedInput;
 use crate::ui::utils::using_resizer;
 use crate::ui::{data::*, utils::full_height_button};
 use bevy::prelude::*;
@@ -63,7 +63,7 @@ fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
 pub fn ui_example_system(
     mut ui_state: ResMut<UiState>,
     mut contexts: EguiContexts,
-    captured: Res<InputCaptured>,
+    captured: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;

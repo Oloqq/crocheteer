@@ -7,12 +7,13 @@ mod utils;
 
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
-use input_capture::InputCaptured;
+pub use input_capture::UiUsedInput;
 
 use crate::ui::{
     code_editor::code_editor_ui,
     control_panel::ui_example_system,
     data::{CodeEditorState, UiState},
+    input_capture::mark_input_as_captued_if_egui_wants_it,
     menu_bar::top_panel,
 };
 
@@ -25,7 +26,7 @@ impl Plugin for UiPlugin {
         app.add_plugins(EguiPlugin::default());
         app.init_resource::<CodeEditorState>();
         app.init_resource::<UiState>();
-        app.init_resource::<InputCaptured>();
+        app.init_resource::<UiUsedInput>();
         app.add_systems(Startup, set_style);
         app.add_systems(
             EguiPrimaryContextPass,
@@ -33,6 +34,7 @@ impl Plugin for UiPlugin {
                 (input_capture::reset),
                 top_panel,
                 (ui_example_system, code_editor_ui),
+                mark_input_as_captued_if_egui_wants_it,
             )
                 .chain(),
         );
