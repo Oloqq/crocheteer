@@ -1,0 +1,102 @@
+program = { SOI ~ (round | comment | parameter | control | labeled_config | NEWLINE)+ ~ EOI}
+
+parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
+
+round       = { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
+roundspec   = {
+    round_range
+  | round_index
+  | NUMBER
+}
+round_index = @{ R ~ NUMBER }
+round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
+round_end   =  { "(" ~ NUMBER ~ ")" }
+
+stitches   = { in_round_acion ~ ("," ~ in_round_acion)* }
+in_round_acion  = {
+    (NUMBER ~ KW_STITCH)
+  | KW_STITCH
+  | interstitchable_action
+  | repetition
+}
+
+repetition = {
+    repeated ~ KW_TIMES ~ NUMBER
+  | repeated ~ KW_AROUND
+}
+repeated   = { "[" ~ stitches ~ "]" }
+
+control = { action_sequence ~ LINEEND }
+action_sequence = { action ~ ("," ~ action)* }
+arg_int   =  { "(" ~ NUMBER ~ ")" }
+arg_int_opt_ident   =  { "(" ~ NUMBER ~ ("," ~ IDENT)? ~ ")" }
+arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
+arg_ident =  { "(" ~ IDENT ~ ")" }
+arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
+arg_ident_ident =  { "(" ~ IDENT ~ "," ~ IDENT ~ ")" }
+
+
+action = {
+      interstitchable_action
+    | (KW_MR ~ arg_int_opt_ident)
+    |  KW_FO
+    | (KW_SEW ~ arg_ident_ident)
+}
+interstitchable_action = {
+      KW_BLO
+    | KW_FLO
+    | KW_BL
+    | (KW_MARK ~ arg_ident)
+    | (KW_GOTO ~ arg_ident)
+    | (KW_COLOR ~ arg_int_3)
+    | (KW_ATTACH ~ arg_ident_int)
+}
+
+labeled_config = {
+  IDENT ~ LINEEND?
+  ~ "{" ~ LINEEND?
+    ~ config_entries
+  ~ "}" ~ LINEEND
+}
+
+config_entries = {
+  comment*
+  ~ config_entry
+    ~ ("," ~ LINEEND? ~ (comment)* ~ LINEEND? ~ config_entry)*
+  ~ ","? ~ LINEEND
+  ~ comment*
+}
+
+config_entry = {
+  IDENT ~ "=" ~ (FLOAT | IDENT)
+}
+
+KW_MR     = { "MR" }
+KW_FO     = { "FO" }
+KW_MARK   = { "mark" }
+KW_GOTO   = { "goto" }
+KW_FLO    = { "FLO" }
+KW_BLO    = { "BLO" }
+KW_BL     = { "BL" }
+KW_CH     = { "ch" | "Ch" }
+KW_COLOR  = { "color" }
+KW_ATTACH = { "attach" }
+KW_STITCH = { "sc" | "inc" | "dec" | "slst" | KW_FO }
+KW_TIMES  = { "x" }
+KW_AROUND = { "around" }
+KW_SEW    = { "sew" }
+
+comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
+not_newline = _{
+    !(NEWLINE) ~ ANY
+}
+
+LINEEND     = _{ NEWLINE | comment | EOI }
+R           =  { "R" }
+ALPHA       =  { 'a'..'z' | 'A'..'Z' }
+IDENT       = @{ (ALPHA | DIGIT | "_")+ }
+NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
+FLOAT       = @{ "-"? ~ (DIGIT)+ ~ ("." ~ (DIGIT)+)? }
+NONZERO     = _{ '1'..'9' }
+DIGIT       = _{ '0'..'9' }
+WHITESPACE  = _{ " " }

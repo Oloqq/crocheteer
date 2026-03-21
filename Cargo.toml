@@ -19,13 +19,13 @@ glam = "0.30.10" # should be same as used by bevy
 
 [dependencies]
 bevy = { version = "0.17.3", features = ["dynamic_linking"] }
-bevy_editor_cam = { path = "crates/bevy_editor_cam", default-features = false } # disabling default features because skybox was causing ambiguities in Update schedule
-bevy_egui = "0.38"
-bevy_framepace = "0.20"
+bevy_editor_cam = { path = "crates/bevy_editor_cam", default-features = false } # disabling default features because skybox was causing ambiguities in Update schedule, fork to change control scheme
+bevy_egui = "0.38"                                                              # GUI
+bevy_framepace = "0.20"                                                         # FPS management
 bevy_infinite_grid = "0.17"
 crochet = { path = "crates/crochet" }
-egui_code_editor = { path = "crates/egui_code_editor" }
-indoc = "2.0.7"
+egui_code_editor = { path = "crates/egui_code_editor" }                         # fork for semantic highlighting
+indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking
