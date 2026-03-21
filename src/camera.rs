@@ -17,7 +17,7 @@ impl Plugin for CameraPlugin {
 }
 
 fn setup_view(mut commands: Commands) {
-    let cam_trans = Transform::from_xyz(0.0, 200.0, 200.0).looking_at(Vec3::ZERO, Vec3::Y);
+    let cam_trans = Transform::from_xyz(0.0, 0.1, 0.1).looking_at(Vec3::ZERO, Vec3::Y);
     commands
         .spawn((
             Camera3d::default(),

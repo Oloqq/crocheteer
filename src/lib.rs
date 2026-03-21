@@ -1,5 +1,6 @@
 mod camera;
 mod cursor_ray;
+mod plushie;
 mod ui;
 
 use std::time::Duration;
@@ -19,6 +20,7 @@ pub fn app() -> App {
     window(&mut app);
     visible_3d_world(&mut app);
     app.add_plugins(ui::UiPlugin);
+    app.add_plugins(plushie::PlushiePlugin);
     app.add_systems(Update, say_click.run_if(world_input));
     app
 }
@@ -79,7 +81,8 @@ fn visible_3d_world(app: &mut App) {
     app.add_systems(PreStartup, |mut commands: Commands| {
         commands.spawn(InfiniteGridBundle {
             settings: InfiniteGridSettings {
-                fadeout_distance: 500.0,
+                fadeout_distance: 5.0,
+                scale: 100.0, // 1 cell = 0.01 world units = 10 cm
                 ..default()
             },
             ..default()

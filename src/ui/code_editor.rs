@@ -29,6 +29,7 @@ pub fn code_editor_ui(
             .resizable(false),
         |ui, shrinkation| {
             if shrinkation < 0.5 {
+                // ui.disable();
                 ui.with_layout(egui::Layout::top_down(egui::Align::Min), |ui| {
                     // Toolbar
                     ui.horizontal(|ui| {
@@ -66,7 +67,7 @@ pub fn code_editor_ui(
                                 let relative_pos = mouse_pos - text_rect.min;
 
                                 let cursor = response.galley.cursor_from_pos(relative_pos);
-                                println!("curra {:?}", cursor);
+                                // println!("curra {:?}", cursor);
                                 if cursor.index == 0 {
                                     egui::Tooltip::always_open(
                                         ctx.clone(),
