@@ -3,9 +3,9 @@ use bevy::{prelude::*, transform::plugins::TransformSystems};
 mod data;
 mod systems;
 
-use systems::*;
-
 use crate::ui::world_input;
+pub use data::*;
+pub use systems::*;
 
 pub struct LinksPlugin;
 

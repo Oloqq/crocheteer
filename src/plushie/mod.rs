@@ -6,9 +6,9 @@ mod systems;
 
 use crate::{
     plushie::{
-        animation::LinksPlugin,
+        animation::{LinkAssets, LinksPlugin, add_link_between},
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
-        spawning::add_new_nodes,
+        spawning::{add_graph_node, add_new_nodes},
         systems::{setup_assets, sync_visuals},
     },
     ui::world_input,
@@ -23,7 +23,8 @@ impl Plugin for PlushiePlugin {
         app.add_plugins(LinksPlugin);
         app.add_message::<AddNode>();
         app.init_resource::<PressHandled>();
-        app.add_systems(Startup, (setup_assets, build_a_plushie));
+        app.add_systems(Startup, setup_assets);
+        app.add_systems(PostStartup, build_a_plushie);
         app.add_systems(
             PreUpdate,
             (deselect_on_empty_press, (update_dragging, stop_dragging)).run_if(world_input),
@@ -33,7 +34,11 @@ impl Plugin for PlushiePlugin {
     }
 }
 
-fn build_a_plushie(mut msgw: MessageWriter<AddNode>) {
+fn build_a_plushie(
+    mut commands: Commands,
+    plushie_assets: Res<PlushieAssets>,
+    link_assets: Res<LinkAssets>,
+) {
     let acl = indoc::indoc! {"
         @centroids = 3
 
@@ -51,9 +56,18 @@ fn build_a_plushie(mut msgw: MessageWriter<AddNode>) {
         : 6 dec (6)
         FO
     "};
-    let (graph_nodes, _edges) = crochet::parse(acl);
+    let (graph_nodes, edges) = crochet::parse(acl);
 
-    for node in graph_nodes {
-        msgw.write(AddNode { position: node });
+    let node_entities: Vec<Entity> = graph_nodes
+        .into_iter()
+        .map(|node| add_graph_node(&AddNode { position: node }, &mut commands, &plushie_assets))
+        .collect();
+
+    for (source, targets) in edges.iter().enumerate() {
+        for target in targets {
+            let a = node_entities[source];
+            let b = node_entities[*target];
+            add_link_between(a, b, &mut commands, &link_assets);
+        }
     }
 }

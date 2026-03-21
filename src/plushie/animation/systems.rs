@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::plushie::{
-    animation::data::{Link, LinkAssets},
+    animation::data::{Link, LinkAssets, LinkForce},
     data::{GraphNode, Selected},
 };
 
@@ -14,6 +14,15 @@ pub fn setup(
         mesh: meshes.add(Cylinder::new(1.0, 1.0)),
         material: materials.add(Color::srgb(0.2, 0.4, 0.2)),
     });
+}
+
+pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &LinkAssets) {
+    commands.spawn((
+        Link { a, b },
+        Mesh3d(assets.mesh.clone()),
+        MeshMaterial3d(assets.material.clone()),
+        Transform::default(),
+    ));
 }
 
 pub fn connect(
@@ -38,12 +47,7 @@ pub fn connect(
     commands.entity(a).insert(LinkForce(Vec3::ZERO));
     commands.entity(b).insert(LinkForce(Vec3::ZERO));
 
-    commands.spawn((
-        Link { a, b },
-        Mesh3d(assets.mesh.clone()),
-        MeshMaterial3d(assets.material.clone()),
-        Transform::default(),
-    ));
+    add_link_between(a, b, &mut commands, &assets);
 }
 
 pub fn update_connections_visually(
@@ -72,9 +76,6 @@ pub fn update_connections_visually(
         *line_transform = new_trans;
     }
 }
-
-#[derive(Component, Default)]
-pub struct LinkForce(pub Vec3);
 
 pub fn reset_acceleration(mut query: Query<&mut LinkForce>) {
     for mut acc in &mut query {
