@@ -1,7 +1,7 @@
 use crate::cursor_ray::CursorRay;
 use crate::ui::UiUsedInput;
 
-use super::data::Node;
+use super::data::GraphNode;
 use super::data::*;
 use bevy::prelude::*;
 
@@ -27,8 +27,7 @@ pub fn add_new_nodes(
     for msg in msgr.read() {
         commands
             .spawn((
-                Node {},
-                // LinkForce(Vec3::ZERO),
+                GraphNode {},
                 Name::new("Node"),
                 Mesh3d(assets.mesh.clone()),
                 MeshMaterial3d(assets.material.clone()),
@@ -150,7 +149,7 @@ pub fn sync_visuals(
     mut commands: Commands,
     mut removed: RemovedComponents<Selected>,
     assets: Res<PlushieAssets>,
-    added: Query<Entity, (With<Node>, With<Selected>, Added<Selected>)>,
+    added: Query<Entity, (With<GraphNode>, With<Selected>, Added<Selected>)>,
 ) {
     for entity in &added {
         commands

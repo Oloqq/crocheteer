@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 /// Represents a Pull-Through, or "the little V"
 #[derive(Component)]
-pub struct Node {}
+pub struct GraphNode {}
 
 #[derive(Component)]
 pub struct Selected;

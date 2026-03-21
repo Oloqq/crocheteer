@@ -1,15 +1,19 @@
 use bevy::prelude::*;
 
 use crate::{
-    plushie::systems::{
-        add_new_nodes, deselect_on_empty_press, setup_assets, stop_dragging, sync_visuals,
-        update_dragging,
+    plushie::{
+        animation::LinksPlugin,
+        systems::{
+            add_new_nodes, deselect_on_empty_press, setup_assets, stop_dragging, sync_visuals,
+            update_dragging,
+        },
     },
     ui::world_input,
 };
 
 pub struct PlushiePlugin;
 
+mod animation;
 mod data;
 mod systems;
 
@@ -17,6 +21,7 @@ use data::*;
 
 impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(LinksPlugin);
         app.add_message::<AddNode>();
         app.init_resource::<PressHandled>();
         app.add_systems(Startup, (setup_assets, build_a_plushie));
