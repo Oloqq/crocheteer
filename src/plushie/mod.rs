@@ -1,23 +1,22 @@
-use bevy::prelude::*;
+mod animation;
+mod data;
+mod mouse_interactions;
+mod spawning;
+mod systems;
 
 use crate::{
     plushie::{
         animation::LinksPlugin,
-        systems::{
-            add_new_nodes, deselect_on_empty_press, setup_assets, stop_dragging, sync_visuals,
-            update_dragging,
-        },
+        mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
+        spawning::add_new_nodes,
+        systems::{setup_assets, sync_visuals},
     },
     ui::world_input,
 };
+use bevy::prelude::*;
+use data::*;
 
 pub struct PlushiePlugin;
-
-mod animation;
-mod data;
-mod systems;
-
-use data::*;
 
 impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
@@ -52,7 +51,7 @@ fn build_a_plushie(mut msgw: MessageWriter<AddNode>) {
         : 6 dec (6)
         FO
     "};
-    let graph_nodes: Vec<Vec3> = crochet::parse_into_points(acl);
+    let (graph_nodes, _edges) = crochet::parse(acl);
 
     for node in graph_nodes {
         msgw.write(AddNode { position: node });
