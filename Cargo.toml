@@ -5,11 +5,8 @@ edition = "2024"
 
 [workspace]
 members = [
-    # crochet algorithms
     "crates/crochet",
-    # fork to change control scheme TODO init submodule
     "crates/bevy_editor_cam",
-    # fork for semantic highlighting TODO init submodule
     "crates/egui_code_editor",
 ]
 resolver = "2"

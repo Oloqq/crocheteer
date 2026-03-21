@@ -10,7 +10,7 @@ pub fn adding_to_selection(keyboard: &ButtonInput<KeyCode>) -> bool {
     keyboard.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight])
 }
 
-pub fn on_click_ball(
+pub fn on_click(
     trigger: On<Pointer<Press>>,
     mut commands: Commands,
     mut press_handled: ResMut<PressHandled>,

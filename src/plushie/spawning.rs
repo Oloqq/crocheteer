@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::plushie::animation::LinkForce;
 use crate::plushie::{
     data::{AddNode, GraphNode, PlushieAssets},
-    mouse_interactions::on_click_ball,
+    mouse_interactions::on_click,
 };
 
 pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAssets) -> Entity {
@@ -18,7 +18,7 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
             Pickable::default(),
             LinkForce(Vec3::ZERO),
         ))
-        .observe(on_click_ball)
+        .observe(on_click)
         .id()
 }
 

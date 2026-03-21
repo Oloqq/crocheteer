@@ -27,7 +27,10 @@ impl Plugin for PlushiePlugin {
         app.add_systems(PostStartup, build_a_plushie);
         app.add_systems(
             PreUpdate,
-            (deselect_on_empty_press, (update_dragging, stop_dragging)).run_if(world_input),
+            (
+                (deselect_on_empty_press, update_dragging).run_if(world_input),
+                stop_dragging,
+            ),
         );
         app.add_systems(Update, add_new_nodes);
         app.add_systems(PostUpdate, sync_visuals);
@@ -39,22 +42,26 @@ fn build_a_plushie(
     plushie_assets: Res<PlushieAssets>,
     link_assets: Res<LinkAssets>,
 ) {
+    // let acl = indoc::indoc! {"
+    //     @centroids = 3
+
+    //     MR(6)
+    //     : 6 inc (12)
+    //     3: 12 sc (12)
+    //     mark(cap_start)
+    //     : BLO, 6 dec (6)
+    //     FO
+
+    //     goto(cap_start), color(255, 255, 0)
+    //     : FLO, 12 inc (24)
+    //     2: 24 sc (24)
+    //     : 12 dec (12)
+    //     : 6 dec (6)
+    //     FO
+    // "};
+
     let acl = indoc::indoc! {"
-        @centroids = 3
-
         MR(6)
-        : 6 inc (12)
-        3: 12 sc (12)
-        mark(cap_start)
-        : BLO, 6 dec (6)
-        FO
-
-        goto(cap_start), color(255, 255, 0)
-        : FLO, 12 inc (24)
-        2: 24 sc (24)
-        : 12 dec (12)
-        : 6 dec (6)
-        FO
     "};
     let (graph_nodes, edges) = crochet::parse(acl);
 
