@@ -12,10 +12,10 @@ pub struct LinksPlugin;
 impl Plugin for LinksPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
+        app.add_systems(Update, connect.run_if(world_input));
         app.add_systems(
-            Update,
+            FixedUpdate,
             (
-                connect.run_if(world_input),
                 reset_acceleration,
                 (apply_link_forces /*other parallel forces */,),
                 apply_acceleration,

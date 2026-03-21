@@ -122,6 +122,6 @@ pub fn apply_acceleration(
 ) {
     let dt = time.delta_secs();
     for (acc, mut transform) in &mut query {
-        transform.translation += acc.0 * dt * dt; // basic Euler integration
+        transform.translation += acc.0 * dt * dt;
     }
 }
