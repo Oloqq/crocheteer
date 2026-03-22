@@ -8,9 +8,14 @@ use bevy_egui::{
     egui::{self},
 };
 
-fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
+fn expanded_ui(
+    ui: &mut egui::Ui,
+    state: &mut UiState,
+    collapsed: &mut bool,
+    mut timestep: ResMut<Time<Fixed>>,
+) {
     ui.horizontal(|ui| {
-        ui.heading("Side Panel");
+        ui.heading("Control panel");
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if ui.button("▶").clicked() {
                 *collapsed = true;
@@ -25,6 +30,13 @@ fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
         .auto_shrink([true, true])
         .show(ui, |ui| {
             ui.set_max_width(available_width); // prevent infinite panel growth when scrollbar appears and disappears
+
+            if ui
+                .add(egui::Slider::new(&mut state.sim_speed, 1.0..=32.0).text("Speed"))
+                .changed()
+            {
+                timestep.set_timestep_hz(64.0 * state.sim_speed);
+            }
 
             ui.horizontal(|ui| {
                 ui.label("Color");
@@ -65,6 +77,7 @@ pub fn control_panel(
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
+    timestep: ResMut<Time<Fixed>>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
     let extended_panel_id = egui::Id::new("side_panel_extended");
@@ -88,7 +101,7 @@ pub fn control_panel(
                     *collapsed = false;
                 }
             } else {
-                expanded_ui(ui, &mut ui_state, &mut collapsed);
+                expanded_ui(ui, &mut ui_state, &mut collapsed, timestep);
             }
         },
     );

@@ -4,6 +4,7 @@ use egui_console::{ConsoleBuilder, ConsoleWindow};
 
 #[derive(Resource)]
 pub struct UiState {
+    pub sim_speed: f64,
     pub r: u8,
     pub g: u8,
     pub b: u8,
@@ -13,6 +14,7 @@ pub struct UiState {
 impl Default for UiState {
     fn default() -> Self {
         Self {
+            sim_speed: 1.0,
             r: Default::default(),
             g: Default::default(),
             b: Default::default(),

@@ -85,13 +85,12 @@ pub fn apply_link_forces(
 }
 
 pub fn apply_acceleration(
-    time: Res<Time>,
     mut query: Query<
         (&mut Transform, &LinkForce, &StuffingForce),
         (With<GraphNode>, Without<Dragging>, Without<Rooted>),
     >,
 ) {
-    let dt = time.delta_secs();
+    let dt = 1.0 / 64.0;
     for (mut transform, link_force, stuffing_force) in &mut query {
         transform.translation += (link_force.0 + stuffing_force.0) * dt * dt;
     }
