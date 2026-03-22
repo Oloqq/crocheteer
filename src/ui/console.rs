@@ -3,6 +3,7 @@ use bevy_egui::{
     EguiContexts,
     egui::{self},
 };
+use crossbeam_channel::{Receiver, Sender};
 use egui_console::ConsoleEvent;
 
 use crate::ui::{UiUsedInput, data::ConsoleState, utils::using_resizer_bottom};
@@ -11,7 +12,12 @@ pub fn console_window(
     mut state: ResMut<ConsoleState>,
     mut contexts: EguiContexts,
     captured: Res<UiUsedInput>,
+    console_receiver: Res<ConsoleReceiver>,
 ) -> Result {
+    while let Ok(message) = console_receiver.0.try_recv() {
+        state.console.write(&message.text);
+    }
+
     if !state.visible {
         return Ok(());
     }
@@ -35,4 +41,16 @@ pub fn console_window(
     }
 
     Ok(())
+}
+
+#[derive(Resource)]
+pub struct ConsolePipe {
+    pub sender: Sender<ConsoleMessage>,
+}
+
+#[derive(Resource)]
+pub struct ConsoleReceiver(pub Receiver<ConsoleMessage>);
+
+pub struct ConsoleMessage {
+    pub text: String,
 }

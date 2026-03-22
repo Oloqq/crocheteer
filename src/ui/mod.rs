@@ -8,11 +8,12 @@ mod utils;
 
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
+pub use console::{ConsoleMessage, ConsolePipe};
 pub use input_capture::UiUsedInput;
 
 use crate::ui::{
     code_editor::code_editor_ui,
-    console::console_window,
+    console::{ConsoleReceiver, console_window},
     control_panel::control_panel,
     data::{CodeEditorState, ConsoleState, UiState},
     input_capture::mark_input_as_captued_if_egui_wants_it,
@@ -42,6 +43,10 @@ impl Plugin for UiPlugin {
             )
                 .chain(),
         );
+
+        let (tx, rx) = crossbeam_channel::unbounded::<ConsoleMessage>();
+        app.insert_resource(ConsolePipe { sender: tx });
+        app.insert_resource(ConsoleReceiver(rx));
     }
 }
 

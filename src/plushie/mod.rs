@@ -11,7 +11,7 @@ use crate::{
         spawning::{add_graph_node, add_new_nodes},
         systems::{setup_assets, sync_visuals},
     },
-    ui::world_input,
+    ui::{ConsoleMessage, ConsolePipe, world_input},
 };
 use bevy::prelude::*;
 use data::*;
@@ -41,6 +41,7 @@ fn build_a_plushie(
     mut commands: Commands,
     plushie_assets: Res<PlushieAssets>,
     link_assets: Res<LinkAssets>,
+    pipe: Res<ConsolePipe>,
 ) {
     // let acl = indoc::indoc! {"
     //     @centroids = 3
@@ -77,4 +78,8 @@ fn build_a_plushie(
             add_link_between(a, b, &mut commands, &link_assets);
         }
     }
+
+    let _ = pipe.sender.send(ConsoleMessage {
+        text: "Built a plushie".into(),
+    });
 }

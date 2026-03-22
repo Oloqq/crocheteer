@@ -25,6 +25,7 @@ crochet = { path = "crates/crochet" }                                           
 egui_code_editor = { path = "crates/egui_code_editor" }
 indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
 egui_console = { path = "crates/egui_console" }
+crossbeam-channel = "0.5.15"                                                    # non-blocking channels
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking

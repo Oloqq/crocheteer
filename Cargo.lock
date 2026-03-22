@@ -2371,6 +2371,7 @@ dependencies = [
  "bevy_framepace",
  "bevy_infinite_grid",
  "crochet",
+ "crossbeam-channel",
  "egui_code_editor",
  "egui_console",
  "indoc",
