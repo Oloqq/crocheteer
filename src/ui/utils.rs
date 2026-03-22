@@ -53,3 +53,23 @@ pub fn using_resizer(ctx: &egui::Context, id: egui::Id, side: Side) -> bool {
         })
         .unwrap_or(false)
 }
+
+pub fn using_resizer_bottom(ctx: &egui::Context, id: egui::Id) -> bool {
+    let grab_radius =
+        ctx.style().interaction.resize_grab_radius_side + ctx.style().interaction.interact_radius;
+    ctx.input(|i| i.pointer.hover_pos())
+        .and_then(|pointer_pos| {
+            ctx.memory(|mem| {
+                mem.data
+                    .get_temp::<egui::containers::panel::PanelState>(id)
+                    .map(|panel| {
+                        egui::Rect::from_min_max(
+                            panel.rect.min - egui::vec2(0.0, grab_radius),
+                            panel.rect.max,
+                        )
+                        .contains(pointer_pos)
+                    })
+            })
+        })
+        .unwrap_or(false)
+}

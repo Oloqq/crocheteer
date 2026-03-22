@@ -6,13 +6,18 @@ use bevy_editor_cam::{
 };
 use bevy_egui::EguiStartupSet;
 
+use crate::ui::world_input;
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((MeshPickingPlugin, DefaultEditorCamPlugins));
         app.add_systems(PreStartup, setup_view.before(EguiStartupSet::InitContexts));
-        app.add_systems(PostUpdate, (toggle_projection, switch_direction));
+        app.add_systems(
+            PostUpdate,
+            (toggle_projection, switch_direction).run_if(world_input),
+        );
     }
 }
 

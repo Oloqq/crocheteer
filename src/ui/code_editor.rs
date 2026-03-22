@@ -97,7 +97,7 @@ pub fn code_editor_ui(
         },
     );
 
-    // hacky hack to ensure grabbing the resize bar is registered as an input "wanted by egui"
+    // prevent world events on resizing
     if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Left) {
         captured.capture();
     }

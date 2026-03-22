@@ -2372,6 +2372,7 @@ dependencies = [
  "bevy_infinite_grid",
  "crochet",
  "egui_code_editor",
+ "egui_console",
  "indoc",
 ]
 
@@ -2667,6 +2668,14 @@ dependencies = [
  "eframe",
  "egui",
  "serde",
+]
+
+[[package]]
+name = "egui_console"
+version = "0.3.1"
+dependencies = [
+ "egui",
+ "itertools 0.13.0",
 ]
 
 [[package]]

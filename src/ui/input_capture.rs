@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use bevy_egui::input::{EguiWantsInput, egui_wants_any_input};
 use std::sync::atomic::{AtomicBool, Ordering};
 
+// TODO unify the names
+
 #[derive(Resource, Default)]
 pub struct UiUsedInput(AtomicBool);
 

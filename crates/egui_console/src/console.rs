@@ -203,7 +203,7 @@ impl ConsoleWindow {
         egui::text::CCursorRange::one(egui::text::CCursor::new(loc))
     }
     fn ui(&mut self, ui: &mut egui::Ui) {
-        egui::ScrollArea::both().show(ui, |ui| {
+        egui::ScrollArea::vertical().show(ui, |ui| {
             ui.add_sized(ui.available_size(), |ui: &mut Ui| {
                 let widget = egui::TextEdit::multiline(&mut self.text)
                     .font(egui::TextStyle::Monospace)

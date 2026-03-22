@@ -4,9 +4,13 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::input_capture::UiUsedInput;
+use crate::ui::{data::ConsoleState, input_capture::UiUsedInput};
 
-pub fn top_panel(mut contexts: EguiContexts, captured: Res<UiUsedInput>) -> Result {
+pub fn top_panel(
+    mut contexts: EguiContexts,
+    captured: Res<UiUsedInput>,
+    mut console_state: ResMut<ConsoleState>,
+) -> Result {
     let ctx = contexts.ctx_mut()?;
 
     egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
@@ -57,6 +61,10 @@ pub fn top_panel(mut contexts: EguiContexts, captured: Res<UiUsedInput>) -> Resu
                     ui.close();
                 }
             });
+
+            if ui.button("Console").clicked() {
+                console_state.visible = !console_state.visible;
+            }
         });
     });
 

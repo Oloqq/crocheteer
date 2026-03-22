@@ -60,7 +60,7 @@ fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
         });
 }
 
-pub fn ui_example_system(
+pub fn control_panel(
     mut ui_state: ResMut<UiState>,
     mut contexts: EguiContexts,
     captured: Res<UiUsedInput>,
@@ -93,7 +93,7 @@ pub fn ui_example_system(
         },
     );
 
-    // hacky hack to ensure grabbing the resize bar is registered as an input "wanted by egui"
+    // prevent world events on resizing
     if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Right) {
         captured.capture();
     }
