@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::plushie::BuildPlushieFromPattern;
-use crate::plushie::animation::{LinkAssets, LinkForce, add_link_between};
+use crate::plushie::animation::{Link, LinkAssets, LinkForce, add_link_between};
 use crate::plushie::{
     data::{AddNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
@@ -40,12 +40,17 @@ pub fn build_plushie_from_pattern(
     plushie_assets: Res<PlushieAssets>,
     link_assets: Res<LinkAssets>,
     pipe: Res<ConsolePipe>,
+    existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>)>>,
 ) {
     let Some(msg) = msgr.read().last() else {
         return;
     };
 
     let (graph_nodes, edges) = crochet::parse(&msg.pattern);
+
+    for entity in existing_plushie_entities {
+        commands.entity(entity).despawn();
+    }
 
     let node_entities: Vec<Entity> = graph_nodes
         .into_iter()
