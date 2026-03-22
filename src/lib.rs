@@ -14,12 +14,12 @@ use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSet
 
 use crate::{cursor_ray::CursorRayPlugin, ui::world_input};
 
-pub fn app() -> App {
+pub fn app(initial_pattern: String) -> App {
     let mut app = App::new();
     unambiguous_schedules(&mut app);
     window(&mut app);
     visible_3d_world(&mut app);
-    app.add_plugins(ui::UiPlugin);
+    app.add_plugins(ui::UiPlugin { initial_pattern });
     app.add_plugins(plushie::PlushiePlugin);
     app.add_systems(Update, say_click.run_if(world_input));
     app

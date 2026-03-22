@@ -5,15 +5,19 @@ use bevy_egui::{
 };
 use egui_code_editor::CodeEditor;
 
-use crate::ui::{
-    data::CodeEditorState,
-    ui_used_input::UiUsedInput,
-    utils::{full_height_button, using_resizer},
+use crate::{
+    plushie::BuildPlushieFromPattern,
+    ui::{
+        data::CodeEditorState,
+        ui_used_input::UiUsedInput,
+        utils::{full_height_button, using_resizer},
+    },
 };
 
 pub fn code_editor_ui(
     mut contexts: EguiContexts,
     mut state: ResMut<CodeEditorState>,
+    mut msg_build_plushie: MessageWriter<BuildPlushieFromPattern>,
     ui_used_input: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
 ) -> Result {
@@ -37,16 +41,18 @@ pub fn code_editor_ui(
                         if ui.button("◀").clicked() {
                             *collapsed = true;
                         }
-                        if ui.button("💾 Save").clicked() { /* ... */ }
-                        if ui.button("💾 Load").clicked() { /* ... */ }
-                        if ui.button("View").clicked() { /* ... */ }
+                        if ui.button("🛠 Visualize").clicked() {
+                            msg_build_plushie.write(BuildPlushieFromPattern {
+                                pattern: state.code.clone(),
+                            });
+                        }
                     });
                     ui.separator();
 
                     let scroll = egui::ScrollArea::vertical()
                         .id_salt("code_editor_scroll")
-                        .auto_shrink(false) // fills available space
-                        .stick_to_bottom(true); // <-- this is what you want
+                        .auto_shrink(false)
+                        .stick_to_bottom(true); // scroll on newline
 
                     // Editor fills remaining space
                     scroll.show(ui, |ui| {

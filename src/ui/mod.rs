@@ -11,26 +11,34 @@ use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 pub use console::{ConsoleMessage, ConsolePipe};
 pub use ui_used_input::UiUsedInput;
 
-use crate::ui::{
-    code_editor::code_editor_ui,
-    console::{ConsoleReceiver, console_window},
-    control_panel::control_panel,
-    data::{CodeEditorState, ConsoleState, UiState},
-    menu_bar::top_panel,
+use crate::{
+    plushie::BuildPlushieFromPattern,
+    ui::{
+        code_editor::code_editor_ui,
+        console::{ConsoleReceiver, console_window},
+        control_panel::control_panel,
+        data::{CodeEditorState, ConsoleState, UiState},
+        menu_bar::top_panel,
+    },
 };
 
 pub use ui_used_input::world_input;
 
-pub struct UiPlugin;
+pub struct UiPlugin {
+    pub initial_pattern: String,
+}
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
         app.init_resource::<UiState>();
-        app.init_resource::<CodeEditorState>();
+        app.insert_resource(CodeEditorState {
+            code: self.initial_pattern.clone(),
+            ..default()
+        });
         app.init_resource::<ConsoleState>();
         app.init_resource::<UiUsedInput>();
-        app.add_systems(Startup, set_style);
+        app.add_systems(Startup, (set_style, build_initial_plushie));
         app.add_systems(
             EguiPrimaryContextPass,
             (
@@ -64,4 +72,13 @@ fn set_style(mut contexts: bevy_egui::EguiContexts) -> Result {
         style.spacing.scroll = ScrollStyle::solid();
     });
     Ok(())
+}
+
+fn build_initial_plushie(
+    mut msgw: MessageWriter<BuildPlushieFromPattern>,
+    state: Res<CodeEditorState>,
+) {
+    msgw.write(BuildPlushieFromPattern {
+        pattern: state.code.clone(),
+    });
 }

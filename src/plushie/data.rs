@@ -28,3 +28,8 @@ pub struct PlushieAssets {
 pub struct AddNode {
     pub position: Vec3,
 }
+
+#[derive(Message)]
+pub struct BuildPlushieFromPattern {
+    pub pattern: String,
+}

@@ -1,3 +1,23 @@
 fn main() {
-    crocheteer::app().run();
+    let pattern = indoc::indoc! {"
+        MR(6)
+    "};
+    // let pattern = indoc::indoc! {"
+    //             @centroids = 3
+
+    //             MR(6)
+    //             : 6 inc (12)
+    //             3: 12 sc (12)
+    //             mark(cap_start)
+    //             : BLO, 6 dec (6)
+    //             FO
+
+    //             goto(cap_start), color(255, 255, 0)
+    //             : FLO, 12 inc (24)
+    //             2: 24 sc (24)
+    //             : 12 dec (12)
+    //             : 6 dec (6)
+    //             FO
+    //         "}
+    crocheteer::app(pattern.into()).run();
 }
