@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 
 use crate::plushie::{
-    animation::data::LinkForce,
+    animation::{
+        Centroid, Rooted, StuffingForce,
+        data::{LinkForce, NewPosition},
+    },
     data::{Dragging, GraphNode, Link},
 };
 
@@ -32,16 +35,26 @@ pub fn update_connections_visually(
     }
 }
 
-pub fn reset_acceleration(mut query: Query<&mut LinkForce>) {
-    for mut acc in &mut query {
+pub fn reset_acceleration(
+    mut link_force: Query<&mut LinkForce>,
+    mut stuffing_force: Query<&mut StuffingForce>,
+    mut displacement: Query<&mut NewPosition>,
+) {
+    for mut acc in &mut link_force {
+        acc.0 = Vec3::ZERO;
+    }
+    for mut acc in &mut stuffing_force {
+        acc.0 = Vec3::ZERO;
+    }
+    for mut acc in &mut displacement {
         acc.0 = Vec3::ZERO;
     }
 }
 
 pub fn apply_link_forces(
+    mut accelerations: Query<&mut LinkForce>,
     links: Query<&Link>,
     transforms: Query<&Transform, With<GraphNode>>,
-    mut accelerations: Query<&mut LinkForce>,
 ) {
     let desired_length = 5e-3;
     let stiffness = 100.0;
@@ -73,10 +86,24 @@ pub fn apply_link_forces(
 
 pub fn apply_acceleration(
     time: Res<Time>,
-    mut query: Query<(&LinkForce, &mut Transform), (With<GraphNode>, Without<Dragging>)>,
+    mut query: Query<
+        (&mut Transform, &LinkForce, &StuffingForce),
+        (With<GraphNode>, Without<Dragging>, Without<Rooted>),
+    >,
 ) {
     let dt = time.delta_secs();
-    for (acc, mut transform) in &mut query {
-        transform.translation += acc.0 * dt * dt;
+    for (mut transform, link_force, stuffing_force) in &mut query {
+        transform.translation += (link_force.0 + stuffing_force.0) * dt * dt;
+    }
+}
+
+pub fn move_centroids(
+    mut query: Query<
+        (&mut Transform, &NewPosition),
+        (With<Centroid>, Without<Dragging>, Without<Rooted>),
+    >,
+) {
+    for (mut transform, new_position) in &mut query {
+        transform.translation = new_position.0;
     }
 }

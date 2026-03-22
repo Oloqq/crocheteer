@@ -6,7 +6,7 @@ mod systems;
 
 use crate::{
     plushie::{
-        animation::LinksPlugin,
+        animation::PlushieAnimationPlugin,
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         spawning::build_plushie_from_pattern,
         systems::{setup_assets, sync_visuals},
@@ -22,7 +22,7 @@ pub struct PlushiePlugin;
 
 impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(LinksPlugin);
+        app.add_plugins(PlushieAnimationPlugin);
         app.add_message::<AddNode>();
         app.add_message::<BuildPlushieFromPattern>();
         app.init_resource::<PressHandled>();
