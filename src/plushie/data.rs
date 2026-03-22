@@ -5,6 +5,12 @@ use bevy::prelude::*;
 pub struct GraphNode {}
 
 #[derive(Component)]
+pub struct Link {
+    pub a: Entity,
+    pub b: Entity,
+}
+
+#[derive(Component)]
 pub struct Selected;
 
 #[derive(Component)]
@@ -19,9 +25,11 @@ pub struct PressHandled(pub bool);
 
 #[derive(Resource)]
 pub struct PlushieAssets {
-    pub mesh: Handle<Mesh>,
-    pub material: Handle<StandardMaterial>,
+    pub stitch_mesh: Handle<Mesh>,
+    pub stitch_material: Handle<StandardMaterial>,
     pub selected_material: Handle<StandardMaterial>,
+    pub link_mesh: Handle<Mesh>,
+    pub link_material: Handle<StandardMaterial>,
 }
 
 #[derive(Message)]

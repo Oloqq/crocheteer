@@ -8,7 +8,7 @@ use crate::{
     plushie::{
         animation::LinksPlugin,
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
-        spawning::{add_new_nodes, build_plushie_from_pattern},
+        spawning::build_plushie_from_pattern,
         systems::{setup_assets, sync_visuals},
     },
     ui::world_input,
@@ -34,7 +34,7 @@ impl Plugin for PlushiePlugin {
                 stop_dragging,
             ),
         );
-        app.add_systems(Update, (build_plushie_from_pattern, add_new_nodes).chain());
+        app.add_systems(Update, build_plushie_from_pattern);
         app.add_systems(PostUpdate, sync_visuals);
     }
 }

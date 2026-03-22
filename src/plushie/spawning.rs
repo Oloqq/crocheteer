@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use crate::plushie::BuildPlushieFromPattern;
-use crate::plushie::animation::{Link, LinkAssets, LinkForce, add_link_between};
+use crate::plushie::animation::LinkForce;
+use crate::plushie::data::Link;
 use crate::plushie::{
     data::{AddNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
@@ -14,8 +15,8 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
         .spawn((
             GraphNode {},
             Name::new("Node"),
-            Mesh3d(assets.mesh.clone()),
-            MeshMaterial3d(assets.material.clone()),
+            Mesh3d(assets.stitch_mesh.clone()),
+            MeshMaterial3d(assets.stitch_material.clone()),
             Transform::from_translation(msg.position).with_scale(Vec3::splat(radius)),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
@@ -24,21 +25,19 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
         .id()
 }
 
-pub fn add_new_nodes(
-    mut commands: Commands,
-    mut msgr: MessageReader<AddNode>,
-    assets: Res<PlushieAssets>,
-) {
-    for msg in msgr.read() {
-        add_graph_node(&msg, &mut commands, &assets);
-    }
+pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &PlushieAssets) {
+    commands.spawn((
+        Link { a, b },
+        Mesh3d(assets.link_mesh.clone()),
+        MeshMaterial3d(assets.link_material.clone()),
+        Transform::default(),
+    ));
 }
 
 pub fn build_plushie_from_pattern(
     mut msgr: MessageReader<BuildPlushieFromPattern>,
     mut commands: Commands,
     plushie_assets: Res<PlushieAssets>,
-    link_assets: Res<LinkAssets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>)>>,
 ) -> Result {
@@ -66,7 +65,7 @@ pub fn build_plushie_from_pattern(
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
-            add_link_between(a, b, &mut commands, &link_assets);
+            add_link_between(a, b, &mut commands, &plushie_assets);
         }
     }
 

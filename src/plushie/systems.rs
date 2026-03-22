@@ -8,9 +8,11 @@ pub fn setup_assets(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let assets = PlushieAssets {
-        mesh: meshes.add(Sphere::new(1.0)),
-        material: materials.add(Color::srgb(1.0, 0.4, 0.4)),
-        selected_material: materials.add(Color::srgb(0.7, 0.7, 0.7)),
+        stitch_mesh: meshes.add(Sphere::new(1.0)),
+        stitch_material: materials.add(Color::srgb(1.0, 0.4, 0.4)),
+        selected_material: materials.add(Color::srgb(1.0, 1.0, 1.0)), // TODO https://github.com/komadori/bevy_mod_outline
+        link_mesh: meshes.add(Cylinder::new(1.0, 1.0)),
+        link_material: materials.add(Color::srgb(0.2, 0.4, 0.2)),
     };
     commands.insert_resource(assets);
 }
@@ -29,6 +31,6 @@ pub fn sync_visuals(
     for entity in removed.read() {
         commands
             .entity(entity)
-            .insert(MeshMaterial3d(assets.material.clone()));
+            .insert(MeshMaterial3d(assets.stitch_material.clone()));
     }
 }

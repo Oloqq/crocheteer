@@ -1,54 +1,9 @@
 use bevy::prelude::*;
 
 use crate::plushie::{
-    animation::data::{Link, LinkAssets, LinkForce},
-    data::{Dragging, GraphNode, Selected},
+    animation::data::LinkForce,
+    data::{Dragging, GraphNode, Link},
 };
-
-pub fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    commands.insert_resource(LinkAssets {
-        mesh: meshes.add(Cylinder::new(1.0, 1.0)),
-        material: materials.add(Color::srgb(0.2, 0.4, 0.2)),
-    });
-}
-
-pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &LinkAssets) {
-    commands.spawn((
-        Link { a, b },
-        Mesh3d(assets.mesh.clone()),
-        MeshMaterial3d(assets.material.clone()),
-        Transform::default(),
-    ));
-}
-
-pub fn connect(
-    mut commands: Commands,
-    keyboard: Res<ButtonInput<KeyCode>>,
-    selected: Query<Entity, With<Selected>>,
-    assets: Res<LinkAssets>,
-) {
-    if !keyboard.just_pressed(KeyCode::KeyC) {
-        return;
-    }
-
-    if selected.iter().len() != 2 {
-        info!("select 2 things"); // TODO
-        return;
-    }
-
-    let vec: Vec<_> = selected.into_iter().collect();
-    let a: Entity = vec[0];
-    let b: Entity = vec[1];
-
-    commands.entity(a).insert(LinkForce(Vec3::ZERO));
-    commands.entity(b).insert(LinkForce(Vec3::ZERO));
-
-    add_link_between(a, b, &mut commands, &assets);
-}
 
 pub fn update_connections_visually(
     mut connections: Query<(&Link, &mut Transform)>,
