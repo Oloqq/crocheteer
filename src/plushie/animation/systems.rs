@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::plushie::{
     animation::data::{Link, LinkAssets, LinkForce},
-    data::{GraphNode, Selected},
+    data::{Dragging, GraphNode, Selected},
 };
 
 pub fn setup(
@@ -118,7 +118,7 @@ pub fn apply_link_forces(
 
 pub fn apply_acceleration(
     time: Res<Time>,
-    mut query: Query<(&LinkForce, &mut Transform), With<GraphNode>>,
+    mut query: Query<(&LinkForce, &mut Transform), (With<GraphNode>, Without<Dragging>)>,
 ) {
     let dt = time.delta_secs();
     for (acc, mut transform) in &mut query {
