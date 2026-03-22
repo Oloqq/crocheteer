@@ -2,25 +2,24 @@ mod code_editor;
 mod console;
 mod control_panel;
 mod data;
-mod input_capture;
 mod menu_bar;
+mod ui_used_input;
 mod utils;
 
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 pub use console::{ConsoleMessage, ConsolePipe};
-pub use input_capture::UiUsedInput;
+pub use ui_used_input::UiUsedInput;
 
 use crate::ui::{
     code_editor::code_editor_ui,
     console::{ConsoleReceiver, console_window},
     control_panel::control_panel,
     data::{CodeEditorState, ConsoleState, UiState},
-    input_capture::mark_input_as_captued_if_egui_wants_it,
     menu_bar::top_panel,
 };
 
-pub use input_capture::world_input;
+pub use ui_used_input::world_input;
 
 pub struct UiPlugin;
 
@@ -35,11 +34,11 @@ impl Plugin for UiPlugin {
         app.add_systems(
             EguiPrimaryContextPass,
             (
-                (input_capture::reset),
+                ui_used_input::reset,
                 top_panel,
                 (control_panel, code_editor_ui),
                 console_window,
-                mark_input_as_captued_if_egui_wants_it,
+                ui_used_input::adjust_to_egui_wants_input,
             )
                 .chain(),
         );

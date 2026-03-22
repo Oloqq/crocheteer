@@ -1,4 +1,4 @@
-use crate::ui::input_capture::UiUsedInput;
+use crate::ui::ui_used_input::UiUsedInput;
 use crate::ui::utils::using_resizer;
 use crate::ui::{data::*, utils::full_height_button};
 use bevy::prelude::*;
@@ -63,7 +63,7 @@ fn expanded_ui(ui: &mut egui::Ui, state: &mut UiState, collapsed: &mut bool) {
 pub fn control_panel(
     mut ui_state: ResMut<UiState>,
     mut contexts: EguiContexts,
-    captured: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -95,7 +95,7 @@ pub fn control_panel(
 
     // prevent world events on resizing
     if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Right) {
-        captured.capture();
+        ui_used_input.set_true();
     }
 
     Ok(())

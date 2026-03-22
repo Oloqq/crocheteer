@@ -2,8 +2,6 @@ use bevy::prelude::*;
 use bevy_egui::input::{EguiWantsInput, egui_wants_any_input};
 use std::sync::atomic::{AtomicBool, Ordering};
 
-// TODO unify the names
-
 #[derive(Resource, Default)]
 pub struct UiUsedInput(AtomicBool);
 
@@ -12,21 +10,21 @@ pub fn reset(captured: Res<UiUsedInput>) {
 }
 
 impl UiUsedInput {
-    pub fn capture(&self) {
+    pub fn set_true(&self) {
         self.0.store(true, Ordering::Relaxed);
     }
 
-    pub fn used(&self) -> bool {
+    pub fn get(&self) -> bool {
         self.0.load(Ordering::Relaxed)
     }
 }
 
-pub fn mark_input_as_captued_if_egui_wants_it(a: Res<UiUsedInput>, b: Res<EguiWantsInput>) {
+pub fn adjust_to_egui_wants_input(a: Res<UiUsedInput>, b: Res<EguiWantsInput>) {
     if egui_wants_any_input(b) {
-        a.capture();
+        a.set_true();
     }
 }
 
-pub fn world_input(ui_input: Res<UiUsedInput>) -> bool {
-    return !ui_input.used();
+pub fn world_input(ui_used_input: Res<UiUsedInput>) -> bool {
+    return !ui_used_input.get();
 }

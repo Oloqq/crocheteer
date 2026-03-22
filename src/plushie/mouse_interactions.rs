@@ -19,12 +19,12 @@ pub fn on_click(
     keyboard: Res<ButtonInput<KeyCode>>,
     cursor_ray: Res<CursorRay>,
     camera: Single<&GlobalTransform, With<Camera3d>>,
-    ui_input: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>,
 ) {
     if trigger.button != PointerButton::Primary {
         return;
     }
-    if ui_input.used() {
+    if ui_used_input.get() {
         return;
     }
 

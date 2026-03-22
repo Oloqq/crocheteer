@@ -7,14 +7,14 @@ use egui_code_editor::CodeEditor;
 
 use crate::ui::{
     data::CodeEditorState,
-    input_capture::UiUsedInput,
+    ui_used_input::UiUsedInput,
     utils::{full_height_button, using_resizer},
 };
 
 pub fn code_editor_ui(
     mut contexts: EguiContexts,
     mut state: ResMut<CodeEditorState>,
-    captured: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>,
     mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -99,7 +99,7 @@ pub fn code_editor_ui(
 
     // prevent world events on resizing
     if !*collapsed && using_resizer(ctx, extended_panel_id, Side::Left) {
-        captured.capture();
+        ui_used_input.set_true();
     }
 
     Ok(())

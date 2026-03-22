@@ -4,11 +4,11 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::{data::ConsoleState, input_capture::UiUsedInput};
+use crate::ui::{data::ConsoleState, ui_used_input::UiUsedInput};
 
 pub fn top_panel(
     mut contexts: EguiContexts,
-    captured: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>,
     mut console_state: ResMut<ConsoleState>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -72,7 +72,7 @@ pub fn top_panel(
         .input_mut(|i| i.consume_shortcut(&KeyboardShortcut::new(Modifiers::CTRL, egui::Key::S)));
 
     if ctrls {
-        captured.capture();
+        ui_used_input.set_true();
     }
 
     Ok(())

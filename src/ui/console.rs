@@ -11,7 +11,7 @@ use crate::ui::{UiUsedInput, data::ConsoleState, utils::using_resizer_bottom};
 pub fn console_window(
     mut state: ResMut<ConsoleState>,
     mut contexts: EguiContexts,
-    captured: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>,
     console_receiver: Res<ConsoleReceiver>,
 ) -> Result {
     while let Ok(message) = console_receiver.0.try_recv() {
@@ -37,7 +37,7 @@ pub fn console_window(
 
     // prevent world events on resizing
     if using_resizer_bottom(ctx, panel_id) {
-        captured.capture();
+        ui_used_input.set_true();
     }
 
     Ok(())
