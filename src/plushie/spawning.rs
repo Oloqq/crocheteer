@@ -41,12 +41,17 @@ pub fn build_plushie_from_pattern(
     link_assets: Res<LinkAssets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>)>>,
-) {
+) -> Result {
     let Some(msg) = msgr.read().last() else {
-        return;
+        return Ok(());
     };
 
-    let (graph_nodes, edges) = crochet::parse(&msg.pattern);
+    let Some((graph_nodes, edges)) = crochet::parse(&msg.pattern) else {
+        let _ = pipe.sender.send(ConsoleMessage {
+            text: "Error in the pattern".into(),
+        });
+        return Ok(());
+    };
 
     for entity in existing_plushie_entities {
         commands.entity(entity).despawn();
@@ -68,4 +73,6 @@ pub fn build_plushie_from_pattern(
     let _ = pipe.sender.send(ConsoleMessage {
         text: "Built a plushie".into(),
     });
+
+    Ok(())
 }
