@@ -10,7 +10,10 @@ use crate::plushie::{
 use crate::ui::{ConsoleMessage, ConsolePipe};
 
 pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAssets) -> Entity {
-    let radius = 0.001;
+    // a yarn I work with 5mm hook yields 5mm big stitches
+    // the node radius is smaller so connections of the graph are visible
+    // let radius = 1e-4;
+    let radius = 5e-4;
     commands
         .spawn((
             GraphNode {},

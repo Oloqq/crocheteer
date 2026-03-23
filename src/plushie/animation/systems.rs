@@ -24,7 +24,7 @@ pub fn update_connections_visually(
         let diff = pos_b - pos_a;
         let length = diff.length();
 
-        let thickness = 4e-4;
+        let thickness = 1e-4;
         let new_trans = Transform {
             translation: ((pos_a + pos_b) / 2.0),
             rotation: Quat::from_rotation_arc(Vec3::Y, diff.normalize()),
@@ -48,39 +48,6 @@ pub fn reset_acceleration(
     }
     for mut acc in &mut displacement {
         acc.0 = Vec3::ZERO;
-    }
-}
-
-pub fn compute_link_forces(
-    mut accelerations: Query<&mut LinkForce>,
-    links: Query<&Link>,
-    transforms: Query<&Transform, With<GraphNode>>,
-) {
-    let desired_length = 5e-3;
-    let stiffness = 100.0;
-    for link in &links {
-        let Ok(src_transform) = transforms.get(link.a) else {
-            continue;
-        };
-        let Ok(tgt_transform) = transforms.get(link.b) else {
-            continue;
-        };
-
-        let delta = tgt_transform.translation - src_transform.translation;
-        let distance = delta.length();
-        if distance < f32::EPSILON {
-            continue;
-        }
-
-        let displacement = distance - desired_length;
-        let force = delta.normalize() * displacement * stiffness;
-
-        if let Ok(mut acc) = accelerations.get_mut(link.a) {
-            acc.0 += force;
-        }
-        if let Ok(mut acc) = accelerations.get_mut(link.b) {
-            acc.0 -= force;
-        }
     }
 }
 

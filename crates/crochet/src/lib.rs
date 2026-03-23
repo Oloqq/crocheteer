@@ -14,7 +14,7 @@ mod hook;
 mod params;
 
 mod force_graph;
-pub use force_graph::centroid_stuffing;
+pub use force_graph::{centroid_stuffing, link_force_magnitude, link_forces};
 
 pub fn v0() -> glam::Vec3 {
     glam::Vec3::ZERO

@@ -1,15 +1,17 @@
 use bevy::{prelude::*, transform::plugins::TransformSystems};
 
 mod data;
-mod stuffing;
+mod forces;
 mod systems;
 
 pub use data::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
-use stuffing::compute_stuffing_force;
 
-use systems::{apply_forces, compute_link_forces, reset_acceleration, update_connections_visually};
+use systems::{apply_forces, reset_acceleration, update_connections_visually};
 
-use crate::plushie::animation::systems::move_centroids;
+use crate::plushie::animation::{
+    forces::{compute_link_forces, compute_stuffing_force},
+    systems::move_centroids,
+};
 
 pub struct PlushieAnimationPlugin;
 

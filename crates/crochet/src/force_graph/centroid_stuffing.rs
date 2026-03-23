@@ -6,11 +6,12 @@ pub fn centroid_stuffing(
 ) -> (Vec<Vec3>, Vec<Vec3>) {
     let mut node_movement: Vec<Vec3> = vec![Vec3::ZERO; node_positions.len()];
     let mut centroid_new_positions: Vec<Vec3> = vec![Vec3::ZERO; centroid_positions.len()];
+    let centroid_force = 0.1;
 
     let centroid_to_points = push_and_map(
         &node_positions,
         &centroid_positions,
-        0.3,
+        centroid_force,
         &mut node_movement,
     );
     recalculate_centroids(
@@ -72,8 +73,8 @@ fn distance(a: Vec3, b: Vec3) -> f32 {
 
 fn weight(dist: f32) -> f32 {
     // https://www.desmos.com/calculator: e^{\frac{-\left(\ln\left(x\right)-b\right)^{2}}{c^{2}}}
-    let b: f32 = 1.0;
-    let c: f32 = 1.4;
+    let b: f32 = -3.0;
+    let c: f32 = 2.0;
     let x = dist;
 
     let numerator = -(x.ln() - b).powi(2);
