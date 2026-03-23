@@ -1,6 +1,7 @@
 mod animation;
 mod data;
 mod mouse_interactions;
+mod shaders;
 mod spawning;
 mod systems;
 
@@ -8,6 +9,7 @@ use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
+        shaders::{LinkMaterial, setup_link_rendering},
         spawning::build_plushie_from_pattern,
         systems::{setup_assets, sync_visuals},
     },
@@ -26,7 +28,8 @@ impl Plugin for PlushiePlugin {
         app.add_message::<AddNode>();
         app.add_message::<BuildPlushieFromPattern>();
         app.init_resource::<PressHandled>();
-        app.add_systems(Startup, setup_assets);
+        app.add_plugins(MaterialPlugin::<LinkMaterial>::default());
+        app.add_systems(Startup, (setup_assets, setup_link_rendering));
         app.add_systems(
             PreUpdate,
             (

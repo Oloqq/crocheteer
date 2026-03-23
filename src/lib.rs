@@ -8,6 +8,7 @@ use std::time::Duration;
 use bevy::{
     ecs::schedule::{LogLevel, ScheduleBuildSettings},
     prelude::*,
+    render::RenderPlugin,
     winit::UpdateMode,
 };
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
@@ -53,14 +54,21 @@ fn unambiguous_schedules(app: &mut App) {
 }
 
 fn window(app: &mut App) {
-    app.add_plugins(DefaultPlugins.set(WindowPlugin {
-        primary_window: Some(Window {
-            title: "Crocheteer".into(),
-            present_mode: bevy::window::PresentMode::AutoNoVsync,
-            ..default()
-        }),
-        ..default()
-    }))
+    app.add_plugins(
+        DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    title: "Crocheteer".into(),
+                    present_mode: bevy::window::PresentMode::AutoNoVsync,
+                    ..default()
+                }),
+                ..default()
+            })
+            .set(RenderPlugin {
+                synchronous_pipeline_compilation: true, // compile shaders before application starts
+                ..default()
+            }),
+    )
     .insert_resource(bevy::winit::WinitSettings {
         focused_mode: UpdateMode::reactive(Duration::from_secs_f64(1.0 / 144.0)),
         unfocused_mode: UpdateMode::reactive_low_power(Duration::from_secs_f64(1.0 / 20.0)),

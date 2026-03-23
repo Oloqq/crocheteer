@@ -21,6 +21,8 @@ bevy_editor_cam = { path = "crates/bevy_editor_cam", default-features = false } 
 bevy_egui = "0.38"                                                              # GUI
 bevy_framepace = "0.20"                                                         # FPS management
 bevy_infinite_grid = "0.17"
+bytemuck = { version = "1.25.0", features = ["derive"] }
+bytemuck_derive = "1.10.2"
 crochet = { path = "crates/crochet" }                                           # ACL parsing (ACL = domain-specific language for crochet)
 egui_code_editor = { path = "crates/egui_code_editor" }
 indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code

@@ -78,7 +78,7 @@ fn build_initial_plushie(
     mut msgw: MessageWriter<BuildPlushieFromPattern>,
     state: Res<CodeEditorState>,
 ) {
-    msgw.write(BuildPlushieFromPattern {
-        pattern: state.code.clone(),
-    });
+    // msgw.write(BuildPlushieFromPattern {
+    //     pattern: state.code.clone(),
+    // });
 }

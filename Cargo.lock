@@ -2370,6 +2370,8 @@ dependencies = [
  "bevy_egui",
  "bevy_framepace",
  "bevy_infinite_grid",
+ "bytemuck",
+ "bytemuck_derive",
  "crochet",
  "crossbeam-channel",
  "egui_code_editor",
