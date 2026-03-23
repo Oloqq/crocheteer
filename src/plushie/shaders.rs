@@ -6,8 +6,7 @@ use bevy::shader::ShaderRef;
 
 #[derive(Clone, Copy, ShaderType)]
 pub struct LinkInstanceData {
-    pub transform: Mat4, // 64 bytes, 16-byte aligned — always put first
-    pub force: f32,      // 4 bytes
+    pub force: f32,
 }
 
 #[derive(Asset, TypePath, AsBindGroup, Clone)]
@@ -20,7 +19,7 @@ pub struct LinkMaterial {
 
 impl Material for LinkMaterial {
     fn vertex_shader() -> ShaderRef {
-        "shaders/link.wgsl".into() // path relative to your assets/ folder
+        "shaders/link.wgsl".into()
     }
 
     fn fragment_shader() -> ShaderRef {
@@ -37,10 +36,7 @@ pub fn setup_link_rendering(
     mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
     mut materials: ResMut<Assets<LinkMaterial>>,
 ) {
-    let instance_data = vec![LinkInstanceData {
-        transform: Mat4::IDENTITY,
-        force: 1.0,
-    }];
+    let instance_data = vec![LinkInstanceData { force: 1.0 }];
 
     let mut buffer = ShaderStorageBuffer::default();
     buffer.set_data(instance_data.as_slice());
@@ -54,8 +50,15 @@ pub fn setup_link_rendering(
     });
 
     commands.spawn((
-        Mesh3d(meshes.add(Cylinder::new(0.05, 1.0))),
-        MeshMaterial3d(material),
-        Transform::default(),
+        Mesh3d(meshes.add(Cylinder::new(1.0, 1.0))),
+        MeshMaterial3d(material.clone()),
+        Transform::default().with_scale(Vec3::splat(0.001)),
+    ));
+    commands.spawn((
+        Mesh3d(meshes.add(Cylinder::new(1.0, 1.0))),
+        MeshMaterial3d(material.clone()),
+        Transform::default()
+            .with_scale(Vec3::splat(0.005))
+            .with_translation(Vec3::new(0.01, 0.0, 0.0)),
     ));
 }

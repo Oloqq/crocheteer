@@ -1,8 +1,9 @@
+// TODO understand shaders
+
 #import bevy_pbr::mesh_functions::get_world_from_local
 #import bevy_pbr::view_transformations::position_world_to_clip
 
 struct LinkInstance {
-    transform: mat4x4<f32>,
     force: f32,
 }
 
@@ -13,7 +14,8 @@ var<storage, read> instances: array<LinkInstance>;
 var<uniform> max_force: f32;
 
 struct VertexInput {
-    @builtin(instance_index) instance_idx: u32,
+    // instance_index must be declared as a builtin — not a location
+    @builtin(instance_index) instance_index: u32,
     @location(0) position: vec3<f32>,
     @location(1) normal: vec3<f32>,
 }
@@ -32,12 +34,12 @@ fn force_to_color(t: f32) -> vec4<f32> {
 
 @vertex
 fn vertex(in: VertexInput) -> VertexOutput {
-    let instance = instances[in.instance_idx];
-    let world_position = instance.transform * vec4<f32>(in.position, 1.0);
+    // Pass instance_index directly — no get_instance_index wrapper needed
+    let world_position = get_world_from_local(in.instance_index) * vec4<f32>(in.position, 1.0);
 
     var out: VertexOutput;
     out.clip_position = position_world_to_clip(world_position.xyz);
-    out.color = force_to_color(instance.force / max_force);
+    out.color = force_to_color(instances[in.instance_index].force / max_force);
     return out;
 }
 
