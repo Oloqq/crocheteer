@@ -13,6 +13,9 @@ mod hook;
 #[allow(unused)] // TODO
 mod params;
 
+mod force_graph;
+pub use force_graph::centroid_stuffing;
+
 pub fn v0() -> glam::Vec3 {
     glam::Vec3::ZERO
 }

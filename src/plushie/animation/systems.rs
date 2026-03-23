@@ -51,7 +51,7 @@ pub fn reset_acceleration(
     }
 }
 
-pub fn apply_link_forces(
+pub fn compute_link_forces(
     mut accelerations: Query<&mut LinkForce>,
     links: Query<&Link>,
     transforms: Query<&Transform, With<GraphNode>>,
@@ -84,7 +84,7 @@ pub fn apply_link_forces(
     }
 }
 
-pub fn apply_acceleration(
+pub fn apply_forces(
     mut query: Query<
         (&mut Transform, &LinkForce, &StuffingForce),
         (With<GraphNode>, Without<Dragging>, Without<Rooted>),

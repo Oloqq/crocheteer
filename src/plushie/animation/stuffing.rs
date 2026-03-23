@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crochet::centroid_stuffing;
 
 use crate::plushie::{
     animation::{
@@ -8,10 +9,9 @@ use crate::plushie::{
     data::GraphNode,
 };
 
-pub fn apply_stuffing(
+pub fn compute_stuffing_force(
     nodes: Query<(&Transform, &mut StuffingForce), With<GraphNode>>,
     centroids: Query<(&Transform, &mut NewPosition), With<Centroid>>,
-    // mut node_movement: Local<Vec<Vec3>>,
 ) {
     if nodes.iter().len() == 0 || centroids.iter().len() == 0 {
         return;
@@ -20,104 +20,18 @@ pub fn apply_stuffing(
     let node_positions: Vec<Vec3> = nodes.iter().map(|x| x.0.translation).collect();
     let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
 
-    let mut node_movement: Vec<Vec3> = vec![Vec3::ZERO; node_positions.len()];
-    let centroid_to_points = push_and_map(
-        &node_positions,
-        &centroid_positions,
-        0.3,
-        &mut node_movement,
-    );
-    for ((_, mut stuffing), calculated_stuffing) in nodes.into_iter().zip(node_movement.into_iter())
-    {
-        stuffing.0 = calculated_stuffing;
-    }
+    let (node_movement, centroid_new_positions) =
+        centroid_stuffing(&node_positions, &centroid_positions);
 
-    let mut centroid_new_positions: Vec<Vec3> = vec![Vec3::ZERO; centroid_positions.len()];
-    recalculate_centroids(
-        &node_positions,
-        &mut centroid_new_positions,
-        centroid_to_points,
-    );
+    for ((_, mut received_force), calculated_stuffing) in
+        nodes.into_iter().zip(node_movement.into_iter())
+    {
+        received_force.0 = calculated_stuffing;
+    }
     for ((_, mut new_pos), calculated_new_pos) in centroids
         .into_iter()
         .zip(centroid_new_positions.into_iter())
     {
         new_pos.0 = calculated_new_pos;
-    }
-}
-
-fn push_and_map(
-    nodes: &[Vec3],
-    centroids: &Vec<Vec3>,
-    centroid_force: f32,
-    displacement: &mut [Vec3],
-) -> Vec<Vec<usize>> {
-    assert_eq!(nodes.len(), displacement.len());
-    let mut centroid2points = vec![vec![]; centroids.len()];
-    for (i_p, point) in nodes.iter().enumerate() {
-        let mut closest_i = 0;
-        let mut closest = distance(*point, centroids[closest_i]);
-        for (i_c, centroid) in centroids.iter().enumerate() {
-            if distance(*point, *centroid) < closest {
-                closest = distance(*point, *centroid);
-                closest_i = i_c;
-            }
-            displacement[i_p] += push_away(point, centroid) * centroid_force;
-        }
-        centroid2points[closest_i].push(i_p);
-    }
-    centroid2points
-}
-
-fn recalculate_centroids(
-    nodes: &[Vec3],
-    centroids: &mut Vec<Vec3>,
-    centroid2points: Vec<Vec<usize>>,
-) {
-    centroids.iter_mut().enumerate().for_each(|(i, centroid)| {
-        let mut new_pos: Vec3 = Vec3::ZERO;
-        let mut weight_sum = 0.0;
-        if centroid2points[i].len() == 0 {
-            // log::warn!("No points assigned to centroid");
-            return;
-        }
-        for point_index in &centroid2points[i] {
-            let point = nodes[*point_index];
-            let w = weight(distance(*centroid, point));
-            new_pos += point * w;
-            weight_sum += w;
-        }
-        assert!(weight_sum != 0.0, "About to divide by 0");
-        let new_pos: Vec3 = Vec3::from(new_pos / weight_sum);
-        *centroid = new_pos
-    });
-    // sanity!(centroids.assert_no_nan("after recalculating centroids"));
-}
-
-fn distance(a: Vec3, b: Vec3) -> f32 {
-    a.distance(b)
-}
-
-fn weight(dist: f32) -> f32 {
-    // https://www.desmos.com/calculator: e^{\frac{-\left(\ln\left(x\right)-b\right)^{2}}{c^{2}}}
-    let b: f32 = 1.0;
-    let c: f32 = 1.4;
-    let x = dist;
-
-    let numerator = -(x.ln() - b).powi(2);
-    let denominator = c.powi(2);
-
-    f32::exp(numerator / denominator) * 1.0
-}
-
-fn push_away(point: &Vec3, repelant: &Vec3) -> Vec3 {
-    let diff = point - repelant;
-    if diff.length() != 0.0 {
-        let factor = 1.0;
-        let res = diff.normalize() * (factor / diff.length_squared()).min(1.0);
-        // sanity!(res.assert_no_nan("NaN while pushing"));
-        res
-    } else {
-        Vec3::ZERO
     }
 }

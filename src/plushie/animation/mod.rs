@@ -5,11 +5,9 @@ mod stuffing;
 mod systems;
 
 pub use data::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
-use stuffing::apply_stuffing;
+use stuffing::compute_stuffing_force;
 
-use systems::{
-    apply_acceleration, apply_link_forces, reset_acceleration, update_connections_visually,
-};
+use systems::{apply_forces, compute_link_forces, reset_acceleration, update_connections_visually};
 
 use crate::plushie::animation::systems::move_centroids;
 
@@ -21,11 +19,8 @@ impl Plugin for PlushieAnimationPlugin {
             FixedUpdate,
             (
                 reset_acceleration,
-                (apply_link_forces, apply_stuffing),
-                (
-                    apply_acceleration,
-                    move_centroids.ambiguous_with(apply_acceleration),
-                ),
+                (compute_link_forces, compute_stuffing_force),
+                (apply_forces, move_centroids.ambiguous_with(apply_forces)),
             )
                 .chain(),
         );
