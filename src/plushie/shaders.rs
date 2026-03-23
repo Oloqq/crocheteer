@@ -1,3 +1,4 @@
+use bevy::mesh::MeshTag;
 use bevy::prelude::*;
 use bevy::render::render_resource::AsBindGroup;
 use bevy::render::render_resource::ShaderType;
@@ -13,8 +14,6 @@ pub struct LinkInstanceData {
 pub struct LinkMaterial {
     #[storage(0, read_only)]
     pub instances: Handle<ShaderStorageBuffer>,
-    #[uniform(1)]
-    pub max_force: f32,
 }
 
 impl Material for LinkMaterial {
@@ -28,7 +27,7 @@ impl Material for LinkMaterial {
 }
 
 #[derive(Resource)]
-pub struct LinkInstanceBuffer(#[allow(dead_code)] pub Handle<ShaderStorageBuffer>);
+pub struct LinkInstanceBuffer(pub Handle<ShaderStorageBuffer>);
 
 pub fn setup_link_rendering(
     mut commands: Commands,
@@ -46,19 +45,12 @@ pub fn setup_link_rendering(
 
     let material = materials.add(LinkMaterial {
         instances: buffer_handle,
-        max_force: 10.0,
     });
 
     commands.spawn((
         Mesh3d(meshes.add(Cylinder::new(1.0, 1.0))),
         MeshMaterial3d(material.clone()),
-        Transform::default().with_scale(Vec3::splat(0.001)),
-    ));
-    commands.spawn((
-        Mesh3d(meshes.add(Cylinder::new(1.0, 1.0))),
-        MeshMaterial3d(material.clone()),
-        Transform::default()
-            .with_scale(Vec3::splat(0.005))
-            .with_translation(Vec3::new(0.01, 0.0, 0.0)),
+        MeshTag(0u32), // index into your `instances` storage buffer
+        Transform::default().with_scale(Vec3::splat(0.01)),
     ));
 }
