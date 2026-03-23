@@ -57,9 +57,9 @@ pub fn apply_forces(
         (With<GraphNode>, Without<Dragging>, Without<Rooted>),
     >,
 ) {
-    let dt = 1.0 / 64.0;
+    let force_multiplier = 0.0003;
     for (mut transform, link_force, stuffing_force) in &mut query {
-        transform.translation += (link_force.0 + stuffing_force.0) * dt * dt;
+        transform.translation += (link_force.0 + stuffing_force.0) * force_multiplier;
     }
 }
 
