@@ -24,10 +24,12 @@ bevy_infinite_grid = "0.17"
 bytemuck = { version = "1.25.0", features = ["derive"] }
 bytemuck_derive = "1.10.2"
 crochet = { path = "crates/crochet" }                                           # ACL parsing (ACL = domain-specific language for crochet)
-egui_code_editor = { path = "crates/egui_code_editor" }
-indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
-egui_console = { path = "crates/egui_console" }
 crossbeam-channel = "0.5.15"                                                    # non-blocking channels
+egui_code_editor = { path = "crates/egui_code_editor" }
+egui_console = { path = "crates/egui_console" }
+image = { version = "=0.25.10", default-features = false, features = ["png"] }
+indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
+winit = "0.30.13"                                                               # set window icon
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking

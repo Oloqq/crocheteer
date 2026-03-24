@@ -2376,7 +2376,9 @@ dependencies = [
  "crossbeam-channel",
  "egui_code_editor",
  "egui_console",
+ "image",
  "indoc",
+ "winit",
 ]
 
 [[package]]

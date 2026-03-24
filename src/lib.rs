@@ -3,13 +3,16 @@ mod cursor_ray;
 mod plushie;
 mod ui;
 
-use std::time::Duration;
+use std::{io::Cursor, time::Duration};
 
 use bevy::{
-    ecs::schedule::{LogLevel, ScheduleBuildSettings},
+    ecs::{
+        schedule::{LogLevel, ScheduleBuildSettings},
+        system::NonSendMarker,
+    },
     prelude::*,
     render::RenderPlugin,
-    winit::UpdateMode,
+    winit::{UpdateMode, WINIT_WINDOWS},
 };
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
 
@@ -59,7 +62,7 @@ fn window(app: &mut App) {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     title: "Crocheteer".into(),
-                    present_mode: bevy::window::PresentMode::AutoNoVsync,
+                    // present_mode: bevy::window::PresentMode::AutoNoVsync,
                     ..default()
                 }),
                 ..default()
@@ -68,18 +71,46 @@ fn window(app: &mut App) {
                 synchronous_pipeline_compilation: true, // compile shaders before application starts
                 ..default()
             }),
-    )
-    .insert_resource(bevy::winit::WinitSettings {
+    );
+    app.insert_resource(bevy::winit::WinitSettings {
         focused_mode: UpdateMode::reactive(Duration::from_secs_f64(1.0 / 144.0)),
         unfocused_mode: UpdateMode::reactive_low_power(Duration::from_secs_f64(1.0 / 20.0)),
-    })
-    .add_plugins(bevy_framepace::FramepacePlugin)
-    .add_systems(
+    });
+    app.add_plugins(bevy_framepace::FramepacePlugin);
+    app.add_systems(
         Startup,
         |mut settings: ResMut<bevy_framepace::FramepaceSettings>| {
             settings.limiter = bevy_framepace::Limiter::from_framerate(144.0);
         },
     );
+    app.add_systems(Startup, set_window_icon);
+}
+
+// _: NonSendMarker is required, otherwise winit_windows.windows.len() is 0 :))))))
+// WINIT_WINDOWS is "thread_local!(...)", which means each thread gets a copy of the constant
+// but it is only populated in main thread
+// NonSendMarker forces the system to run on main thread
+fn set_window_icon(_: NonSendMarker) {
+    WINIT_WINDOWS.with(|winit_windows| {
+        let winit_windows = winit_windows.borrow();
+        let (icon_rgba, icon_width, icon_height) = {
+            let bytes = include_bytes!("../assets/images/icon.png"); // TODO make a real icon
+            let img = ::image::ImageReader::new(Cursor::new(bytes))
+                .with_guessed_format()
+                .expect("Failed to guess image format")
+                .decode()
+                .expect("Failed to decode icon")
+                .into_rgba8();
+            let (width, height) = img.dimensions();
+            (img.into_raw(), width, height)
+        };
+
+        let icon = winit::window::Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
+
+        for window in winit_windows.windows.values() {
+            window.set_window_icon(Some(icon.clone()));
+        }
+    });
 }
 
 fn visible_3d_world(app: &mut App) {
