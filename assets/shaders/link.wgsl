@@ -24,10 +24,16 @@ struct VertexOutput {
 }
 
 fn force_to_color(t: f32) -> vec4<f32> {
-    let clamped = clamp(t, 0.0, 1.0);
-    let cold = vec4<f32>(0.58, 1.0, 0.58, 1.0);
-    let hot  = vec4<f32>(1.0, 0.34, 0.34, 1.0);
-    return mix(cold, hot, clamped);
+    let clamped = clamp(t, -1.0, 1.0);
+    let negative1 = vec4<f32>(0.58, 0.58, 1.0, 1.0);
+    let zero      = vec4<f32>(0.58, 1.0, 0.58, 1.0);
+    let positive1 = vec4<f32>(1.0, 0.34, 0.34, 1.0);
+
+    let low  = mix(negative1, zero,      clamp(clamped + 1.0, 0.0, 1.0));
+    let high = mix(zero,      positive1, clamp(clamped,       0.0, 1.0));
+    // step returns 1.0 if first argument is smaller than second
+    // so this is: if (clamped > 0) return high, else return low
+    return mix(low, high, step(0.0, clamped));
 }
 
 @vertex

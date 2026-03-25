@@ -12,8 +12,8 @@ use crate::ui::{ConsoleMessage, ConsolePipe};
 pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAssets) -> Entity {
     // a yarn I work with 5mm hook yields 5mm big stitches
     // the node radius is smaller so connections of the graph are visible
-    // let radius = 1e-4;
-    let radius = 5e-4;
+    let radius = 1e-4;
+    // let radius = 5e-4;
     commands
         .spawn((
             GraphNode {},
@@ -31,9 +31,9 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
 
 pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &PlushieAssets) {
     commands.spawn((
-        Link { a, b },
+        Link { a, b, tension: 0.0 },
         Mesh3d(assets.link_mesh.clone()),
-        MeshMaterial3d(assets.link_material.clone()),
+        MeshMaterial3d(assets.force_responding_material.clone()),
         Transform::default(),
     ));
 }

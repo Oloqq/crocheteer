@@ -38,11 +38,11 @@ pub fn compute_stuffing_force(
 
 pub fn compute_link_forces(
     mut accelerations: Query<&mut LinkForce>,
-    links: Query<&Link>,
+    links: Query<&mut Link>,
     transforms: Query<&Transform, With<GraphNode>>,
 ) {
     let desired_stitch_distance = 5e-4;
-    for link in &links {
+    for mut link in links {
         let Ok(src_transform) = transforms.get(link.a) else {
             continue;
         };
@@ -51,8 +51,9 @@ pub fn compute_link_forces(
         };
 
         let diff = &src_transform.translation - &tgt_transform.translation;
-        let force: Vec3 =
-            -diff.normalize() * link_force_magnitude(diff.length(), desired_stitch_distance);
+        let magnitude = link_force_magnitude(diff.length(), desired_stitch_distance);
+        link.tension = magnitude;
+        let force: Vec3 = -diff.normalize() * magnitude;
 
         if let Ok(mut acc) = accelerations.get_mut(link.a) {
             acc.0 += force;

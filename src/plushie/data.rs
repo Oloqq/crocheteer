@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::plushie::shaders::LinkMaterial;
+
 /// Represents a Pull-Through, or "the little V"
 #[derive(Component)]
 pub struct GraphNode {}
@@ -8,6 +10,7 @@ pub struct GraphNode {}
 pub struct Link {
     pub a: Entity,
     pub b: Entity,
+    pub tension: f32,
 }
 
 #[derive(Component)]
@@ -30,6 +33,7 @@ pub struct PlushieAssets {
     pub selected_material: Handle<StandardMaterial>,
     pub link_mesh: Handle<Mesh>,
     pub link_material: Handle<StandardMaterial>,
+    pub force_responding_material: Handle<LinkMaterial>,
 }
 
 #[derive(Message)]

@@ -40,10 +40,10 @@ impl Plugin for PlushiePlugin {
         app.add_systems(Update, build_plushie_from_pattern);
         app.add_systems(PostUpdate, sync_visuals);
 
-        {
-            app.add_systems(PreStartup, learning::setup_material);
-            app.add_systems(Startup, learning::spawn_entities);
-            app.add_systems(FixedUpdate, learning::change_prediodically);
-        }
+        // {
+        //     app.add_systems(PreStartup, learning::setup_material);
+        //     app.add_systems(Startup, learning::spawn_entities);
+        //     app.add_systems(FixedUpdate, learning::change_prediodically);
+        // }
     }
 }

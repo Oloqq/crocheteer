@@ -22,6 +22,7 @@ pub fn link_forces(nodes: &[Vec3], edges: &Vec<Vec<usize>>) -> Vec<Vec3> {
 }
 
 /// Attract nodes far away, repel nodes close to each other
+/// Returns value in [-1, 1]
 ///
 /// \min\left(\frac{\left(x-d\right)^{3}}{\left(\frac{x}{2}+d\right)^{3}},\ 1\right)\left\{x\ge\ 0\right\}
 pub fn link_force_magnitude(distance: f32, desired_distance: f32) -> f32 {
