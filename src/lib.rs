@@ -62,7 +62,7 @@ fn window(app: &mut App) {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     title: "Crocheteer".into(),
-                    // present_mode: bevy::window::PresentMode::AutoNoVsync,
+                    present_mode: bevy::window::PresentMode::AutoNoVsync,
                     ..default()
                 }),
                 ..default()

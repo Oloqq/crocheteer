@@ -9,7 +9,7 @@ use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
-        shaders::{LinkMaterial, setup_link_rendering},
+        shaders::{LinkMaterial, learning},
         spawning::build_plushie_from_pattern,
         systems::{setup_assets, sync_visuals},
     },
@@ -29,7 +29,7 @@ impl Plugin for PlushiePlugin {
         app.add_message::<BuildPlushieFromPattern>();
         app.init_resource::<PressHandled>();
         app.add_plugins(MaterialPlugin::<LinkMaterial>::default());
-        app.add_systems(Startup, (setup_assets, setup_link_rendering));
+        app.add_systems(Startup, setup_assets);
         app.add_systems(
             PreUpdate,
             (
@@ -39,5 +39,11 @@ impl Plugin for PlushiePlugin {
         );
         app.add_systems(Update, build_plushie_from_pattern);
         app.add_systems(PostUpdate, sync_visuals);
+
+        {
+            app.add_systems(PreStartup, learning::setup_material);
+            app.add_systems(Startup, learning::spawn_entities);
+            app.add_systems(FixedUpdate, learning::change_prediodically);
+        }
     }
 }

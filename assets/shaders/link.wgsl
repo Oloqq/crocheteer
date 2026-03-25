@@ -25,8 +25,8 @@ struct VertexOutput {
 
 fn force_to_color(t: f32) -> vec4<f32> {
     let clamped = clamp(t, 0.0, 1.0);
-    let cold = vec4<f32>(0.0, 0.0, 1.0, 1.0);
-    let hot  = vec4<f32>(0.0, 1.0, 0.0, 1.0);
+    let cold = vec4<f32>(0.58, 1.0, 0.58, 1.0);
+    let hot  = vec4<f32>(1.0, 0.34, 0.34, 1.0);
     return mix(cold, hot, clamped);
 }
 
@@ -38,7 +38,7 @@ fn vertex(in: VertexInput) -> VertexOutput {
         vec4<f32>(in.position, 1.0)
     );
 
-    // Use get_tag() to retrieve the MeshTag, which is your buffer index
+    // Use get_tag() to retrieve the MeshTag, which is the buffer index
     let tag = mesh_functions::get_tag(in.instance_index);
 
     var out: VertexOutput;
