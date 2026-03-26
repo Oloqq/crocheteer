@@ -8,9 +8,12 @@ pub use data::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
 
 use systems::{apply_forces, reset_acceleration, update_connections_visually};
 
-use crate::plushie::animation::{
-    forces::{compute_link_forces, compute_stuffing_force},
-    systems::move_centroids,
+use crate::{
+    plushie::animation::{
+        forces::{compute_link_forces, compute_stuffing_force},
+        systems::move_centroids,
+    },
+    ui::simulation_is_running,
 };
 
 pub struct PlushieAnimationPlugin;
@@ -24,7 +27,8 @@ impl Plugin for PlushieAnimationPlugin {
                 (compute_link_forces, compute_stuffing_force),
                 (apply_forces, move_centroids.ambiguous_with(apply_forces)),
             )
-                .chain(),
+                .chain()
+                .run_if(simulation_is_running),
         );
         app.add_systems(
             PostUpdate,

@@ -9,6 +9,7 @@ mod utils;
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 pub use console::{ConsoleMessage, ConsolePipe};
+pub use data::*;
 pub use ui_used_input::UiUsedInput;
 
 use crate::{
@@ -17,7 +18,7 @@ use crate::{
         code_editor::code_editor_ui,
         console::{ConsoleReceiver, console_window},
         control_panel::control_panel,
-        data::{CodeEditorState, ConsoleState, UiState},
+        data::{CodeEditorState, ConsoleState},
         menu_bar::top_panel,
     },
 };

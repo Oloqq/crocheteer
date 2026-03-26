@@ -2,7 +2,6 @@ use crate::ui::ui_used_input::UiUsedInput;
 use crate::ui::utils::{CanGoOffscreen, require_width_for_slider, using_resizer};
 use crate::ui::{data::*, utils::full_height_button};
 use bevy::prelude::*;
-use bevy_egui::egui::UiBuilder;
 use bevy_egui::egui::panel::Side;
 use bevy_egui::{
     EguiContexts,
@@ -16,7 +15,7 @@ fn expanded_ui(
     mut timestep: ResMut<Time<Fixed>>,
 ) {
     ui.horizontal(|ui| {
-        ui.heading("Controls    "); // spaces prevent overlapping with the right-aligned button
+        ui.heading("Simulation    "); // spaces prevent overlapping with the right-aligned button
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if ui.button("▶").clicked() {
                 *collapsed = true;
@@ -33,6 +32,7 @@ fn expanded_ui(
             ui.set_max_width(available_width); // prevent infinite panel growth when scrollbar appears and disappears
             require_width_for_slider(ui); // make sure the sliding part of the slider is on screen with CanGoOffscreen
 
+            ui.checkbox(&mut state.paused, "Paused");
             CanGoOffscreen::new().show(ui, |ui| {
                 if ui
                     .add(
@@ -45,6 +45,12 @@ fn expanded_ui(
                 {
                     timestep.set_timestep_hz(64.0 * state.sim_speed);
                 }
+
+                ui.add(
+                    egui::Slider::new(&mut state.force_multiplier, 0.1..=2.0)
+                        .text("Force multiplier"),
+                )
+                .on_hover_text("Multiplies all forces applied. High values can cause glitches.");
             });
 
             // ui.selectable_label(true, "bruh");

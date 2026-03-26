@@ -87,30 +87,16 @@ pub fn require_width_for_slider(ui: &mut Ui) {
 }
 
 /// Using this in a SidePanel, allows the SidePanel to be resized in a way that hides part of the content
-pub struct CanGoOffscreen {
-    min_width: f32,
-}
+pub struct CanGoOffscreen {}
 
 impl CanGoOffscreen {
     pub fn new() -> Self {
-        Self { min_width: 0.0 }
-    }
-
-    pub fn min_width(mut self, min_width: f32) -> Self {
-        self.min_width = min_width;
-        self
+        Self {}
     }
 
     pub fn show<R>(&self, parent: &mut Ui, add_contents: impl FnOnce(&mut Ui) -> R) {
-        // let mut rect = parent.cursor();
-        // rect.max.x += 10000.0;
-        // let mut child_ui = parent.new_child(UiBuilder::new().max_rect(rect));
-        // child_ui.set_clip_rect(parent.clip_rect());
-
         let mut child_ui = parent.new_child(UiBuilder::new());
-
         add_contents(&mut child_ui);
-
-        parent.allocate_space(egui::Vec2::new(self.min_width, child_ui.min_size().y));
+        parent.allocate_space(egui::Vec2::new(0.0, child_ui.min_size().y));
     }
 }

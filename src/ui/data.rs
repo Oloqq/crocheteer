@@ -4,23 +4,23 @@ use egui_console::{ConsoleBuilder, ConsoleWindow};
 
 #[derive(Resource)]
 pub struct UiState {
+    pub paused: bool,
     pub sim_speed: f64,
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
-    pub label: String,
+    pub force_multiplier: f32,
 }
 
 impl Default for UiState {
     fn default() -> Self {
         Self {
+            paused: false,
             sim_speed: 1.0,
-            r: Default::default(),
-            g: Default::default(),
-            b: Default::default(),
-            label: "".into(),
+            force_multiplier: 1.0,
         }
     }
+}
+
+pub fn simulation_is_running(ui_state: Res<UiState>) -> bool {
+    !ui_state.paused
 }
 
 #[derive(Resource)]
