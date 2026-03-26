@@ -1,4 +1,7 @@
-use bevy_egui::{egui::panel::Side, prelude::*};
+use bevy_egui::{
+    egui::{Rect, Ui, UiBuilder, panel::Side},
+    prelude::*,
+};
 
 pub fn full_height_button(
     ui: &mut egui::Ui,
@@ -72,4 +75,42 @@ pub fn using_resizer_bottom(ctx: &egui::Context, id: egui::Id) -> bool {
             })
         })
         .unwrap_or(false)
+}
+
+/// Allocates horizontal space needed for a slider and a few characters
+pub fn require_width_for_slider(ui: &mut Ui) {
+    let rect = ui.cursor();
+    let mut child_ui = ui.new_child(UiBuilder::new().max_rect(rect));
+    child_ui.set_clip_rect(Rect::NOTHING);
+    child_ui.add(egui::Slider::new(&mut 0.0, 1.0..=2.0).text("  ")); // text to make space for a few characters as well
+    ui.allocate_space(egui::Vec2::new(child_ui.min_size().x, 0.0));
+}
+
+/// Using this in a SidePanel, allows the SidePanel to be resized in a way that hides part of the content
+pub struct CanGoOffscreen {
+    min_width: f32,
+}
+
+impl CanGoOffscreen {
+    pub fn new() -> Self {
+        Self { min_width: 0.0 }
+    }
+
+    pub fn min_width(mut self, min_width: f32) -> Self {
+        self.min_width = min_width;
+        self
+    }
+
+    pub fn show<R>(&self, parent: &mut Ui, add_contents: impl FnOnce(&mut Ui) -> R) {
+        // let mut rect = parent.cursor();
+        // rect.max.x += 10000.0;
+        // let mut child_ui = parent.new_child(UiBuilder::new().max_rect(rect));
+        // child_ui.set_clip_rect(parent.clip_rect());
+
+        let mut child_ui = parent.new_child(UiBuilder::new());
+
+        add_contents(&mut child_ui);
+
+        parent.allocate_space(egui::Vec2::new(self.min_width, child_ui.min_size().y));
+    }
 }
