@@ -1,3 +1,4 @@
+use crate::plushie::{DisplayMode, SetDisplayMode};
 use crate::ui::ui_used_input::UiUsedInput;
 use crate::ui::utils::{CanGoOffscreen, require_width_for_slider, using_resizer};
 use crate::ui::{data::*, utils::full_height_button};
@@ -13,6 +14,7 @@ fn expanded_ui(
     state: &mut UiState,
     collapsed: &mut bool,
     mut timestep: ResMut<Time<Fixed>>,
+    mut display_mode_msg: MessageWriter<SetDisplayMode>,
 ) {
     ui.horizontal(|ui| {
         ui.heading("Simulation    "); // spaces prevent overlapping with the right-aligned button
@@ -51,6 +53,24 @@ fn expanded_ui(
                         .text("Force multiplier"),
                 )
                 .on_hover_text("Multiplies all forces applied. High values can cause glitches.");
+            });
+
+            ui.collapsing("Display mode", |ui| {
+                let previous_mode = state.display_mode;
+                ui.radio_value(&mut state.display_mode, DisplayMode::Pattern, "Pattern")
+                    .on_hover_text("Use colors defined in the pattern. Big stitches, small links.");
+                // ui.radio_value(&mut state.display_mode, DisplayMode::Stitches, "Stitches"); // TODO differentiate stitch kind (sc vs inc etc)
+                ui.radio_value(&mut state.display_mode, DisplayMode::Forces, "Link forces")
+                    .on_hover_text("Show the forces applied by links. Big links, tiny stitches");
+                // TODO link forces with grabbable stitches (just make stitches bigger, or keep them small visually but spawn bigger invisible spheres on top. Ideally they would visually get bigger when hovered over)
+                // TODO forces applied by centroids
+                //  - present them like links? - will be barely readable. Actually this could work if actual links and stitches become hidden and s
+                //  - color the stitches with a shader?
+                if state.display_mode != previous_mode {
+                    display_mode_msg.write(SetDisplayMode {
+                        mode: state.display_mode,
+                    });
+                }
             });
 
             // ui.selectable_label(true, "bruh");
@@ -102,13 +122,16 @@ fn expanded_ui(
 pub fn control_panel(
     mut ui_state: ResMut<UiState>,
     mut contexts: EguiContexts,
-    ui_used_input: Res<UiUsedInput>,
+    ui_used_input: Res<UiUsedInput>, // atomically mutable
+    display_mode_msg: MessageWriter<SetDisplayMode>,
     mut collapsed: Local<bool>,
     timestep: ResMut<Time<Fixed>>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
     let extended_panel_id = egui::Id::new("side_panel_extended");
 
+    // TODO make it a Widget, that only takes the expanded ui as lambda
+    // that way there's no pain in passing ECS components and no indentation hell
     egui::SidePanel::show_animated_between(
         ctx,
         *collapsed,
@@ -128,7 +151,13 @@ pub fn control_panel(
                     *collapsed = false;
                 }
             } else {
-                expanded_ui(ui, &mut ui_state, &mut collapsed, timestep);
+                expanded_ui(
+                    ui,
+                    &mut ui_state,
+                    &mut collapsed,
+                    timestep,
+                    display_mode_msg,
+                );
             }
         },
     );

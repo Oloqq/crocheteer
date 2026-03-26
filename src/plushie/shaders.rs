@@ -5,6 +5,9 @@ use bevy::render::render_resource::ShaderType;
 use bevy::render::storage::ShaderStorageBuffer;
 use bevy::shader::ShaderRef;
 
+use crate::plushie::data::Link;
+use crate::plushie::data::PlushieAssets;
+
 #[derive(Clone, Copy, ShaderType, Debug)]
 pub struct LinkInstanceData {
     pub force: f32,
@@ -24,6 +27,30 @@ impl Material for LinkMaterial {
     fn fragment_shader() -> ShaderRef {
         "shaders/link.wgsl".into()
     }
+}
+
+pub fn sync_shader_buffer(
+    mut shader_materials: ResMut<Assets<LinkMaterial>>,
+    mut shader_buffers: ResMut<Assets<ShaderStorageBuffer>>,
+    mut commands: Commands,
+    links: Query<(Entity, &Link)>,
+    assets: Res<PlushieAssets>,
+) {
+    let material = shader_materials
+        .get_mut(&assets.force_responding_material)
+        .unwrap();
+    let buffer = shader_buffers.get_mut(&material.instances).unwrap();
+    let instance_data: Vec<_> = links
+        .iter()
+        .enumerate()
+        .map(|(i, (entity, link))| {
+            commands.entity(entity).insert(MeshTag(i as u32));
+            LinkInstanceData {
+                force: link.tension,
+            }
+        })
+        .collect();
+    buffer.set_data(instance_data);
 }
 
 #[allow(dead_code)] // to be removed

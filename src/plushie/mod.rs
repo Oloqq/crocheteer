@@ -1,5 +1,6 @@
 mod animation;
 mod data;
+mod display_mode;
 mod mouse_interactions;
 mod shaders;
 mod spawning;
@@ -8,17 +9,19 @@ mod systems;
 use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
+        display_mode::set_display_mode,
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
-        shaders::{LinkMaterial, learning},
+        shaders::{LinkMaterial, sync_shader_buffer},
         spawning::build_plushie_from_pattern,
-        systems::{setup_assets, sync_visuals},
+        systems::{setup_assets, sync_visuals_for_selection},
     },
-    ui::world_input,
+    ui::{simulation_is_running, world_input},
 };
 use bevy::prelude::*;
 use data::*;
 
 pub use data::BuildPlushieFromPattern;
+pub use display_mode::{DisplayMode, SetDisplayMode};
 
 pub struct PlushiePlugin;
 
@@ -27,6 +30,7 @@ impl Plugin for PlushiePlugin {
         app.add_plugins(PlushieAnimationPlugin);
         app.add_message::<AddNode>();
         app.add_message::<BuildPlushieFromPattern>();
+        app.add_message::<SetDisplayMode>();
         app.init_resource::<PressHandled>();
         app.add_plugins(MaterialPlugin::<LinkMaterial>::default());
         app.add_systems(Startup, setup_assets);
@@ -38,7 +42,14 @@ impl Plugin for PlushiePlugin {
             ),
         );
         app.add_systems(Update, build_plushie_from_pattern);
-        app.add_systems(PostUpdate, sync_visuals);
+        app.add_systems(
+            PostUpdate,
+            (
+                sync_visuals_for_selection,
+                set_display_mode, // could this be handled with a resource_changed? UiState is dereferenced mutably every frame so probably not right?
+                sync_shader_buffer.run_if(simulation_is_running),
+            ),
+        );
 
         // {
         //     app.add_systems(PreStartup, learning::setup_material);
