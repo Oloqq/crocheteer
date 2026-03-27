@@ -1,4 +1,5 @@
 use bevy::{prelude::*, render::storage::ShaderStorageBuffer};
+use enum_map::EnumMap;
 use strum::IntoEnumIterator;
 
 use crate::plushie::{
@@ -24,19 +25,19 @@ impl Default for DisplayMode {
 }
 
 #[derive(Clone)]
-pub struct DisplayPreset {
-    stitch_radius: f32,
+pub struct PresetValues {
+    pub stitch_radius: f32,
 }
 
 #[derive(Resource)]
 pub struct DisplayPresets {
     pub current_mode: DisplayMode,
-    pattern: DisplayPreset,
-    force: DisplayPreset,
+    pattern: PresetValues,
+    force: PresetValues,
 }
 
 impl DisplayPresets {
-    pub fn current(&self) -> &DisplayPreset {
+    pub fn current(&self) -> &PresetValues {
         match self.current_mode {
             DisplayMode::Pattern => &self.pattern,
             DisplayMode::Forces => &self.force,
@@ -51,11 +52,14 @@ pub fn setup_display_modes(
     mut link_shader_materials: ResMut<Assets<LinkMaterial>>,
     mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
 ) {
-    let pattern = DisplayPreset {
+    // a yarn I work with 5mm hook yields 5mm big stitches
+    // the node radius is smaller so connections of the graph are visible
+    // TODO set based on the pattern, also adjust radius of links' cylinder
+    let pattern = PresetValues {
         stitch_radius: 5e-4,
     };
 
-    let force = DisplayPreset {
+    let force = PresetValues {
         stitch_radius: 1e-4,
     };
 
@@ -92,13 +96,24 @@ pub fn set_display_mode(
     }
 
     for link in links {
-        for mode in DisplayMode::iter() {
-            commands
-                .entity(link.child_per_display_mode[mode])
-                .insert(Visibility::Hidden);
-        }
-        commands
-            .entity(link.child_per_display_mode[presets.current_mode])
-            .insert(Visibility::Visible);
+        select_displayed_child(
+            &mut commands,
+            &link.child_per_display_mode,
+            presets.current_mode,
+        );
     }
+}
+
+/// Show the child prepared for given display mode, hide the others
+pub fn select_displayed_child(
+    commands: &mut Commands,
+    children: &EnumMap<DisplayMode, Entity>,
+    current_mode: DisplayMode,
+) {
+    for mode in DisplayMode::iter() {
+        commands.entity(children[mode]).insert(Visibility::Hidden);
+    }
+    commands
+        .entity(children[current_mode])
+        .insert(Visibility::Visible);
 }

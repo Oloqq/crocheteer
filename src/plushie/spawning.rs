@@ -3,6 +3,7 @@ use enum_map::enum_map;
 
 use crate::plushie::animation::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
 use crate::plushie::data::Link;
+use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
 use crate::plushie::{
     data::{AddNode, GraphNode, PlushieAssets},
@@ -10,18 +11,20 @@ use crate::plushie::{
 };
 use crate::ui::{ConsoleMessage, ConsolePipe};
 
-pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAssets) -> Entity {
-    // a yarn I work with 5mm hook yields 5mm big stitches
-    // the node radius is smaller so connections of the graph are visible
-    let radius = 1e-4;
-    // let radius = 5e-4;
+fn add_graph_node(
+    msg: &AddNode,
+    commands: &mut Commands,
+    assets: &PlushieAssets,
+    presets: &DisplayPresets,
+) -> Entity {
     commands
         .spawn((
             GraphNode {},
             Name::new("GraphNode"),
             Mesh3d(assets.stitch_mesh.clone()),
             MeshMaterial3d(assets.stitch_material.clone()),
-            Transform::from_translation(msg.position).with_scale(Vec3::splat(radius)),
+            Transform::from_translation(msg.position)
+                .with_scale(Vec3::splat(presets.current().stitch_radius)),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),
@@ -30,10 +33,16 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
         .id()
 }
 
-pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &PlushieAssets) {
+fn add_link_between(
+    a: Entity,
+    b: Entity,
+    commands: &mut Commands,
+    assets: &PlushieAssets,
+    presets: &DisplayPresets,
+) {
     let standard_material_child: Entity = commands
         .spawn((
-            Visibility::Visible,
+            Visibility::Hidden,
             Mesh3d(assets.link_mesh.clone()),
             MeshMaterial3d(assets.link_material.clone()),
         ))
@@ -46,16 +55,19 @@ pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &
         ))
         .id();
 
+    let child_per_display_mode = enum_map! {
+        DisplayMode::Pattern => standard_material_child,
+        DisplayMode::Forces => shader_material_child
+    };
+    select_displayed_child(commands, &child_per_display_mode, presets.current_mode);
+
     commands
         .spawn((
             Link {
                 a,
                 b,
                 tension: 0.0,
-                child_per_display_mode: enum_map! {
-                    DisplayMode::Pattern => standard_material_child,
-                    DisplayMode::Forces => shader_material_child
-                },
+                child_per_display_mode,
             },
             Transform::default(),
         ))
@@ -66,6 +78,7 @@ pub fn build_plushie_from_pattern(
     mut msgr: MessageReader<BuildPlushieFromPattern>,
     mut commands: Commands,
     assets: Res<PlushieAssets>,
+    display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
 ) -> Result {
@@ -86,7 +99,14 @@ pub fn build_plushie_from_pattern(
 
     let node_entities: Vec<Entity> = graph_nodes
         .into_iter()
-        .map(|node| add_graph_node(&AddNode { position: node }, &mut commands, &assets))
+        .map(|node| {
+            add_graph_node(
+                &AddNode { position: node },
+                &mut commands,
+                &assets,
+                &display_presets,
+            )
+        })
         .collect();
 
     if let Some(first) = node_entities.first() {
@@ -97,7 +117,7 @@ pub fn build_plushie_from_pattern(
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
-            add_link_between(a, b, &mut commands, &assets);
+            add_link_between(a, b, &mut commands, &assets, &display_presets);
         }
     }
 
