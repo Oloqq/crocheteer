@@ -9,7 +9,7 @@ mod systems;
 use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
-        display_mode::set_display_mode,
+        display_mode::{set_display_mode, setup_display_modes},
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
         spawning::build_plushie_from_pattern,
@@ -33,7 +33,7 @@ impl Plugin for PlushiePlugin {
         app.add_message::<SetDisplayMode>();
         app.init_resource::<PressHandled>();
         app.add_plugins(MaterialPlugin::<LinkMaterial>::default());
-        app.add_systems(Startup, setup_assets);
+        app.add_systems(Startup, (setup_assets, setup_display_modes).chain());
         app.add_systems(
             PreUpdate,
             (

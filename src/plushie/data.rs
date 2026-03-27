@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::plushie::shaders::LinkMaterial;
+use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
 /// Represents a Pull-Through, or "the little V"
 #[derive(Component)]
@@ -11,6 +11,7 @@ pub struct Link {
     pub a: Entity,
     pub b: Entity,
     pub tension: f32,
+    pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
 }
 
 #[derive(Component)]

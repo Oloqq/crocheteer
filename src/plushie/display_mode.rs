@@ -1,8 +1,12 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, render::storage::ShaderStorageBuffer};
+use strum::IntoEnumIterator;
 
-use crate::plushie::data::{GraphNode, Link};
+use crate::plushie::{
+    data::{GraphNode, Link},
+    shaders::LinkMaterial,
+};
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, enum_map::Enum, strum_macros::EnumIter)]
 pub enum DisplayMode {
     Pattern,
     Forces,
@@ -19,48 +23,82 @@ impl Default for DisplayMode {
     }
 }
 
-// struct DisplayPreset<M: Material> {
-struct DisplayPreset {
+#[derive(Clone)]
+pub struct DisplayPreset {
     stitch_radius: f32,
-    // link_material: MeshMaterial3d<M>,
 }
 
-impl Default for DisplayPreset {
-    fn default() -> Self {
-        Self::from_display_mode(DisplayMode::Pattern)
-    }
+#[derive(Resource)]
+pub struct DisplayPresets {
+    pub current_mode: DisplayMode,
+    pattern: DisplayPreset,
+    force: DisplayPreset,
 }
 
-impl DisplayPreset {
-    fn from_display_mode(mode: DisplayMode) -> Self {
-        match mode {
-            DisplayMode::Pattern => Self {
-                stitch_radius: 5e-4, // TODO this should eventually depend on hook size
-            },
-            DisplayMode::Forces => Self {
-                stitch_radius: 1e-4,
-            },
+impl DisplayPresets {
+    pub fn current(&self) -> &DisplayPreset {
+        match self.current_mode {
+            DisplayMode::Pattern => &self.pattern,
+            DisplayMode::Forces => &self.force,
         }
     }
 }
 
-// pub fn setup_display_modes() {}
+pub fn setup_display_modes(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut link_shader_materials: ResMut<Assets<LinkMaterial>>,
+    mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
+) {
+    let pattern = DisplayPreset {
+        stitch_radius: 5e-4,
+    };
+
+    let force = DisplayPreset {
+        stitch_radius: 1e-4,
+    };
+
+    commands.insert_resource(DisplayPresets {
+        current_mode: DisplayMode::Pattern,
+        pattern,
+        force,
+    });
+}
 
 pub fn set_display_mode(
     mut msgr: MessageReader<SetDisplayMode>,
     mut commands: Commands,
+    mut presets: ResMut<DisplayPresets>,
     stitches: Query<Entity, With<GraphNode>>,
-    // links: Query<Entity, With<Link>>,
+    links: Query<&Link>,
 ) {
     let Some(message) = msgr.read().into_iter().last() else {
         return;
     };
 
-    let preset = DisplayPreset::from_display_mode(message.mode);
+    if presets.current_mode == message.mode {
+        return;
+    }
+    presets.current_mode = message.mode;
+    let preset = presets.current();
+
+    let radius = preset.stitch_radius;
     for entity in stitches {
-        commands
-            .entity(entity)
+        let mut entity_commands = commands.entity(entity);
+        entity_commands
             .entry::<Transform>()
-            .and_modify(move |mut t| t.scale = Vec3::splat(preset.stitch_radius));
+            .and_modify(move |mut t| t.scale = Vec3::splat(radius));
+    }
+
+    for link in links {
+        for mode in DisplayMode::iter() {
+            commands
+                .entity(link.child_per_display_mode[mode])
+                .insert(Visibility::Hidden);
+        }
+        commands
+            .entity(link.child_per_display_mode[presets.current_mode])
+            .insert(Visibility::Visible);
     }
 }

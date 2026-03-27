@@ -1,8 +1,9 @@
 use bevy::prelude::*;
+use enum_map::enum_map;
 
-use crate::plushie::BuildPlushieFromPattern;
 use crate::plushie::animation::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
 use crate::plushie::data::Link;
+use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
 use crate::plushie::{
     data::{AddNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
@@ -30,12 +31,35 @@ pub fn add_graph_node(msg: &AddNode, commands: &mut Commands, assets: &PlushieAs
 }
 
 pub fn add_link_between(a: Entity, b: Entity, commands: &mut Commands, assets: &PlushieAssets) {
-    commands.spawn((
-        Link { a, b, tension: 0.0 },
-        Mesh3d(assets.link_mesh.clone()),
-        MeshMaterial3d(assets.force_responding_material.clone()),
-        Transform::default(),
-    ));
+    let standard_material_child: Entity = commands
+        .spawn((
+            Visibility::Visible,
+            Mesh3d(assets.link_mesh.clone()),
+            MeshMaterial3d(assets.link_material.clone()),
+        ))
+        .id();
+    let shader_material_child: Entity = commands
+        .spawn((
+            Visibility::Hidden,
+            Mesh3d(assets.link_mesh.clone()),
+            MeshMaterial3d(assets.force_responding_material.clone()),
+        ))
+        .id();
+
+    commands
+        .spawn((
+            Link {
+                a,
+                b,
+                tension: 0.0,
+                child_per_display_mode: enum_map! {
+                    DisplayMode::Pattern => standard_material_child,
+                    DisplayMode::Forces => shader_material_child
+                },
+            },
+            Transform::default(),
+        ))
+        .add_children(&[standard_material_child, shader_material_child]);
 }
 
 pub fn build_plushie_from_pattern(

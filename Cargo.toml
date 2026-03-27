@@ -27,8 +27,11 @@ crochet = { path = "crates/crochet" }                                           
 crossbeam-channel = "0.5.15"                                                    # non-blocking channels
 egui_code_editor = { path = "crates/egui_code_editor" }
 egui_console = { path = "crates/egui_console" }
+enum-map = "2.7.3"                                                              # map for enums, with compile checks expected from enums
 image = { version = "=0.25.10", default-features = false, features = ["png"] }
 indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
+strum = "0.28.0"                                                                # enum iter, enum to string etc
+strum_macros = "0.28.0"
 winit = "0.30.13"                                                               # set window icon
 
 [profile.dev]

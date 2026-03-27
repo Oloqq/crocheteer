@@ -5,6 +5,7 @@ use bevy::render::render_resource::ShaderType;
 use bevy::render::storage::ShaderStorageBuffer;
 use bevy::shader::ShaderRef;
 
+use crate::plushie::DisplayMode;
 use crate::plushie::data::Link;
 use crate::plushie::data::PlushieAssets;
 
@@ -33,7 +34,7 @@ pub fn sync_shader_buffer(
     mut shader_materials: ResMut<Assets<LinkMaterial>>,
     mut shader_buffers: ResMut<Assets<ShaderStorageBuffer>>,
     mut commands: Commands,
-    links: Query<(Entity, &Link)>,
+    links: Query<&Link>,
     assets: Res<PlushieAssets>,
 ) {
     let material = shader_materials
@@ -43,8 +44,10 @@ pub fn sync_shader_buffer(
     let instance_data: Vec<_> = links
         .iter()
         .enumerate()
-        .map(|(i, (entity, link))| {
-            commands.entity(entity).insert(MeshTag(i as u32));
+        .map(|(i, link)| {
+            commands
+                .entity(link.child_per_display_mode[DisplayMode::Forces])
+                .insert(MeshTag(i as u32));
             LinkInstanceData {
                 force: link.tension,
             }
