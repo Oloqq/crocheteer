@@ -1,58 +1,46 @@
 pub use crate::hook::hook_result::InitialGraph;
 use crate::{
     acl::pest_parser::Pattern,
-    hook::{Hook, HookParams, initializer},
+    hook::{Hook, HookParams},
 };
 
 #[allow(unused)] // TODO
 mod acl;
-
+mod force_graph;
 #[allow(unused)] // TODO
 mod hook;
-
 #[allow(unused)] // TODO
 mod params;
 
-mod force_graph;
 pub use force_graph::{centroid_stuffing, link_force_magnitude, link_forces};
+use glam::Vec3;
 
-pub fn v0() -> glam::Vec3 {
-    glam::Vec3::ZERO
-}
-
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
-pub fn parse_into_graph(acl_source: &str) -> InitialGraph {
-    let syntax_result = Pattern::parse(acl_source).unwrap();
-    println!("syntax: {:?}", syntax_result);
-    let semantic_result = Hook::parse(syntax_result, &HookParams::default()).unwrap();
-    println!("semantic: {:?}", semantic_result);
-    semantic_result
-}
-
-pub fn parse(acl_source: &str) -> Option<(Vec<glam::Vec3>, Vec<Vec<usize>>)> {
+pub fn parse(acl_source: &str) -> Option<PlushieDef> {
     let Ok(syntax_result) = Pattern::parse(acl_source) else {
         return None;
     };
-    println!("syntax: {:?}", syntax_result);
+    // println!("syntax: {:?}", syntax_result);
     let Ok(semantic_result) = Hook::parse(syntax_result, &HookParams::default()) else {
         return None;
     };
-    println!("semantic: {:?}", semantic_result);
-    let ini = initializer::Initializer::Cylinder;
-    let (nodes, edges, _, _) = ini.apply_to(semantic_result);
-    Some((nodes.points, edges))
+    // println!("semantic: {:?}", semantic_result);
+    let hook_size = 5e-4;
+    let initializer = force_graph::initializers::Initializer::RegularCylinder(12);
+    let nodes = initializer.apply(semantic_result.edges.len() as u32, hook_size);
+
+    Some(PlushieDef {
+        nodes,
+        edges: semantic_result.edges.into(),
+    })
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub type Edges = Vec<Vec<usize>>;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub struct PlushieDef {
+    // TODO produce this once at function call to initializer
+    // PlushieDef does not need to know anything about node positions
+    pub nodes: Vec<Vec3>,
+    /// Edges of the graph
+    /// For every edges[i], each element of edges[i] is smaller than i. This is important to easily manage partially built plushies.
+    pub edges: Edges,
 }

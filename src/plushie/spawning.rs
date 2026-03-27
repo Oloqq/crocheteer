@@ -86,7 +86,7 @@ pub fn build_plushie_from_pattern(
         return Ok(());
     };
 
-    let Some((graph_nodes, edges)) = crochet::parse(&msg.pattern) else {
+    let Some(plushie_def) = crochet::parse(&msg.pattern) else {
         let _ = pipe.sender.send(ConsoleMessage {
             text: "Error in the pattern".into(),
         });
@@ -97,7 +97,8 @@ pub fn build_plushie_from_pattern(
         commands.entity(entity).despawn();
     }
 
-    let node_entities: Vec<Entity> = graph_nodes
+    let node_entities: Vec<Entity> = plushie_def
+        .nodes
         .into_iter()
         .map(|node| {
             add_graph_node(
@@ -115,7 +116,7 @@ pub fn build_plushie_from_pattern(
         commands.entity(*first).insert(Rooted);
     }
 
-    for (source, targets) in edges.iter().enumerate() {
+    for (source, targets) in plushie_def.edges.iter().enumerate() {
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
