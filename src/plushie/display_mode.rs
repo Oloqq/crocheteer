@@ -1,11 +1,8 @@
-use bevy::{prelude::*, render::storage::ShaderStorageBuffer};
+use bevy::prelude::*;
 use enum_map::EnumMap;
 use strum::IntoEnumIterator;
 
-use crate::plushie::{
-    data::{GraphNode, Link},
-    shaders::LinkMaterial,
-};
+use crate::plushie::data::{GraphNode, Link};
 
 #[derive(PartialEq, Clone, Copy, enum_map::Enum, strum_macros::EnumIter)]
 pub enum DisplayMode {
@@ -26,7 +23,7 @@ impl Default for DisplayMode {
 
 #[derive(Clone)]
 pub struct PresetValues {
-    pub stitch_radius: f32,
+    pub node_radius: f32,
 }
 
 #[derive(Resource)]
@@ -45,23 +42,13 @@ impl DisplayPresets {
     }
 }
 
-pub fn setup_display_modes(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    mut link_shader_materials: ResMut<Assets<LinkMaterial>>,
-    mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
-) {
+pub fn setup_display_modes(mut commands: Commands) {
     // a yarn I work with 5mm hook yields 5mm big stitches
     // the node radius is smaller so connections of the graph are visible
     // TODO set based on the pattern, also adjust radius of links' cylinder
-    let pattern = PresetValues {
-        stitch_radius: 5e-4,
-    };
+    let pattern = PresetValues { node_radius: 5e-4 };
 
-    let force = PresetValues {
-        stitch_radius: 1e-4,
-    };
+    let force = PresetValues { node_radius: 1e-4 };
 
     commands.insert_resource(DisplayPresets {
         current_mode: DisplayMode::Pattern,
@@ -74,21 +61,21 @@ pub fn set_display_mode(
     mut msgr: MessageReader<SetDisplayMode>,
     mut commands: Commands,
     mut presets: ResMut<DisplayPresets>,
-    stitches: Query<Entity, With<GraphNode>>,
+    nodes: Query<Entity, With<GraphNode>>,
     links: Query<&Link>,
 ) {
     let Some(message) = msgr.read().into_iter().last() else {
         return;
     };
-
     if presets.current_mode == message.mode {
         return;
     }
+
     presets.current_mode = message.mode;
     let preset = presets.current();
+    let radius = preset.node_radius;
 
-    let radius = preset.stitch_radius;
-    for entity in stitches {
+    for entity in nodes {
         let mut entity_commands = commands.entity(entity);
         entity_commands
             .entry::<Transform>()

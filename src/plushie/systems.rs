@@ -13,9 +13,9 @@ pub fn setup_assets(
     mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
 ) {
     let assets = PlushieAssets {
-        stitch_mesh: meshes.add(Sphere::new(1.0)),
-        stitch_material: materials.add(Color::srgb(1.0, 0.4, 0.4)),
-        selected_material: materials.add(Color::srgb(1.0, 1.0, 1.0)), // TODO https://github.com/komadori/bevy_mod_outline
+        node_mesh: meshes.add(Sphere::new(1.0)),
+        node_material: materials.add(Color::srgb(1.0, 0.4, 0.4)),
+        selected_node_material: materials.add(Color::srgb(1.0, 1.0, 1.0)), // TODO https://github.com/komadori/bevy_mod_outline
         link_mesh: meshes.add(Cylinder::new(1.0, 1.0)),
         link_material: materials.add(Color::srgb(0.2, 0.4, 0.2)),
         force_responding_material: link_shader_materials.add(LinkMaterial {
@@ -34,11 +34,11 @@ pub fn sync_visuals_for_selection(
     for entity in &selection_added {
         commands
             .entity(entity)
-            .insert(MeshMaterial3d(assets.selected_material.clone()));
+            .insert(MeshMaterial3d(assets.selected_node_material.clone()));
     }
     for entity in selection_removed.read() {
         commands
             .entity(entity)
-            .insert(MeshMaterial3d(assets.stitch_material.clone()));
+            .insert(MeshMaterial3d(assets.node_material.clone()));
     }
 }

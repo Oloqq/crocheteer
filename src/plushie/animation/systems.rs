@@ -17,7 +17,8 @@ pub fn update_connections_visually(
 ) {
     for (connection, mut line_transform) in connections.iter_mut() {
         // get_many returns Err if any entity is missing (e.g. a ball was despawned)
-        let Ok([transform_a, transform_b]) = node_transforms.get_many([connection.a, connection.b])
+        let Ok([transform_a, transform_b]) =
+            node_transforms.get_many([connection.node_a, connection.node_b])
         else {
             continue;
         };

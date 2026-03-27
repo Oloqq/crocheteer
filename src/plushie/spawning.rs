@@ -6,13 +6,13 @@ use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
 use crate::plushie::{
-    data::{AddNode, GraphNode, PlushieAssets},
+    data::{AddGraphNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
 };
 use crate::ui::{ConsoleMessage, ConsolePipe};
 
 fn add_graph_node(
-    msg: &AddNode,
+    msg: &AddGraphNode,
     commands: &mut Commands,
     assets: &PlushieAssets,
     presets: &DisplayPresets,
@@ -21,10 +21,10 @@ fn add_graph_node(
         .spawn((
             GraphNode {},
             Name::new("GraphNode"),
-            Mesh3d(assets.stitch_mesh.clone()),
-            MeshMaterial3d(assets.stitch_material.clone()),
+            Mesh3d(assets.node_mesh.clone()),
+            MeshMaterial3d(assets.node_material.clone()),
             Transform::from_translation(msg.position)
-                .with_scale(Vec3::splat(presets.current().stitch_radius)),
+                .with_scale(Vec3::splat(presets.current().node_radius)),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),
@@ -34,8 +34,8 @@ fn add_graph_node(
 }
 
 fn add_link_between(
-    a: Entity,
-    b: Entity,
+    node_a: Entity,
+    node_b: Entity,
     commands: &mut Commands,
     assets: &PlushieAssets,
     presets: &DisplayPresets,
@@ -64,8 +64,8 @@ fn add_link_between(
     commands
         .spawn((
             Link {
-                a,
-                b,
+                node_a,
+                node_b,
                 tension: 0.0,
                 child_per_display_mode,
             },
@@ -101,7 +101,7 @@ pub fn build_plushie_from_pattern(
         .into_iter()
         .map(|node| {
             add_graph_node(
-                &AddNode { position: node },
+                &AddGraphNode { position: node },
                 &mut commands,
                 &assets,
                 &display_presets,
@@ -109,6 +109,8 @@ pub fn build_plushie_from_pattern(
         })
         .collect();
 
+    // assumption: first is the virtual node of magic ring
+    // TODO differentiate virtual node in display
     if let Some(first) = node_entities.first() {
         commands.entity(*first).insert(Rooted);
     }
@@ -125,16 +127,16 @@ pub fn build_plushie_from_pattern(
     commands.spawn((
         Centroid,
         NewPosition::default(),
-        Mesh3d(assets.stitch_mesh.clone()),
-        MeshMaterial3d(assets.selected_material.clone()),
+        Mesh3d(assets.node_mesh.clone()),
+        MeshMaterial3d(assets.selected_node_material.clone()),
         Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
         Pickable::default(),
     ));
     commands.spawn((
         Centroid,
         NewPosition::default(),
-        Mesh3d(assets.stitch_mesh.clone()),
-        MeshMaterial3d(assets.selected_material.clone()),
+        Mesh3d(assets.node_mesh.clone()),
+        MeshMaterial3d(assets.selected_node_material.clone()),
         Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
         Pickable::default(),
     ));

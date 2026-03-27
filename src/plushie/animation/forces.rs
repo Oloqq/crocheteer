@@ -43,10 +43,10 @@ pub fn compute_link_forces(
 ) {
     let desired_stitch_distance = 5e-4;
     for mut link in links {
-        let Ok(src_transform) = transforms.get(link.a) else {
+        let Ok(src_transform) = transforms.get(link.node_a) else {
             continue;
         };
-        let Ok(tgt_transform) = transforms.get(link.b) else {
+        let Ok(tgt_transform) = transforms.get(link.node_b) else {
             continue;
         };
 
@@ -55,10 +55,10 @@ pub fn compute_link_forces(
         link.tension = magnitude;
         let force: Vec3 = -diff.normalize() * magnitude;
 
-        if let Ok(mut acc) = accelerations.get_mut(link.a) {
+        if let Ok(mut acc) = accelerations.get_mut(link.node_a) {
             acc.0 += force;
         }
-        if let Ok(mut acc) = accelerations.get_mut(link.b) {
+        if let Ok(mut acc) = accelerations.get_mut(link.node_b) {
             acc.0 -= force;
         }
     }

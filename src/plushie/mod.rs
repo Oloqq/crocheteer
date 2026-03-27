@@ -28,7 +28,7 @@ pub struct PlushiePlugin;
 impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlushieAnimationPlugin);
-        app.add_message::<AddNode>();
+        app.add_message::<AddGraphNode>();
         app.add_message::<BuildPlushieFromPattern>();
         app.add_message::<SetDisplayMode>();
         app.init_resource::<PressHandled>();

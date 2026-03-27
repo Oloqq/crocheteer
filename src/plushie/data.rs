@@ -2,15 +2,20 @@ use bevy::prelude::*;
 
 use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
-/// Represents a Pull-Through, or "the little V"
+/// Represents a node of the graph affected by the forces acting on the weaved yarn.
+/// Commonly, this represents the "V" created after completing a single crochet and similar stitches.
+/// Virtual nodes are also GraphNodes, e.g. the node representing the start of a Magic Ring.
+/// Note: Centroids are not GraphNodes, they are just a tool for inflating the graph.
 #[derive(Component)]
 pub struct GraphNode {}
 
+/// Link between two GraphNodes, where the yarn exerts LinkForce
 #[derive(Component)]
 pub struct Link {
-    pub a: Entity,
-    pub b: Entity,
+    pub node_a: Entity,
+    pub node_b: Entity,
     pub tension: f32,
+    // TODO desired length multiplier for virtual nodes at magic ring
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
 }
 
@@ -29,16 +34,16 @@ pub struct PressHandled(pub bool);
 
 #[derive(Resource)]
 pub struct PlushieAssets {
-    pub stitch_mesh: Handle<Mesh>,
-    pub stitch_material: Handle<StandardMaterial>,
-    pub selected_material: Handle<StandardMaterial>,
+    pub node_mesh: Handle<Mesh>,
+    pub node_material: Handle<StandardMaterial>,
+    pub selected_node_material: Handle<StandardMaterial>,
     pub link_mesh: Handle<Mesh>,
     pub link_material: Handle<StandardMaterial>,
     pub force_responding_material: Handle<LinkMaterial>,
 }
 
 #[derive(Message)]
-pub struct AddNode {
+pub struct AddGraphNode {
     pub position: Vec3,
 }
 
