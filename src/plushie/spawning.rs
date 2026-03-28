@@ -57,7 +57,6 @@ fn add_graph_node(
             Name::new("GraphNode"),
             Transform::from_translation(msg.position)
                 .with_scale(Vec3::splat(presets.current().node_radius)),
-            Mesh3d(assets.node_mesh.clone()),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),

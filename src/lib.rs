@@ -17,7 +17,7 @@ use bevy::{
 };
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
 
-use crate::{cursor_ray::CursorRayPlugin, project::Project, ui::world_input};
+use crate::{cursor_ray::CursorRayPlugin, project::Project};
 
 pub fn app(project: Project) -> App {
     let mut app = App::new();
@@ -30,14 +30,7 @@ pub fn app(project: Project) -> App {
     app.add_plugins(plushie::PlushiePlugin {
         initial_display_mode: project.display_mode,
     });
-    app.add_systems(Update, say_click.run_if(world_input));
     app
-}
-
-fn say_click(mouse: Res<ButtonInput<MouseButton>>) {
-    if mouse.just_pressed(MouseButton::Left) {
-        info!("click");
-    }
 }
 
 fn unambiguous_schedules(app: &mut App) {
