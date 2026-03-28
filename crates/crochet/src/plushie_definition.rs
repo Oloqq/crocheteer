@@ -1,0 +1,13 @@
+pub type Color = (u8, u8, u8);
+pub type Edges = Vec<Vec<usize>>;
+
+pub struct Node {
+    pub color: Color,
+}
+
+pub struct PlushieDef {
+    /// Edges of the graph
+    /// For every edges[i], each element of edges[i] is smaller than i. This is important to easily manage partially built plushies.
+    pub edges: Edges,
+    pub nodes: Vec<Node>,
+}

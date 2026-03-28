@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crochet::Initializer;
 use enum_map::enum_map;
 
 use crate::plushie::animation::{Centroid, LinkForce, NewPosition, OriginNode, StuffingForce};
@@ -97,8 +98,10 @@ pub fn build_plushie_from_pattern(
         commands.entity(entity).despawn();
     }
 
-    let node_entities: Vec<Entity> = plushie_def
-        .nodes
+    let hook_size = 5e-4;
+    let node_positions =
+        Initializer::RegularCylinder(12).apply(plushie_def.nodes.len() as u32, hook_size);
+    let node_entities: Vec<Entity> = node_positions
         .into_iter()
         .map(|node| {
             add_graph_node(
