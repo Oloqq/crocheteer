@@ -10,7 +10,7 @@ use crate::{
         },
         data::{Dragging, GraphNode, Link},
     },
-    ui::UiState,
+    ui::SimulationState,
 };
 
 pub fn compute_stuffing_force(
@@ -73,7 +73,7 @@ pub fn apply_forces(
         (&mut Transform, &LinkForce, &StuffingForce),
         (With<GraphNode>, Without<Dragging>, Without<Rooted>), // maybe the dragging system should be inserting the Rooted component instead of double Without?
     >,
-    params: Res<UiState>,
+    params: Res<SimulationState>,
     origin_node: Option<Single<Entity, With<OriginNode>>>, // single can't work with multipart
 ) {
     let force_multiplier = 0.0003 * params.force_multiplier;

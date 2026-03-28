@@ -2,32 +2,6 @@ use bevy::prelude::*;
 use egui_code_editor::{ColorTheme, Syntax};
 use egui_console::{ConsoleBuilder, ConsoleWindow};
 
-use crate::plushie::DisplayMode;
-
-#[derive(Resource)]
-// TODO rename to SimulationState, move to a separate file
-pub struct UiState {
-    pub paused: bool,
-    pub sim_speed: f64,
-    pub force_multiplier: f32,
-    pub display_mode: DisplayMode,
-}
-
-impl Default for UiState {
-    fn default() -> Self {
-        Self {
-            paused: false,
-            sim_speed: 1.0,
-            force_multiplier: 1.0,
-            display_mode: default(),
-        }
-    }
-}
-
-pub fn simulation_is_running(ui_state: Res<UiState>) -> bool {
-    !ui_state.paused
-}
-
 #[derive(Resource)]
 pub struct CodeEditorState {
     pub code: String,

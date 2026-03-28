@@ -1,7 +1,8 @@
 use crate::plushie::{DisplayMode, SetDisplayMode};
+use crate::ui::SimulationState;
 use crate::ui::ui_used_input::UiUsedInput;
+use crate::ui::utils::full_height_button;
 use crate::ui::utils::{CanGoOffscreen, require_width_for_slider, using_resizer};
-use crate::ui::{data::*, utils::full_height_button};
 use bevy::prelude::*;
 use bevy_egui::egui::panel::Side;
 use bevy_egui::egui::{Context, Ui};
@@ -11,7 +12,7 @@ use bevy_egui::{
 };
 
 pub fn control_panel(
-    mut state: ResMut<UiState>,
+    mut state: ResMut<SimulationState>,
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>, // atomically mutable
     mut display_mode_msg: MessageWriter<SetDisplayMode>,

@@ -3,13 +3,14 @@ mod console;
 mod control_panel;
 mod data;
 mod menu_bar;
+mod simulation_state;
 mod ui_used_input;
 mod utils;
 
 use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 pub use console::{ConsoleMessage, ConsolePipe};
-pub use data::*;
+pub use simulation_state::{SimulationState, simulation_is_running};
 pub use ui_used_input::UiUsedInput;
 
 use crate::{
@@ -32,7 +33,7 @@ pub struct UiPlugin {
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
-        app.init_resource::<UiState>();
+        app.init_resource::<SimulationState>();
         app.insert_resource(CodeEditorState {
             code: self.initial_pattern.clone(),
             ..default()
