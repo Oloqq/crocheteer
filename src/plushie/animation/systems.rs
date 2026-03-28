@@ -1,14 +1,11 @@
 use bevy::prelude::*;
 
-use crate::{
-    plushie::{
-        animation::{
-            Centroid, Rooted, StuffingForce,
-            data::{LinkForce, NewPosition},
-        },
-        data::{Dragging, GraphNode, Link},
+use crate::plushie::{
+    animation::{
+        Centroid, Rooted, StuffingForce,
+        data::{LinkForce, NewPosition},
     },
-    ui::UiState,
+    data::{Dragging, GraphNode, Link},
 };
 
 pub fn update_connections_visually(
@@ -52,19 +49,6 @@ pub fn reset_acceleration(
     }
     for mut acc in &mut displacement {
         acc.0 = Vec3::ZERO;
-    }
-}
-
-pub fn apply_forces(
-    mut query: Query<
-        (&mut Transform, &LinkForce, &StuffingForce),
-        (With<GraphNode>, Without<Dragging>, Without<Rooted>),
-    >,
-    params: Res<UiState>,
-) {
-    let force_multiplier = 0.0003 * params.force_multiplier;
-    for (mut transform, link_force, stuffing_force) in &mut query {
-        transform.translation += (link_force.0 + stuffing_force.0) * force_multiplier;
     }
 }
 

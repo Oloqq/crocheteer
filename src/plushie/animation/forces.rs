@@ -1,12 +1,15 @@
 use bevy::prelude::*;
 use crochet::{centroid_stuffing, link_force_magnitude};
 
-use crate::plushie::{
-    animation::{
-        LinkForce, StuffingForce,
-        data::{Centroid, NewPosition},
+use crate::{
+    plushie::{
+        animation::{
+            LinkForce, Rooted, StuffingForce,
+            data::{Centroid, NewPosition, OriginNode},
+        },
+        data::{Dragging, GraphNode, Link},
     },
-    data::{GraphNode, Link},
+    ui::UiState,
 };
 
 pub fn compute_stuffing_force(
@@ -62,4 +65,30 @@ pub fn compute_link_forces(
             acc.0 -= force;
         }
     }
+}
+
+pub fn apply_forces(
+    mut query: Query<
+        (&mut Transform, &LinkForce, &StuffingForce),
+        (With<GraphNode>, Without<Dragging>, Without<Rooted>), // maybe the dragging system should be inserting the Rooted component instead of double Without?
+    >,
+    params: Res<UiState>,
+    origin_node: Option<Single<Entity, With<OriginNode>>>, // single can't work with multipart
+) {
+    let force_multiplier = 0.0003 * params.force_multiplier;
+    let origin_node_displacement = origin_node
+        .and_then(|origin_entity| query.get(*origin_entity).ok())
+        .map(|(_, link_force, stuffing_force)| {
+            displacement(link_force.0, stuffing_force.0, force_multiplier)
+        })
+        .unwrap_or(Vec3::ZERO);
+
+    for (mut transform, link_force, stuffing_force) in &mut query {
+        transform.translation += displacement(link_force.0, stuffing_force.0, force_multiplier)
+            - origin_node_displacement;
+    }
+}
+
+fn displacement(link_force: Vec3, stuffing_force: Vec3, force_multiplier: f32) -> Vec3 {
+    (link_force + stuffing_force) * force_multiplier
 }

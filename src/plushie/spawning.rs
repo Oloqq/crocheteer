@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use enum_map::enum_map;
 
-use crate::plushie::animation::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
+use crate::plushie::animation::{Centroid, LinkForce, NewPosition, OriginNode, StuffingForce};
 use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
@@ -112,8 +112,9 @@ pub fn build_plushie_from_pattern(
 
     // assumption: first is the virtual node of magic ring
     // TODO differentiate virtual node in display
+    // this is required because centroids cause creations to drift away is there isn't any anchor point
     if let Some(first) = node_entities.first() {
-        commands.entity(*first).insert(Rooted);
+        commands.entity(*first).insert(OriginNode);
     }
 
     for (source, targets) in plushie_def.edges.iter().enumerate() {

@@ -4,13 +4,13 @@ mod data;
 mod forces;
 mod systems;
 
-pub use data::{Centroid, LinkForce, NewPosition, Rooted, StuffingForce};
+pub use data::{Centroid, LinkForce, NewPosition, OriginNode, Rooted, StuffingForce};
 
-use systems::{apply_forces, reset_acceleration, update_connections_visually};
+use systems::{reset_acceleration, update_connections_visually};
 
 use crate::{
     plushie::animation::{
-        forces::{compute_link_forces, compute_stuffing_force},
+        forces::{apply_forces, compute_link_forces, compute_stuffing_force},
         systems::move_centroids,
     },
     ui::simulation_is_running,
