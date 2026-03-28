@@ -1,7 +1,8 @@
 use bevy::prelude::*;
-use crochet::Initializer;
+use crochet::{Initializer, PlushieDef};
 use enum_map::enum_map;
 
+use crate::HOOK_SIZE;
 use crate::plushie::animation::{Centroid, LinkForce, NewPosition, OriginNode, StuffingForce};
 use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
@@ -55,8 +56,7 @@ fn add_graph_node(
                 child_selection_indicator,
             },
             Name::new("GraphNode"),
-            Transform::from_translation(msg.position)
-                .with_scale(Vec3::splat(presets.current().node_radius)),
+            Transform::from_translation(msg.position).with_scale(Vec3::splat(HOOK_SIZE)),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),
@@ -119,20 +119,25 @@ pub fn build_plushie_from_pattern(
         return Ok(());
     };
 
-    let Some(plushie_def) = crochet::parse(&msg.pattern) else {
-        let _ = pipe.sender.send(ConsoleMessage {
-            text: "Error in the pattern".into(),
-        });
-        return Ok(());
+    let plushie_def: PlushieDef = match crochet::parse(&msg.pattern) {
+        Some(p) => p,
+        None => {
+            let _ = pipe.sender.send(ConsoleMessage {
+                text: "Error in the pattern".into(),
+            });
+            return Ok(());
+        }
     };
 
     for entity in existing_plushie_entities {
         commands.entity(entity).despawn();
     }
 
-    let hook_size = 5e-4;
     let node_positions =
-        Initializer::RegularCylinder(12).apply(plushie_def.nodes.len() as u32, hook_size);
+        Initializer::RegularCylinder(12).apply(plushie_def.nodes.len() as u32, HOOK_SIZE);
+    assert!(plushie_def.nodes.len() == node_positions.len());
+    assert!(plushie_def.nodes.len() == plushie_def.edges.len());
+
     let node_entities: Vec<Entity> = node_positions
         .into_iter()
         .map(|node| {

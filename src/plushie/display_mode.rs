@@ -21,39 +21,14 @@ impl Default for DisplayMode {
     }
 }
 
-#[derive(Clone)]
-pub struct PresetValues {
-    pub node_radius: f32,
-}
-
 #[derive(Resource)]
 pub struct DisplayPresets {
     pub current_mode: DisplayMode,
-    pattern: PresetValues,
-    force: PresetValues,
-}
-
-impl DisplayPresets {
-    pub fn current(&self) -> &PresetValues {
-        match self.current_mode {
-            DisplayMode::Pattern => &self.pattern,
-            DisplayMode::Forces => &self.force,
-        }
-    }
 }
 
 pub fn setup_display_modes(mut commands: Commands) {
-    // a yarn I work with 5mm hook yields 5mm big stitches
-    // the node radius is smaller so connections of the graph are visible
-    // TODO set based on the pattern, also adjust radius of links' cylinder
-    let pattern = PresetValues { node_radius: 5e-4 };
-
-    let force = PresetValues { node_radius: 1e-4 };
-
     commands.insert_resource(DisplayPresets {
         current_mode: DisplayMode::Pattern,
-        pattern,
-        force,
     });
 }
 

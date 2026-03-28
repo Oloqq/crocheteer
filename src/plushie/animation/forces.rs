@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use crochet::{centroid_stuffing, link_force_magnitude};
 
 use crate::{
+    HOOK_SIZE,
     plushie::{
         animation::{
             LinkForce, Rooted, StuffingForce,
@@ -44,7 +45,7 @@ pub fn compute_link_forces(
     links: Query<&mut Link>,
     transforms: Query<&Transform, With<GraphNode>>,
 ) {
-    let desired_stitch_distance = 5e-4;
+    let desired_stitch_distance = HOOK_SIZE;
     for mut link in links {
         let Ok(src_transform) = transforms.get(link.node_a) else {
             continue;

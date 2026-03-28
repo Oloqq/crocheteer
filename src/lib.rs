@@ -19,6 +19,10 @@ use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSet
 
 use crate::{cursor_ray::CursorRayPlugin, project::Project};
 
+// a yarn I work with 5mm hook generally yields 5mm big stitches
+// TODO define in pattern? define in project settings? do we support variable hook size? if we support, is it variable per part or can it change in arbitrary positions?
+const HOOK_SIZE: f32 = 5e-4;
+
 pub fn app(project: Project) -> App {
     let mut app = App::new();
     unambiguous_schedules(&mut app);
