@@ -28,17 +28,23 @@ pub fn setup_assets(
 pub fn sync_visuals_for_selection(
     mut commands: Commands,
     mut selection_removed: RemovedComponents<Selected>,
-    assets: Res<PlushieAssets>,
+    graph_nodes: Query<&GraphNode>,
     selection_added: Query<Entity, (With<GraphNode>, With<Selected>, Added<Selected>)>,
 ) {
     for entity in &selection_added {
+        let graph_node = graph_nodes
+            .get(entity)
+            .expect("selection should be applied to just GraphNodes");
         commands
-            .entity(entity)
-            .insert(MeshMaterial3d(assets.selected_node_material.clone()));
+            .entity(graph_node.child_selection_indicator)
+            .insert(Visibility::Visible);
     }
     for entity in selection_removed.read() {
+        let graph_node = graph_nodes
+            .get(entity)
+            .expect("selection should be applied to just GraphNodes");
         commands
-            .entity(entity)
-            .insert(MeshMaterial3d(assets.node_material.clone()));
+            .entity(graph_node.child_selection_indicator)
+            .insert(Visibility::Hidden);
     }
 }

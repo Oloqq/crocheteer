@@ -18,18 +18,51 @@ fn add_graph_node(
     assets: &PlushieAssets,
     presets: &DisplayPresets,
 ) -> Entity {
-    commands
+    let pattern_child: Entity = commands
         .spawn((
-            GraphNode {},
-            Name::new("GraphNode"),
+            Visibility::Hidden,
             Mesh3d(assets.node_mesh.clone()),
             MeshMaterial3d(assets.node_material.clone()),
+        ))
+        .id();
+    let force_child: Entity = commands
+        .spawn((
+            Visibility::Hidden,
+            Mesh3d(assets.node_mesh.clone()),
+            MeshMaterial3d(assets.node_material.clone()),
+            Transform::default().with_scale(Vec3::splat(0.5)),
+        ))
+        .id();
+    let child_selection_indicator: Entity = commands
+        .spawn((
+            Visibility::Hidden,
+            Mesh3d(assets.node_mesh.clone()),
+            MeshMaterial3d(assets.selected_node_material.clone()),
+            Transform::default().with_scale(Vec3::splat(1.1)),
+        ))
+        .id();
+
+    let child_per_display_mode = enum_map! {
+        DisplayMode::Pattern => pattern_child,
+        DisplayMode::Forces => force_child
+    };
+    select_displayed_child(commands, &child_per_display_mode, presets.current_mode);
+
+    commands
+        .spawn((
+            GraphNode {
+                child_per_display_mode,
+                child_selection_indicator,
+            },
+            Name::new("GraphNode"),
             Transform::from_translation(msg.position)
                 .with_scale(Vec3::splat(presets.current().node_radius)),
+            Mesh3d(assets.node_mesh.clone()),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),
         ))
+        .add_children(&[child_selection_indicator, pattern_child, force_child])
         .observe(on_click)
         .id()
 }

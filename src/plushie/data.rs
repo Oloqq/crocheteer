@@ -7,7 +7,10 @@ use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 /// Virtual nodes are also GraphNodes, e.g. the node representing the start of a Magic Ring.
 /// Note: Centroids are not GraphNodes, they are just a tool for inflating the graph.
 #[derive(Component)]
-pub struct GraphNode {}
+pub struct GraphNode {
+    pub child_selection_indicator: Entity,
+    pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
+}
 
 /// Link between two GraphNodes, where the yarn exerts LinkForce
 #[derive(Component)]

@@ -61,7 +61,7 @@ pub fn set_display_mode(
     mut msgr: MessageReader<SetDisplayMode>,
     mut commands: Commands,
     mut presets: ResMut<DisplayPresets>,
-    nodes: Query<Entity, With<GraphNode>>,
+    nodes: Query<&GraphNode>,
     links: Query<&Link>,
 ) {
     let Some(message) = msgr.read().into_iter().last() else {
@@ -70,16 +70,14 @@ pub fn set_display_mode(
     if presets.current_mode == message.mode {
         return;
     }
-
     presets.current_mode = message.mode;
-    let preset = presets.current();
-    let radius = preset.node_radius;
 
-    for entity in nodes {
-        let mut entity_commands = commands.entity(entity);
-        entity_commands
-            .entry::<Transform>()
-            .and_modify(move |mut t| t.scale = Vec3::splat(radius));
+    for node in nodes {
+        select_displayed_child(
+            &mut commands,
+            &node.child_per_display_mode,
+            presets.current_mode,
+        );
     }
 
     for link in links {
