@@ -60,6 +60,13 @@ pub fn control_panel(
                 });
             }
         });
+
+        CanGoOffscreen::new().show(ui, |ui| {
+            ui.add(egui::Slider::new(&mut state.centroids, 0..=20).text("Centroids"))
+                .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids. Acts as maximum when using \"Nodes per centroid\" setting");
+            // ui.add(egui::Slider::new(&mut state.nodes_per_centroid, 0..=100).text("Nodes per centroid"))
+            //     .on_hover_text("");
+        });
     });
 
     // prevent world events on resizing

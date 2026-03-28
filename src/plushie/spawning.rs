@@ -11,7 +11,7 @@ use crate::plushie::{
     data::{AddGraphNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
 };
-use crate::ui::{ConsoleMessage, ConsolePipe};
+use crate::ui::{ConsoleMessage, ConsolePipe, SimulationState};
 
 fn add_graph_node(
     msg: &AddGraphNode,
@@ -110,11 +110,43 @@ fn add_link_between(
         .add_children(&[standard_material_child, shader_material_child]);
 }
 
+fn add_centroid(commands: &mut Commands, assets: &PlushieAssets) {
+    commands.spawn((
+        Centroid,
+        Name::new("Centroid"),
+        NewPosition::default(),
+        Mesh3d(assets.node_mesh.clone()),
+        MeshMaterial3d(assets.centroid_material.clone()),
+        Transform::from_scale(Vec3::splat(HOOK_SIZE)), // does not necessarily have to be equal to hook size
+        Pickable::default(),
+    ));
+}
+
+pub fn adjust_centroid_number(
+    mut commands: Commands,
+    state: Res<SimulationState>,
+    existing_centroids: Query<Entity, With<Centroid>>,
+    assets: Res<PlushieAssets>,
+) {
+    let new_count = state.centroids as usize;
+    let existing = existing_centroids.iter().len();
+    if new_count > existing {
+        for _ in 0..(new_count - existing) {
+            add_centroid(&mut commands, &assets);
+        }
+    } else {
+        for entity in existing_centroids.iter().skip(new_count) {
+            commands.entity(entity).despawn();
+        }
+    }
+}
+
 pub fn build_plushie_from_pattern(
     mut msgr: MessageReader<BuildPlushieFromPattern>,
     mut commands: Commands,
     mut assets: ResMut<PlushieAssets>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    state: Res<SimulationState>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
@@ -183,23 +215,9 @@ pub fn build_plushie_from_pattern(
         }
     }
 
-    let radius = HOOK_SIZE; // only visual, centroid can be displayed however
-    commands.spawn((
-        Centroid,
-        NewPosition::default(),
-        Mesh3d(assets.node_mesh.clone()),
-        MeshMaterial3d(assets.centroid_material.clone()),
-        Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
-        Pickable::default(),
-    ));
-    commands.spawn((
-        Centroid,
-        NewPosition::default(),
-        Mesh3d(assets.node_mesh.clone()),
-        MeshMaterial3d(assets.centroid_material.clone()),
-        Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
-        Pickable::default(),
-    ));
+    for _ in 0..state.centroids {
+        add_centroid(&mut commands, &assets);
+    }
 
     let _ = pipe.sender.send(ConsoleMessage {
         text: "Built a plushie".into(),

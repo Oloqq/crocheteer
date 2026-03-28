@@ -12,7 +12,7 @@ use crate::{
         display_mode::{set_display_mode, setup_display_modes},
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
-        spawning::build_plushie_from_pattern,
+        spawning::{adjust_centroid_number, build_plushie_from_pattern},
         systems::{setup_assets, sync_visuals_for_selection},
     },
     ui::{simulation_is_running, world_input},
@@ -43,7 +43,10 @@ impl Plugin for PlushiePlugin {
                 stop_dragging,
             ),
         );
-        app.add_systems(Update, build_plushie_from_pattern);
+        app.add_systems(
+            Update,
+            (build_plushie_from_pattern, adjust_centroid_number).chain(),
+        );
         app.add_systems(
             PostUpdate,
             (
