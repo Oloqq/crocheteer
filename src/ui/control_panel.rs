@@ -24,8 +24,7 @@ pub fn control_panel(
     let mut panel = RightPanel::new();
     panel.show_with_default_collapsed(ctx, &mut collapsed, |ui| {
         ui.checkbox(&mut state.paused, "Paused");
-        CanGoOffscreen::new().show(ui, |ui| {
-            if ui
+        if ui
                 .add(
                     egui::Slider::new(&mut state.sim_speed, 1.0..=32.0)
                         .logarithmic(true)
@@ -41,7 +40,6 @@ pub fn control_panel(
                 egui::Slider::new(&mut state.force_multiplier, 0.1..=2.0).text("Force multiplier"),
             )
             .on_hover_text("Multiplies all forces applied. High values can cause glitches.");
-        });
 
         ui.collapsing("Display mode", |ui| {
             let previous_mode = state.display_mode;
@@ -61,12 +59,11 @@ pub fn control_panel(
             }
         });
 
-        CanGoOffscreen::new().show(ui, |ui| {
-            ui.add(egui::Slider::new(&mut state.centroids, 0..=20).text("Centroids"))
+        ui.separator();
+        ui.add(egui::Slider::new(&mut state.centroids, 0..=20).text("Centroids"))
                 .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids. Acts as maximum when using \"Nodes per centroid\" setting");
             // ui.add(egui::Slider::new(&mut state.nodes_per_centroid, 0..=100).text("Nodes per centroid"))
             //     .on_hover_text("");
-        });
     });
 
     // prevent world events on resizing
@@ -123,7 +120,9 @@ impl RightPanel {
                             let available_width = ui.available_width() - scroll_width;
                             ui.set_max_width(available_width); // prevent infinite panel growth when scrollbar appears and disappears
                             require_width_for_slider(ui); // make sure the sliding part of the slider is on screen with CanGoOffscreen
-                            add_contents(ui);
+                            CanGoOffscreen::new().show(ui, |ui| {
+                                add_contents(ui);
+                            });
                         });
                 }
             },
