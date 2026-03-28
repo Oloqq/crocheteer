@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::plushie::shaders::LinkMaterial;
 
 use super::data::GraphNode;
@@ -12,15 +14,24 @@ pub fn setup_assets(
     mut link_shader_materials: ResMut<Assets<LinkMaterial>>,
     mut buffers: ResMut<Assets<ShaderStorageBuffer>>,
 ) {
+    // TODO https://github.com/komadori/bevy_mod_outline
+    let mut selected_node_material = StandardMaterial::from_color(Color::srgb(1.0, 1.0, 1.0));
+    selected_node_material.metallic = 0.7;
+
+    let mut centroid_material = StandardMaterial::from_color(Color::srgb(1.0, 1.0, 1.0));
+    centroid_material.attenuation_color = Color::linear_rgb(1.0, 0.0, 0.0);
+    centroid_material.thickness = 1.0;
+    centroid_material.diffuse_transmission = 0.5;
+
     let assets = PlushieAssets {
         node_mesh: meshes.add(Sphere::new(1.0)),
-        node_material: materials.add(Color::srgb(1.0, 0.4, 0.4)),
-        selected_node_material: materials.add(Color::srgb(1.0, 1.0, 1.0)), // TODO https://github.com/komadori/bevy_mod_outline
         link_mesh: meshes.add(Cylinder::new(1.0, 1.0)),
-        link_material: materials.add(Color::srgb(0.2, 0.4, 0.2)),
+        colored_materials: HashMap::new(),
+        selected_node_material: materials.add(selected_node_material),
         force_responding_material: link_shader_materials.add(LinkMaterial {
             instances: buffers.add(ShaderStorageBuffer::default()),
         }),
+        centroid_material: materials.add(centroid_material),
     };
     commands.insert_resource(assets);
 }

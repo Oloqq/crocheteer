@@ -1,4 +1,7 @@
+use std::collections::HashMap;
+
 use bevy::prelude::*;
+use crochet::ColorRgb;
 
 use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
@@ -38,16 +41,40 @@ pub struct PressHandled(pub bool);
 #[derive(Resource)]
 pub struct PlushieAssets {
     pub node_mesh: Handle<Mesh>,
-    pub node_material: Handle<StandardMaterial>,
-    pub selected_node_material: Handle<StandardMaterial>,
     pub link_mesh: Handle<Mesh>,
-    pub link_material: Handle<StandardMaterial>,
+    pub colored_materials: HashMap<ColorRgb, Handle<StandardMaterial>>,
+    pub selected_node_material: Handle<StandardMaterial>,
     pub force_responding_material: Handle<LinkMaterial>,
+    pub centroid_material: Handle<StandardMaterial>,
+}
+
+impl PlushieAssets {
+    pub fn get_or_create_fabric_material(
+        &mut self,
+        color: ColorRgb,
+        materials: &mut Assets<StandardMaterial>,
+    ) -> Handle<StandardMaterial> {
+        if self.colored_materials.contains_key(&color) {
+            self.colored_materials[&color].clone()
+        } else {
+            let float_color = [
+                color[0] as f32 / 255.0,
+                color[1] as f32 / 255.0,
+                color[2] as f32 / 255.0,
+            ];
+            let mut material = StandardMaterial::from_color(Color::srgb_from_array(float_color));
+            material.perceptual_roughness = 0.7;
+            let handle = materials.add(material);
+            self.colored_materials.insert(color, handle.clone());
+            handle
+        }
+    }
 }
 
 #[derive(Message)]
 pub struct AddGraphNode {
     pub position: Vec3,
+    pub color: ColorRgb,
 }
 
 #[derive(Message)]

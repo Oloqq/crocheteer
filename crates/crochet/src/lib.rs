@@ -2,7 +2,6 @@ pub use crate::hook::hook_result::InitialGraph;
 use crate::{
     acl::pest_parser::Pattern,
     hook::{Hook, HookParams},
-    plushie_definition::Node,
 };
 
 #[allow(unused)] // TODO
@@ -17,7 +16,7 @@ mod plushie_definition;
 pub use force_graph::{
     centroid_stuffing, initializers::Initializer, link_force_magnitude, link_forces,
 };
-pub use plushie_definition::PlushieDef;
+pub use plushie_definition::*;
 
 pub fn parse(acl_source: &str) -> Option<PlushieDef> {
     let Ok(syntax_result) = Pattern::parse(acl_source) else {
@@ -35,7 +34,7 @@ pub fn parse(acl_source: &str) -> Option<PlushieDef> {
             .colors
             .iter()
             .map(|c| Node {
-                color: (c.0 as u8, c.1 as u8, c.2 as u8),
+                color: [c.0 as u8, c.1 as u8, c.2 as u8],
             })
             .collect(),
     })

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crochet::{Initializer, PlushieDef};
+use crochet::{ColorRgb, Initializer, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
@@ -16,21 +16,22 @@ use crate::ui::{ConsoleMessage, ConsolePipe};
 fn add_graph_node(
     msg: &AddGraphNode,
     commands: &mut Commands,
-    assets: &PlushieAssets,
+    assets: &mut PlushieAssets,
+    materials: &mut Assets<StandardMaterial>,
     presets: &DisplayPresets,
 ) -> Entity {
     let pattern_child: Entity = commands
         .spawn((
             Visibility::Hidden,
             Mesh3d(assets.node_mesh.clone()),
-            MeshMaterial3d(assets.node_material.clone()),
+            MeshMaterial3d(assets.get_or_create_fabric_material(msg.color, materials)),
         ))
         .id();
     let force_child: Entity = commands
         .spawn((
             Visibility::Hidden,
             Mesh3d(assets.node_mesh.clone()),
-            MeshMaterial3d(assets.node_material.clone()),
+            MeshMaterial3d(assets.get_or_create_fabric_material(msg.color, materials)),
             Transform::default().with_scale(Vec3::splat(0.5)),
         ))
         .id();
@@ -70,14 +71,16 @@ fn add_link_between(
     node_a: Entity,
     node_b: Entity,
     commands: &mut Commands,
-    assets: &PlushieAssets,
+    assets: &mut PlushieAssets,
+    materials: &mut Assets<StandardMaterial>,
+    color: ColorRgb,
     presets: &DisplayPresets,
 ) {
     let standard_material_child: Entity = commands
         .spawn((
             Visibility::Hidden,
             Mesh3d(assets.link_mesh.clone()),
-            MeshMaterial3d(assets.link_material.clone()),
+            MeshMaterial3d(assets.get_or_create_fabric_material(color, materials)),
         ))
         .id();
     let shader_material_child: Entity = commands
@@ -110,7 +113,8 @@ fn add_link_between(
 pub fn build_plushie_from_pattern(
     mut msgr: MessageReader<BuildPlushieFromPattern>,
     mut commands: Commands,
-    assets: Res<PlushieAssets>,
+    mut assets: ResMut<PlushieAssets>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
@@ -138,13 +142,19 @@ pub fn build_plushie_from_pattern(
     assert!(plushie_def.nodes.len() == node_positions.len());
     assert!(plushie_def.nodes.len() == plushie_def.edges.len());
 
-    let node_entities: Vec<Entity> = node_positions
-        .into_iter()
-        .map(|node| {
+    let node_entities: Vec<Entity> = plushie_def
+        .nodes
+        .iter()
+        .zip(node_positions)
+        .map(|(node, position)| {
             add_graph_node(
-                &AddGraphNode { position: node },
+                &AddGraphNode {
+                    position: position.clone(),
+                    color: node.color,
+                },
                 &mut commands,
-                &assets,
+                &mut assets,
+                &mut materials,
                 &display_presets,
             )
         })
@@ -161,16 +171,24 @@ pub fn build_plushie_from_pattern(
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
-            add_link_between(a, b, &mut commands, &assets, &display_presets);
+            add_link_between(
+                a,
+                b,
+                &mut commands,
+                &mut assets,
+                &mut materials,
+                plushie_def.nodes[source].color,
+                &display_presets,
+            );
         }
     }
 
-    let radius = 0.001;
+    let radius = HOOK_SIZE; // only visual, centroid can be displayed however
     commands.spawn((
         Centroid,
         NewPosition::default(),
         Mesh3d(assets.node_mesh.clone()),
-        MeshMaterial3d(assets.selected_node_material.clone()),
+        MeshMaterial3d(assets.centroid_material.clone()),
         Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
         Pickable::default(),
     ));
@@ -178,7 +196,7 @@ pub fn build_plushie_from_pattern(
         Centroid,
         NewPosition::default(),
         Mesh3d(assets.node_mesh.clone()),
-        MeshMaterial3d(assets.selected_node_material.clone()),
+        MeshMaterial3d(assets.centroid_material.clone()),
         Transform::from_translation(Vec3::new(0.0, 4e-3, 0.0)).with_scale(Vec3::splat(radius)),
         Pickable::default(),
     ));

@@ -1,8 +1,8 @@
-pub type Color = (u8, u8, u8);
+pub type ColorRgb = [u8; 3];
 pub type Edges = Vec<Vec<usize>>;
 
 pub struct Node {
-    pub color: Color,
+    pub color: ColorRgb,
 }
 
 pub struct PlushieDef {
