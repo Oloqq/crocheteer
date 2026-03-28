@@ -1,4 +1,9 @@
+use crocheteer::project::Project;
+
 fn main() {
-    println!("example basic");
-    crocheteer::app("MR(6)".into()).run();
+    let project = Project {
+        pattern: "MR(6)".into(),
+        ..Default::default()
+    };
+    crocheteer::app(project).run();
 }

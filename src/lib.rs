@@ -1,6 +1,7 @@
 mod camera;
 mod cursor_ray;
 mod plushie;
+pub mod project;
 mod ui;
 
 use std::{io::Cursor, time::Duration};
@@ -16,15 +17,19 @@ use bevy::{
 };
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
 
-use crate::{cursor_ray::CursorRayPlugin, ui::world_input};
+use crate::{cursor_ray::CursorRayPlugin, project::Project, ui::world_input};
 
-pub fn app(initial_pattern: String) -> App {
+pub fn app(project: Project) -> App {
     let mut app = App::new();
     unambiguous_schedules(&mut app);
     window(&mut app);
     visible_3d_world(&mut app);
-    app.add_plugins(ui::UiPlugin { initial_pattern });
-    app.add_plugins(plushie::PlushiePlugin);
+    app.add_plugins(ui::UiPlugin {
+        initial_pattern: project.pattern,
+    });
+    app.add_plugins(plushie::PlushiePlugin {
+        initial_display_mode: project.display_mode,
+    });
     app.add_systems(Update, say_click.run_if(world_input));
     app
 }
