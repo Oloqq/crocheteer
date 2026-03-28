@@ -22,6 +22,7 @@ use crate::{cursor_ray::CursorRayPlugin, project::Project};
 // a yarn I work with 5mm hook generally yields 5mm big stitches
 // TODO define in pattern? define in project settings? do we support variable hook size? if we support, is it variable per part or can it change in arbitrary positions?
 const HOOK_SIZE: f32 = 5e-4;
+const FIXED_UPDATE_BASE_HZ: f64 = 64.0;
 
 pub fn app(project: Project) -> App {
     let mut app = App::new();
@@ -29,11 +30,11 @@ pub fn app(project: Project) -> App {
     window(&mut app);
     visible_3d_world(&mut app);
     app.add_plugins(ui::UiPlugin {
-        initial_pattern: project.pattern,
+        initial_pattern: project.pattern.clone(), // TODO initialize through project module
     });
-    app.add_plugins(plushie::PlushiePlugin {
-        initial_display_mode: project.display_mode,
-    });
+    app.add_plugins(plushie::PlushiePlugin);
+    crate::project::startup::apply_settings(&mut app, &project.simulation_config);
+    app.insert_resource(project.simulation_config);
     app
 }
 

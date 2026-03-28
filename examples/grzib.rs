@@ -1,10 +1,12 @@
-use crocheteer::project::Project;
+use bevy::utils::default;
+use crocheteer::project::{DisplayMode, Project, SimulationState};
 
 fn main() {
     let project = Project {
+        // TODO remove @centroids and similar from ACL
+        // ACL should contain instructions for a human
+        // the rest is Crocheteer config
         pattern: indoc::indoc! {"
-            @centroids = 3
-
             MR(6)
             : 6 inc (12)
             3: 12 sc (12)
@@ -20,7 +22,12 @@ fn main() {
             FO
         "}
         .into(),
-        ..Default::default()
+        simulation_config: SimulationState {
+            sim_speed: 1.0,
+            centroids: 3,
+            display_mode: DisplayMode::Forces,
+            ..default()
+        },
     };
     crocheteer::app(project).run();
 }

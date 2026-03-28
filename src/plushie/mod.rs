@@ -23,9 +23,7 @@ use data::*;
 pub use data::BuildPlushieFromPattern;
 pub use display_mode::{DisplayMode, SetDisplayMode};
 
-pub struct PlushiePlugin {
-    pub initial_display_mode: DisplayMode,
-}
+pub struct PlushiePlugin;
 
 impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
@@ -55,10 +53,6 @@ impl Plugin for PlushiePlugin {
                 sync_shader_buffer.run_if(simulation_is_running),
             ),
         );
-
-        app.world_mut().write_message(SetDisplayMode {
-            mode: self.initial_display_mode,
-        });
 
         // {
         //     app.add_systems(PreStartup, learning::setup_material);

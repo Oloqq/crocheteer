@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::plushie::DisplayMode;
+pub use crate::plushie::DisplayMode;
 
 #[derive(Resource)]
 pub struct SimulationState {

@@ -1,42 +1,32 @@
-use crate::plushie::DisplayMode;
+pub use crate::plushie::DisplayMode;
+// TODO move out of ui namespace
+pub use crate::ui::SimulationState;
 
 pub struct Project {
     pub pattern: String,
-    pub display_mode: DisplayMode,
+    pub simulation_config: SimulationState,
 }
 
 impl Default for Project {
     fn default() -> Self {
         Self {
             pattern: "MR(6)".into(),
-            display_mode: Default::default(),
+            simulation_config: Default::default(),
         }
     }
 }
 
-impl Project {
-    // TODO from yaml file
-    pub fn grzib() -> Self {
-        Self {
-            pattern: indoc::indoc! {"
-                @centroids = 3
+pub mod startup {
+    use super::*;
+    use bevy::prelude::*;
 
-                MR(6)
-                : 6 inc (12)
-                3: 12 sc (12)
-                mark(cap_start)
-                : BLO, 6 dec (6)
-                FO
+    use crate::{FIXED_UPDATE_BASE_HZ, plushie::SetDisplayMode};
 
-                goto(cap_start), color(255, 255, 0)
-                : FLO, 12 inc (24)
-                2: 24 sc (24)
-                : 12 dec (12)
-                : 6 dec (6)
-                FO
-            "}
-            .into(),
-            display_mode: DisplayMode::Pattern,
-        }
+    pub fn apply_settings(app: &mut App, state: &SimulationState) {
+        let timestep = Time::<Fixed>::from_hz(FIXED_UPDATE_BASE_HZ * state.sim_speed);
+        app.insert_resource(timestep);
+        app.world_mut().write_message(SetDisplayMode {
+            mode: state.display_mode,
+        });
     }
 }

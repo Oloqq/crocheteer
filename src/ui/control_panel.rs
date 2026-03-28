@@ -1,3 +1,4 @@
+use crate::FIXED_UPDATE_BASE_HZ;
 use crate::plushie::{DisplayMode, SetDisplayMode};
 use crate::ui::SimulationState;
 use crate::ui::ui_used_input::UiUsedInput;
@@ -33,7 +34,7 @@ pub fn control_panel(
                 .on_hover_text("Multiplies the rate of simulation ticks")
                 .changed()
             {
-                timestep.set_timestep_hz(64.0 * state.sim_speed);
+                timestep.set_timestep_hz(FIXED_UPDATE_BASE_HZ * state.sim_speed);
             }
 
             ui.add(
@@ -48,7 +49,6 @@ pub fn control_panel(
             // ui.radio_value(&mut state.display_mode, DisplayMode::Stitches, "Stitches"); // TODO differentiate stitch kind (sc vs inc etc)
             ui.radio_value(&mut state.display_mode, DisplayMode::Forces, "Link forces")
                 .on_hover_text("Show the forces applied by links. Big links, tiny stitches");
-            // TODO link forces with grabbable stitches (just make stitches bigger, or keep them small visually but spawn bigger invisible spheres on top. Ideally they would visually get bigger when hovered over)
             // TODO forces applied by centroids
             //  - present them like links? - will be barely readable. Actually this could work if actual links and stitches become hidden and s
             //  - color the stitches with a shader?

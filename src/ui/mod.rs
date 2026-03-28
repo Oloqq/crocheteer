@@ -33,7 +33,6 @@ pub struct UiPlugin {
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
-        app.init_resource::<SimulationState>();
         app.insert_resource(CodeEditorState {
             code: self.initial_pattern.clone(),
             ..default()
