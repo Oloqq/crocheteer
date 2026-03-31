@@ -20,19 +20,19 @@ bevy = { version = "0.17.3", features = ["dynamic_linking"] }
 bevy_editor_cam = { path = "crates/bevy_editor_cam", default-features = false } # disabling default features because skybox was causing ambiguities in Update schedule
 bevy_egui = "0.38"                                                              # GUI
 bevy_framepace = "0.20"                                                         # FPS management
-bevy_infinite_grid = "0.17"
-bytemuck = { version = "1.25.0", features = ["derive"] }
-bytemuck_derive = "1.10.2"
-crochet = { path = "crates/crochet" }                                           # ACL parsing (ACL = domain-specific language for crochet)
+bevy_infinite_grid = "0.17"                                                     # CAD-like grid
+crochet = { path = "crates/crochet" }                                           # Crochet domain algorithms (language parser, forces for the graph)
 crossbeam-channel = "0.5.15"                                                    # non-blocking channels
-egui_code_editor = { path = "crates/egui_code_editor" }
-egui_console = { path = "crates/egui_console" }
+egui_code_editor = { path = "crates/egui_code_editor" }                         # code editor
+egui_console = { path = "crates/egui_console" }                                 # interactive console
+egui_plot = "0.34.0"                                                            # charts in egui
 enum-map = "2.7.3"                                                              # map for enums, with compile checks expected from enums
+# read image to set as window icon
 image = { version = "=0.25.10", default-features = false, features = ["png"] }
-indoc = "2.0.7"                                                                 # multiline strings with indentation matching to code
-strum = "0.28.0"                                                                # enum iter, enum to string etc
-strum_macros = "0.28.0"
-winit = "0.30.13"                                                               # set window icon
+indoc = "2.0.7"                                                                # multiline strings with indentation matching to code
+strum = "0.28.0"                                                               # enum iter, enum to string etc
+strum_macros = "0.28.0"                                                        # ^
+winit = "0.30.13"                                                              # set window icon
 
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking

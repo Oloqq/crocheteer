@@ -20,12 +20,13 @@ impl Default for CodeEditorState {
 }
 
 #[derive(Resource)]
-pub struct ConsoleState {
+pub struct UiState {
     pub console: ConsoleWindow,
-    pub visible: bool,
+    pub console_visible: bool,
+    pub charts_visible: bool,
 }
 
-impl Default for ConsoleState {
+impl Default for UiState {
     fn default() -> Self {
         Self {
             console: ConsoleBuilder::new()
@@ -33,7 +34,8 @@ impl Default for ConsoleState {
                 .history_size(20)
                 .tab_quote_character('\"')
                 .build(),
-            visible: false,
+            console_visible: false,
+            charts_visible: false,
         }
     }
 }

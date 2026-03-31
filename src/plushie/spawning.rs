@@ -32,7 +32,7 @@ fn add_graph_node(
             Visibility::Hidden,
             Mesh3d(assets.node_mesh.clone()),
             MeshMaterial3d(assets.get_or_create_fabric_material(msg.color, materials)),
-            Transform::default().with_scale(Vec3::splat(0.5)),
+            Transform::default().with_scale(Vec3::splat(0.3)),
         ))
         .id();
     let child_selection_indicator: Entity = commands

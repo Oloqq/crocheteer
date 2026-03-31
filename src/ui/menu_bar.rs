@@ -4,12 +4,12 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::{data::ConsoleState, ui_used_input::UiUsedInput};
+use crate::ui::{data::UiState, ui_used_input::UiUsedInput};
 
 pub fn top_panel(
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>,
-    mut console_state: ResMut<ConsoleState>,
+    mut console_state: ResMut<UiState>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
 
@@ -63,7 +63,10 @@ pub fn top_panel(
             });
 
             if ui.button("Console").clicked() {
-                console_state.visible = !console_state.visible;
+                console_state.console_visible = !console_state.console_visible;
+            }
+            if ui.button("Charts").clicked() {
+                console_state.charts_visible = !console_state.charts_visible;
             }
         });
     });

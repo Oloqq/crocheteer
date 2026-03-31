@@ -25,7 +25,7 @@ pub fn compute_stuffing_force(
     let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
 
     let (node_movement, centroid_new_positions) =
-        centroid_stuffing(&node_positions, &centroid_positions);
+        centroid_stuffing(&node_positions, &centroid_positions, HOOK_SIZE);
 
     for ((_, mut received_force), calculated_stuffing) in
         nodes.into_iter().zip(node_movement.into_iter())

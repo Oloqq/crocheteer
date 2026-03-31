@@ -6,10 +6,10 @@ use bevy_egui::{
 use crossbeam_channel::{Receiver, Sender};
 use egui_console::ConsoleEvent;
 
-use crate::ui::{UiUsedInput, data::ConsoleState, utils::using_resizer_bottom};
+use crate::ui::{UiUsedInput, data::UiState, utils::using_resizer_bottom};
 
 pub fn console_window(
-    mut state: ResMut<ConsoleState>,
+    mut state: ResMut<UiState>,
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>,
     console_receiver: Res<ConsoleReceiver>,
@@ -18,7 +18,7 @@ pub fn console_window(
         state.console.write(&message.text);
     }
 
-    if !state.visible {
+    if !state.console_visible {
         return Ok(());
     }
 

@@ -14,7 +14,8 @@ mod params;
 mod plushie_definition;
 
 pub use force_graph::{
-    centroid_stuffing, initializers::Initializer, link_force_magnitude, link_forces,
+    centroid_push_magnitude, centroid_stuffing, initializers::Initializer, link_force_magnitude,
+    link_forces, weight,
 };
 pub use plushie_definition::*;
 

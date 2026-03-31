@@ -1,3 +1,4 @@
+mod charts;
 mod code_editor;
 mod console;
 mod control_panel;
@@ -16,10 +17,11 @@ pub use ui_used_input::UiUsedInput;
 use crate::{
     plushie::BuildPlushieFromPattern,
     ui::{
+        charts::chart_window,
         code_editor::code_editor_ui,
         console::{ConsoleReceiver, console_window},
         control_panel::control_panel,
-        data::{CodeEditorState, ConsoleState},
+        data::{CodeEditorState, UiState},
         menu_bar::top_panel,
     },
 };
@@ -37,19 +39,22 @@ impl Plugin for UiPlugin {
             code: self.initial_pattern.clone(),
             ..default()
         });
-        app.init_resource::<ConsoleState>();
+        app.init_resource::<UiState>();
         app.init_resource::<UiUsedInput>();
         app.add_systems(Startup, (set_style, build_initial_plushie));
         app.add_systems(
             EguiPrimaryContextPass,
             (
-                ui_used_input::reset,
-                top_panel,
-                (control_panel, code_editor_ui),
-                console_window,
-                ui_used_input::adjust_to_egui_wants_input,
-            )
-                .chain(),
+                (
+                    ui_used_input::reset,
+                    top_panel,
+                    (control_panel, code_editor_ui),
+                    console_window,
+                    ui_used_input::adjust_to_egui_wants_input,
+                )
+                    .chain(),
+                chart_window,
+            ),
         );
 
         let (tx, rx) = crossbeam_channel::unbounded::<ConsoleMessage>();
