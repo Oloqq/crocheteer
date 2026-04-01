@@ -1,5 +1,24 @@
 pub type Label = String;
 
+pub struct Stitch {
+    // position: Range<usize>,
+    kind: StitchKind,
+}
+
+pub enum StitchKind {
+    /// Single Crochet
+    Sc,
+    /// Increase
+    Inc,
+    /// Decrease
+    Dec,
+    /// Slip stitch
+    Slst,
+    // TODO replace with a chain
+    /// Create a chain, then attach it to a marked position
+    Attach(Label, usize),
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Action {
     /// Single Crochet
