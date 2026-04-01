@@ -20,7 +20,7 @@ pub struct Pattern {
     actions: Vec<Action>,
     /// For Flow implementation
     cursor: usize,
-    /// Kept for the purpose of auto inserting BL at start of round
+    /// Kept for auto inserting BL at start of round
     current_loop: CurrentLoop,
 }
 

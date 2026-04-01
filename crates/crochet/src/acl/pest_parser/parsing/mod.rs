@@ -246,7 +246,7 @@ impl Pattern {
         let key = key_pair.as_str();
         let val = pairs.next().unwrap().as_str();
         match self.parameters.insert(key.to_string(), val.to_string()) {
-            Some(_) => err(DuplicateMeta(key.to_string()), &key_pair),
+            Some(_) => err(DuplicateParameter(key.to_string()), &key_pair),
             None => Ok(()),
         }
     }

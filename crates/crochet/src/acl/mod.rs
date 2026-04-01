@@ -1,16 +1,14 @@
-/// Flow is an iterator over stitches.
-/// Specific implemetations are designed to handle various pattern formats,
-/// or creating patterns in Rust code directly
 pub mod actions;
 pub mod ergoflow;
 pub mod pest_parser;
+#[cfg(test)]
 pub mod simple_flow;
 
 use self::actions::Action;
 
+/// Iterator over ACL actions
 pub trait Flow {
     fn next(&mut self) -> Option<Action>;
-    #[allow(unused)]
     fn peek(&self) -> Option<Action>;
 }
 

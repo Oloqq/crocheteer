@@ -1,11 +1,11 @@
 use std::fmt::Display;
 
-use pest::iterators::Pair;
 pub use ErrorCode::*;
+use pest::iterators::Pair;
 
 use super::Rule;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Error {
     pub code: ErrorCode,
     #[allow(unused)] // used in Debug (and therefore in Display)
@@ -14,13 +14,13 @@ pub struct Error {
     col: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ErrorCode {
     Lexer(pest::error::Error<Rule>),
     UnknownStitch(String),
     ExpectedInteger(String),
     RoundRangeOutOfOrder(String),
-    DuplicateMeta(String), // FIXME meta -> control
+    DuplicateParameter(String),
     RepetitionTimes0,
     /// Division leaves a remainder
     CantRepeatAround {

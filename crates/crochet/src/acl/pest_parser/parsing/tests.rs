@@ -149,3 +149,21 @@ fn test_mr_configurable() {
     let pat = Pattern::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![MRConfigurable(6, "bruh".into())]);
 }
+
+// #[test]
+// fn test_unknown_stitch() {
+//     let prog = ": 6 sd";
+//     assert_eq!(
+//         Pattern::parse(prog).unwrap_err().code,
+//         ErrorCode::UnknownStitch("sd".into())
+//     );
+// }
+
+#[test]
+fn test_error_repetition_times_0() {
+    let prog = ": [sc] x 0";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::RepetitionTimes0
+    );
+}
