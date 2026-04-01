@@ -59,7 +59,7 @@ fn test_round_repeat_with_number() {
 }
 
 #[test]
-fn test_round_repeat_with_span() {
+fn test_round_range_with_span() {
     let prog = "R2-R4: sc\n";
     let pat = Pattern::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
@@ -150,14 +150,81 @@ fn test_mr_configurable() {
     assert_eq!(pat.actions, vec![MRConfigurable(6, "bruh".into())]);
 }
 
-// #[test]
-// fn test_unknown_stitch() {
-//     let prog = ": 6 sd";
-//     assert_eq!(
-//         Pattern::parse(prog).unwrap_err().code,
-//         ErrorCode::UnknownStitch("sd".into())
-//     );
-// }
+#[test]
+fn test_error_lexer_1() {
+    let prog = "sdfsfs";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+}
+
+#[test]
+fn test_error_lexer_2() {
+    let prog = "MS(5)";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+}
+
+#[test]
+fn test_error_unknown_stitch_is_covered_by_lexer_error() {
+    let prog = ": 6 sd";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+}
+
+#[test]
+fn test_error_expected_integer_is_covered_by_lexer_error() {
+    let prog = ": [sc] x -2";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+    let prog = ": [sc] x 2.2";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+    let prog = ": [sc] x seven";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+}
+
+#[test]
+fn test_error_round_range() {
+    let prog = "R2-R1: sc";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::InvalidRoundRange("R2-R1".into())
+    );
+    let prog = "R1-R1: sc";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::InvalidRoundRange("R1-R1".into())
+    );
+    let prog = "R1-S2: sc";
+    assert!(matches!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::Lexer(_)
+    ));
+}
+
+#[test]
+fn test_error_duplicate_parameter() {
+    let prog = "
+        @bruh = 3
+        @bruh = 5";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::DuplicateParameter("bruh".into())
+    );
+}
 
 #[test]
 fn test_error_repetition_times_0() {
@@ -165,5 +232,39 @@ fn test_error_repetition_times_0() {
     assert_eq!(
         Pattern::parse(prog).unwrap_err().code,
         ErrorCode::RepetitionTimes0
+    );
+}
+
+#[test]
+#[ignore = "around is to be removed"]
+fn test_error_around_must_be_exclusive() {
+    let prog = ": sc, [sc] around";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::AroundMustBeExclusiveInRound
+    );
+    let prog = ": [sc] around, sc";
+    // TODO remove around, restore it after the parser/hook refactor
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::AroundMustBeExclusiveInRound
+    );
+}
+
+#[test]
+fn test_error_duplicate_label() {
+    let prog = ": mark(bruh), mark(bruh)";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::DuplicateLabel("bruh".into())
+    );
+}
+
+#[test]
+fn test_error_undefined_label() {
+    let prog = ": mark(bruh), goto(broh)";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::UndefinedLabel("broh".into())
     );
 }

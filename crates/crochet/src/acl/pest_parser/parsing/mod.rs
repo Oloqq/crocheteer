@@ -49,7 +49,7 @@ impl Pattern {
                         let n1 = r_to_usize(r1);
                         let n2 = r_to_usize(r2);
                         if n2 <= n1 {
-                            return err(RoundRangeOutOfOrder(s.to_string()), &inner);
+                            return err(InvalidRoundRange(s.to_string()), &inner);
                         }
                         n2 - n1 + 1
                     }
