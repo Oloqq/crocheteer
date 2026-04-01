@@ -1,6 +1,8 @@
+// TODO replace with a Pattern::from_smth()
+
 use std::ops::{Add, AddAssign, Mul};
 
-use super::{actions::Action, Flow};
+use super::{Flow, actions::Action};
 
 #[derive(Clone)]
 pub struct ErgoFlow {
@@ -121,8 +123,8 @@ impl AddAssign<Action> for ErgoFlow {
 
 #[cfg(test)]
 mod tests {
-    use pretty_assertions::assert_eq;
     use Action::*;
+    use pretty_assertions::assert_eq;
 
     use super::*;
 

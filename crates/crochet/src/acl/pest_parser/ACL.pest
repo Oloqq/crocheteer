@@ -1,4 +1,4 @@
-program = { SOI ~ (round | comment | parameter | control | labeled_config | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 
@@ -50,25 +50,6 @@ interstitchable_action = {
     | (KW_GOTO ~ arg_ident)
     | (KW_COLOR ~ arg_int_3)
     | (KW_ATTACH ~ arg_ident_int)
-}
-
-labeled_config = {
-  IDENT ~ LINEEND?
-  ~ "{" ~ LINEEND?
-    ~ config_entries
-  ~ "}" ~ LINEEND
-}
-
-config_entries = {
-  comment*
-  ~ config_entry
-    ~ ("," ~ LINEEND? ~ (comment)* ~ LINEEND? ~ config_entry)*
-  ~ ","? ~ LINEEND
-  ~ comment*
-}
-
-config_entry = {
-  IDENT ~ "=" ~ (FLOAT | IDENT)
 }
 
 KW_MR     = { "MR" }

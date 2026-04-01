@@ -4,7 +4,6 @@ use crate::{
     hook::{Hook, HookParams},
 };
 
-#[allow(unused)] // TODO
 mod acl;
 mod force_graph;
 #[allow(unused)] // TODO

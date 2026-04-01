@@ -1,24 +1,5 @@
 pub type Label = String;
 
-pub struct Stitch {
-    // position: Range<usize>,
-    kind: StitchKind,
-}
-
-pub enum StitchKind {
-    /// Single Crochet
-    Sc,
-    /// Increase
-    Inc,
-    /// Decrease
-    Dec,
-    /// Slip stitch
-    Slst,
-    // TODO replace with a chain
-    /// Create a chain, then attach it to a marked position
-    Attach(Label, usize),
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum Action {
     /// Single Crochet
@@ -72,8 +53,4 @@ impl Action {
 
 pub mod colors {
     pub type Color = (usize, usize, usize); // TODO u8
-    pub const RED: Color = (255, 0, 0);
-    pub const GREEN: Color = (0, 255, 0);
-    pub const BLUE: Color = (0, 0, 255);
-    pub const WHITE: Color = (255, 255, 255);
 }

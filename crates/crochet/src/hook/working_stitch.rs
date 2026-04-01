@@ -174,14 +174,13 @@ mod tests {
     use crate::{acl::actions::colors, hook::hook_result::Edges};
 
     use super::{super::utils::*, *};
+    const COLOR: colors::Color = (255, 0, 0);
 
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
     // test work after FO causes NoAnchorToPullThrough
     // test interaction of single-loop and chains (chains are not anchored)
     // test parents and grandparents around single-loop
-
-    const COLOR: colors::Color = colors::RED;
 
     fn mr3() -> Hook {
         let h = Hook::start_with(&MR(3), COLOR).unwrap();

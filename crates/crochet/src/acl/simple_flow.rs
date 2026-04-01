@@ -1,4 +1,6 @@
-use super::{actions::Action, Flow};
+// TODO replace with a Pattern::from_smth()
+
+use super::{Flow, actions::Action};
 
 pub struct SimpleFlow {
     actions: Vec<Action>,

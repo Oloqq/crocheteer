@@ -16,12 +16,12 @@ pub trait Flow {
 
 #[cfg(test)]
 mod tests {
-    use pretty_assertions::assert_eq;
     use Action::*;
+    use pretty_assertions::assert_eq;
 
     use super::{
         ergoflow::ErgoFlow,
-        pest_parser::{errors::ErrorCode, Pattern},
+        pest_parser::{Pattern, errors::ErrorCode},
         simple_flow::SimpleFlow,
         *,
     };
@@ -45,7 +45,7 @@ mod tests {
     }
 
     #[test]
-    fn test_assertion() {
+    fn test_assertion_helper() {
         let ergo = {
             let mut flow = ErgoFlow::new();
             flow += MR(6);

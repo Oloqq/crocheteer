@@ -7,7 +7,7 @@ pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::acl::{Flow, actions::Action, pest_parser::parsing::LimbParams};
+use crate::acl::{Flow, actions::Action};
 
 #[derive(Parser)]
 #[grammar = "acl/pest_parser/ACL.pest"]
@@ -16,7 +16,6 @@ struct PatParser;
 #[derive(Debug)]
 pub struct Pattern {
     pub parameters: HashMap<String, String>,
-    pub limbs: HashMap<String, LimbParams>,
     labels: HashSet<String>,
     actions: Vec<Action>,
     /// For Flow implementation
@@ -36,7 +35,6 @@ impl Pattern {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
         let mut p = Self {
             parameters: Default::default(),
-            limbs: Default::default(),
             labels: Default::default(),
             actions: vec![],
             cursor: 0,

@@ -8,13 +8,6 @@ use crate::acl::{
     pest_parser::parsing::action_sequence::ActionSequence,
 };
 
-#[derive(Debug, PartialEq, Clone, Default)]
-pub struct LimbParams {
-    pub lock_x: Option<f32>,
-    pub lock_y: Option<f32>,
-    pub lock_z: Option<f32>,
-}
-
 impl Pattern {
     pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
         for line_pair in pairs {
@@ -26,33 +19,11 @@ impl Pattern {
                     Rule::control => {
                         self.control(pair.into_inner().next().unwrap().into_inner())?
                     }
-                    Rule::labeled_config => self.part_config(pair.into_inner())?,
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
             }
         }
-        Ok(())
-    }
-
-    fn part_config(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
-        let part_name_pair = pairs.next().unwrap();
-        let part_name = part_name_pair.as_str().to_owned();
-        if self.limbs.contains_key(&part_name) {
-            return err(DuplicatePart(part_name), &part_name_pair);
-        }
-
-        let mut params = LimbParams::default();
-        for entry in pairs.next().unwrap().into_inner() {
-            assert!(matches!(entry.as_rule(), Rule::config_entry));
-            let mut name_val = entry.into_inner();
-            let name_pair = name_val.next().unwrap();
-            let name = name_pair.as_str();
-            let val = name_val.next().unwrap().as_str();
-            config_entry(&mut params, name, val)
-                .map_err(|_| error(InvalidConfigEntry(name.to_owned()), &name_pair))?;
-        }
-        self.limbs.insert(part_name, params);
         Ok(())
     }
 
@@ -325,21 +296,6 @@ fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
 
 fn ident(pair: Pair<Rule>) -> Result<String, Error> {
     Ok(pair.as_str().to_owned())
-}
-
-fn config_entry(
-    params: &mut LimbParams,
-    name: &str,
-    val: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
-    match name {
-        "x" => params.lock_x = Some(val.parse()?),
-        "y" => params.lock_y = Some(val.parse()?),
-        "z" => params.lock_z = Some(val.parse()?),
-        "centroids" => todo!(),
-        _ => return Err("unknown name".into()),
-    }
-    Ok(())
 }
 
 #[cfg(test)]
