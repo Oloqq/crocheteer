@@ -133,14 +133,6 @@ impl Pattern {
                             }
                             result.append_repeated(actions_to_repeat, times as u32);
                         }
-                        Rule::KW_AROUND => {
-                            if result.actions().len() > 0 {
-                                return Err(error(AroundMustBeExclusiveInRound, &specifier));
-                            }
-                            result.push(Action::AroundStart);
-                            result.append(actions_to_repeat);
-                            result.push(Action::AroundEnd);
-                        }
                         _ => unreachable!(),
                     }
                 }

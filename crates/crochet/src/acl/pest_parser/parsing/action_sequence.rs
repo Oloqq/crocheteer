@@ -14,10 +14,6 @@ impl ActionSequence {
         &self.actions
     }
 
-    pub fn append(&mut self, other: ActionSequence) {
-        self.append_repeated(other, 1);
-    }
-
     pub fn append_repeated(&mut self, other: ActionSequence, times: u32) {
         self.actions.reserve(other.actions.len() * times as usize);
         for _ in 0..times {

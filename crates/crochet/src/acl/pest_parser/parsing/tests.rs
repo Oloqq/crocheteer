@@ -114,18 +114,6 @@ fn test_attach() {
 }
 
 #[test]
-fn test_repetition_around() {
-    let prog = "
-        : 6 sc
-        : [sc] around";
-    let pat = Pattern::parse(prog).unwrap();
-    assert_eq!(
-        pat.actions,
-        vec![Sc, Sc, Sc, Sc, Sc, Sc, AroundStart, Sc, AroundEnd]
-    );
-}
-
-#[test]
 fn test_no_round_end() {
     let prog = "
         : 6 sc
@@ -232,22 +220,6 @@ fn test_error_repetition_times_0() {
     assert_eq!(
         Pattern::parse(prog).unwrap_err().code,
         ErrorCode::RepetitionTimes0
-    );
-}
-
-#[test]
-#[ignore = "around is to be removed"]
-fn test_error_around_must_be_exclusive() {
-    let prog = ": sc, [sc] around";
-    assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
-        ErrorCode::AroundMustBeExclusiveInRound
-    );
-    let prog = ": [sc] around, sc";
-    // TODO remove around, restore it after the parser/hook refactor
-    assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
-        ErrorCode::AroundMustBeExclusiveInRound
     );
 }
 

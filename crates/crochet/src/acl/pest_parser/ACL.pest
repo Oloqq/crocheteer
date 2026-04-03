@@ -22,7 +22,6 @@ in_round_acion  = {
 
 repetition = {
     repeated ~ KW_TIMES ~ NUMBER
-  | repeated ~ KW_AROUND
 }
 repeated   = { "[" ~ stitches ~ "]" }
 
@@ -64,7 +63,6 @@ KW_COLOR  = { "color" }
 KW_ATTACH = { "attach" }
 KW_STITCH = { "sc" | "inc" | "dec" | "slst" | KW_FO }
 KW_TIMES  = { "x" }
-KW_AROUND = { "around" }
 KW_SEW    = { "sew" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
