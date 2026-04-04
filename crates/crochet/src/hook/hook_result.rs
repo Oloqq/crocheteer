@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 
-// use serde_derive::Serialize;
-
-use crate::acl::actions::colors::Color;
+use crate::acl::Color;
 
 #[derive(Debug, Clone)]
 pub struct Edges {
@@ -10,12 +8,12 @@ pub struct Edges {
 }
 
 impl Edges {
-    #[allow(unused)]
+    #[allow(unused)] // TODO
     pub fn new() -> Self {
         Self { edges: vec![] }
     }
 
-    #[allow(unused)] // used in tests
+    #[allow(unused)] // used in tests // TODO
     pub fn from_unchecked(ordered: Vec<Vec<usize>>) -> Self {
         Self { edges: ordered }
     }

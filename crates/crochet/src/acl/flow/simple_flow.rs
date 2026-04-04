@@ -1,4 +1,6 @@
-use super::{Flow, actions::Action};
+use crate::acl::actions::Action;
+
+use super::Flow;
 
 pub struct SimpleFlow {
     actions: Vec<Action>,

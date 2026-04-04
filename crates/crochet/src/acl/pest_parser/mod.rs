@@ -7,7 +7,7 @@ pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::acl::{Flow, actions::Action};
+use crate::acl::{actions::Action, flow::Flow};
 
 #[derive(Parser)]
 #[grammar = "acl/pest_parser/ACL.pest"]

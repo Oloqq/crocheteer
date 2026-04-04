@@ -6,7 +6,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-use crate::{acl::actions::colors::Color, hook::hook_result::Peculiarity, params::Params};
+use crate::{acl::Color, hook::hook_result::Peculiarity, params::Params};
 
 use super::hook_result::InitialGraph;
 

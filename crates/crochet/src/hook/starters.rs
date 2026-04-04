@@ -2,11 +2,11 @@ use std::collections::HashMap;
 
 use super::{Edges, Hook, Moment, Queue, utils::*};
 use crate::{
-    acl::{Flow, actions::colors},
+    acl::{Action::*, Color, Flow},
     hook::hook_result::Peculiarity,
 };
 
-const DEFAULT_COLOR: colors::Color = (255, 0, 255);
+const DEFAULT_COLOR: Color = (255, 0, 255);
 
 impl Hook {
     pub fn from_starting_sequence(flow: &mut impl Flow) -> Result<Self, HookError> {
@@ -19,7 +19,7 @@ impl Hook {
         Self::start_with(&action, color)
     }
 
-    pub fn start_with(action: &Action, color: colors::Color) -> Result<Self, HookError> {
+    pub fn start_with(action: &Action, color: Color) -> Result<Self, HookError> {
         match action {
             MRConfigurable(x, label) => {
                 let mut hook = Self::start_with(&MR(*x), color)?;

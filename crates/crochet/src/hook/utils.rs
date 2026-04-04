@@ -1,8 +1,6 @@
 pub use std::collections::VecDeque as Queue;
 
-pub use Action::*;
-
-pub use crate::acl::actions::{Action, Label};
+pub use crate::acl::{Action, Label};
 
 #[derive(Debug)]
 pub enum HookError {

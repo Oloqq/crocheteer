@@ -1,11 +1,11 @@
 use pretty_assertions::assert_eq as q;
 
-use crate::acl::actions::colors;
+use crate::acl::{Color, SimpleFlow};
 
 use super::*;
 
-const COLOR: colors::Color = (255, 0, 0);
-const RED: colors::Color = (255, 0, 0);
+const COLOR: Color = (255, 0, 0);
+const RED: Color = (255, 0, 0);
 
 impl Hook {
     pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
@@ -371,7 +371,7 @@ fn test_split_moment() {
 
 #[test]
 fn test_starting_from_color() {
-    let mut flow = crate::acl::simple_flow::SimpleFlow::new(vec![Color(RED), MR(3), Sc, Sc, Sc]);
+    let mut flow = SimpleFlow::new(vec![Color(RED), MR(3), Sc, Sc, Sc]);
     let mut h = Hook::from_starting_sequence(&mut flow).unwrap();
     h = h.test_perform(&flow.next().unwrap()).unwrap();
     q!(

@@ -1,6 +1,6 @@
 pub use crate::hook::hook_result::InitialGraph;
 use crate::{
-    acl::pest_parser::Pattern,
+    acl::Pattern,
     hook::{Hook, HookParams},
 };
 

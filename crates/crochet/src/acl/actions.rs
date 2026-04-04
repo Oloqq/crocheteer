@@ -51,6 +51,7 @@ impl Action {
     }
 }
 
+// TODO no mod
 pub mod colors {
     pub type Color = (usize, usize, usize); // TODO u8
 }

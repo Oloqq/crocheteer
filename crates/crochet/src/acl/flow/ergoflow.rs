@@ -1,8 +1,10 @@
-// TODO replace with a Pattern::from_smth()
+// TODO where is this used beside tests?
 
 use std::ops::{Add, AddAssign, Mul};
 
-use super::{Flow, actions::Action};
+use crate::acl::actions::Action;
+
+use super::Flow;
 
 #[derive(Clone)]
 pub struct ErgoFlow {
