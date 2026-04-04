@@ -1,6 +1,6 @@
 use HookError::*;
 
-use super::{utils::*, Hook};
+use super::{Hook, errors::*};
 
 impl Hook {
     pub fn restore(&mut self, label: &Label) -> Result<(), HookError> {

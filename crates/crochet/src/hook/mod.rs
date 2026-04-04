@@ -1,21 +1,11 @@
+mod errors;
 pub mod hook_result;
 pub mod initializer;
+mod mark_and_goto;
 mod starters;
-mod state_mgmt;
-#[cfg(test)]
-mod tests;
-mod utils;
-mod working_stitch;
+mod stitch_builder;
 
-use std::collections::HashMap;
-
-#[derive(Debug, PartialEq, Clone, Default)]
-pub struct HookParams {
-    pub tip_from_fo: bool,
-    pub enforce_counts: bool,
-}
-
-use self::{utils::*, working_stitch::Stitch};
+use self::{errors::*, stitch_builder::Stitch};
 use crate::{
     ColorRgb,
     acl::{
@@ -25,8 +15,22 @@ use crate::{
     hook::hook_result::Peculiarity,
 };
 use HookError::*;
+pub use errors::HookError;
 use hook_result::{Edges, InitialGraph};
-pub use utils::HookError;
+use std::collections::HashMap;
+
+#[derive(Debug, PartialEq, Clone, Default)]
+pub struct HookParams {
+    pub tip_from_fo: bool,
+    pub enforce_counts: bool,
+}
+
+#[derive(Clone, Debug)]
+pub enum WorkingLoops {
+    Both,
+    Back,
+    Front,
+}
 
 #[derive(Clone, Debug)]
 struct Moment {
@@ -34,7 +38,7 @@ struct Moment {
     cursor: usize,
     anchors: Queue<usize>,
     working_on: WorkingLoops,
-    /// Moments on unconnected graphs will have different number
+    /// Moments on unconnected graphs shall have different number
     limb_ownerhip: usize,
 }
 
@@ -351,3 +355,6 @@ impl Hook {
         assert_eq!(self.edges.last().unwrap().len(), 0);
     }
 }
+
+#[cfg(test)]
+mod tests;

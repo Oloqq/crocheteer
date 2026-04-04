@@ -1,11 +1,8 @@
 use HookError::*;
 
-use crate::hook::hook_result::Peculiarity;
+use crate::hook::{WorkingLoops, hook_result::Peculiarity};
 
-use super::{
-    Hook,
-    utils::{HookError, WorkingLoops},
-};
+use super::{Hook, errors::HookError};
 
 pub struct Stitch {
     hook: Hook,
@@ -174,7 +171,7 @@ mod tests {
 
     use crate::{ColorRgb, acl::Action::*, hook::hook_result::Edges};
 
-    use super::{super::utils::*, *};
+    use super::{super::errors::*, *};
     const COLOR: ColorRgb = [255, 0, 0];
 
     // test magic ring lower and upper limit

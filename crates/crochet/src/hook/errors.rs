@@ -57,10 +57,3 @@ e.g. MR(6, second_part)"
         }
     }
 }
-
-#[derive(Clone, Debug)]
-pub enum WorkingLoops {
-    Both,
-    Back,
-    Front,
-}
