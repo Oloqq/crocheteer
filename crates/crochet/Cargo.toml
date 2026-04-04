@@ -11,3 +11,4 @@ log = "0.4.20"
 
 [dev-dependencies]
 pretty_assertions = "1.4.0" # colorful diff in assert_eq
+indoc = "2.0.7"             # multiline strings with indentation matching to code

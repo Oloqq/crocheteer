@@ -45,7 +45,6 @@ impl PatternBuilder {
 
         Ok(Pattern {
             parameters: p.parameters,
-            labels: p.labels,
             actions: p.actions,
             cursor: 0,
         })

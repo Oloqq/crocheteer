@@ -189,7 +189,6 @@ impl PatternBuilder {
         Ok(())
     }
 
-    // TODO labels with usize is useless, even genetic stuff can be done with a retroactive mapping from genetic usizes to strings
     fn interstitchable_action(&mut self, mut tokens: Pairs<Rule>) -> Result<Action, Error> {
         let first = tokens.next().unwrap();
         Ok(match first.as_rule() {
@@ -276,7 +275,6 @@ pub fn stitch(src: &str) -> Option<Action> {
     })
 }
 
-// TODO return u32?
 fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
     Ok(pair
         .as_str()
@@ -288,7 +286,7 @@ fn integer_u8(pair: &Pair<Rule>) -> Result<u8, Error> {
     Ok(pair
         .as_str()
         .parse()
-        .map_err(|_| error(ExpectedInteger(pair.as_str().to_string()), pair))?)
+        .map_err(|_| error(ExpectedRgbValue(pair.as_str().to_string()), pair))?)
 }
 
 fn ident(pair: Pair<Rule>) -> Result<String, Error> {

@@ -2355,6 +2355,7 @@ name = "crochet"
 version = "0.0.1"
 dependencies = [
  "glam",
+ "indoc",
  "log",
  "pest",
  "pest_derive",

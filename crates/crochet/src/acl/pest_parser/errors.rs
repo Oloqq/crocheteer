@@ -8,11 +8,9 @@ use super::Rule;
 #[derive(Debug, PartialEq)]
 pub struct Error {
     pub code: ErrorCode,
-    // TODO proper Display impl
-    #[allow(unused)] // used in Debug (and therefore in Display)
-    line: usize,
-    #[allow(unused)] // used in Debug (and therefore in Display)
-    col: usize,
+    pub line: usize,
+    pub column: usize,
+    pub byte_range: (usize, usize),
 }
 
 /// Some errors are annotated with "Lexer-parser desync".
@@ -27,6 +25,8 @@ pub enum ErrorCode {
     UnknownStitch(String),
     /// Lexer-parser desync. Lexer accepted token as an integer and Rust can't parse it into an integer.
     ExpectedInteger(String),
+    /// Color value must be between 0 and 255 inclusive
+    ExpectedRgbValue(String),
     /// Round range (e.g. "R1-R2:") uses wrong numbers. First number must be smaller than the second.
     InvalidRoundRange(String),
     /// Parameters names must be unique.
@@ -41,17 +41,40 @@ pub enum ErrorCode {
 
 impl Error {
     pub fn lexer(e: pest::error::Error<Rule>) -> Self {
+        let (line, column) = match &e.line_col {
+            pest::error::LineColLocation::Pos((start, end)) => (*start, *end),
+            pest::error::LineColLocation::Span(_, _) => {
+                debug_assert!(false);
+                (0, 0)
+            }
+        };
+
+        let byte_range = match &e.location {
+            pest::error::InputLocation::Pos(start) => (*start, *start),
+            pest::error::InputLocation::Span(_) => {
+                debug_assert!(false);
+                (0, 0)
+            }
+        };
+
         Self {
             code: ErrorCode::Lexer(e),
-            line: 0,
-            col: 0,
+            line,
+            column,
+            byte_range,
         }
     }
 }
 
 pub fn error(code: ErrorCode, pair: &Pair<Rule>) -> Error {
-    let (line, col) = pair.line_col();
-    Error { code, line, col }
+    let (line, column) = pair.line_col();
+    let span = pair.as_span().clone();
+    Error {
+        code,
+        line,
+        column,
+        byte_range: (span.start(), span.end()),
+    }
 }
 
 pub fn err(code: ErrorCode, pair: &Pair<Rule>) -> Result<(), Error> {
@@ -62,7 +85,11 @@ impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.code {
             Lexer(e) => write!(f, "{e}"),
-            _ => write!(f, "{self:?}"),
+            _ => write!(
+                f,
+                "{:?} at line: {}, column: {}",
+                self.code, self.line, self.column
+            ),
         }
     }
 }

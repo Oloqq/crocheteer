@@ -243,12 +243,39 @@ fn test_error_undefined_label() {
     );
 }
 
-// TODO clearer error showing the bounds
 #[test]
 fn test_error_valid_rgb() {
-    let prog = ": color(700, 200, 200)";
+    let prog = ": color(256, 200, 200)";
     assert_eq!(
         PatternBuilder::parse(prog).unwrap_err().code,
-        ErrorCode::ExpectedInteger("700".into())
+        ErrorCode::ExpectedRgbValue("256".into())
     );
+}
+
+#[test]
+fn test_error_location_data_non_lexer() {
+    let prog = indoc::indoc! {"
+        : color(200, 200, 200)
+        : color(700, 200, 200)
+    "};
+    let err = PatternBuilder::parse(prog).unwrap_err();
+    assert_eq!(err.code, ErrorCode::ExpectedRgbValue("700".into()));
+    assert_eq!(err.line, 2);
+    assert_eq!(err.column, 9);
+    assert_eq!(err.byte_range.0, 31);
+    assert_eq!(err.byte_range.1, 34);
+}
+
+#[test]
+fn test_error_location_data_lexer() {
+    let prog = indoc::indoc! {"
+        : color(200, 200, 200)
+        : color(bruh, 200, 200)
+    "};
+    let err = PatternBuilder::parse(prog).unwrap_err();
+    assert!(matches!(err.code, ErrorCode::Lexer(_)));
+    assert_eq!(err.line, 2);
+    assert_eq!(err.column, 9);
+    assert_eq!(err.byte_range.0, 31);
+    assert_eq!(err.byte_range.1, err.byte_range.0); // lexer error only reports where it got lost
 }
