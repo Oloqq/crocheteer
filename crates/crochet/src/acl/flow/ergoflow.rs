@@ -2,7 +2,7 @@
 
 use std::ops::{Add, AddAssign, Mul};
 
-use crate::acl::actions::Action;
+use crate::acl::pattern::Action;
 
 use super::Flow;
 

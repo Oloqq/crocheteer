@@ -1,37 +1,39 @@
 use Action::*;
 use pretty_assertions::assert_eq;
 
+use crate::acl::pest_parser::errors::ErrorCode;
+
 use super::*;
 #[test]
 fn test_sc() {
     let prog = ": sc\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc]);
 }
 
 #[test]
 fn test_round_end_omitted() {
     let prog = ": sc\n: sc";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, Sc]);
     let prog = ": sc";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc]);
     let prog = ": sc # bruh\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc]);
 }
 
 #[test]
 fn test_comment_followed_by_end_of_input() {
-    Pattern::parse(": sc # bruh\n").unwrap();
-    Pattern::parse(": sc # bruh").unwrap();
+    PatternBuilder::parse(": sc # bruh\n").unwrap();
+    PatternBuilder::parse(": sc # bruh").unwrap();
 }
 
 #[test]
 fn test_round_end_present() {
     let prog = ": sc (1)\n: sc, sc (2)\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(
         pat.actions,
         vec![
@@ -47,66 +49,66 @@ fn test_round_end_present() {
 #[test]
 fn test_numstitch() {
     let prog = ": 2 sc\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, Sc]);
 }
 
 #[test]
 fn test_round_repeat_with_number() {
     let prog = "3: sc\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
 }
 
 #[test]
 fn test_round_range_with_span() {
     let prog = "R2-R4: sc\n";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, Sc, Sc]);
 }
 
 #[test]
 fn test_mr() {
     let prog = "MR(6)";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![MR(6)]);
     let prog = "MR(6)\n: sc";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![MR(6), Sc]);
 }
 
 #[test]
 fn test_fo() {
     let prog = ": sc\nFO";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc, FO]);
 }
 
 #[test]
 fn test_control_sequence() {
     let prog = "MR(3), FO";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![MR(3), FO]);
 }
 
 #[test]
 fn test_repetition_simple() {
     let prog = ": [sc, sc] x 2";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc; 4]);
 }
 
 #[test]
 fn test_repetition_nested() {
     let prog = ": [[sc, sc] x 2] x 3";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![Sc; 12]);
 }
 
 #[test]
 fn test_attach() {
     let prog = "mark(anchor), attach(anchor, 3)";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(
         pat.actions,
         vec![Mark("anchor".into()), Attach("anchor".into(), 3)]
@@ -118,7 +120,7 @@ fn test_no_round_end() {
     let prog = "
         : 6 sc
         : 6 sc";
-    Pattern::parse(prog).unwrap();
+    PatternBuilder::parse(prog).unwrap();
 }
 
 #[test]
@@ -126,7 +128,7 @@ fn test_repetition_allowed_only_as_the_only_instruction() {
     let prog = "
         : 6 sc
         : sc, [sc] around";
-    let _ = Pattern::parse(prog).expect_err("");
+    let _ = PatternBuilder::parse(prog).expect_err("");
 }
 
 #[test]
@@ -134,7 +136,7 @@ fn test_mr_configurable() {
     let prog = "
         MR(6, bruh)
         ";
-    let pat = Pattern::parse(prog).unwrap();
+    let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(pat.actions, vec![MRConfigurable(6, "bruh".into())]);
 }
 
@@ -142,7 +144,7 @@ fn test_mr_configurable() {
 fn test_error_lexer_1() {
     let prog = "sdfsfs";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
 }
@@ -151,7 +153,7 @@ fn test_error_lexer_1() {
 fn test_error_lexer_2() {
     let prog = "MS(5)";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
 }
@@ -160,7 +162,7 @@ fn test_error_lexer_2() {
 fn test_error_unknown_stitch_is_covered_by_lexer_error() {
     let prog = ": 6 sd";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
 }
@@ -169,17 +171,17 @@ fn test_error_unknown_stitch_is_covered_by_lexer_error() {
 fn test_error_expected_integer_is_covered_by_lexer_error() {
     let prog = ": [sc] x -2";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
     let prog = ": [sc] x 2.2";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
     let prog = ": [sc] x seven";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
 }
@@ -188,17 +190,17 @@ fn test_error_expected_integer_is_covered_by_lexer_error() {
 fn test_error_round_range() {
     let prog = "R2-R1: sc";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::InvalidRoundRange("R2-R1".into())
     );
     let prog = "R1-R1: sc";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::InvalidRoundRange("R1-R1".into())
     );
     let prog = "R1-S2: sc";
     assert!(matches!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::Lexer(_)
     ));
 }
@@ -209,7 +211,7 @@ fn test_error_duplicate_parameter() {
         @bruh = 3
         @bruh = 5";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::DuplicateParameter("bruh".into())
     );
 }
@@ -218,7 +220,7 @@ fn test_error_duplicate_parameter() {
 fn test_error_repetition_times_0() {
     let prog = ": [sc] x 0";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::RepetitionTimes0
     );
 }
@@ -227,7 +229,7 @@ fn test_error_repetition_times_0() {
 fn test_error_duplicate_label() {
     let prog = ": mark(bruh), mark(bruh)";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::DuplicateLabel("bruh".into())
     );
 }
@@ -236,7 +238,7 @@ fn test_error_duplicate_label() {
 fn test_error_undefined_label() {
     let prog = ": mark(bruh), goto(broh)";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::UndefinedLabel("broh".into())
     );
 }
@@ -246,7 +248,7 @@ fn test_error_undefined_label() {
 fn test_error_valid_rgb() {
     let prog = ": color(700, 200, 200)";
     assert_eq!(
-        Pattern::parse(prog).unwrap_err().code,
+        PatternBuilder::parse(prog).unwrap_err().code,
         ErrorCode::ExpectedInteger("700".into())
     );
 }

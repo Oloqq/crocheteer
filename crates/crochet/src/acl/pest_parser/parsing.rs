@@ -1,14 +1,12 @@
-mod action_sequence;
-
 use pest::iterators::{Pair, Pairs};
 
-use super::{CurrentLoop, Pattern, Rule, errors::*};
+use super::{CurrentLoop, PatternBuilder, Rule, errors::*};
 use crate::acl::{
-    actions::{Action, Label},
-    pest_parser::parsing::action_sequence::ActionSequence,
+    pattern::{Action, Label},
+    pest_parser::action_sequence::ActionSequence,
 };
 
-impl Pattern {
+impl PatternBuilder {
     pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
         for line_pair in pairs {
             for pair in line_pair.into_inner() {
@@ -296,6 +294,3 @@ fn integer_u8(pair: &Pair<Rule>) -> Result<u8, Error> {
 fn ident(pair: Pair<Rule>) -> Result<String, Error> {
     Ok(pair.as_str().to_owned())
 }
-
-#[cfg(test)]
-mod tests;

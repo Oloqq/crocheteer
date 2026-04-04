@@ -1,6 +1,6 @@
 pub use crate::hook::hook_result::InitialGraph;
 use crate::{
-    acl::Pattern,
+    acl::PatternBuilder,
     hook::{Hook, HookParams},
 };
 
@@ -21,7 +21,7 @@ pub use force_graph::{
 pub use plushie_definition::*;
 
 pub fn parse(acl_source: &str) -> Option<PlushieDef> {
-    let Ok(syntax_result) = Pattern::parse(acl_source) else {
+    let Ok(syntax_result) = PatternBuilder::parse(acl_source) else {
         return None;
     };
     // println!("syntax: {:?}", syntax_result);

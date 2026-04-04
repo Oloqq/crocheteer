@@ -1,4 +1,4 @@
-use crate::acl::actions::Action;
+use crate::acl::pattern::Action;
 
 use super::Flow;
 
@@ -37,7 +37,7 @@ impl Flow for SimpleFlow {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::acl::actions::Action::*;
+    use crate::acl::pattern::Action::*;
 
     #[test]
     fn test_next() {

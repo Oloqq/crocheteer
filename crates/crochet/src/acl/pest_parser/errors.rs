@@ -16,7 +16,7 @@ pub struct Error {
 }
 
 /// Some errors are annotated with "Lexer-parser desync".
-/// These mean the lexer does not do its job properly, so there is either a bug in the grammar or in the parser.
+/// These mean there is either a bug in the grammar or in the parser.
 /// These would ideally be covered by unit tests so they could just panic or return a generic Err in the parser, but I haven't figured out how to make unit test adjust automatically to changes in the grammar.
 /// Other errors suggest the pattern is malformed.
 #[derive(Debug, PartialEq)]
@@ -33,8 +33,6 @@ pub enum ErrorCode {
     DuplicateParameter(String),
     /// There is no point in repeating a stitch 0 times.
     RepetitionTimes0,
-    // TODO remove around
-    AroundMustBeExclusiveInRound,
     /// Mark identifiers must be unique.
     DuplicateLabel(String),
     /// Tried to use a goto or a similar instruction to an undefined mark

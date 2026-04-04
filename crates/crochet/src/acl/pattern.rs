@@ -1,4 +1,38 @@
-use crate::ColorRgb;
+use std::collections::{HashMap, HashSet};
+
+#[derive(Debug)]
+pub struct Pattern {
+    #[allow(dead_code)] // TODO
+    pub parameters: HashMap<String, String>,
+    #[allow(dead_code)] // TODO
+    pub labels: HashSet<String>,
+    pub actions: Vec<Action>,
+    /// For Flow implementation
+    pub cursor: usize,
+}
+
+impl Flow for Pattern {
+    fn next(&mut self) -> Option<Action> {
+        if self.cursor < self.actions.len() {
+            let got = self.actions[self.cursor].clone();
+            self.cursor += 1;
+            Some(got)
+        } else {
+            None
+        }
+    }
+
+    fn peek(&self) -> Option<Action> {
+        if self.cursor < self.actions.len() {
+            let got = self.actions[self.cursor].clone();
+            Some(got)
+        } else {
+            None
+        }
+    }
+}
+
+use crate::{ColorRgb, acl::Flow};
 
 pub type Label = String;
 

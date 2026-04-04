@@ -1,4 +1,4 @@
-use crate::acl::actions::Action;
+use crate::acl::pattern::Action;
 pub mod ergoflow;
 #[cfg(test)]
 pub mod simple_flow;
@@ -11,10 +11,8 @@ pub trait Flow {
 
 #[cfg(test)]
 mod tests {
-    use Action::*;
+    use crate::acl::{pattern::Action::*, pest_parser::PatternBuilder};
     use pretty_assertions::assert_eq;
-
-    use crate::acl::pest_parser::Pattern;
 
     use super::{ergoflow::ErgoFlow, simple_flow::SimpleFlow, *};
 
@@ -130,7 +128,7 @@ mod tests {
             : 12 dec
             : 6 dec
             FO";
-            Pattern::parse(src).unwrap()
+            PatternBuilder::parse(src).unwrap()
         };
 
         assert_equal_flows(ergo, pattern);
