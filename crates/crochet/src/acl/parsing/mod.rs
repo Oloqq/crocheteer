@@ -16,7 +16,7 @@ struct PatParser;
 
 #[derive(Debug)]
 pub struct PatternBuilder {
-    parameters: HashMap<String, String>,
+    parameters: HashMap<String, String>, // TODO remove parameters from ACL? Should there be any in the pattern, or should they all reside in "Crocheteer project files"?
     labels: HashSet<String>,
     actions: Vec<Action>,
     /// Kept for auto inserting BL at start of round
@@ -42,7 +42,6 @@ impl PatternBuilder {
         builder.program(line_pairs)?;
 
         Ok(Pattern {
-            parameters: builder.parameters,
             actions: builder.actions,
             cursor: 0,
         })

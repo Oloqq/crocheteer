@@ -3,9 +3,6 @@ use crocheteer::project::{DisplayMode, Project, SimulationState};
 
 fn main() {
     let project = Project {
-        // TODO remove @centroids and similar from ACL
-        // ACL should contain instructions for a human
-        // the rest is Crocheteer config
         pattern: indoc::indoc! {"
             MR(6)
             : 6 inc (12)

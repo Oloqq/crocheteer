@@ -1,9 +1,5 @@
-use std::collections::HashMap;
-
 #[derive(Debug)]
 pub struct Pattern {
-    #[allow(dead_code)] // TODO
-    pub parameters: HashMap<String, String>,
     pub actions: Vec<Action>,
     pub cursor: usize,
 }
