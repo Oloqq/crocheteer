@@ -28,7 +28,6 @@ repeated   = { "[" ~ stitches ~ "]" }
 control = { action_sequence ~ LINEEND }
 action_sequence = { action ~ ("," ~ action)* }
 arg_int   =  { "(" ~ NUMBER ~ ")" }
-arg_int_opt_ident   =  { "(" ~ NUMBER ~ ("," ~ IDENT)? ~ ")" }
 arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
 arg_ident =  { "(" ~ IDENT ~ ")" }
 arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
@@ -37,7 +36,7 @@ arg_ident_ident =  { "(" ~ IDENT ~ "," ~ IDENT ~ ")" }
 
 action = {
       interstitchable_action
-    | (KW_MR ~ arg_int_opt_ident)
+    | (KW_MR ~ arg_int)
     |  KW_FO
     | (KW_SEW ~ arg_ident_ident)
 }

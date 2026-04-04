@@ -22,13 +22,6 @@ impl Hook {
 
     pub fn start_with(action: &Action, color: ColorRgb) -> Result<Self, HookError> {
         match action {
-            MRConfigurable(x, label) => {
-                let mut hook = Self::start_with(&MR(*x), color)?;
-                assert_eq!(hook.peculiar.get(&0), Some(&Peculiarity::Locked));
-                hook.mark_to_node.insert(label.clone(), 0);
-
-                Ok(hook)
-            }
             MR(x) => {
                 let edges = {
                     let mut tmp = Edges::new();
@@ -58,7 +51,6 @@ impl Hook {
                     tmp_mark_to_node: HashMap::new(),
                     part_limits: vec![],
                     mr_count: 0,
-                    repeat_buffer: None,
                 };
                 result.magic_ring(*x);
                 Ok(result)

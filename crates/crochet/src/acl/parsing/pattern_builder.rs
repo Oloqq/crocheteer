@@ -153,12 +153,7 @@ impl PatternBuilder {
                 Rule::KW_MR => {
                     let mut args = tokens.next().unwrap().into_inner();
                     let num = integer(&args.next().unwrap())?;
-                    if let Some(name) = args.next() {
-                        let label = name.as_str().to_owned();
-                        self.actions.push(Action::MRConfigurable(num, label));
-                    } else {
-                        self.actions.push(Action::MR(num));
-                    }
+                    self.actions.push(Action::MR(num));
                 }
                 Rule::KW_FO => self.actions.push(Action::FO),
                 Rule::EOI => (),

@@ -25,30 +25,6 @@ fn test_start_with_magic_ring() {
 }
 
 #[test]
-fn test_part_limits_gets_filled() {
-    let h = Hook::start_with(&MR(3), COLOR).unwrap();
-    q!(h.part_limits, vec![0]);
-    let h = h.test_perform(&MRConfigurable(6, "main".into())).unwrap();
-    q!(h.part_limits, vec![0, 4]);
-    let result = h.finish();
-    q!(result.part_limits, vec![0, 4, 11]);
-}
-
-#[test]
-fn test_start_with_magic_ring_configurable() {
-    let h = Hook::start_with(&MRConfigurable(3, "main".into()), COLOR).unwrap();
-    q!(h.peculiar.len(), 1);
-    assert!(matches!(h.peculiar.get(&0).unwrap(), Peculiarity::Locked));
-
-    q!(h.now.anchors, Queue::from([1, 2, 3]));
-    q!(h.now.cursor, 4);
-    q!(
-        h.edges,
-        Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
-    );
-}
-
-#[test]
 fn test_test_perform_sc() {
     let mut h = Hook::start_with(&MR(6), COLOR).unwrap();
     q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
@@ -377,44 +353,4 @@ fn test_starting_from_color() {
         &h.edges.data()[0..4],
         &[vec![], vec![0], vec![0, 1], vec![0, 2]]
     );
-}
-
-#[test]
-fn test_around() {
-    let buffer = 2;
-
-    {
-        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        q!(h.edges.len(), 3 + buffer);
-        h = h.test_perform(&Sc).unwrap();
-        h = h.test_perform(&Sc).unwrap();
-        h = h.test_perform(&Sc).unwrap();
-        q!(h.edges.len(), 6 + buffer);
-    }
-    {
-        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        q!(h.edges.len(), 3 + buffer);
-        h = h.test_perform(&AroundStart).unwrap();
-        q!(h.edges.len(), 3 + buffer);
-        h = h.test_perform(&Sc).unwrap();
-        q!(h.edges.len(), 3 + buffer);
-        h = h.test_perform(&AroundEnd).unwrap();
-        q!(h.edges.len(), 6 + buffer);
-    }
-    {
-        let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-        q!(h.edges.len(), 3 + buffer);
-        h = h.test_perform(&AroundStart).unwrap();
-        h = h.test_perform(&Inc).unwrap();
-        h = h.test_perform(&AroundEnd).unwrap();
-        q!(h.edges.len(), 3 + 6 + buffer);
-    }
-    {
-        let mut h = Hook::start_with(&MR(4), COLOR).unwrap();
-        q!(h.edges.len(), 4 + buffer);
-        h = h.test_perform(&AroundStart).unwrap();
-        h = h.test_perform(&Dec).unwrap();
-        h = h.test_perform(&AroundEnd).unwrap();
-        q!(h.edges.len(), 4 + 2 + buffer);
-    }
 }

@@ -26,15 +26,7 @@ pub enum HookError {
         actual: usize,
         location: (usize, usize),
     },
-    /// AroundStart was placed before previous AroundStart got closed with AroundEnd
-    NestedAround,
-    /// AroundStart was not used before AroundEnd
-    UnexpectedAroundEnd,
-    /// The subpattern to repeat inside around did not advance the cursor
-    InsideOfAroundDoesNotProduceStitches,
-    /// The subpattern of around could not be repeated without some leftover stitches
-    CantDoCleanAround,
-    /// Only physical stitches can be repeated. TODO? allow colors?
+    // TODO this variant was used for "arounds". It should also be used with regular repetitions. With any repetition, marks and gotos make no sense.
     IllegalActionInRepetition,
 }
 

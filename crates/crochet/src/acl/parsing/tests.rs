@@ -132,15 +132,6 @@ fn test_repetition_allowed_only_as_the_only_instruction() {
 }
 
 #[test]
-fn test_mr_configurable() {
-    let prog = "
-        MR(6, bruh)
-        ";
-    let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.actions, vec![MRConfigurable(6, "bruh".into())]);
-}
-
-#[test]
 fn test_error_lexer_1() {
     let prog = "sdfsfs";
     assert!(matches!(
