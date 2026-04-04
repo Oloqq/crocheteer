@@ -156,10 +156,10 @@ pub fn build_plushie_from_pattern(
     };
 
     let plushie_def: PlushieDef = match crochet::parse(&msg.pattern) {
-        Some(p) => p,
-        None => {
+        Ok(p) => p,
+        Err(error) => {
             let _ = pipe.sender.send(ConsoleMessage {
-                text: "Error in the pattern".into(),
+                text: format!("Error in the pattern: {}", error),
             });
             return Ok(());
         }

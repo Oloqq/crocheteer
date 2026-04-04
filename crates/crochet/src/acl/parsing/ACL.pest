@@ -12,8 +12,8 @@ round_index = @{ R ~ NUMBER }
 round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
 round_end   =  { "(" ~ NUMBER ~ ")" }
 
-stitches   = { in_round_acion ~ ("," ~ in_round_acion)* }
-in_round_acion  = {
+stitches   = { in_round_action ~ ("," ~ in_round_action)* }
+in_round_action  = {
     (NUMBER ~ KW_STITCH)
   | KW_STITCH
   | interstitchable_action
@@ -50,6 +50,7 @@ interstitchable_action = {
     | (KW_ATTACH ~ arg_ident_int)
 }
 
+// TODO use idents instead, so better errors can be produced
 KW_MR     = { "MR" }
 KW_FO     = { "FO" }
 KW_MARK   = { "mark" }

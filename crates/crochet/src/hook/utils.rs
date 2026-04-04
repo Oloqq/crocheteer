@@ -2,6 +2,7 @@ pub use std::collections::VecDeque as Queue;
 
 pub use crate::acl::{Action, Label};
 
+// TODO many of those should be unreachable given correct pattern parser (BadStarter, AnonymousMrInTheMiddle, DuplicateLabel, UnknownLabel)
 #[derive(Debug)]
 pub enum HookError {
     Empty,

@@ -15,7 +15,7 @@ pub struct HookParams {
     pub enforce_counts: bool,
 }
 
-use self::{HookError::*, utils::*, working_stitch::Stitch};
+use self::{utils::*, working_stitch::Stitch};
 use crate::{
     ColorRgb,
     acl::{
@@ -24,7 +24,9 @@ use crate::{
     },
     hook::hook_result::Peculiarity,
 };
+use HookError::*;
 use hook_result::{Edges, InitialGraph};
+pub use utils::HookError;
 
 #[derive(Clone, Debug)]
 struct Moment {

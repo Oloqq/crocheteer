@@ -21,6 +21,7 @@ pub struct Error {
 pub enum ErrorCode {
     /// Not a syntactically valid ACL program.
     Lexer(pest::error::Error<Rule>),
+    // TODO use identifiers in the lexer, recognize them in parser. This both reduces desyncs and improves error messages
     /// Lexer-parser desync. Stitch was recognized by lexer, but not by parser. This case could be a panic instead, if unit tests could automatically adjust to changes in the grammar.
     UnknownStitch(String),
     /// Lexer-parser desync. Lexer accepted token as an integer and Rust can't parse it into an integer.
