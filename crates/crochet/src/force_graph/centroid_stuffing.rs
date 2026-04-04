@@ -1,6 +1,6 @@
 use glam::Vec3;
 
-pub fn centroid_stuffing(
+pub fn stuff(
     node_positions: &[Vec3],
     centroid_positions: &[Vec3],
     desired_node_distance: f32,

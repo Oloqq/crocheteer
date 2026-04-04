@@ -1,5 +1,8 @@
 use bevy::prelude::*;
 use bevy_egui::EguiContexts;
+use crochet::force_graph::centroid_stuffing;
+use crochet::force_graph::centroid_stuffing::centroid_push_magnitude;
+use crochet::force_graph::link_force::link_force_magnitude;
 use egui_plot::AxisHints;
 use egui_plot::Line;
 use egui_plot::Plot;
@@ -30,7 +33,7 @@ pub struct CustomPlot {}
 impl CustomPlot {
     fn link_force<'a>() -> Line<'a> {
         let values = PlotPoints::from_explicit_callback(
-            move |x| crochet::link_force_magnitude(x as f32, HOOK_SIZE) as f64,
+            move |x| link_force_magnitude(x as f32, HOOK_SIZE) as f64,
             0.0..(HOOK_SIZE as f64 * 10.0),
             100,
         );
@@ -39,7 +42,7 @@ impl CustomPlot {
 
     fn centroid_push_force<'a>() -> Line<'a> {
         let values = PlotPoints::from_explicit_callback(
-            move |x| crochet::centroid_push_magnitude(x as f32, HOOK_SIZE) as f64,
+            move |x| centroid_push_magnitude(x as f32, HOOK_SIZE) as f64,
             0.0..(0.1),
             100,
         );
@@ -48,7 +51,7 @@ impl CustomPlot {
 
     fn centroid_weight<'a>() -> Line<'a> {
         let values = PlotPoints::from_explicit_callback(
-            move |x| crochet::weight(x as f32, HOOK_SIZE) as f64,
+            move |x| centroid_stuffing::weight(x as f32, HOOK_SIZE) as f64,
             0.0..(0.03),
             100,
         );

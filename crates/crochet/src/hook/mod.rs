@@ -1,11 +1,10 @@
 mod errors;
 pub mod hook_result;
-pub mod initializer;
 mod mark_and_goto;
 mod starters;
 mod stitch_builder;
 
-use self::{errors::*, stitch_builder::Stitch};
+use self::{errors::*, stitch_builder::StitchBuilder};
 use crate::{
     ColorRgb,
     acl::{
@@ -141,13 +140,13 @@ impl Hook {
     pub fn perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
         match action {
             Sc => {
-                self = Stitch::linger(self)?
+                self = StitchBuilder::linger(self)?
                     .pull_through()?
                     .pull_over()?
                     .finish()?
             }
             Inc => {
-                self = Stitch::linger(self)?
+                self = StitchBuilder::linger(self)?
                     .pull_through()?
                     .pull_over()?
                     .pull_through()?
@@ -155,7 +154,7 @@ impl Hook {
                     .finish()?;
             }
             Dec => {
-                self = Stitch::linger(self)?
+                self = StitchBuilder::linger(self)?
                     .pull_through()?
                     .next_anchor()?
                     .pull_through()?
@@ -189,7 +188,7 @@ impl Hook {
             MR(_) => return Err(AnonymousMrInTheMiddle),
             FO => {
                 if params.tip_from_fo {
-                    self = Stitch::fasten_off_with_tip(self)?
+                    self = StitchBuilder::fasten_off_with_tip(self)?
                 }
             }
             Color(c) => self.color = *c,
@@ -253,7 +252,7 @@ impl Hook {
         let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
         let new_anchors: Vec<usize>;
         (new_anchors, self) =
-            Stitch::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
+            StitchBuilder::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
         let mut moment_b;
         (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
         // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);

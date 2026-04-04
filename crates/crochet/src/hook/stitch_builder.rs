@@ -4,15 +4,15 @@ use crate::hook::{WorkingLoops, hook_result::Peculiarity};
 
 use super::{Hook, errors::HookError};
 
-pub struct Stitch {
+pub struct StitchBuilder {
     hook: Hook,
     anchored: Option<usize>,
     lingering: bool,
 }
 
-type Progress = Result<Stitch, HookError>;
+type Progress = Result<StitchBuilder, HookError>;
 
-impl Stitch {
+impl StitchBuilder {
     pub fn linger(hook: Hook) -> Progress {
         Ok(Self {
             hook,

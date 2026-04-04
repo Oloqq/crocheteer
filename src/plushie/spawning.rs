@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use crochet::{ColorRgb, Initializer, PlushieDef};
+use crochet::force_graph::Initializer;
+use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;

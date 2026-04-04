@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use crochet::{centroid_stuffing, link_force_magnitude};
 
 use crate::{
     HOOK_SIZE,
@@ -24,8 +23,11 @@ pub fn compute_stuffing_force(
     let node_positions: Vec<Vec3> = nodes.iter().map(|x| x.0.translation).collect();
     let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
 
-    let (node_movement, centroid_new_positions) =
-        centroid_stuffing(&node_positions, &centroid_positions, HOOK_SIZE);
+    let (node_movement, centroid_new_positions) = crochet::force_graph::centroid_stuffing::stuff(
+        &node_positions,
+        &centroid_positions,
+        HOOK_SIZE,
+    );
 
     for ((_, mut received_force), calculated_stuffing) in
         nodes.into_iter().zip(node_movement.into_iter())
@@ -55,7 +57,10 @@ pub fn compute_link_forces(
         };
 
         let diff = &src_transform.translation - &tgt_transform.translation;
-        let magnitude = link_force_magnitude(diff.length(), desired_stitch_distance);
+        let magnitude = crochet::force_graph::link_force::link_force_magnitude(
+            diff.length(),
+            desired_stitch_distance,
+        );
         link.tension = magnitude;
         let force: Vec3 = -diff.normalize() * magnitude;
 

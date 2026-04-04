@@ -1,5 +1,4 @@
-use crate::ColorRgb;
-
+pub type ColorRgb = [u8; 3];
 pub type Edges = Vec<Vec<usize>>;
 
 pub struct Node {
