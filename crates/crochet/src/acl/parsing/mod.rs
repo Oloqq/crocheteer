@@ -1,8 +1,6 @@
 mod action_sequence;
 pub mod errors;
-mod parsing;
-#[cfg(test)]
-mod tests;
+mod pattern_builder;
 
 use std::collections::{HashMap, HashSet};
 
@@ -13,12 +11,12 @@ use pest_derive::Parser;
 use crate::acl::{Action, Pattern};
 
 #[derive(Parser)]
-#[grammar = "acl/pest_parser/ACL.pest"]
+#[grammar = "acl/parsing/ACL.pest"]
 struct PatParser;
 
 #[derive(Debug)]
 pub struct PatternBuilder {
-    pub parameters: HashMap<String, String>,
+    parameters: HashMap<String, String>,
     labels: HashSet<String>,
     actions: Vec<Action>,
     /// Kept for auto inserting BL at start of round
@@ -34,19 +32,22 @@ enum CurrentLoop {
 
 impl PatternBuilder {
     pub fn parse(program: &str) -> Result<Pattern, Error> {
-        let mut p = Self {
+        let mut builder = Self {
             parameters: Default::default(),
             labels: Default::default(),
             actions: vec![],
             current_loop: CurrentLoop::Both,
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
-        p.program(line_pairs)?;
+        builder.program(line_pairs)?;
 
         Ok(Pattern {
-            parameters: p.parameters,
-            actions: p.actions,
+            parameters: builder.parameters,
+            actions: builder.actions,
             cursor: 0,
         })
     }
 }
+
+#[cfg(test)]
+mod tests;

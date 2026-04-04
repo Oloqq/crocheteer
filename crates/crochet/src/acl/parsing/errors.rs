@@ -3,7 +3,7 @@ use std::fmt::Display;
 pub use ErrorCode::*;
 use pest::iterators::Pair;
 
-use super::Rule;
+use crate::acl::parsing::Rule;
 
 #[derive(Debug, PartialEq)]
 pub struct Error {

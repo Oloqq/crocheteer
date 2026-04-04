@@ -29,18 +29,9 @@ pub struct Params {
     /// Required displacement on a node for it to be affected. (Displacements with maginute below the threshold will be ignored)
     pub minimum_displacement: f32,
 
-    pub limbs: HashMap<String, LimbParams>,
     pub hook: HookParams,
 
-    pub skelet_stuffing: SkeletParams,
     pub track_performance: bool,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct LimbParams {
-    pub lock_x: Option<f32>,
-    pub lock_y: Option<f32>,
-    pub lock_z: Option<f32>,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -63,18 +54,6 @@ pub struct CentroidParams {
     pub number: usize,
     pub force: f32,
     pub min_nodes_per_centroid: usize,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct SkeletParams {
-    pub enable: bool,
-    pub cluster_number: usize,
-    pub must_include_points: f32,
-    pub allowed_overlap: f32,
-    pub autoskelet: bool,
-    pub interval: usize,
-    pub interval_left: usize,
-    pub bones: Vec<glam::Vec3>,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -121,10 +100,8 @@ impl Params {
             single_loop_force: 0.05,
             initializer: Initializer::Cylinder,
             minimum_displacement: 0.001,
-            skelet_stuffing: Default::default(),
             track_performance: false,
             hook: Default::default(),
-            limbs: HashMap::new(),
         }
     }
 
@@ -134,63 +111,6 @@ impl Params {
             reflect_locked: true,
             ..Self::unconstrained_floating()
         }
-    }
-
-    fn update_one(&mut self, key: &str, val: &str) -> Result<(), Box<dyn Error>> {
-        match key {
-            "dsd" => self.desired_stitch_distance = val.parse()?,
-            "centroids" => self.centroids.number = val.parse()?,
-            "stuffing_force" => self.centroids.force = val.parse()?,
-            "points_per_centroid" => self.centroids.min_nodes_per_centroid = val.parse()?,
-            "single_loop_force" => self.single_loop_force = val.parse()?,
-            "rooted" | "reflect_locked" => self.reflect_locked = val.parse()?,
-            "floored" => self.floor = val.parse()?,
-            "initializer" => {
-                self.initializer = match val {
-                    "cylinder" => Initializer::Cylinder,
-                    "obo" | "onebyone" => Initializer::OneByOne(OneByOneParams::default()),
-                    _ => {
-                        log::debug!("Unknown value ({}) for parameter: {}", val, key);
-                        Initializer::Cylinder
-                    }
-                }
-            }
-            "skelet_interval" => {
-                self.skelet_stuffing.enable = true;
-                self.skelet_stuffing.autoskelet = true;
-                self.skelet_stuffing.interval = val.parse()?
-            }
-            "skelet_clusters" => self.skelet_stuffing.cluster_number = val.parse()?,
-            "skelet_k1" => self.skelet_stuffing.must_include_points = val.parse()?,
-            "skelet_k2" => self.skelet_stuffing.allowed_overlap = val.parse()?,
-            "tip_from_fo" => self.hook.tip_from_fo = val.parse()?,
-            "nnn" | "node_to_node" => self.node_to_node = val.parse()?,
-            _ => {
-                log::debug!("Unknown parameter: {}", key);
-                return Err(Box::new(ParamsError::Unknown(key.to_owned())));
-            }
-        }
-        return Ok(());
-    }
-
-    pub fn update(&mut self, src: &HashMap<String, String>) -> Vec<String> {
-        let mut wrong = vec![];
-        for (key, val) in src {
-            match self.update_one(key, val) {
-                Ok(_) => (),
-                Err(err) => {
-                    if err.is::<ParamsError>() {
-                        match err.downcast::<ParamsError>().unwrap().as_ref() {
-                            ParamsError::Unknown(unk) => {
-                                wrong.push(format!("Unknown parameter: \"{}\"", unk))
-                            }
-                        }
-                    }
-                    wrong.push(format!("Bad value for parameter \"{}\" ({})", key, val))
-                }
-            }
-        }
-        wrong
     }
 }
 
@@ -219,21 +139,6 @@ impl Default for CentroidParams {
     }
 }
 
-impl Default for SkeletParams {
-    fn default() -> Self {
-        Self {
-            enable: false,
-            cluster_number: 50,
-            must_include_points: 0.95,
-            allowed_overlap: 5.0,
-            bones: vec![],
-            autoskelet: true,
-            interval: 50,
-            interval_left: 0,
-        }
-    }
-}
-
 impl Default for OneByOneParams {
     fn default() -> Self {
         Self {
@@ -250,104 +155,4 @@ impl Default for AutoStoppingParams {
             max_relaxing_iterations: 100,
         }
     }
-}
-
-impl Default for LimbParams {
-    fn default() -> Self {
-        Self {
-            lock_x: None,
-            lock_y: None,
-            lock_z: None,
-        }
-    }
-}
-
-#[allow(unused)]
-pub mod handpicked {
-    use super::*;
-
-    macro_rules! generate_get_handpicked {
-        ($($name:ident),*) => {
-            pub fn get(name: &str) -> Option<Params> {
-                match name {
-                    $(stringify!($name) => Some($name()),)*
-                    _ => None,
-                }
-            }
-        };
-    }
-
-    pub fn default() -> Params {
-        Params::default()
-    }
-
-    pub fn grzib() -> Params {
-        Params {
-            autostop: AutoStoppingParams {
-                // relaxes in 172 iterations
-                acceptable_tension: 0.1,
-                max_relaxing_iterations: 300,
-            },
-            centroids: CentroidParams {
-                force: 0.2,
-                number: 3,
-                ..Default::default()
-            },
-            ..Params::floored()
-        }
-    }
-
-    pub fn grzob() -> Params {
-        Params {
-            autostop: AutoStoppingParams {
-                // relaxes in 172 iterations
-                acceptable_tension: 0.1,
-                max_relaxing_iterations: 300,
-            },
-            gravity: 0.0,
-            single_loop_force: 0.0,
-            centroids: CentroidParams {
-                force: 0.2,
-                number: 3,
-                ..Default::default()
-            },
-            ..Params::floored()
-        }
-    }
-
-    pub fn pillar() -> Params {
-        Params {
-            autostop: AutoStoppingParams {
-                acceptable_tension: 0.000000002,
-                max_relaxing_iterations: 500,
-            },
-            gravity: 0.0,
-            single_loop_force: 0.0,
-            centroids: CentroidParams {
-                force: 0.05,
-                number: 2,
-                ..Default::default()
-            },
-            ..Params::floored()
-        }
-    }
-
-    pub fn disk() -> Params {
-        Params {
-            autostop: AutoStoppingParams {
-                acceptable_tension: 0.000000002,
-                max_relaxing_iterations: 500,
-            },
-            gravity: 0.0,
-            single_loop_force: 0.0,
-            centroids: CentroidParams {
-                force: 0.05,
-                number: 3,
-                ..Default::default()
-            },
-            ..Params::floored()
-        }
-    }
-
-    generate_get_handpicked!(default, grzib, grzob, pillar, disk);
 }

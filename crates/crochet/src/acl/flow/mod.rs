@@ -11,7 +11,7 @@ pub trait Flow {
 
 #[cfg(test)]
 mod tests {
-    use crate::acl::{pattern::Action::*, pest_parser::PatternBuilder};
+    use crate::acl::{parsing::PatternBuilder, pattern::Action::*};
     use pretty_assertions::assert_eq;
 
     use super::{ergoflow::ErgoFlow, simple_flow::SimpleFlow, *};

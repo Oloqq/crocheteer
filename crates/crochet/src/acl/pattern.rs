@@ -5,7 +5,6 @@ pub struct Pattern {
     #[allow(dead_code)] // TODO
     pub parameters: HashMap<String, String>,
     pub actions: Vec<Action>,
-    /// For Flow implementation
     pub cursor: usize,
 }
 
@@ -33,6 +32,12 @@ impl Flow for Pattern {
 use crate::{ColorRgb, acl::Flow};
 
 pub type Label = String;
+
+// pub struct Action {
+//     kind: ActionKind,
+//     /// Byte location in the input string that produced this action
+//     origin: (usize, usize),
+// }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Action {

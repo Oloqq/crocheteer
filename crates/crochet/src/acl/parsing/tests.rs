@@ -1,7 +1,7 @@
 use Action::*;
 use pretty_assertions::assert_eq;
 
-use crate::acl::pest_parser::errors::ErrorCode;
+use crate::acl::parsing::errors::ErrorCode;
 
 use super::*;
 #[test]

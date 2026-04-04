@@ -2,8 +2,8 @@ use pest::iterators::{Pair, Pairs};
 
 use super::{CurrentLoop, PatternBuilder, Rule, errors::*};
 use crate::acl::{
+    parsing::action_sequence::ActionSequence,
     pattern::{Action, Label},
-    pest_parser::action_sequence::ActionSequence,
 };
 
 impl PatternBuilder {
