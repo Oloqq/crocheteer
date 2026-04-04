@@ -15,8 +15,6 @@ pub struct Params {
     pub desired_stitch_distance: f32,
     /// Configuration of centroid stuffing
     pub centroids: CentroidParams,
-    /// Configuration of automatic simulation stopping
-    pub autostop: AutoStoppingParams,
     /// if true, the whole shape will be translated by displacement of root, so that root stays at (0, 0, 0).
     /// not applicable to LegacyPlushie
     pub reflect_locked: bool,
@@ -38,14 +36,6 @@ pub struct Params {
 pub struct HookParams {
     pub tip_from_fo: bool,
     pub enforce_counts: bool,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct AutoStoppingParams {
-    /// Minimal tension at which the Plushie is considered relaxed
-    pub acceptable_tension: f32,
-    /// Hard limit on the relaxing process
-    pub max_relaxing_iterations: usize,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -73,24 +63,10 @@ pub struct OneByOneParams {
     pub force_expansion_after_time: f32,
 }
 
-#[derive(Debug)]
-pub enum ParamsError {
-    Unknown(String),
-}
-
-impl std::fmt::Display for ParamsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self:?}")
-    }
-}
-
-impl Error for ParamsError {}
-
 impl Params {
     pub fn unconstrained_floating() -> Self {
         Self {
             timestep: 1.0,
-            autostop: Default::default(),
             centroids: Default::default(),
             floor: false,
             gravity: 0.003,
@@ -144,15 +120,6 @@ impl Default for OneByOneParams {
         Self {
             acceptable_displacement_for_expanding: 0.03,
             force_expansion_after_time: 100.0,
-        }
-    }
-}
-
-impl Default for AutoStoppingParams {
-    fn default() -> Self {
-        Self {
-            acceptable_tension: 0.02,
-            max_relaxing_iterations: 100,
         }
     }
 }

@@ -75,6 +75,7 @@ impl Stitch {
         Ok(self.hook)
     }
 
+    #[allow(dead_code)]
     pub fn chain(mut self, stitches: usize) -> Result<Hook, HookError> {
         if stitches == 0 {
             return Err(ChainOfZero);

@@ -48,7 +48,7 @@ pub struct Hook {
     labels: HashMap<Label, Moment>,
     /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.
     color: ColorRgb,
-    /// Storage of index -> it's color. todo: use less memory by storing changes
+    /// Storage of index -> it's color.
     colors: Vec<ColorRgb>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_stitch: Option<usize>,

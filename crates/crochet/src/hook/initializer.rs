@@ -1,8 +1,8 @@
 // TODO refactor everything in here
+#![allow(dead_code)]
 
 use std::{
     collections::HashMap,
-    f32::consts::PI,
     ops::{Index, IndexMut},
 };
 

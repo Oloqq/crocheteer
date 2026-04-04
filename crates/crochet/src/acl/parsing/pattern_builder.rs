@@ -72,7 +72,7 @@ impl PatternBuilder {
                 let count_pair = round_end_pair.into_inner().next().unwrap();
                 let count = integer(&count_pair)?;
                 self.actions.push(
-                    // TODO remove line_col from this?
+                    // TODO remove line_col from this? - first make sure hook can report the location
                     Action::EnforceAnchors(count, count_pair.line_col())
                         .with_origin(count_pair.as_span()),
                 );

@@ -6,9 +6,8 @@ use crate::{
 
 mod acl;
 mod force_graph;
-#[allow(unused)] // TODO
 mod hook;
-#[allow(unused)] // TODO
+#[allow(unused)] // TODO unused
 mod params;
 mod plushie_definition;
 
