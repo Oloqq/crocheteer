@@ -1,3 +1,5 @@
+use crate::ColorRgb;
+
 pub type Label = String;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -30,7 +32,7 @@ pub enum Action {
     /// Fasten off
     FO,
     /// Change yarn color
-    Color(colors::Color),
+    Color(ColorRgb),
     /// Connect two stitches
     Sew(Label, Label),
     /// Verify the number of available anchors
@@ -49,9 +51,4 @@ impl Action {
             _ => false,
         }
     }
-}
-
-// TODO no mod
-pub mod colors {
-    pub type Color = (usize, usize, usize); // TODO u8
 }

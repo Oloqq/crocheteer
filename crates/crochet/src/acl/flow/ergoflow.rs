@@ -1,4 +1,4 @@
-// TODO where is this used beside tests?
+// TODO where is this used beside tests? why is SimpleFlow tagged unused but this isn't?
 
 use std::ops::{Add, AddAssign, Mul};
 
@@ -138,7 +138,7 @@ mod tests {
         flow += 12 * 3 * Sc;
         flow += Mark("0".into()) + BLO;
         flow += 6 * Dec + FO;
-        flow += Goto("0".into()) + FLO + Color((255, 255, 0));
+        flow += Goto("0".into()) + FLO + Color((255, 255, 0).into());
         flow += 12 * Inc;
         flow += BL + (24 * Sc * 2);
         flow += 12 * Dec + 6 * Dec + FO;
@@ -156,7 +156,7 @@ mod tests {
 
         actions.push(Goto("0".into()));
         actions.push(FLO);
-        actions.push(Color((255, 255, 0)));
+        actions.push(Color((255, 255, 0).into()));
         actions.append(&mut vec![Inc; 12]);
         actions.push(BL);
         actions.append(&mut vec![Sc; 24]);

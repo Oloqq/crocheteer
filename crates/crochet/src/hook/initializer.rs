@@ -6,7 +6,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-use crate::{acl::Color, hook::hook_result::Peculiarity, params::Params};
+use crate::{ColorRgb, hook::hook_result::Peculiarity, params::Params};
 
 use super::hook_result::InitialGraph;
 
@@ -35,14 +35,14 @@ pub enum Initializer {
 pub struct Nodes {
     pub points: Vec<Point>,
     pub peculiarities: HashMap<usize, Peculiarity>,
-    pub colors: Vec<Color>,
+    pub colors: Vec<ColorRgb>,
 }
 
 impl Nodes {
     pub fn new(
         points: Vec<Point>,
         peculiarities: HashMap<usize, Peculiarity>,
-        colors: Vec<Color>,
+        colors: Vec<ColorRgb>,
     ) -> Self {
         let new = Self {
             points,

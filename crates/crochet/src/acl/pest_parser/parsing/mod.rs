@@ -216,10 +216,10 @@ impl Pattern {
                 Action::BL
             }
             Rule::KW_COLOR => {
-                let r = integer(&tokens.next().unwrap())?;
-                let g = integer(&tokens.next().unwrap())?;
-                let b = integer(&tokens.next().unwrap())?;
-                Action::Color((r, g, b))
+                let r = integer_u8(&tokens.next().unwrap())?;
+                let g = integer_u8(&tokens.next().unwrap())?;
+                let b = integer_u8(&tokens.next().unwrap())?;
+                Action::Color([r, g, b])
             }
             Rule::KW_ATTACH => {
                 let args_pair = tokens.next().unwrap();
@@ -280,6 +280,13 @@ pub fn stitch(src: &str) -> Option<Action> {
 
 // TODO return u32?
 fn integer(pair: &Pair<Rule>) -> Result<usize, Error> {
+    Ok(pair
+        .as_str()
+        .parse()
+        .map_err(|_| error(ExpectedInteger(pair.as_str().to_string()), pair))?)
+}
+
+fn integer_u8(pair: &Pair<Rule>) -> Result<u8, Error> {
     Ok(pair
         .as_str()
         .parse()

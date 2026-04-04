@@ -12,6 +12,8 @@ mod hook;
 mod params;
 mod plushie_definition;
 
+pub type ColorRgb = [u8; 3];
+
 pub use force_graph::{
     centroid_push_magnitude, centroid_stuffing, initializers::Initializer, link_force_magnitude,
     link_forces, weight,
@@ -33,9 +35,7 @@ pub fn parse(acl_source: &str) -> Option<PlushieDef> {
         nodes: semantic_result
             .colors
             .iter()
-            .map(|c| Node {
-                color: [c.0 as u8, c.1 as u8, c.2 as u8],
-            })
+            .map(|color| Node { color: *color })
             .collect(),
     })
 }

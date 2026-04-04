@@ -171,10 +171,10 @@ impl Stitch {
 mod tests {
     use pretty_assertions::assert_eq as q;
 
-    use crate::{acl::Action::*, acl::Color, hook::hook_result::Edges};
+    use crate::{ColorRgb, acl::Action::*, hook::hook_result::Edges};
 
     use super::{super::utils::*, *};
-    const COLOR: Color = (255, 0, 0);
+    const COLOR: ColorRgb = [255, 0, 0];
 
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))

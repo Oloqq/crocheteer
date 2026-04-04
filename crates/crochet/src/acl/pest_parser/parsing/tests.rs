@@ -240,3 +240,13 @@ fn test_error_undefined_label() {
         ErrorCode::UndefinedLabel("broh".into())
     );
 }
+
+// TODO clearer error showing the bounds
+#[test]
+fn test_error_valid_rgb() {
+    let prog = ": color(700, 200, 200)";
+    assert_eq!(
+        Pattern::parse(prog).unwrap_err().code,
+        ErrorCode::ExpectedInteger("700".into())
+    );
+}

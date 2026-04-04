@@ -17,7 +17,11 @@ pub struct HookParams {
 
 use self::{HookError::*, utils::*, working_stitch::Stitch};
 use crate::{
-    acl::{Action, Action::*, Color, Flow, Label},
+    ColorRgb,
+    acl::{
+        Action::{self, *},
+        Flow, Label,
+    },
     hook::hook_result::Peculiarity,
 };
 use hook_result::{Edges, InitialGraph};
@@ -43,9 +47,9 @@ pub struct Hook {
     /// Storage of spots for Mark and Goto
     labels: HashMap<Label, Moment>,
     /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.
-    color: Color,
+    color: ColorRgb,
     /// Storage of index -> it's color. todo: use less memory by storing changes
-    colors: Vec<Color>,
+    colors: Vec<ColorRgb>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_stitch: Option<usize>,
     /// Last stitch created (not counting actions like mark, goto)
