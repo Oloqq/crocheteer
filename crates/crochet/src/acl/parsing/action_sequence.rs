@@ -1,8 +1,8 @@
-use super::Action;
+use crate::acl::pattern::ActionWithOrigin;
 
 #[derive(Debug)]
 pub struct ActionSequence {
-    actions: Vec<Action>,
+    actions: Vec<ActionWithOrigin>,
 }
 
 impl ActionSequence {
@@ -10,7 +10,7 @@ impl ActionSequence {
         ActionSequence { actions: vec![] }
     }
 
-    pub fn actions(&self) -> &Vec<Action> {
+    pub fn actions(&self) -> &Vec<ActionWithOrigin> {
         &self.actions
     }
 
@@ -21,11 +21,11 @@ impl ActionSequence {
         }
     }
 
-    pub fn push(&mut self, action: Action) {
+    pub fn push(&mut self, action: ActionWithOrigin) {
         self.push_repeated(action, 1);
     }
 
-    pub fn push_repeated(&mut self, action: Action, times: u32) {
+    pub fn push_repeated(&mut self, action: ActionWithOrigin, times: u32) {
         self.actions.reserve(times as usize);
         for _ in 0..times {
             self.actions.push(action.clone());

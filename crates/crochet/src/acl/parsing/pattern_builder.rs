@@ -62,7 +62,8 @@ impl PatternBuilder {
         let action_sequence = self.stitches(stitches.into_inner())?;
 
         for _ in 0..repetitions {
-            self.actions.append(&mut action_sequence.actions().clone());
+            let mut to_append = action_sequence.actions().clone().into_iter().collect();
+            self.actions.append(&mut to_append);
         }
 
         if let Some(mby_round_end) = pairs.peek() {
@@ -70,8 +71,11 @@ impl PatternBuilder {
                 let round_end_pair = pairs.next().unwrap();
                 let count_pair = round_end_pair.into_inner().next().unwrap();
                 let count = integer(&count_pair)?;
-                self.actions
-                    .push(Action::EnforceAnchors(count, count_pair.line_col()));
+                self.actions.push(
+                    // TODO remove line_col from this?
+                    Action::EnforceAnchors(count, count_pair.line_col())
+                        .with_origin(count_pair.as_span()),
+                );
             }
         }
 
@@ -81,7 +85,7 @@ impl PatternBuilder {
     fn reset_to_both_loops(&mut self) {
         match self.current_loop {
             CurrentLoop::Back | CurrentLoop::Front => {
-                self.actions.push(Action::BL);
+                self.actions.push(Action::BL.without_origin()); // since this is implicit, there is no real origin. Maybe the colon that starts a round could be linked here, or if this (0, 0) causes issues, store origin in an Option
                 self.current_loop = CurrentLoop::Both;
             }
             CurrentLoop::Both => (),
@@ -91,6 +95,7 @@ impl PatternBuilder {
     fn stitches(&mut self, sequences: Pairs<Rule>) -> Result<ActionSequence, Error> {
         let mut result = ActionSequence::new();
         for pair in sequences {
+            let span = pair.as_span();
             let mut sequence = pair.into_inner();
             let first = sequence.next().unwrap();
             match first.as_rule() {
@@ -99,12 +104,12 @@ impl PatternBuilder {
                     let action = stitch(sequence.next().unwrap().as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
 
-                    result.push_repeated(action, number as u32);
+                    result.push_repeated(action.with_origin(span), number as u32);
                 }
                 Rule::KW_STITCH => {
                     let action = stitch(first.as_str())
                         .ok_or(error(UnknownStitch(first.as_str().to_string()), &first))?;
-                    result.push(action);
+                    result.push(action.with_origin(span));
                 }
                 Rule::repetition => {
                     let mut what_howmuch = first.into_inner();
@@ -136,7 +141,7 @@ impl PatternBuilder {
                 }
                 Rule::interstitchable_action => {
                     let action = self.interstitchable_action(first.into_inner())?;
-                    result.push(action);
+                    result.push(action.with_origin(span));
                 }
                 _ => unreachable!("{}", first),
             }
@@ -146,6 +151,7 @@ impl PatternBuilder {
 
     fn control(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
         for pair in pairs {
+            let span = pair.as_span();
             assert!(matches!(pair.as_rule(), Rule::action));
             let mut tokens = pair.into_inner();
             let opcode = tokens.next().unwrap();
@@ -153,13 +159,14 @@ impl PatternBuilder {
                 Rule::KW_MR => {
                     let mut args = tokens.next().unwrap().into_inner();
                     let num = integer(&args.next().unwrap())?;
-                    self.actions.push(Action::MR(num));
+                    self.actions.push(Action::MR(num).with_origin(span));
                 }
-                Rule::KW_FO => self.actions.push(Action::FO),
+                Rule::KW_FO => self.actions.push(Action::FO.with_origin(opcode.as_span())),
                 Rule::EOI => (),
                 Rule::interstitchable_action => {
+                    let origin = (opcode.as_span().start(), opcode.as_span().end());
                     let action = self.interstitchable_action(opcode.into_inner())?;
-                    self.actions.push(action);
+                    self.actions.push(action.with_origin_range(origin));
                 }
                 Rule::KW_SEW => {
                     let args = tokens.next().unwrap();
@@ -176,7 +183,8 @@ impl PatternBuilder {
                     if !self.labels.contains(&node2) {
                         return err(UndefinedLabel(node2), &node1pair);
                     }
-                    self.actions.push(Action::Sew(node1, node2));
+                    self.actions
+                        .push(Action::Sew(node1, node2).with_origin(span));
                 }
                 _ => unreachable!("{opcode}"),
             }

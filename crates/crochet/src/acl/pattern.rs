@@ -1,6 +1,10 @@
+use pest::Span;
+
+use crate::{ColorRgb, acl::Flow};
+
 #[derive(Debug)]
 pub struct Pattern {
-    pub actions: Vec<Action>,
+    pub actions: Vec<ActionWithOrigin>,
     pub cursor: usize,
 }
 
@@ -9,7 +13,7 @@ impl Flow for Pattern {
         if self.cursor < self.actions.len() {
             let got = self.actions[self.cursor].clone();
             self.cursor += 1;
-            Some(got)
+            Some(got.action)
         } else {
             None
         }
@@ -18,22 +22,22 @@ impl Flow for Pattern {
     fn peek(&self) -> Option<Action> {
         if self.cursor < self.actions.len() {
             let got = self.actions[self.cursor].clone();
-            Some(got)
+            Some(got.action)
         } else {
             None
         }
     }
 }
 
-use crate::{ColorRgb, acl::Flow};
-
 pub type Label = String;
+pub type ByteRange = (usize, usize);
 
-// pub struct Action {
-//     kind: ActionKind,
-//     /// Byte location in the input string that produced this action
-//     origin: (usize, usize),
-// }
+#[derive(Debug, Clone, PartialEq)]
+pub struct ActionWithOrigin {
+    pub action: Action,
+    /// Byte location in the input string that produced this action. Will be (0, 0) for implicit BL at round start.
+    pub origin: ByteRange,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Action {
@@ -68,4 +72,27 @@ pub enum Action {
     Sew(Label, Label),
     /// Verify the number of available anchors
     EnforceAnchors(usize, (usize, usize)),
+}
+
+impl Action {
+    pub(crate) fn with_origin(self, span: Span) -> ActionWithOrigin {
+        ActionWithOrigin {
+            action: self,
+            origin: (span.start(), span.end()),
+        }
+    }
+
+    pub(crate) fn with_origin_range(self, byte_range: ByteRange) -> ActionWithOrigin {
+        ActionWithOrigin {
+            action: self,
+            origin: byte_range,
+        }
+    }
+
+    pub(crate) fn without_origin(self) -> ActionWithOrigin {
+        ActionWithOrigin {
+            action: self,
+            origin: (0, 0),
+        }
+    }
 }

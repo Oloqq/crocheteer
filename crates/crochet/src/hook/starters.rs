@@ -28,18 +28,18 @@ impl Hook {
                     tmp.grow();
                     tmp
                 };
-                let this_will_be_overwritten_how_do_i_design_it_readably_bruh_please_tell_me_via_pr_thanks =
-                    Moment {
-                        anchors: Queue::new(),
-                        cursor: 0,
-                        working_on: WorkingLoops::Both,
-                        limb_ownerhip: 0,
-                    };
+                // TODO replace with from_magic_ring? need to keep the logic separate enough to allow multipart
+                let will_be_overwritten_with_magic_ring = Moment {
+                    anchors: Queue::new(),
+                    cursor: 0,
+                    working_on: WorkingLoops::Both,
+                    limb_ownerhip: 0,
+                };
 
                 let mut result = Self {
                     edges,
                     peculiar: HashMap::new(),
-                    now: this_will_be_overwritten_how_do_i_design_it_readably_bruh_please_tell_me_via_pr_thanks,
+                    now: will_be_overwritten_with_magic_ring,
                     parents: vec![],
                     labels: HashMap::new(),
                     override_previous_stitch: None,

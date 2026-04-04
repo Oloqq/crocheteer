@@ -8,7 +8,7 @@ pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::acl::{Action, Pattern};
+use crate::acl::{Pattern, pattern::ActionWithOrigin};
 
 #[derive(Parser)]
 #[grammar = "acl/parsing/ACL.pest"]
@@ -18,7 +18,7 @@ struct PatParser;
 pub struct PatternBuilder {
     parameters: HashMap<String, String>, // TODO remove parameters from ACL? Should there be any in the pattern, or should they all reside in "Crocheteer project files"?
     labels: HashSet<String>,
-    actions: Vec<Action>,
+    actions: Vec<ActionWithOrigin>,
     /// Kept for auto inserting BL at start of round
     current_loop: CurrentLoop,
 }

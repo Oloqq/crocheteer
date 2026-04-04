@@ -56,8 +56,10 @@ pub struct Hook {
     last_stitch: Option<Action>,
     /// Was the last action a mark?
     last_mark: Option<Action>,
-    /// Map from labels the index of the node they affect. For now works with just MRConfigurable.
+    // TODO seems like it works any label, test it
+    /// Map from labels to the index of the node they affect. For now works with just MRConfigurable.
     mark_to_node: HashMap<String, usize>,
+    // TODO remove temporary
     /// Temporary: remake Label into String, then merge this and mark_to_node
     tmp_mark_to_node: HashMap<Label, usize>,
     /// Indexes where parts begin and end. At the end, first element should be zero, last element should be colors.len()
