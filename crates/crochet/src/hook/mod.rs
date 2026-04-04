@@ -1,3 +1,4 @@
+mod edges;
 mod errors;
 pub mod hook_result;
 mod mark_and_goto;
@@ -11,11 +12,11 @@ use crate::{
         Action::{self, *},
         Flow, Label,
     },
-    hook::hook_result::Peculiarity,
+    hook::{edges::Edges, hook_result::Peculiarity},
 };
 use HookError::*;
 pub use errors::HookError;
-use hook_result::{Edges, InitialGraph};
+use hook_result::InitialGraph;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Clone, Default)]

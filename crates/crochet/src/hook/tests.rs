@@ -19,7 +19,7 @@ fn test_start_with_magic_ring() {
     q!(h.now.cursor, 4);
     q!(
         h.edges,
-        Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+        Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
     );
     q!(h.part_limits, vec![0]);
 }
@@ -45,7 +45,7 @@ fn test_test_perform_inc() {
     q!(h.now.cursor, 6);
     q!(
         h.edges,
-        Edges::from_unchecked(vec![
+        Edges::from(vec![
             vec![],
             vec![0],
             vec![0, 1],

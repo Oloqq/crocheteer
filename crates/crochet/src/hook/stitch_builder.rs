@@ -169,11 +169,12 @@ impl StitchBuilder {
 mod tests {
     use pretty_assertions::assert_eq as q;
 
-    use crate::{ColorRgb, acl::Action::*, hook::hook_result::Edges};
+    use crate::{ColorRgb, acl::Action::*, hook::edges::Edges};
 
     use super::{super::errors::*, *};
     const COLOR: ColorRgb = [255, 0, 0];
 
+    // TODO
     // test magic ring lower and upper limit
     // test starting with short chain (e.g. Ch(1))
     // test work after FO causes NoAnchorToPullThrough
@@ -186,7 +187,7 @@ mod tests {
         q!(h.now.cursor, 4);
         q!(
             h.edges,
-            Edges::from_unchecked(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+            Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
         );
         h
     }

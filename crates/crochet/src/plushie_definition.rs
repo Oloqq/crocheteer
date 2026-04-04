@@ -1,4 +1,5 @@
 pub type ColorRgb = [u8; 3];
+// TODO reuse the structure from hook?
 pub type Edges = Vec<Vec<usize>>;
 
 pub struct Node {
