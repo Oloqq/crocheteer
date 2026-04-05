@@ -29,18 +29,18 @@ impl StitchBuilder {
         Ok(self)
     }
 
-    pub fn next_anchor(mut self) -> Progress {
+    pub fn next_anchor(mut self) -> Self {
         let hook = &mut self.hook;
-        hook.now.anchors.pop_front().expect("there was an anchor");
-        Ok(self)
+        hook.now.anchors.pop_front().expect("this should only be reachable after a successful pull_through, which is responsible for reporting an Err");
+        self
     }
 
-    fn register_stitch(mut self) -> Progress {
+    fn register_stitch(mut self) -> Self {
         self.hook.edges.grow();
         self.hook.colors.push(self.hook.color);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
-        Ok(self)
+        self
     }
 
     fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress {
@@ -57,7 +57,7 @@ impl StitchBuilder {
             }
         }
 
-        Ok(self.register_stitch()?)
+        Ok(self.register_stitch())
     }
 
     pub fn pull_over(mut self) -> Progress {
@@ -67,7 +67,7 @@ impl StitchBuilder {
 
     pub fn finish(mut self) -> Result<Hook, HookError> {
         if self.anchored.is_some() {
-            self = self.next_anchor()?
+            self = self.next_anchor()
         }
         Ok(self.hook)
     }

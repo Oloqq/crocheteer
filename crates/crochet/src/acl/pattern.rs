@@ -10,19 +10,29 @@ pub struct Pattern {
 
 impl Flow for Pattern {
     fn next(&mut self) -> Option<Action> {
+        self.next_with_origin()
+            .map(|action_with_origin| action_with_origin.action)
+    }
+
+    fn peek(&self) -> Option<Action> {
+        self.peek_with_origin()
+            .map(|action_with_origin| action_with_origin.action)
+    }
+
+    fn next_with_origin(&mut self) -> Option<ActionWithOrigin> {
         if self.cursor < self.actions.len() {
             let got = self.actions[self.cursor].clone();
             self.cursor += 1;
-            Some(got.action)
+            Some(got)
         } else {
             None
         }
     }
 
-    fn peek(&self) -> Option<Action> {
+    fn peek_with_origin(&self) -> Option<ActionWithOrigin> {
         if self.cursor < self.actions.len() {
             let got = self.actions[self.cursor].clone();
-            Some(got.action)
+            Some(got)
         } else {
             None
         }

@@ -1,4 +1,4 @@
-use crate::acl::pattern::Action;
+use crate::acl::pattern::{Action, ActionWithOrigin};
 
 use super::Flow;
 
@@ -31,6 +31,20 @@ impl Flow for SimpleFlow {
         } else {
             None
         }
+    }
+
+    fn next_with_origin(&mut self) -> Option<ActionWithOrigin> {
+        Some(ActionWithOrigin {
+            action: self.next()?,
+            origin: (0, 0),
+        })
+    }
+
+    fn peek_with_origin(&self) -> Option<ActionWithOrigin> {
+        Some(ActionWithOrigin {
+            action: self.peek()?,
+            origin: (0, 0),
+        })
     }
 }
 

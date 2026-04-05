@@ -347,3 +347,17 @@ fn test_mark_to_node() {
     let graph = h.finish();
     q!(*graph.mark_to_node.get("0").unwrap(), 3);
 }
+
+#[test]
+fn test_next_anchor_in_dec_does_not_panic() {
+    let mut h = start_mr(3);
+    q!(h.now.anchors.len(), 3);
+    h = h.test_perform(&Dec).unwrap();
+    q!(h.now.anchors.len(), 2);
+    h = h.test_perform(&Dec).unwrap();
+    q!(h.now.anchors.len(), 1);
+    assert!(matches!(
+        h.test_perform(&Dec).unwrap_err(),
+        NoAnchorToPullThrough
+    ));
+}

@@ -78,8 +78,10 @@ impl Hook {
         }
         let mut hook = Hook::from_starting_sequence(&mut flow, params)?;
         let mut i: u32 = 0;
-        while let Some(action) = flow.next() {
-            log::trace!("Performing [{i}] {action:?}");
+        while let Some(action_with_origin) = flow.next_with_origin() {
+            let action = action_with_origin.action;
+            let origin = action_with_origin.origin;
+            log::trace!("Performing [{i}] {action:?}. Origin: {origin:?}");
             i += 1;
             hook = hook.perform(&action)?;
         }
@@ -119,13 +121,14 @@ impl Hook {
             Dec => {
                 self = StitchBuilder::linger(self)?
                     .pull_through()?
-                    .next_anchor()?
+                    .next_anchor()
                     .pull_through()?
                     .pull_over()?
                     .finish()?;
             }
             Slst => {
                 let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
+                // TODO override previous stitch?
                 self.edges.link(self.now.cursor - 1, anchor);
                 self.override_previous_stitch = Some(anchor);
                 self.now.anchors.push_back(anchor);
