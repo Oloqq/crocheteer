@@ -64,6 +64,9 @@ pub fn control_panel(
                 .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids. Acts as maximum when using \"Nodes per centroid\" setting");
             // ui.add(egui::Slider::new(&mut state.nodes_per_centroid, 0..=100).text("Nodes per centroid"))
             //     .on_hover_text("");
+
+        ui.add(egui::Slider::new(&mut state.single_loop_force, 0.0..=1.0).text("Single loop force"))
+            .on_hover_text("Controls how much the \"Front loop only\" and \"Back loop only \" nodes are pushed in/out of the creation. Can cause the plushie to rotate endlessly.");
     });
 
     // prevent world events on resizing

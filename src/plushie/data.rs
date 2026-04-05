@@ -13,6 +13,7 @@ use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 pub struct GraphNode {
     pub child_selection_indicator: Entity,
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
+    pub peculiarity: Option<Peculiarity>,
 }
 
 /// Link between two GraphNodes, where the yarn exerts LinkForce

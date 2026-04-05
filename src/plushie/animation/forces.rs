@@ -5,7 +5,7 @@ use crate::{
     plushie::{
         animation::{
             LinkForce, Rooted, StuffingForce,
-            data::{Centroid, NewPosition, OriginNode},
+            data::{Centroid, NewPosition, OriginNode, SingleLoopForce},
         },
         data::{Dragging, GraphNode, Link},
     },
@@ -73,9 +73,31 @@ pub fn compute_link_forces(
     }
 }
 
+pub fn compute_single_loop_force(
+    nodes: Query<(&Transform, &GraphNode, &mut SingleLoopForce)>,
+    state: Res<SimulationState>,
+) {
+    if nodes.iter().len() == 0 {
+        return;
+    }
+
+    let input: Vec<_> = nodes
+        .iter()
+        .map(|node| (node.0.translation, node.1.peculiarity))
+        .collect();
+
+    let normals = crochet::force_graph::single_loop::find_normals(&input);
+
+    for ((_, _, mut received_force), calculated_normal) in
+        nodes.into_iter().zip(normals.into_iter())
+    {
+        received_force.0 = calculated_normal * state.single_loop_force;
+    }
+}
+
 pub fn apply_forces(
     mut query: Query<
-        (&mut Transform, &LinkForce, &StuffingForce),
+        (&mut Transform, &LinkForce, &StuffingForce, &SingleLoopForce),
         (With<GraphNode>, Without<Dragging>, Without<Rooted>), // maybe the dragging system should be inserting the Rooted component instead of double Without?
     >,
     params: Res<SimulationState>,
@@ -84,17 +106,26 @@ pub fn apply_forces(
     let force_multiplier = 0.0003 * params.force_multiplier;
     let origin_node_displacement = origin_node
         .and_then(|origin_entity| query.get(*origin_entity).ok())
-        .map(|(_, link_force, stuffing_force)| {
-            displacement(link_force.0, stuffing_force.0, force_multiplier)
+        .map(|(_, link_force, stuffing_force, _single_loop)| {
+            displacement(link_force.0, stuffing_force.0, Vec3::ZERO, force_multiplier)
         })
         .unwrap_or(Vec3::ZERO);
 
-    for (mut transform, link_force, stuffing_force) in &mut query {
-        transform.translation += displacement(link_force.0, stuffing_force.0, force_multiplier)
-            - origin_node_displacement;
+    for (mut transform, link_force, stuffing_force, single_loop_force) in &mut query {
+        transform.translation += displacement(
+            link_force.0,
+            stuffing_force.0,
+            single_loop_force.0,
+            force_multiplier,
+        ) - origin_node_displacement;
     }
 }
 
-fn displacement(link_force: Vec3, stuffing_force: Vec3, force_multiplier: f32) -> Vec3 {
-    (link_force + stuffing_force) * force_multiplier
+fn displacement(
+    link_force: Vec3,
+    stuffing_force: Vec3,
+    single_loop_force: Vec3,
+    force_multiplier: f32,
+) -> Vec3 {
+    (link_force + stuffing_force + single_loop_force) * force_multiplier
 }

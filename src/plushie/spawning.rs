@@ -4,7 +4,9 @@ use crochet::{ColorRgb, Peculiarity, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
-use crate::plushie::animation::{Centroid, LinkForce, NewPosition, OriginNode, StuffingForce};
+use crate::plushie::animation::{
+    Centroid, LinkForce, NewPosition, OriginNode, SingleLoopForce, StuffingForce,
+};
 use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
@@ -72,12 +74,14 @@ fn add_graph_node(
             GraphNode {
                 child_per_display_mode,
                 child_selection_indicator,
+                peculiarity: msg.peculiarity,
             },
             Name::new("GraphNode"),
             Transform::from_translation(msg.position).with_scale(Vec3::splat(HOOK_SIZE)),
             Pickable::default(),
             LinkForce(Vec3::ZERO),
             StuffingForce(Vec3::ZERO),
+            SingleLoopForce(Vec3::ZERO),
         ))
         .add_children(&[child_selection_indicator, pattern_child, force_child])
         .observe(on_click)

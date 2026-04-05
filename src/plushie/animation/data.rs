@@ -8,6 +8,18 @@ pub struct LinkForce(pub Vec3);
 #[derive(Component, Default)]
 pub struct StuffingForce(pub Vec3);
 
+/// Force accumulator
+#[derive(Component, Default)]
+pub struct SingleLoopForce(pub Vec3);
+
+// TODO
+// #[derive(Bundle, Default)]
+// pub struct ForceAccumulators {
+//     pub link: LinkForce,
+//     pub stuffing: StuffingForce,
+//     pub single_loop: SingleLoopForce,
+// }
+
 /// Prevents forces from moving the GraphNode
 #[derive(Component)]
 pub struct Rooted;

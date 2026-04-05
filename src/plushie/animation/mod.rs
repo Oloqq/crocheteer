@@ -4,13 +4,17 @@ mod data;
 mod forces;
 mod systems;
 
-pub use data::{Centroid, LinkForce, NewPosition, OriginNode, Rooted, StuffingForce};
+pub use data::{
+    Centroid, LinkForce, NewPosition, OriginNode, Rooted, SingleLoopForce, StuffingForce,
+};
 
 use systems::{reset_acceleration, update_connections_visually};
 
 use crate::{
     plushie::animation::{
-        forces::{apply_forces, compute_link_forces, compute_stuffing_force},
+        forces::{
+            apply_forces, compute_link_forces, compute_single_loop_force, compute_stuffing_force,
+        },
         systems::move_centroids,
     },
     ui::simulation_is_running,
@@ -24,7 +28,11 @@ impl Plugin for PlushieAnimationPlugin {
             FixedUpdate,
             (
                 reset_acceleration,
-                (compute_link_forces, compute_stuffing_force),
+                (
+                    compute_link_forces,
+                    compute_stuffing_force,
+                    compute_single_loop_force,
+                ),
                 (apply_forces, move_centroids.ambiguous_with(apply_forces)),
             )
                 .chain()
