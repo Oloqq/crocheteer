@@ -354,3 +354,13 @@ fn test_starting_from_color() {
         &[vec![], vec![0], vec![0, 1], vec![0, 2]]
     );
 }
+
+#[test]
+fn test_mark_to_node() {
+    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mark0: Label = "0".into();
+    h = h.test_perform(&Mark(mark0.clone())).unwrap();
+    q!(*h.mark_to_node.get("0").unwrap(), 3);
+    let graph = h.finish();
+    q!(*graph.mark_to_node.get("0").unwrap(), 3);
+}

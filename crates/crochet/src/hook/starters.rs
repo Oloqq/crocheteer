@@ -48,7 +48,6 @@ impl Hook {
                     last_stitch: None,
                     last_mark: None,
                     mark_to_node: HashMap::new(),
-                    tmp_mark_to_node: HashMap::new(),
                     part_limits: vec![],
                     mr_count: 0,
                 };

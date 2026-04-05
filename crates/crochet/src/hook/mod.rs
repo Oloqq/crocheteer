@@ -62,12 +62,8 @@ pub struct Hook {
     last_stitch: Option<Action>,
     /// Was the last action a mark?
     last_mark: Option<Action>,
-    // TODO seems like it works any label, test it
-    /// Map from labels to the index of the node they affect. For now works with just MRConfigurable.
-    mark_to_node: HashMap<String, usize>,
-    // TODO remove temporary
-    /// Temporary: remake Label into String, then merge this and mark_to_node
-    tmp_mark_to_node: HashMap<Label, usize>,
+    /// Map from labels to the index of the node they are on.
+    mark_to_node: HashMap<Label, usize>,
     /// Indexes where parts begin and end. When Hook finishes, first element should be equal to zero, last element should be equal to colors.len()
     part_limits: Vec<usize>,
     /// Used to track unconnected limbs
@@ -174,10 +170,10 @@ impl Hook {
                 }
             }
             Sew(left, right) => {
-                let Some(left) = self.tmp_mark_to_node.get(left) else {
+                let Some(left) = self.mark_to_node.get(left) else {
                     return Err(UnknownLabel(left.clone()));
                 };
-                let Some(right) = self.tmp_mark_to_node.get(right) else {
+                let Some(right) = self.mark_to_node.get(right) else {
                     return Err(UnknownLabel(right.clone()));
                 };
 
