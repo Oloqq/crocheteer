@@ -50,7 +50,7 @@ impl Hook {
                     now: will_be_overwritten_with_magic_ring,
                     parents: vec![],
                     labels: HashMap::new(),
-                    override_previous_stitch: None,
+                    override_previous_node: None,
                     color,
                     colors: vec![],
                     last_stitch: None,

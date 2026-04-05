@@ -172,7 +172,7 @@ fn test_goto_after_fo() {
     h = h.test_perform(&Goto("0".into())).unwrap();
     q!(h.now.cursor, 8);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
-    q!(h.override_previous_stitch, Some(3));
+    q!(h.override_previous_node, Some(3));
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Sc).unwrap();
     h = h.test_perform(&Sc).unwrap();

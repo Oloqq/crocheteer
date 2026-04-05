@@ -9,7 +9,7 @@ impl Hook {
             .get(label)
             .ok_or_else(|| UnknownLabel(label.clone()))?
             .clone();
-        self.override_previous_stitch = Some(moment.cursor - 1);
+        self.override_previous_node = Some(moment.cursor - 1);
         moment.cursor = self.now.cursor;
         self.now = moment;
         Ok(())

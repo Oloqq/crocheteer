@@ -58,7 +58,7 @@ pub struct Hook {
     /// Storage of index -> it's color.
     colors: Vec<ColorRgb>,
     // Previous stitch might need to be overwritten after a Goto
-    override_previous_stitch: Option<usize>,
+    override_previous_node: Option<usize>,
     /// Last stitch created (not counting actions like mark, goto)
     last_stitch: Option<Action>,
     /// Was the last action a mark?
@@ -130,7 +130,7 @@ impl Hook {
                 let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
                 // TODO override previous stitch?
                 self.edges.link(self.now.cursor - 1, anchor);
-                self.override_previous_stitch = Some(anchor);
+                self.override_previous_node = Some(anchor);
                 self.now.anchors.push_back(anchor);
             }
             Attach(label, chain_size) => {
@@ -199,9 +199,9 @@ impl Hook {
     }
 
     fn previous_stitch(&mut self) -> usize {
-        match self.override_previous_stitch {
+        match self.override_previous_node {
             Some(x) => {
-                self.override_previous_stitch = None;
+                self.override_previous_node = None;
                 x
             }
             None => self.now.cursor - 1,
@@ -250,7 +250,7 @@ impl Hook {
 
         let x = self.previous_stitch();
         self.restore(label)?;
-        self.override_previous_stitch = Some(x);
+        self.override_previous_node = Some(x);
 
         Ok(self)
     }
@@ -263,7 +263,7 @@ impl Hook {
             .clone();
         assert!(self.now.limb_ownerhip == target.limb_ownerhip);
 
-        self.override_previous_stitch = Some(self.previous_stitch());
+        self.override_previous_node = Some(self.previous_stitch());
         target.cursor = self.now.cursor;
         target.anchors.append(&mut self.now.anchors);
         // target.round_left += self.now.round_left;
