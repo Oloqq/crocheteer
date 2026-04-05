@@ -45,6 +45,7 @@ struct Moment {
 /// Responsible for building the graph used in the simulation
 #[derive(Clone, Debug)]
 pub struct Hook {
+    params: HookParams,
     edges: Edges,
     peculiar: HashMap<usize, Peculiarity>,
     now: Moment,
@@ -71,16 +72,16 @@ pub struct Hook {
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow, params: &HookParams) -> Result<InitialGraph, HookError> {
+    pub fn parse(mut flow: impl Flow, params: HookParams) -> Result<InitialGraph, HookError> {
         if flow.peek().is_none() {
             return Err(Empty);
         }
-        let mut hook = Hook::from_starting_sequence(&mut flow)?;
+        let mut hook = Hook::from_starting_sequence(&mut flow, params)?;
         let mut i: u32 = 0;
         while let Some(action) = flow.next() {
             log::trace!("Performing [{i}] {action:?}");
             i += 1;
-            hook = hook.perform(&action, params)?;
+            hook = hook.perform(&action)?;
         }
 
         let result = hook.finish();
@@ -99,7 +100,7 @@ impl Hook {
         }
     }
 
-    pub fn perform(mut self, action: &Action, params: &HookParams) -> Result<Self, HookError> {
+    pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
         match action {
             Sc => {
                 self = StitchBuilder::linger(self)?
@@ -154,14 +155,14 @@ impl Hook {
             Mark(label) => self.save(label)?,
             MR(_) => return Err(AnonymousMrInTheMiddle),
             FO => {
-                if params.tip_from_fo {
+                if self.params.tip_from_fo {
                     self = StitchBuilder::fasten_off_with_tip(self)?
                 }
             }
             Color(c) => self.color = *c,
             EnforceAnchors(expected, location) => {
                 let actual = self.now.anchors.len();
-                if params.enforce_counts && actual != *expected {
+                if self.params.enforce_counts && actual != *expected {
                     return Err(HookError::WrongAnnotation {
                         expected: *expected,
                         actual,

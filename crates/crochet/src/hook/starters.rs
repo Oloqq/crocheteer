@@ -4,23 +4,30 @@ use super::{Edges, Hook, Moment, Queue, errors::*};
 use crate::{
     ColorRgb,
     acl::{Action::*, Flow},
-    hook::{WorkingLoops, hook_result::Peculiarity},
+    hook::{HookParams, WorkingLoops, hook_result::Peculiarity},
 };
 
 const DEFAULT_COLOR: ColorRgb = [255, 0, 255];
 
 impl Hook {
-    pub fn from_starting_sequence(flow: &mut impl Flow) -> Result<Self, HookError> {
+    pub fn from_starting_sequence(
+        flow: &mut impl Flow,
+        params: HookParams,
+    ) -> Result<Self, HookError> {
         let mut action = flow.next().unwrap();
         let mut color = DEFAULT_COLOR;
         if let Color(c) = action {
             color = c;
             action = flow.next().unwrap();
         }
-        Self::start_with(&action, color)
+        Self::start_with(&action, color, params)
     }
 
-    pub fn start_with(action: &Action, color: ColorRgb) -> Result<Self, HookError> {
+    pub fn start_with(
+        action: &Action,
+        color: ColorRgb,
+        params: HookParams,
+    ) -> Result<Self, HookError> {
         match action {
             MR(x) => {
                 let edges = {
@@ -37,6 +44,7 @@ impl Hook {
                 };
 
                 let mut result = Self {
+                    params,
                     edges,
                     peculiar: HashMap::new(),
                     now: will_be_overwritten_with_magic_ring,

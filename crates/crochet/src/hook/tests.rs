@@ -8,13 +8,17 @@ const COLOR: ColorRgb = [255, 0, 0];
 
 impl Hook {
     pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
-        self.perform(action, &HookParams::default())
+        self.perform(action)
     }
+}
+
+fn start_mr(mr_count: usize) -> Hook {
+    Hook::start_with(&MR(mr_count), COLOR, HookParams::default()).unwrap()
 }
 
 #[test]
 fn test_start_with_magic_ring() {
-    let h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let h = start_mr(3);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
     q!(
@@ -26,7 +30,7 @@ fn test_start_with_magic_ring() {
 
 #[test]
 fn test_test_perform_sc() {
-    let mut h = Hook::start_with(&MR(6), COLOR).unwrap();
+    let mut h = start_mr(6);
     q!(h.now.anchors, Queue::from([1, 2, 3, 4, 5, 6]));
     h = h.test_perform(&Sc).unwrap();
     q!(h.now.anchors, Queue::from([2, 3, 4, 5, 6, 7]));
@@ -39,7 +43,7 @@ fn test_test_perform_sc() {
 
 #[test]
 fn test_test_perform_inc() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     h = h.test_perform(&Inc).unwrap();
     q!(h.now.anchors, Queue::from([2, 3, 4, 5]));
     q!(h.now.cursor, 6);
@@ -59,7 +63,7 @@ fn test_test_perform_inc() {
 
 #[test]
 fn test_test_perform_dec() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     h = h.test_perform(&Dec).unwrap();
     q!(h.now.anchors, Queue::from([3, 4]));
@@ -68,7 +72,7 @@ fn test_test_perform_dec() {
 
 #[test]
 fn test_test_perform_fo_after_full_round() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
     q!(h.edges.len(), 5);
@@ -91,15 +95,8 @@ fn test_test_perform_fo_after_full_round() {
             vec![]
         ])
     );
-    h = h
-        .perform(
-            &FO,
-            &HookParams {
-                tip_from_fo: true,
-                enforce_counts: false,
-            },
-        )
-        .unwrap();
+    h.params.tip_from_fo = true;
+    h = h.perform(&FO).unwrap();
     q!(h.now.anchors, Queue::from([]));
     q!(
         h.edges,
@@ -119,16 +116,9 @@ fn test_test_perform_fo_after_full_round() {
 
 #[test]
 fn test_error_on_stitch_after_fo() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
-    h = h
-        .perform(
-            &FO,
-            &HookParams {
-                tip_from_fo: true,
-                enforce_counts: false,
-            },
-        )
-        .unwrap();
+    let mut h = start_mr(3);
+    h.params.tip_from_fo = true;
+    h = h.perform(&FO).unwrap();
     h.clone()
         .test_perform(&Sc)
         .expect_err("Can't continue after FO");
@@ -142,7 +132,7 @@ fn test_error_on_stitch_after_fo() {
 
 #[test]
 fn test_goto_after_fo() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     h = h.test_perform(&Mark("0".into())).unwrap();
     h = h.test_perform(&Sc).unwrap();
@@ -162,15 +152,8 @@ fn test_goto_after_fo() {
             vec![]
         ])
     );
-    h = h
-        .perform(
-            &FO,
-            &HookParams {
-                tip_from_fo: true,
-                enforce_counts: false,
-            },
-        )
-        .unwrap();
+    h.params.tip_from_fo = true;
+    h = h.perform(&FO).unwrap();
     q!(
         h.edges,
         Edges::from(vec![
@@ -214,7 +197,7 @@ fn test_goto_after_fo() {
 
 #[test]
 fn test_attach1() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     let attach_here: Label = "0".into();
     let return_here: Label = "1".into();
     h = h.test_perform(&Mark(attach_here.clone())).unwrap();
@@ -259,7 +242,7 @@ fn test_attach1() {
 
 #[test]
 fn test_sc_after_attach() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     let attach_here: Label = "0".into();
     let return_here: Label = "1".into();
     h = h.test_perform(&Mark(attach_here.clone())).unwrap();
@@ -347,7 +330,7 @@ fn test_split_moment() {
 #[test]
 fn test_starting_from_color() {
     let mut flow = SimpleFlow::new(vec![Color(COLOR), MR(3), Sc, Sc, Sc]);
-    let mut h = Hook::from_starting_sequence(&mut flow).unwrap();
+    let mut h = Hook::from_starting_sequence(&mut flow, HookParams::default()).unwrap();
     h = h.test_perform(&flow.next().unwrap()).unwrap();
     q!(
         &h.edges.data()[0..4],
@@ -357,7 +340,7 @@ fn test_starting_from_color() {
 
 #[test]
 fn test_mark_to_node() {
-    let mut h = Hook::start_with(&MR(3), COLOR).unwrap();
+    let mut h = start_mr(3);
     let mark0: Label = "0".into();
     h = h.test_perform(&Mark(mark0.clone())).unwrap();
     q!(*h.mark_to_node.get("0").unwrap(), 3);

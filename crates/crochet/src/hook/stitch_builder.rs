@@ -169,7 +169,11 @@ impl StitchBuilder {
 mod tests {
     use pretty_assertions::assert_eq as q;
 
-    use crate::{ColorRgb, acl::Action::*, hook::edges::Edges};
+    use crate::{
+        ColorRgb,
+        acl::Action::*,
+        hook::{HookParams, edges::Edges},
+    };
 
     use super::{super::errors::*, *};
     const COLOR: ColorRgb = [255, 0, 0];
@@ -182,7 +186,7 @@ mod tests {
     // test parents and grandparents around single-loop
 
     fn mr3() -> Hook {
-        let h = Hook::start_with(&MR(3), COLOR).unwrap();
+        let h = Hook::start_with(&MR(3), COLOR, HookParams::default()).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(
