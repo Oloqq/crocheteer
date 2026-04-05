@@ -2,7 +2,7 @@ use HookError::*;
 
 use crate::hook::{
     WorkingLoops,
-    nodes::{Peculiarity, PointsOnPushPlane},
+    node::{Peculiarity, PointsOnPushPlane},
 };
 
 use super::{Hook, errors::HookError};

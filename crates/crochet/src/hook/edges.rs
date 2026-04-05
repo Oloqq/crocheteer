@@ -17,18 +17,10 @@ impl Edges {
         };
         for (node1, destinations) in mby_unordered.into_iter().enumerate() {
             for node2 in destinations {
-                res.link_no_checks(node1, node2);
+                res.link(node1, node2);
             }
         }
         res
-    }
-
-    fn link_no_checks(&mut self, node1: usize, node2: usize) {
-        if node2 > node1 {
-            self.edges[node2].push(node1);
-        } else {
-            self.edges[node1].push(node2);
-        }
     }
 
     pub fn link(&mut self, node1: usize, node2: usize) {
@@ -40,7 +32,11 @@ impl Edges {
             node2,
             self.edges.len()
         );
-        self.link_no_checks(node1, node2);
+        if node2 > node1 {
+            self.edges[node2].push(node1);
+        } else {
+            self.edges[node1].push(node2);
+        }
     }
 
     pub fn len(&self) -> usize {
@@ -48,7 +44,7 @@ impl Edges {
     }
 
     pub fn grow(&mut self) {
-        self.edges.push(Vec::with_capacity(2));
+        self.edges.push(Vec::with_capacity(2)); // Sc (the most common stitch) will link itself to 2 nodes
     }
 
     pub fn cleanup(&mut self) {

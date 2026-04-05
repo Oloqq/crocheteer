@@ -6,7 +6,7 @@ pub struct Node {
     pub peculiarity: Option<Peculiarity>,
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Peculiarity {
     Locked,
     Tip,

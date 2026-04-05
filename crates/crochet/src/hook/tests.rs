@@ -1,6 +1,6 @@
 use pretty_assertions::assert_eq as q;
 
-use crate::{acl::SimpleFlow, hook::nodes::Peculiarity};
+use crate::{acl::SimpleFlow, hook::node::Peculiarity};
 
 use super::*;
 

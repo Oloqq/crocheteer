@@ -1,10 +1,7 @@
-pub type ColorRgb = [u8; 3];
-// TODO reuse the structure from hook?
-pub type Edges = Vec<Vec<usize>>;
+use crate::Node;
 
-pub struct Node {
-    pub color: ColorRgb,
-}
+pub type ColorRgb = [u8; 3];
+pub type Edges = Vec<Vec<usize>>;
 
 pub struct PlushieDef {
     /// Edges of the graph

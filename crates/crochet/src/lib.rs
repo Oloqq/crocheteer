@@ -13,6 +13,7 @@ use crate::{
     errors::Error,
     hook::{Hook, HookError, HookParams},
 };
+pub use hook::node::{Node, Peculiarity, PointsOnPushPlane};
 pub use plushie_definition::*;
 
 pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
@@ -21,11 +22,7 @@ pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
 
     Ok(PlushieDef {
         edges: graph.edges.into(),
-        nodes: graph
-            .colors
-            .iter()
-            .map(|color| Node { color: *color })
-            .collect(),
+        nodes: graph.nodes,
     })
 }
 

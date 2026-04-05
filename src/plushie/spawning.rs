@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use crochet::force_graph::Initializer;
-use crochet::{ColorRgb, PlushieDef};
+use crochet::{ColorRgb, Peculiarity, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
@@ -13,6 +13,19 @@ use crate::plushie::{
     mouse_interactions::on_click,
 };
 use crate::ui::{ConsoleMessage, ConsolePipe, SimulationState};
+
+fn force_display_node_color(peculiarity: Option<Peculiarity>) -> ColorRgb {
+    if let Some(peculiarity) = peculiarity {
+        match peculiarity {
+            Peculiarity::Locked => [0, 255, 255],
+            Peculiarity::Tip => [0, 127, 255],
+            Peculiarity::BLO(_) => [255, 0, 0],
+            Peculiarity::FLO(_) => [0, 255, 0],
+        }
+    } else {
+        [255, 255, 255]
+    }
+}
 
 fn add_graph_node(
     msg: &AddGraphNode,
@@ -32,7 +45,10 @@ fn add_graph_node(
         .spawn((
             Visibility::Hidden,
             Mesh3d(assets.node_mesh.clone()),
-            MeshMaterial3d(assets.get_or_create_fabric_material(msg.color, materials)),
+            MeshMaterial3d(assets.get_or_create_fabric_material(
+                force_display_node_color(msg.peculiarity),
+                materials,
+            )),
             Transform::default().with_scale(Vec3::splat(0.3)),
         ))
         .id();
@@ -184,6 +200,7 @@ pub fn build_plushie_from_pattern(
                 &AddGraphNode {
                     position: position.clone(),
                     color: node.color,
+                    peculiarity: node.peculiarity,
                 },
                 &mut commands,
                 &mut assets,

@@ -1,12 +1,14 @@
+pub use errors::HookError;
+pub mod hook_result;
+pub mod node;
+
 mod edges;
 mod errors;
-pub mod hook_result;
 mod mark_and_goto;
-mod nodes;
 mod starters;
 mod stitch_builder;
 
-use self::{errors::*, nodes::Node, stitch_builder::StitchBuilder};
+use self::{errors::*, stitch_builder::StitchBuilder};
 use crate::{
     ColorRgb,
     acl::{
@@ -16,8 +18,8 @@ use crate::{
     hook::edges::Edges,
 };
 use HookError::*;
-pub use errors::HookError;
 use hook_result::InitialGraph;
+use node::Node;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Clone, Default)]
@@ -95,18 +97,7 @@ impl Hook {
         self.part_limits.push(self.now.cursor);
         InitialGraph {
             edges: self.edges,
-            // TODO use nodes in InitialGraph
-            peculiarities: self
-                .nodes
-                .iter()
-                .enumerate()
-                .filter_map(|(i, n)| match &n.peculiarity {
-                    Some(p) => Some((i, p.clone())),
-                    None => None,
-                })
-                .collect(),
-            // TODO use nodes in InitialGraph
-            colors: self.nodes.iter().map(|n| n.color).collect(),
+            nodes: self.nodes,
             mark_to_node: self.mark_to_node,
             part_limits: self.part_limits,
         }

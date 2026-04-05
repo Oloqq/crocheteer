@@ -4,7 +4,7 @@ use super::{Edges, Hook, Moment, Queue, errors::*};
 use crate::{
     ColorRgb,
     acl::{Action::*, Flow},
-    hook::{HookParams, WorkingLoops, nodes::Peculiarity},
+    hook::{HookParams, WorkingLoops, node::Peculiarity},
 };
 
 const DEFAULT_COLOR: ColorRgb = [255, 0, 255];

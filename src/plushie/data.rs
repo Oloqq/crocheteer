@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use bevy::prelude::*;
-use crochet::ColorRgb;
+use crochet::{ColorRgb, Peculiarity};
 
 use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
@@ -75,6 +75,7 @@ impl PlushieAssets {
 pub struct AddGraphNode {
     pub position: Vec3,
     pub color: ColorRgb,
+    pub peculiarity: Option<Peculiarity>,
 }
 
 #[derive(Message)]
