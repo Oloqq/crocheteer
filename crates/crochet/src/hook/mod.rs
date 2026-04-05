@@ -68,45 +68,10 @@ pub struct Hook {
     // TODO remove temporary
     /// Temporary: remake Label into String, then merge this and mark_to_node
     tmp_mark_to_node: HashMap<Label, usize>,
-    /// Indexes where parts begin and end. At the end, first element should be zero, last element should be colors.len()
+    /// Indexes where parts begin and end. When Hook finishes, first element should be equal to zero, last element should be equal to colors.len()
     part_limits: Vec<usize>,
     /// Used to track unconnected limbs
     mr_count: usize,
-}
-
-fn split_moment(
-    source: &mut Moment,
-    attachment_anchor: usize,
-    new_anchors: Vec<usize>,
-) -> (Moment, Moment) {
-    let attachment_i = source
-        .anchors
-        .iter()
-        .position(|x| *x == attachment_anchor)
-        .expect("attachment anchor present in current ring"); // TODO real error handling
-    let mut ring_a = source.anchors.split_off(attachment_i);
-    source.anchors.extend(new_anchors.iter().rev());
-    let ring_b = &source.anchors;
-
-    ring_a.pop_front();
-    let mut new_anchors = new_anchors;
-    new_anchors.pop();
-    ring_a.append(&mut new_anchors.into());
-    let moment_a = Moment {
-        cursor: source.cursor,
-        anchors: ring_a,
-        working_on: WorkingLoops::Both,
-        limb_ownerhip: source.limb_ownerhip,
-    };
-
-    let moment_b = Moment {
-        cursor: source.cursor,
-        anchors: ring_b.clone(),
-        working_on: WorkingLoops::Both,
-        limb_ownerhip: source.limb_ownerhip,
-    };
-
-    (moment_a, moment_b)
 }
 
 impl Hook {
@@ -172,9 +137,14 @@ impl Hook {
                 log::debug!("attach to label: {label}");
                 // FIXME for now, assuming that chain_size > 0 connects to the same limb
                 // and chain_size = 0 connects to another limb
-                // TEMP attach_merge
+                // TODO how to do the following nicely?
+                // see heart pattern for reference (requires multipart)
+                // attach_directly corresponds to the first stitch that connects 2 parts
+                // it moves to the Moment of the part it is connecting to
+                // attach_merge_anchors corresponds to the second stitch that connects 2 parts
+                // it creates a single working round from the rounds on 2 parts
                 if *chain_size == 997 {
-                    self = self.attach_merge(label)?;
+                    self = self.attach_merge_anchors(label)?;
                 } else if *chain_size > 0 {
                     self = self.attach_with_chain(label, chain_size)?;
                 } else {
@@ -285,7 +255,7 @@ impl Hook {
         Ok(self)
     }
 
-    fn attach_merge(mut self, label: &Label) -> Result<Self, HookError> {
+    fn attach_merge_anchors(mut self, label: &Label) -> Result<Self, HookError> {
         let mut target = self
             .labels
             .get(label)
@@ -315,45 +285,41 @@ impl Hook {
         self.now = moment_a;
         (self, moment_b)
     }
+}
 
-    fn magic_ring(&mut self, size: usize) {
-        assert_eq!(self.edges.last().unwrap().len(), 0);
+fn split_moment(
+    source: &mut Moment,
+    attachment_anchor: usize,
+    new_anchors: Vec<usize>,
+) -> (Moment, Moment) {
+    let attachment_i = source
+        .anchors
+        .iter()
+        .position(|x| *x == attachment_anchor)
+        .expect("attachment anchor present in current ring"); // TODO real error handling
+    let mut ring_a = source.anchors.split_off(attachment_i);
+    source.anchors.extend(new_anchors.iter().rev());
+    let ring_b = &source.anchors;
 
-        self.part_limits.push(self.now.cursor);
-        let ring_root = self.now.cursor;
-        let ring_end = ring_root + size;
+    ring_a.pop_front();
+    let mut new_anchors = new_anchors;
+    new_anchors.pop();
+    ring_a.append(&mut new_anchors.into());
+    let moment_a = Moment {
+        cursor: source.cursor,
+        anchors: ring_a,
+        working_on: WorkingLoops::Both,
+        limb_ownerhip: source.limb_ownerhip,
+    };
 
-        // spot for ring root in edges is already created
-        self.parents.push(None); // ring root has no parent
-        self.colors.push(self.color);
-        for _ in 0..size {
-            self.edges.grow();
-            self.parents.push(Some(ring_root));
-            self.colors.push(self.color);
-        }
-        self.edges.grow(); // prepare place for the next node
+    let moment_b = Moment {
+        cursor: source.cursor,
+        anchors: ring_b.clone(),
+        working_on: WorkingLoops::Both,
+        limb_ownerhip: source.limb_ownerhip,
+    };
 
-        // connect outer nodes to ring root
-        for connected_to_root in ring_root + 1..=ring_end {
-            self.edges.link(ring_root, connected_to_root);
-        }
-        // connect outer nodes to each other
-        for outer_ring_stitch in ring_root + 1..ring_end {
-            self.edges.link(outer_ring_stitch, outer_ring_stitch + 1);
-        }
-
-        self.peculiar.insert(ring_root, Peculiarity::Locked);
-
-        self.now = Moment {
-            anchors: Queue::from_iter(ring_root + 1..=ring_end),
-            cursor: ring_end + 1,
-            working_on: WorkingLoops::Both,
-            limb_ownerhip: self.mr_count,
-        };
-        self.mr_count += 1;
-
-        assert_eq!(self.edges.last().unwrap().len(), 0);
-    }
+    (moment_a, moment_b)
 }
 
 #[cfg(test)]
