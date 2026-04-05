@@ -1,6 +1,9 @@
 use HookError::*;
 
-use crate::hook::{WorkingLoops, hook_result::Peculiarity};
+use crate::hook::{
+    WorkingLoops,
+    nodes::{Peculiarity, PointsOnPushPlane},
+};
 
 use super::{Hook, errors::HookError};
 
@@ -35,29 +38,33 @@ impl StitchBuilder {
         self
     }
 
-    fn register_stitch(mut self) -> Self {
+    fn register_stitch(mut self, accept_single_loop: bool) -> Progress {
+        let peculiarity = if accept_single_loop {
+            match self.hook.now.working_on {
+                WorkingLoops::Both => None,
+                WorkingLoops::Back => Some(Peculiarity::BLO(self.points_on_push_plane()?)),
+                WorkingLoops::Front => Some(Peculiarity::FLO(self.points_on_push_plane()?)),
+            }
+        } else {
+            None
+        };
+
         self.hook.edges.grow();
-        self.hook.colors.push(self.hook.color);
+        self.hook.add_node(peculiarity);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
-        self
+        Ok(self)
     }
 
+    // NOTE why need this accept_single_loop?
     fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress {
+        // NOTE isn't lingering always true?
         if self.lingering {
             let prev = self.hook.previous_stitch();
             self.hook.edges.link(prev, self.hook.now.cursor);
         }
 
-        if accept_single_loop {
-            use WorkingLoops::*;
-            match self.hook.now.working_on {
-                Both => (),
-                Back | Front => self.register_single_loop()?,
-            }
-        }
-
-        Ok(self.register_stitch())
+        self.register_stitch(accept_single_loop)
     }
 
     pub fn pull_over(mut self) -> Progress {
@@ -138,30 +145,16 @@ impl StitchBuilder {
         }
 
         hook.edges.grow();
-        hook.peculiar.insert(tip, Peculiarity::Tip);
-        hook.colors.push(hook.color);
+        hook.add_node(Some(Peculiarity::Tip));
         hook.now.cursor += 1;
         Ok(hook)
     }
 
-    fn register_single_loop(&mut self) -> Result<(), HookError> {
-        let hook = &mut self.hook;
+    fn points_on_push_plane(&self) -> Result<PointsOnPushPlane, HookError> {
         let mother = self.anchored.ok_or(SingleLoopOnNonAnchored)?;
         let father = mother + 1;
-        let grandparent = hook.parents[mother].ok_or(SingleLoopNoGrandparent)?;
-        let points_on_push_plane = (father, mother, grandparent);
-        let peculiarity = match hook.now.working_on {
-            WorkingLoops::Both => unreachable!(),
-            WorkingLoops::Back => Peculiarity::BLO(points_on_push_plane),
-            WorkingLoops::Front => Peculiarity::FLO(points_on_push_plane),
-        };
-        let _ = hook
-            .peculiar
-            .insert(hook.now.cursor, peculiarity.clone())
-            .map_or((), |prev| {
-                panic!("BLO/FLO point is already peculiar. was: {prev:?} new: {peculiarity:?}")
-            });
-        Ok(())
+        let grandparent = self.hook.parents[mother].ok_or(SingleLoopNoGrandparent)?;
+        Ok((father, mother, grandparent))
     }
 }
 

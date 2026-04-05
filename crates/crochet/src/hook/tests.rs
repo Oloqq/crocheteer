@@ -1,6 +1,6 @@
 use pretty_assertions::assert_eq as q;
 
-use crate::acl::SimpleFlow;
+use crate::{acl::SimpleFlow, hook::nodes::Peculiarity};
 
 use super::*;
 
@@ -360,4 +360,31 @@ fn test_next_anchor_in_dec_does_not_panic() {
         h.test_perform(&Dec).unwrap_err(),
         NoAnchorToPullThrough
     ));
+}
+
+#[test]
+fn test_colors_are_registered() {
+    let mut h = start_mr(3);
+    q!(h.nodes.len(), 4); // 3 + virtual MR root
+    q!(h.nodes[0].color, COLOR);
+    q!(h.nodes[1].color, COLOR);
+    q!(h.nodes[2].color, COLOR);
+    q!(h.nodes[3].color, COLOR);
+    h = h.test_perform(&Color([255, 177, 255])).unwrap();
+    h = h.test_perform(&Sc).unwrap();
+    q!(h.nodes[4].color, [255, 177, 255]);
+}
+
+#[test]
+fn test_mr_root_peculiarity_is_registered() {
+    let h = start_mr(3);
+    q!(h.nodes[0].peculiarity, Some(Peculiarity::Locked));
+}
+
+#[test]
+fn test_flo_is_registered() {
+    let mut h = start_mr(3);
+    h = h.test_perform(&FLO).unwrap();
+    h = h.test_perform(&Sc).unwrap();
+    q!(h.nodes[4].peculiarity, Some(Peculiarity::FLO((2, 1, 0))));
 }

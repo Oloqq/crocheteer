@@ -2,17 +2,18 @@ mod edges;
 mod errors;
 pub mod hook_result;
 mod mark_and_goto;
+mod nodes;
 mod starters;
 mod stitch_builder;
 
-use self::{errors::*, stitch_builder::StitchBuilder};
+use self::{errors::*, nodes::Node, stitch_builder::StitchBuilder};
 use crate::{
     ColorRgb,
     acl::{
         Action::{self, *},
         Flow, Label,
     },
-    hook::{edges::Edges, hook_result::Peculiarity},
+    hook::edges::Edges,
 };
 use HookError::*;
 pub use errors::HookError;
@@ -46,17 +47,16 @@ struct Moment {
 #[derive(Clone, Debug)]
 pub struct Hook {
     params: HookParams,
+    nodes: Vec<Node>,
     edges: Edges,
-    peculiar: HashMap<usize, Peculiarity>,
     now: Moment,
+    // TODO remove and use nodes?
     /// Storage of index -> it's anchor, used for single loop forces
     parents: Vec<Option<usize>>,
     /// Storage of spots for Mark and Goto
     labels: HashMap<Label, Moment>,
     /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.
     color: ColorRgb,
-    /// Storage of index -> it's color.
-    colors: Vec<ColorRgb>,
     // Previous stitch might need to be overwritten after a Goto
     override_previous_node: Option<usize>,
     /// Last stitch created (not counting actions like mark, goto)
@@ -95,8 +95,18 @@ impl Hook {
         self.part_limits.push(self.now.cursor);
         InitialGraph {
             edges: self.edges,
-            peculiarities: self.peculiar,
-            colors: self.colors,
+            // TODO use nodes in InitialGraph
+            peculiarities: self
+                .nodes
+                .iter()
+                .enumerate()
+                .filter_map(|(i, n)| match &n.peculiarity {
+                    Some(p) => Some((i, p.clone())),
+                    None => None,
+                })
+                .collect(),
+            // TODO use nodes in InitialGraph
+            colors: self.nodes.iter().map(|n| n.color).collect(),
             mark_to_node: self.mark_to_node,
             part_limits: self.part_limits,
         }
@@ -128,7 +138,7 @@ impl Hook {
             }
             Slst => {
                 let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
-                // TODO override previous stitch?
+                // TODO does override previous node not affect this?
                 self.edges.link(self.now.cursor - 1, anchor);
                 self.override_previous_node = Some(anchor);
                 self.now.anchors.push_back(anchor);
