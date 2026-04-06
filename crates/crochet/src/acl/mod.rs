@@ -7,4 +7,4 @@ pub use flow::Flow;
 pub use flow::simple_flow::SimpleFlow;
 
 pub use parsing::{Error as PatternError, PatternBuilder};
-pub use pattern::{Action, Label, Pattern};
+pub use pattern::{Action, ActionWithOrigin, ByteRange, Label, Pattern};

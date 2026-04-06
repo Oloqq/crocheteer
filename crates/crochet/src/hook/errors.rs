@@ -1,6 +1,6 @@
 pub use std::collections::VecDeque as Queue;
 
-pub use crate::acl::{Action, Label};
+pub use crate::acl::Label;
 
 // TODO many of those should be unreachable given correct pattern parser (BadStarter, AnonymousMrInTheMiddle, DuplicateLabel, UnknownLabel)
 #[derive(Debug)]

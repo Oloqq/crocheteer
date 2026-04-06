@@ -13,6 +13,7 @@ use crate::{
     errors::Error,
     hook::{Hook, HookError, HookParams},
 };
+pub use acl::ByteRange;
 pub use hook::node::{Node, Peculiarity, PointsOnPushPlane};
 pub use plushie_definition::*;
 

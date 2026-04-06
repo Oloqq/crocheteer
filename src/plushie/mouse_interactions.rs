@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     cursor_ray::CursorRay,
-    plushie::data::{Dragging, PressHandled, Selected},
+    plushie::data::{Dragging, GraphNode, PressHandled, Selected},
     ui::UiUsedInput,
 };
 
@@ -111,4 +111,17 @@ pub fn deselect_on_empty_press(
         }
         press_handled.0 = false; // reset every press
     }
+}
+
+pub fn highlight_selected_nodes_in_pattern(
+    selected: Query<&GraphNode, With<Selected>>,
+    mut temp: Local<usize>,
+) {
+    if selected.iter().len() == *temp {
+        return;
+    }
+    *temp = selected.iter().len();
+
+    let ranges: Vec<_> = selected.iter().map(|s| s.origin).collect();
+    println!("selections: {ranges:?}");
 }

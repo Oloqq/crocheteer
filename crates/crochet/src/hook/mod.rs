@@ -13,7 +13,7 @@ use crate::{
     ColorRgb,
     acl::{
         Action::{self, *},
-        Flow, Label,
+        ByteRange, Flow, Label,
     },
     hook::edges::Edges,
 };
@@ -85,7 +85,7 @@ impl Hook {
             let origin = action_with_origin.origin;
             log::trace!("Performing [{i}] {action:?}. Origin: {origin:?}");
             i += 1;
-            hook = hook.perform(&action)?;
+            hook = hook.perform(&action, origin)?;
         }
 
         let result = hook.finish();
@@ -103,16 +103,16 @@ impl Hook {
         }
     }
 
-    pub fn perform(mut self, action: &Action) -> Result<Self, HookError> {
+    pub fn perform(mut self, action: &Action, origin: ByteRange) -> Result<Self, HookError> {
         match action {
             Sc => {
-                self = StitchBuilder::linger(self)?
+                self = StitchBuilder::linger(self, origin)?
                     .pull_through()?
                     .pull_over()?
                     .finish()?
             }
             Inc => {
-                self = StitchBuilder::linger(self)?
+                self = StitchBuilder::linger(self, origin)?
                     .pull_through()?
                     .pull_over()?
                     .pull_through()?
@@ -120,7 +120,7 @@ impl Hook {
                     .finish()?;
             }
             Dec => {
-                self = StitchBuilder::linger(self)?
+                self = StitchBuilder::linger(self, origin)?
                     .pull_through()?
                     .next_anchor()
                     .pull_through()?
@@ -147,7 +147,7 @@ impl Hook {
                 if *chain_size == 997 {
                     self = self.attach_merge_anchors(label)?;
                 } else if *chain_size > 0 {
-                    self = self.attach_with_chain(label, chain_size)?;
+                    self = self.attach_with_chain(label, chain_size, origin)?;
                 } else {
                     self = self.attach_directly(label)?;
                 }
@@ -160,7 +160,7 @@ impl Hook {
             MR(_) => return Err(AnonymousMrInTheMiddle),
             FO => {
                 if self.params.tip_from_fo {
-                    self = StitchBuilder::fasten_off_with_tip(self)?
+                    self = StitchBuilder::fasten_off_with_tip(self, origin)?
                 }
             }
             Color(c) => self.color = *c,
@@ -209,7 +209,12 @@ impl Hook {
         }
     }
 
-    fn attach_with_chain(mut self, label: &Label, chain_size: &usize) -> Result<Self, HookError> {
+    fn attach_with_chain(
+        mut self,
+        label: &Label,
+        chain_size: &usize,
+        origin: ByteRange,
+    ) -> Result<Self, HookError> {
         // FIXME this should probably affect part_limits
         // FIXME part_limits should prolly be limb_limits
         // create a chain
@@ -224,7 +229,7 @@ impl Hook {
         let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
         let new_anchors: Vec<usize>;
         (new_anchors, self) =
-            StitchBuilder::linger(self)?.attaching_chain(*chain_size, attachment_anchor)?;
+            StitchBuilder::linger(self, origin)?.attaching_chain(*chain_size, attachment_anchor)?;
         let mut moment_b;
         (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
         // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);

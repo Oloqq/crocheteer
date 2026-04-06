@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use super::{Edges, Hook, Moment, Queue, errors::*};
 use crate::{
     ColorRgb,
-    acl::{Action::*, Flow},
+    acl::{Action::*, ActionWithOrigin, ByteRange, Flow},
     hook::{HookParams, WorkingLoops, node::Peculiarity},
 };
 
@@ -14,21 +14,21 @@ impl Hook {
         flow: &mut impl Flow,
         params: HookParams,
     ) -> Result<Self, HookError> {
-        let mut action = flow.next().unwrap();
+        let mut action_with_origin = flow.next_with_origin().unwrap();
         let mut color = DEFAULT_COLOR;
-        if let Color(c) = action {
+        if let Color(c) = action_with_origin.action {
             color = c;
-            action = flow.next().unwrap();
+            action_with_origin = flow.next_with_origin().unwrap();
         }
-        Self::start_with(&action, color, params)
+        Self::start_with(&action_with_origin, color, params)
     }
 
     pub fn start_with(
-        action: &Action,
+        action_with_origin: &ActionWithOrigin,
         color: ColorRgb,
         params: HookParams,
     ) -> Result<Self, HookError> {
-        match action {
+        match action_with_origin.action {
             MR(x) => {
                 let edges = {
                     let mut tmp = Edges::new();
@@ -58,14 +58,14 @@ impl Hook {
                     part_limits: vec![],
                     mr_count: 0,
                 };
-                result.magic_ring(*x);
+                result.magic_ring(x, action_with_origin.origin);
                 Ok(result)
             }
             _ => Err(HookError::BadStarter),
         }
     }
 
-    fn magic_ring(&mut self, size: usize) {
+    fn magic_ring(&mut self, size: usize, origin: ByteRange) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
         self.part_limits.push(self.now.cursor);
@@ -75,11 +75,11 @@ impl Hook {
 
         // spot for ring root in edges is already created
         self.parents.push(None); // ring root has no parent
-        self.add_node(Some(Peculiarity::Locked));
+        self.add_node(Some(Peculiarity::Locked), origin);
         for _ in 0..size {
             self.edges.grow();
             self.parents.push(Some(ring_root));
-            self.add_node(None);
+            self.add_node(None, origin);
         }
         self.edges.grow(); // prepare place for the next node
 

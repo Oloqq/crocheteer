@@ -1,8 +1,11 @@
 use HookError::*;
 
-use crate::hook::{
-    WorkingLoops,
-    node::{Peculiarity, PointsOnPushPlane},
+use crate::{
+    acl::ByteRange,
+    hook::{
+        WorkingLoops,
+        node::{Peculiarity, PointsOnPushPlane},
+    },
 };
 
 use super::{Hook, errors::HookError};
@@ -11,16 +14,18 @@ pub struct StitchBuilder {
     hook: Hook,
     anchored: Option<usize>,
     lingering: bool,
+    origin_bytes: ByteRange,
 }
 
 type Progress = Result<StitchBuilder, HookError>;
 
 impl StitchBuilder {
-    pub fn linger(hook: Hook) -> Progress {
+    pub fn linger(hook: Hook, origin: ByteRange) -> Progress {
         Ok(Self {
             hook,
             anchored: None,
             lingering: true,
+            origin_bytes: origin,
         })
     }
 
@@ -50,7 +55,7 @@ impl StitchBuilder {
         };
 
         self.hook.edges.grow();
-        self.hook.add_node(peculiarity);
+        self.hook.add_node(peculiarity, self.origin_bytes);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
         Ok(self)
@@ -124,7 +129,7 @@ impl StitchBuilder {
         Ok((new_anchors, self.hook))
     }
 
-    pub fn fasten_off_with_tip(mut hook: Hook) -> Result<Hook, HookError> {
+    pub fn fasten_off_with_tip(mut hook: Hook, origin: ByteRange) -> Result<Hook, HookError> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");
             return Err(FORequires2Anchors);
@@ -145,7 +150,7 @@ impl StitchBuilder {
         }
 
         hook.edges.grow();
-        hook.add_node(Some(Peculiarity::Tip));
+        hook.add_node(Some(Peculiarity::Tip), origin);
         hook.now.cursor += 1;
         Ok(hook)
     }
@@ -179,7 +184,7 @@ mod tests {
     // test parents and grandparents around single-loop
 
     fn mr3() -> Hook {
-        let h = Hook::start_with(&MR(3), COLOR, HookParams::default()).unwrap();
+        let h = Hook::start_with(&MR(3).without_origin(), COLOR, HookParams::default()).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(

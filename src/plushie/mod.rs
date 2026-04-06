@@ -10,10 +10,13 @@ use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
         display_mode::{set_display_mode, setup_display_modes},
-        mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
+        mouse_interactions::{
+            deselect_on_empty_press, highlight_selected_nodes_in_pattern, stop_dragging,
+            update_dragging,
+        },
         shaders::{LinkMaterial, sync_shader_buffer},
         spawning::{adjust_centroid_number, build_plushie_from_pattern},
-        systems::{setup_assets, sync_visuals_for_selection},
+        systems::{highlight_selected_nodes_visually, setup_assets},
     },
     ui::{simulation_is_running, world_input},
 };
@@ -43,12 +46,17 @@ impl Plugin for PlushiePlugin {
         );
         app.add_systems(
             Update,
-            (build_plushie_from_pattern, adjust_centroid_number).chain(),
+            (
+                build_plushie_from_pattern,
+                adjust_centroid_number,
+                highlight_selected_nodes_in_pattern,
+            )
+                .chain(),
         );
         app.add_systems(
             PostUpdate,
             (
-                sync_visuals_for_selection,
+                highlight_selected_nodes_visually,
                 set_display_mode, // could this be handled with a resource_changed? UiState is dereferenced mutably every frame so probably not right?
                 sync_shader_buffer.run_if(simulation_is_running),
             ),

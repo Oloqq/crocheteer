@@ -4,6 +4,7 @@ pub mod simple_flow;
 
 /// Iterator over ACL actions
 pub trait Flow {
+    #[allow(dead_code)]
     fn next(&mut self) -> Option<Action>;
     fn peek(&self) -> Option<Action>;
 

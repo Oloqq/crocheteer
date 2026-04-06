@@ -8,12 +8,12 @@ const COLOR: ColorRgb = [255, 0, 0];
 
 impl Hook {
     pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
-        self.perform(action)
+        self.perform(action, (0, 0))
     }
 }
 
 fn start_mr(mr_count: usize) -> Hook {
-    Hook::start_with(&MR(mr_count), COLOR, HookParams::default()).unwrap()
+    Hook::start_with(&MR(mr_count).without_origin(), COLOR, HookParams::default()).unwrap()
 }
 
 #[test]
@@ -96,7 +96,7 @@ fn test_test_perform_fo_after_full_round() {
         ])
     );
     h.params.tip_from_fo = true;
-    h = h.perform(&FO).unwrap();
+    h = h.test_perform(&FO).unwrap();
     q!(h.now.anchors, Queue::from([]));
     q!(
         h.edges,
@@ -118,7 +118,7 @@ fn test_test_perform_fo_after_full_round() {
 fn test_error_on_stitch_after_fo() {
     let mut h = start_mr(3);
     h.params.tip_from_fo = true;
-    h = h.perform(&FO).unwrap();
+    h = h.test_perform(&FO).unwrap();
     h.clone()
         .test_perform(&Sc)
         .expect_err("Can't continue after FO");
@@ -153,7 +153,7 @@ fn test_goto_after_fo() {
         ])
     );
     h.params.tip_from_fo = true;
-    h = h.perform(&FO).unwrap();
+    h = h.test_perform(&FO).unwrap();
     q!(
         h.edges,
         Edges::from(vec![

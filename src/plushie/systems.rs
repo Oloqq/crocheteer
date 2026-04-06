@@ -36,7 +36,7 @@ pub fn setup_assets(
     commands.insert_resource(assets);
 }
 
-pub fn sync_visuals_for_selection(
+pub fn highlight_selected_nodes_visually(
     mut commands: Commands,
     mut selection_removed: RemovedComponents<Selected>,
     graph_nodes: Query<&GraphNode>,
