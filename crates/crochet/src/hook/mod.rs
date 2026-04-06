@@ -128,11 +128,11 @@ impl Hook {
                     .finish()?;
             }
             Slst => {
-                let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
-                // TODO does override previous node not affect this?
-                self.edges.link(self.now.cursor - 1, anchor);
-                self.override_previous_node = Some(anchor);
-                self.now.anchors.push_back(anchor);
+                log::error!("slst is disabled");
+                // let anchor = self.now.anchors.pop_front().ok_or(NoAnchorToPullThrough)?;
+                // self.edges.link(self.now.cursor - 1, anchor);
+                // self.override_previous_node = Some(anchor);
+                // self.now.anchors.push_back(anchor);
             }
             Attach(label, chain_size) => {
                 log::debug!("attach to label: {label}");

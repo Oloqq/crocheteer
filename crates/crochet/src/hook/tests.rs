@@ -388,3 +388,45 @@ fn test_flo_is_registered() {
     h = h.test_perform(&Sc).unwrap();
     q!(h.nodes[4].peculiarity, Some(Peculiarity::FLO((2, 1, 0))));
 }
+
+// slst all around is possible in reality, so should be possible here
+// slst in reality is difficult to pull through,
+// is there a legitimate reason one would want to pull through a slst?
+//
+// #[test]
+// fn test_slst_all_around() {
+//     let mut h = start_mr(3);
+//     h = h.test_perform(&Sc).unwrap();
+//     h = h.test_perform(&Sc).unwrap();
+//     h = h.test_perform(&Sc).unwrap();
+//     q!(h.now.anchors, Queue::from([4, 5, 6]));
+//     q!(h.now.cursor, 7);
+//     // q!(
+//     //     h.edges,
+//     //     Edges::from(vec![
+//     //         vec![],
+//     //         vec![0],
+//     //         vec![0, 1],
+//     //         vec![0, 2],
+//     //         vec![1, 3],
+//     //         vec![2, 4],
+//     //         vec![3, 5],
+//     //         vec![]
+//     //     ])
+//     // );
+//     // h = h.test_perform(&Slst).unwrap();
+//     // q!(h.now.cursor, 7);
+//     // q!(
+//     //     h.edges,
+//     //     Edges::from(vec![
+//     //         vec![],
+//     //         vec![0],
+//     //         vec![0, 1],
+//     //         vec![0, 2],
+//     //         vec![1, 3],
+//     //         vec![2, 4],
+//     //         vec![3, 5],
+//     //         vec![]
+//     //     ])
+//     // );
+// }

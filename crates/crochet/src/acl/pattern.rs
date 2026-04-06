@@ -57,7 +57,7 @@ pub enum Action {
     Inc,
     /// Decrease
     Dec,
-    /// Slip stitch
+    /// Slip stitch. Does not create an anchor.
     Slst,
     /// Create a chain, then attach it to a marked position
     Attach(Label, usize),
