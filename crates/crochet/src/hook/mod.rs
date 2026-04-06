@@ -13,7 +13,7 @@ use crate::{
     ColorRgb,
     acl::{
         Action::{self, *},
-        ByteRange, Flow, Label,
+        Flow, Label, Origin,
     },
     hook::edges::Edges,
 };
@@ -103,7 +103,7 @@ impl Hook {
         }
     }
 
-    pub fn perform(mut self, action: &Action, origin: ByteRange) -> Result<Self, HookError> {
+    pub fn perform(mut self, action: &Action, origin: Option<Origin>) -> Result<Self, HookError> {
         match action {
             Sc => {
                 self = StitchBuilder::linger(self, origin)?
@@ -213,7 +213,7 @@ impl Hook {
         mut self,
         label: &Label,
         chain_size: &usize,
-        origin: ByteRange,
+        origin: Option<Origin>,
     ) -> Result<Self, HookError> {
         // FIXME this should probably affect part_limits
         // FIXME part_limits should prolly be limb_limits

@@ -36,14 +36,14 @@ impl Flow for SimpleFlow {
     fn next_with_origin(&mut self) -> Option<ActionWithOrigin> {
         Some(ActionWithOrigin {
             action: self.next()?,
-            origin: (0, 0),
+            origin: None,
         })
     }
 
     fn peek_with_origin(&self) -> Option<ActionWithOrigin> {
         Some(ActionWithOrigin {
             action: self.peek()?,
-            origin: (0, 0),
+            origin: None,
         })
     }
 }

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use bevy::prelude::*;
-use crochet::{ByteRange, ColorRgb, Peculiarity};
+use crochet::{ColorRgb, Peculiarity};
 
 use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
@@ -14,7 +14,7 @@ pub struct GraphNode {
     pub child_selection_indicator: Entity,
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
     pub peculiarity: Option<Peculiarity>,
-    pub origin: Option<ByteRange>,
+    pub origin: Option<crochet::Origin>,
 }
 
 /// Link between two GraphNodes, where the yarn exerts LinkForce
@@ -78,10 +78,5 @@ pub struct AddGraphNode {
     pub position: Vec3,
     pub color: ColorRgb,
     pub peculiarity: Option<Peculiarity>,
-    pub byte_range: Option<ByteRange>,
-}
-
-#[derive(Message)]
-pub struct BuildPlushieFromPattern {
-    pub pattern: String,
+    pub origin: Option<crochet::Origin>,
 }

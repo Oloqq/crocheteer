@@ -1,7 +1,7 @@
 use HookError::*;
 
 use crate::{
-    acl::ByteRange,
+    acl::Origin,
     hook::{
         WorkingLoops,
         node::{Peculiarity, PointsOnPushPlane},
@@ -14,18 +14,18 @@ pub struct StitchBuilder {
     hook: Hook,
     anchored: Option<usize>,
     lingering: bool,
-    origin_bytes: ByteRange,
+    origin: Option<Origin>,
 }
 
 type Progress = Result<StitchBuilder, HookError>;
 
 impl StitchBuilder {
-    pub fn linger(hook: Hook, origin: ByteRange) -> Progress {
+    pub fn linger(hook: Hook, origin: Option<Origin>) -> Progress {
         Ok(Self {
             hook,
             anchored: None,
             lingering: true,
-            origin_bytes: origin,
+            origin,
         })
     }
 
@@ -55,7 +55,7 @@ impl StitchBuilder {
         };
 
         self.hook.edges.grow();
-        self.hook.add_node(peculiarity, self.origin_bytes);
+        self.hook.add_node(peculiarity, self.origin);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
         Ok(self)
@@ -129,7 +129,7 @@ impl StitchBuilder {
         Ok((new_anchors, self.hook))
     }
 
-    pub fn fasten_off_with_tip(mut hook: Hook, origin: ByteRange) -> Result<Hook, HookError> {
+    pub fn fasten_off_with_tip(mut hook: Hook, origin: Option<Origin>) -> Result<Hook, HookError> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");
             return Err(FORequires2Anchors);

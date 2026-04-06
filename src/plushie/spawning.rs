@@ -4,16 +4,20 @@ use crochet::{ColorRgb, Peculiarity, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
+use crate::plushie::DisplayMode;
 use crate::plushie::animation::{
     Centroid, LinkForce, NewPosition, OriginNode, SingleLoopForce, StuffingForce,
 };
 use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
-use crate::plushie::{BuildPlushieFromPattern, DisplayMode};
 use crate::plushie::{
     data::{AddGraphNode, GraphNode, PlushieAssets},
     mouse_interactions::on_click,
 };
+use crate::state::editor_simulation_sync::EditorSimulationSync;
+use crate::ui::code_editor::highlighter::HighlightLayer;
+use crate::ui::code_editor::messages::BuildPlushieFromPattern;
+use crate::ui::code_editor::state::CodeEditorState;
 use crate::ui::{ConsoleMessage, ConsolePipe, SimulationState};
 
 fn force_display_node_color(peculiarity: Option<Peculiarity>) -> ColorRgb {
@@ -75,7 +79,7 @@ fn add_graph_node(
                 child_per_display_mode,
                 child_selection_indicator,
                 peculiarity: msg.peculiarity,
-                origin: msg.byte_range,
+                origin: msg.origin,
             },
             Name::new("GraphNode"),
             Transform::from_translation(msg.position).with_scale(Vec3::splat(HOOK_SIZE)),
@@ -168,6 +172,8 @@ pub fn build_plushie_from_pattern(
     mut commands: Commands,
     mut assets: ResMut<PlushieAssets>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut sync_state: ResMut<EditorSimulationSync>,
+    mut code_editor: ResMut<CodeEditorState>,
     state: Res<SimulationState>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
@@ -177,19 +183,43 @@ pub fn build_plushie_from_pattern(
         return Ok(());
     };
 
-    let plushie_def: PlushieDef = match crochet::parse(&msg.pattern) {
-        Ok(p) => p,
+    for entity in existing_plushie_entities {
+        commands.entity(entity).despawn();
+    }
+
+    let pattern: crochet::Pattern = match crochet::acl_to_pattern(&msg.acl) {
+        Ok(new_pattern) => new_pattern,
         Err(error) => {
             let _ = pipe.sender.send(ConsoleMessage {
                 text: format!("Error in the pattern: {}", error),
             });
+            // TODO errors reported here are useless, need to refactor grammar and parser
+            // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
+            code_editor.highlighter.set(
+                HighlightLayer::RedUnderline,
+                vec![(error.byte_range.0..error.byte_range.1)],
+            );
             return Ok(());
         }
     };
 
-    for entity in existing_plushie_entities {
-        commands.entity(entity).despawn();
-    }
+    let plushie_def: PlushieDef =
+        // TODO use iterator instead of flow, no need to clone
+        match crochet::Hook::parse(pattern.clone(), crochet::HookParams::default()) {
+            Ok(graph) => PlushieDef {
+                edges: graph.edges.into(),
+                nodes: graph.nodes,
+            },
+            Err(error) => {
+                let _ = pipe.sender.send(ConsoleMessage {
+                    text: format!("Error in the pattern (hook): {:?}", error),
+                });
+                return Ok(());
+            }
+        };
+    sync_state.acl_in_simulation = Some(msg.acl.clone());
+    // sync_state.pattern_in_simulation = Some(pattern);
+    sync_state.in_sync = true;
 
     let node_positions =
         Initializer::RegularCylinder(12).apply(plushie_def.nodes.len() as u32, HOOK_SIZE);
@@ -206,7 +236,7 @@ pub fn build_plushie_from_pattern(
                     position: position.clone(),
                     color: node.color,
                     peculiarity: node.peculiarity,
-                    byte_range: Some(node.origin),
+                    origin: node.origin,
                 },
                 &mut commands,
                 &mut assets,

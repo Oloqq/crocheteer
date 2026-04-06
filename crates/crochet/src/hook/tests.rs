@@ -8,7 +8,7 @@ const COLOR: ColorRgb = [255, 0, 0];
 
 impl Hook {
     pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
-        self.perform(action, (0, 0))
+        self.perform(action, None)
     }
 }
 

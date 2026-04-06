@@ -8,14 +8,17 @@ mod params;
 mod plushie_definition;
 
 pub use crate::hook::hook_result::InitialGraph;
-use crate::{
-    acl::{PatternBuilder, PatternError},
-    errors::Error,
-    hook::{Hook, HookError, HookParams},
+use crate::{acl::PatternError, errors::Error, hook::HookError};
+pub use acl::{Origin, Pattern, PatternBuilder};
+pub use hook::{
+    node::{Node, Peculiarity, PointsOnPushPlane},
+    {Hook, HookParams},
 };
-pub use acl::ByteRange;
-pub use hook::node::{Node, Peculiarity, PointsOnPushPlane};
 pub use plushie_definition::*;
+
+pub fn acl_to_pattern(acl_source: &str) -> Result<Pattern, acl::PatternError> {
+    PatternBuilder::parse(acl_source)
+}
 
 pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
     let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;

@@ -1,5 +1,5 @@
 mod charts;
-mod code_editor;
+pub mod code_editor;
 mod console;
 mod control_panel;
 mod data;
@@ -12,21 +12,18 @@ use bevy::prelude::*;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 pub use console::{ConsoleMessage, ConsolePipe};
 pub use simulation_state::{SimulationState, simulation_is_running};
-pub use ui_used_input::UiUsedInput;
+pub use ui_used_input::{UiUsedInput, world_input};
 
-use crate::{
-    plushie::BuildPlushieFromPattern,
-    ui::{
-        charts::chart_window,
-        code_editor::code_editor_ui,
-        console::{ConsoleReceiver, console_window},
-        control_panel::control_panel,
-        data::{CodeEditorState, UiState},
-        menu_bar::top_panel,
-    },
+use crate::ui::code_editor::messages::BuildPlushieFromPattern;
+use crate::ui::code_editor::state::CodeEditorState;
+use crate::ui::{
+    charts::chart_window,
+    code_editor::code_editor_ui,
+    console::{ConsoleReceiver, console_window},
+    control_panel::control_panel,
+    data::UiState,
+    menu_bar::top_panel,
 };
-
-pub use ui_used_input::world_input;
 
 pub struct UiPlugin {
     pub initial_pattern: String,
@@ -35,13 +32,13 @@ pub struct UiPlugin {
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
-        app.insert_resource(CodeEditorState {
-            code: self.initial_pattern.clone(),
-            ..default()
-        });
+        app.insert_resource(CodeEditorState::with_initial_pattern(
+            self.initial_pattern.clone(),
+        ));
         app.init_resource::<UiState>();
         app.init_resource::<UiUsedInput>();
-        app.add_systems(Startup, (set_style, build_initial_plushie));
+        app.add_message::<BuildPlushieFromPattern>();
+        app.add_systems(Startup, set_style);
         app.add_systems(
             EguiPrimaryContextPass,
             (
@@ -49,7 +46,7 @@ impl Plugin for UiPlugin {
                     ui_used_input::reset,
                     top_panel,
                     (control_panel, code_editor_ui),
-                    console_window,
+                    (console_window),
                     ui_used_input::adjust_to_egui_wants_input,
                 )
                     .chain(),
@@ -60,6 +57,10 @@ impl Plugin for UiPlugin {
         let (tx, rx) = crossbeam_channel::unbounded::<ConsoleMessage>();
         app.insert_resource(ConsolePipe { sender: tx });
         app.insert_resource(ConsoleReceiver(rx));
+
+        app.world_mut().write_message(BuildPlushieFromPattern {
+            acl: self.initial_pattern.clone(),
+        });
     }
 }
 
@@ -78,13 +79,4 @@ fn set_style(mut contexts: bevy_egui::EguiContexts) -> Result {
         style.spacing.scroll = ScrollStyle::solid();
     });
     Ok(())
-}
-
-fn build_initial_plushie(
-    mut msgw: MessageWriter<BuildPlushieFromPattern>,
-    state: Res<CodeEditorState>,
-) {
-    msgw.write(BuildPlushieFromPattern {
-        pattern: state.code.clone(),
-    });
 }

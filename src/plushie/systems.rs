@@ -43,17 +43,17 @@ pub fn highlight_selected_nodes_visually(
     selection_added: Query<Entity, (With<GraphNode>, With<Selected>, Added<Selected>)>,
 ) {
     for entity in &selection_added {
-        let graph_node = graph_nodes
-            .get(entity)
-            .expect("selection should be applied to just GraphNodes");
+        let Ok(graph_node) = graph_nodes.get(entity) else {
+            continue;
+        };
         commands
             .entity(graph_node.child_selection_indicator)
             .insert(Visibility::Visible);
     }
     for entity in selection_removed.read() {
-        let graph_node = graph_nodes
-            .get(entity)
-            .expect("selection should be applied to just GraphNodes");
+        let Ok(graph_node) = graph_nodes.get(entity) else {
+            continue;
+        };
         commands
             .entity(graph_node.child_selection_indicator)
             .insert(Visibility::Hidden);

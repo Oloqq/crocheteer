@@ -2,6 +2,7 @@ mod camera;
 mod cursor_ray;
 mod plushie;
 pub mod project;
+mod state;
 mod ui;
 
 use std::{io::Cursor, time::Duration};
@@ -17,7 +18,10 @@ use bevy::{
 };
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
 
-use crate::{cursor_ray::CursorRayPlugin, project::Project};
+use crate::{
+    cursor_ray::CursorRayPlugin, project::Project,
+    state::editor_simulation_sync::EditorSimulationSync,
+};
 
 // a yarn I work with 5mm hook generally yields 5mm big stitches
 // TODO define in pattern? define in project settings? do we support variable hook size? if we support, is it variable per part or can it change in arbitrary positions?
@@ -35,6 +39,7 @@ pub fn app(project: Project) -> App {
     app.add_plugins(plushie::PlushiePlugin);
     crate::project::startup::apply_settings(&mut app, &project.simulation_config);
     app.insert_resource(project.simulation_config);
+    app.insert_resource(EditorSimulationSync::new());
     app
 }
 

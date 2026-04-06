@@ -1,24 +1,33 @@
+pub mod highlighter;
+pub mod messages;
+pub mod state;
+mod syntax;
+
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
     egui::{self, PopupAnchor, panel::Side},
 };
-use egui_code_editor::CodeEditor;
+use egui_code_editor::{CodeEditor, ColorTheme};
 
 use crate::{
-    plushie::BuildPlushieFromPattern,
+    state::editor_simulation_sync::EditorSimulationSync,
     ui::{
-        data::CodeEditorState,
+        code_editor::{messages::BuildPlushieFromPattern, state::CodeEditorState},
         ui_used_input::UiUsedInput,
         utils::{full_height_button, using_resizer},
     },
 };
 
+pub const EDITOR_COLOR_THEME: ColorTheme = ColorTheme::GRUVBOX;
+pub const EDITOR_FONT_SIZE: f32 = 14.0;
+
 pub fn code_editor_ui(
     mut contexts: EguiContexts,
     mut state: ResMut<CodeEditorState>,
     mut msg_build_plushie: MessageWriter<BuildPlushieFromPattern>,
-    ui_used_input: Res<UiUsedInput>,
+    mut sync_state: ResMut<EditorSimulationSync>,
+    ui_used_input: Res<UiUsedInput>, // atomically mutable
     mut collapsed: Local<bool>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -37,13 +46,24 @@ pub fn code_editor_ui(
                 ui.with_layout(egui::Layout::top_down(egui::Align::Min), |ui| {
                     // Toolbar
                     ui.horizontal(|ui| {
-                        ui.heading("Pattern");
                         if ui.button("◀").clicked() {
                             *collapsed = true;
                         }
+                        ui.add_enabled_ui(!sync_state.in_sync, |ui| {
+                            if ui
+                                .button("⟲")
+                                .on_hover_text("Return to the code currently in simulation.")
+                                .clicked()
+                            {
+                                if let Some(saved) = &sync_state.acl_in_simulation {
+                                    state.code = saved.clone();
+                                    sync_state.editor_changed(&state.code);
+                                }
+                            }
+                        });
                         if ui.button("🛠 Visualize").clicked() {
                             msg_build_plushie.write(BuildPlushieFromPattern {
-                                pattern: state.code.clone(),
+                                acl: state.code.clone(),
                             });
                         }
                     });
@@ -56,16 +76,28 @@ pub fn code_editor_ui(
 
                     // Editor fills remaining space
                     scroll.show(ui, |ui| {
-                        let response = CodeEditor::default()
+                        let response = CodeEditor::with_semantics(state.highlighter.clone())
                             .id_source("code_editor")
                             .with_rows(20)
-                            .with_fontsize(14.0)
-                            .with_theme(state.theme)
+                            .with_fontsize(EDITOR_FONT_SIZE)
+                            .with_theme(EDITOR_COLOR_THEME)
                             .with_syntax(state.syntax.clone())
                             .with_numlines(true)
                             .vscroll(false)
                             .show(ui, &mut state.code);
-                        // .show_with_completer(ui, &mut state.code, Completer stored in App)
+
+                        if response.response.changed() {
+                            sync_state.editor_changed(&state.code);
+                        }
+
+                        if let Some(cursor_range) = response.cursor_range {
+                            if !cursor_range.is_empty() {
+                                // TODO select stitches
+                                // let bytes = cursor_range.as_sorted_char_range(); // char range breaks with emojis
+                                // let text = state.code[bytes].to_owned();
+                                // println!("selected: {text}");
+                            }
+                        }
 
                         if let Some(mouse_pos) = ui.input(|i| i.pointer.hover_pos()) {
                             let text_rect = response.text_clip_rect;

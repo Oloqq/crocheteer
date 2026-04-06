@@ -1,8 +1,10 @@
+use std::ops::Range;
+
 use pest::Span;
 
 use crate::{ColorRgb, acl::Flow};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Pattern {
     pub actions: Vec<ActionWithOrigin>,
     pub cursor: usize,
@@ -40,13 +42,32 @@ impl Flow for Pattern {
 }
 
 pub type Label = String;
-pub type ByteRange = (usize, usize);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Origin {
+    // can't store positions as range because ops::Range<_> does not implement Copy because it is an iterator: https://github.com/rust-lang/rust/pull/27186
+    byte_start: usize,
+    byte_end: usize,
+}
+
+impl Origin {
+    pub fn from_span(span: Span) -> Self {
+        Self {
+            byte_start: span.start(),
+            byte_end: span.end(),
+        }
+    }
+
+    pub fn as_range(&self) -> Range<usize> {
+        self.byte_start..self.byte_end
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ActionWithOrigin {
     pub action: Action,
-    /// Byte location in the input string that produced this action. Will be (0, 0) for implicit BL at round start.
-    pub origin: ByteRange,
+    /// Location in the input string that produced this action.
+    pub origin: Option<Origin>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -88,21 +109,14 @@ impl Action {
     pub(crate) fn with_origin(self, span: Span) -> ActionWithOrigin {
         ActionWithOrigin {
             action: self,
-            origin: (span.start(), span.end()),
-        }
-    }
-
-    pub(crate) fn with_origin_range(self, byte_range: ByteRange) -> ActionWithOrigin {
-        ActionWithOrigin {
-            action: self,
-            origin: byte_range,
+            origin: Some(Origin::from_span(span)),
         }
     }
 
     pub(crate) fn without_origin(self) -> ActionWithOrigin {
         ActionWithOrigin {
             action: self,
-            origin: (0, 0),
+            origin: None,
         }
     }
 }

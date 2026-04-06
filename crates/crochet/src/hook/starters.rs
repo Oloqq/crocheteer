@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use super::{Edges, Hook, Moment, Queue, errors::*};
 use crate::{
     ColorRgb,
-    acl::{Action::*, ActionWithOrigin, ByteRange, Flow},
+    acl::{Action::*, ActionWithOrigin, Flow, Origin},
     hook::{HookParams, WorkingLoops, node::Peculiarity},
 };
 
@@ -65,7 +65,7 @@ impl Hook {
         }
     }
 
-    fn magic_ring(&mut self, size: usize, origin: ByteRange) {
+    fn magic_ring(&mut self, size: usize, origin: Option<Origin>) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
         self.part_limits.push(self.now.cursor);

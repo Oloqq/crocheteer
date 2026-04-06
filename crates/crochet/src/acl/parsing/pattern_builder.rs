@@ -66,17 +66,23 @@ impl PatternBuilder {
             self.actions.append(&mut to_append);
         }
 
-        if let Some(mby_round_end) = pairs.peek() {
-            if let Rule::round_end = mby_round_end.as_rule() {
-                let round_end_pair = pairs.next().unwrap();
-                let count_pair = round_end_pair.into_inner().next().unwrap();
-                let count = integer(&count_pair)?;
-                self.actions.push(
-                    // TODO remove line_col from this? - first make sure hook can report the location
-                    Action::EnforceAnchors(count, count_pair.line_col())
-                        .with_origin(count_pair.as_span()),
-                );
-            }
+        match pairs.next() {
+            Some(pair) => match pair.as_rule() {
+                Rule::round_end => {
+                    let round_end_pair = pair;
+                    let count_pair = round_end_pair.into_inner().next().unwrap();
+                    let count = integer(&count_pair)?;
+                    self.actions.push(
+                        // TODO remove line_col from this? - first make sure hook can report the location
+                        Action::EnforceAnchors(count, count_pair.line_col())
+                            .with_origin(count_pair.as_span()),
+                    );
+                }
+                Rule::comment => (),
+                Rule::EOI => (),
+                _ => unreachable!("{:?}", pair.as_rule()),
+            },
+            None => (),
         }
 
         Ok(())
@@ -85,7 +91,7 @@ impl PatternBuilder {
     fn reset_to_both_loops(&mut self) {
         match self.current_loop {
             CurrentLoop::Back | CurrentLoop::Front => {
-                self.actions.push(Action::BL.without_origin()); // since this is implicit, there is no real origin. Maybe the colon that starts a round could be linked here, or if this (0, 0) causes issues, store origin in an Option
+                self.actions.push(Action::BL.without_origin());
                 self.current_loop = CurrentLoop::Both;
             }
             CurrentLoop::Both => (),
@@ -164,9 +170,9 @@ impl PatternBuilder {
                 Rule::KW_FO => self.actions.push(Action::FO.with_origin(opcode.as_span())),
                 Rule::EOI => (),
                 Rule::interstitchable_action => {
-                    let origin = (opcode.as_span().start(), opcode.as_span().end());
+                    let span = opcode.as_span();
                     let action = self.interstitchable_action(opcode.into_inner())?;
-                    self.actions.push(action.with_origin_range(origin));
+                    self.actions.push(action.with_origin(span));
                 }
                 Rule::KW_SEW => {
                     let args = tokens.next().unwrap();

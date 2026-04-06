@@ -6,24 +6,25 @@ mod shaders;
 mod spawning;
 mod systems;
 
+pub use crate::plushie::spawning::build_plushie_from_pattern;
 use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
         display_mode::{set_display_mode, setup_display_modes},
-        mouse_interactions::{
-            deselect_on_empty_press, highlight_selected_nodes_in_pattern, stop_dragging,
-            update_dragging,
-        },
+        mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
-        spawning::{adjust_centroid_number, build_plushie_from_pattern},
+        spawning::adjust_centroid_number,
         systems::{highlight_selected_nodes_visually, setup_assets},
     },
-    ui::{simulation_is_running, world_input},
+    state::editor_simulation_sync::EditorSimulationSync,
+    ui::{
+        code_editor::{highlighter::HighlightLayer, state::CodeEditorState},
+        simulation_is_running, world_input,
+    },
 };
 use bevy::prelude::*;
 use data::*;
 
-pub use data::BuildPlushieFromPattern;
 pub use display_mode::{DisplayMode, SetDisplayMode};
 
 pub struct PlushiePlugin;
@@ -32,7 +33,6 @@ impl Plugin for PlushiePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlushieAnimationPlugin);
         app.add_message::<AddGraphNode>();
-        app.add_message::<BuildPlushieFromPattern>();
         app.add_message::<SetDisplayMode>();
         app.init_resource::<PressHandled>();
         app.add_plugins(MaterialPlugin::<LinkMaterial>::default());
@@ -68,4 +68,33 @@ impl Plugin for PlushiePlugin {
         //     app.add_systems(FixedUpdate, learning::change_prediodically);
         // }
     }
+}
+
+pub fn highlight_selected_nodes_in_pattern(
+    mut code_editor: ResMut<CodeEditorState>,
+    selected: Query<&GraphNode, With<Selected>>,
+    added_selected: Query<Entity, Added<Selected>>,
+    removed_selected: RemovedComponents<Selected>,
+    sync_state: Res<EditorSimulationSync>,
+    mut was_in_sync: Local<bool>,
+) {
+    if !sync_state.in_sync {
+        *was_in_sync = false;
+        code_editor
+            .highlighter
+            .clear(HighlightLayer::LightBackground);
+        return;
+    }
+    if added_selected.is_empty() && removed_selected.is_empty() && *was_in_sync {
+        return;
+    }
+    *was_in_sync = true;
+
+    code_editor.highlighter.set(
+        HighlightLayer::LightBackground,
+        selected
+            .iter()
+            .filter_map(|s| s.origin.map(|ori| ori.as_range()))
+            .collect(),
+    );
 }

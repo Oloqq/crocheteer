@@ -1,4 +1,4 @@
-program = { SOI ~ (round | comment | parameter | control | NEWLINE)+ ~ EOI}
+program = { SOI ~ (round | comment | parameter | control | NEWLINE)* ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 

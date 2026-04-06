@@ -34,6 +34,10 @@ strum = "0.28.0"                                                               #
 strum_macros = "0.28.0"                                                        # ^
 winit = "0.30.13"                                                              # set window icon
 
+[dev-dependencies]
+pretty_assertions = "1.4.0" # colorful diff in assert_eq
+
+
 [profile.dev]
 opt-level = 1 # enable bevy dynamic linking
 
