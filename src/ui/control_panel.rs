@@ -11,6 +11,7 @@ use bevy_egui::{
     EguiContexts,
     egui::{self},
 };
+use crochet::force_graph::Initializer;
 
 pub fn control_panel(
     mut state: ResMut<SimulationState>,
@@ -57,6 +58,13 @@ pub fn control_panel(
                     mode: state.display_mode,
                 });
             }
+        });
+
+        ui.collapsing("Node initialization", |ui| {
+            ui.radio_value(&mut state.initializer, Initializer::RegularCylinder(12), "Cylinder")
+                .on_hover_text("Spawn all nodes at once in a shape of a cylinder.");
+            ui.radio_value(&mut state.initializer, Initializer::OneByOne, "One by one")
+                .on_hover_text("Spawn the stitches one by one, waiting for the previous node to reach a relatively stable position before advancing.");
         });
 
         ui.separator();

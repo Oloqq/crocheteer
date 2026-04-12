@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use bevy::prelude::*;
-use crochet::{ColorRgb, Peculiarity};
+use crochet::{ColorRgb, Peculiarity, PlushieDef};
 
 use crate::plushie::{DisplayMode, shaders::LinkMaterial};
 
@@ -79,4 +79,11 @@ pub struct AddGraphNode {
     pub color: ColorRgb,
     pub peculiarity: Option<Peculiarity>,
     pub origin: Option<crochet::Origin>,
+}
+
+#[derive(Resource)]
+pub struct OneByOneProgress {
+    pub full_plushie: PlushieDef,
+    pub node_entities: Vec<Entity>,
+    pub next: usize,
 }

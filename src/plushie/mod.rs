@@ -6,14 +6,17 @@ mod shaders;
 mod spawning;
 mod systems;
 
-pub use crate::plushie::spawning::build_plushie_from_pattern;
+pub use crate::plushie::spawning::build_full_plushie_from_pattern;
 use crate::{
     plushie::{
         animation::PlushieAnimationPlugin,
         display_mode::{set_display_mode, setup_display_modes},
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
-        spawning::adjust_centroid_number,
+        spawning::{
+            adjust_centroid_number, continue_building_one_by_one, ordered_plushie_build,
+            start_building_plushie_one_by_one,
+        },
         systems::{highlight_selected_nodes_visually, setup_assets},
     },
     state::editor_simulation_sync::EditorSimulationSync,
@@ -47,7 +50,12 @@ impl Plugin for PlushiePlugin {
         app.add_systems(
             Update,
             (
-                build_plushie_from_pattern,
+                (
+                    build_full_plushie_from_pattern,
+                    start_building_plushie_one_by_one,
+                )
+                    .ambiguous_with_all()
+                    .run_if(ordered_plushie_build),
                 adjust_centroid_number,
                 highlight_selected_nodes_in_pattern,
             )
@@ -60,6 +68,10 @@ impl Plugin for PlushiePlugin {
                 set_display_mode, // could this be handled with a resource_changed? UiState is dereferenced mutably every frame so probably not right?
                 sync_shader_buffer.run_if(simulation_is_running),
             ),
+        );
+        app.add_systems(
+            FixedPreUpdate,
+            continue_building_one_by_one.run_if(resource_exists::<OneByOneProgress>),
         );
 
         // {

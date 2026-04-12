@@ -2,10 +2,13 @@ use std::f32::consts::PI;
 
 use glam::Vec3;
 
+#[derive(PartialEq)]
 pub enum Initializer {
-    /// Start with points arranged into a cylinder shape. Advance height every X nodes.
+    /// Start with nodes arranged into a cylinder shape. Advance height every X nodes.
     /// Magic Ring is placed at origin.
     RegularCylinder(u32),
+    /// Spawn the nodes one by one, waiting for the previous node to reach a relatively stable position before advancing.
+    OneByOne,
 }
 
 impl Initializer {
@@ -14,6 +17,11 @@ impl Initializer {
             Initializer::RegularCylinder(nodes_in_cirumference) => {
                 arrange_cylinder(nodes_num, *nodes_in_cirumference, hook_size)
             }
+            Initializer::OneByOne => vec![
+                Vec3::ZERO,
+                Vec3::new(hook_size, 0.0, 0.0),
+                Vec3::new(0.0, 0.0, hook_size),
+            ],
         }
     }
 }

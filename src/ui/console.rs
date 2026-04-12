@@ -48,6 +48,12 @@ pub struct ConsolePipe {
     pub sender: Sender<ConsoleMessage>,
 }
 
+impl ConsolePipe {
+    pub fn write(&self, msg: &str) {
+        let _ = self.sender.send(ConsoleMessage { text: msg.into() });
+    }
+}
+
 #[derive(Resource)]
 pub struct ConsoleReceiver(pub Receiver<ConsoleMessage>);
 

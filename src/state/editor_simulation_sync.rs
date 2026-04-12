@@ -35,4 +35,10 @@ impl EditorSimulationSync {
         //     Err(_) => false,
         // };
     }
+
+    pub fn plushie_parsed(&mut self, acl: String) {
+        self.acl_in_simulation = Some(acl);
+        // self.pattern_in_simulation = Some(pattern);
+        self.in_sync = true;
+    }
 }

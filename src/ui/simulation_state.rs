@@ -11,6 +11,7 @@ pub struct SimulationState {
     pub centroids: u32,
     // pub nodes_per_centroid: u32,
     pub single_loop_force: f32,
+    pub initializer: crochet::force_graph::Initializer,
 }
 
 impl Default for SimulationState {
@@ -23,6 +24,7 @@ impl Default for SimulationState {
             centroids: 0,
             // nodes_per_centroid: 20,
             single_loop_force: 0.2,
+            initializer: crochet::force_graph::Initializer::RegularCylinder(12),
         }
     }
 }
