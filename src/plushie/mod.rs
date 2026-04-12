@@ -71,7 +71,9 @@ impl Plugin for PlushiePlugin {
         );
         app.add_systems(
             FixedPreUpdate,
-            continue_building_one_by_one.run_if(resource_exists::<OneByOneProgress>),
+            continue_building_one_by_one
+                .run_if(resource_exists::<OneByOneProgress>)
+                .run_if(simulation_is_running),
         );
 
         // {

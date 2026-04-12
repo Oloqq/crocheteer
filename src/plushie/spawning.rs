@@ -336,7 +336,6 @@ pub fn start_building_plushie_one_by_one(
         return Ok(());
     };
     sync_state.plushie_parsed(msg.acl.clone());
-    sync_state.in_sync = false; // TEMP
 
     assert!(plushie_def.nodes.len() == plushie_def.edges.len());
     assert!(plushie_def.nodes.len() > 0);

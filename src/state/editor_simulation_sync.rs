@@ -5,6 +5,7 @@ use bevy::prelude::*;
 // - ✅stop highlights when out of sync
 // - ✅changing something, than ctrl+z is considered in sync (obviously, returning to the previous state by hand too)
 // - changing things that do not change the action Flow is considered in sync (e.g. changing comments, replacing "[sc] x 3" with "3 sc" or "sc, sc, sc" ). This needs to rerun the hook, but without restarting the simulation
+// when implementing highlighting nodes based on clicks in the editor, consider one by one initializer
 
 #[derive(Resource)]
 pub struct EditorSimulationSync {
