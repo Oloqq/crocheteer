@@ -1,5 +1,3 @@
-// TODO understand shaders
-
 #import bevy_pbr::{
     mesh_functions,
     view_transformations::position_world_to_clip
