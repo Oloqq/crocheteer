@@ -5,7 +5,12 @@ use crate::acl::{Action, Pattern, PatternBuilder};
 
 impl Pattern {
     fn just_actions(self) -> Vec<Action> {
-        self.actions
+        assert_eq!(self.parts.len(), 1);
+        self.parts
+            .into_iter()
+            .next()
+            .unwrap()
+            .actions
             .into_iter()
             .map(|action_with_origin| action_with_origin.action)
             .collect()

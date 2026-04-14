@@ -6,9 +6,9 @@ use crate::{ColorRgb, acl::Flow};
 
 #[derive(Debug, Clone)]
 pub struct Pattern {
-    pub actions: Vec<ActionWithOrigin>, // TEMP
     pub parts: Vec<Part>,
-    pub cursor: usize,
+    pub action_cursor: usize,
+    pub part_cursor: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -31,19 +31,29 @@ impl Flow for Pattern {
     }
 
     fn next_with_origin(&mut self) -> Option<ActionWithOrigin> {
-        if self.cursor < self.actions.len() {
-            let got = self.actions[self.cursor].clone();
-            self.cursor += 1;
-            Some(got)
+        if self.part_cursor < self.parts.len() {
+            if self.action_cursor < self.parts[self.part_cursor].actions.len() {
+                let got = self.parts[self.part_cursor].actions[self.action_cursor].clone();
+                self.action_cursor += 1;
+                Some(got)
+            } else {
+                self.part_cursor += 1;
+                self.next_with_origin()
+            }
         } else {
             None
         }
     }
 
     fn peek_with_origin(&self) -> Option<ActionWithOrigin> {
-        if self.cursor < self.actions.len() {
-            let got = self.actions[self.cursor].clone();
-            Some(got)
+        if self.part_cursor < self.parts.len() {
+            if self.action_cursor < self.parts[self.part_cursor].actions.len() {
+                let got = self.parts[self.part_cursor].actions[self.action_cursor].clone();
+                Some(got)
+            } else {
+                let got = self.parts[self.part_cursor + 1].actions[0].clone();
+                Some(got)
+            }
         } else {
             None
         }

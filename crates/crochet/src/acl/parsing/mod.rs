@@ -19,11 +19,13 @@ struct PatParser;
 
 #[derive(Debug)]
 pub struct PatternBuilder {
-    parameters_buffer: HashMap<String, String>, // TEMP
-    labels: HashSet<String>,
-    /// Collects actions, that be moved into Part
-    actions_buffer: Vec<ActionWithOrigin>,
     parts: Vec<Part>,
+    /// Collects actions to be moved into Part
+    actions_buffer: Vec<ActionWithOrigin>,
+    /// Collects parameters to be moved into Part
+    parameters_buffer: HashMap<String, String>,
+    /// Set of encountered labels
+    labels: HashSet<String>,
     /// Kept for auto inserting BL at start of round
     current_loop: CurrentLoop,
 }
@@ -46,11 +48,12 @@ impl PatternBuilder {
         };
         let line_pairs = PatParser::parse(Rule::program, program).map_err(|e| Error::lexer(e))?;
         builder.program(line_pairs)?;
+        assert_eq!(builder.actions_buffer.len(), 0);
 
         Ok(Pattern {
-            actions: builder.actions_buffer,
-            parts: vec![],
-            cursor: 0,
+            parts: builder.parts,
+            action_cursor: 0,
+            part_cursor: 0,
         })
     }
 }

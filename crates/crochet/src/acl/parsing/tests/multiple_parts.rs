@@ -41,7 +41,7 @@ fn test_unnamed_single_part_works() {
         FO
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert!(pattern.actions.len() > 0);
+    assert!(pattern.parts[0].actions.len() > 0);
 }
 
 #[test]
@@ -55,7 +55,7 @@ fn test_named_single_part_works() {
         FO
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert!(pattern.actions.len() > 0);
+    assert!(pattern.parts[0].actions.len() > 0);
 }
 
 #[test]
@@ -70,7 +70,7 @@ fn test_named_with_instances_works() {
         FO
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert!(pattern.actions.len() > 0);
+    assert!(pattern.parts[0].actions.len() > 0);
 }
 
 #[test]
@@ -94,7 +94,7 @@ fn test_unnamed_and_named_single_part_produce_same_actions() {
     "};
     let pattern1 = PatternBuilder::parse(source1).unwrap();
     let pattern2 = PatternBuilder::parse(source2).unwrap();
-    assert_eq!(pattern1.actions, pattern2.actions);
+    assert_eq!(pattern1.parts[0].actions, pattern2.parts[0].actions);
 }
 
 #[test]
@@ -133,8 +133,8 @@ fn test_registers_two_parts() {
         : MR(7)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.actions[0].action, Action::MR(6));
-    assert_eq!(pattern.actions[1].action, Action::MR(7));
+    assert_eq!(pattern.parts[0].actions[0].action, Action::MR(6));
+    assert_eq!(pattern.parts[0].actions[1].action, Action::MR(7));
 }
 
 #[test]
@@ -150,6 +150,6 @@ fn test_separate_parameters_for_each_part() {
         : MR(7)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.actions[0].action, Action::MR(6));
-    assert_eq!(pattern.actions[1].action, Action::MR(7));
+    assert_eq!(pattern.parts[0].actions[0].action, Action::MR(6));
+    assert_eq!(pattern.parts[0].actions[1].action, Action::MR(7));
 }

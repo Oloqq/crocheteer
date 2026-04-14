@@ -18,30 +18,30 @@ mod stitches {
     fn test_one_stitch() {
         let prog = ": sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
     }
 
     #[test]
     fn test_mr() {
         let prog = ": MR(3)";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[0].action, Action::MR(3));
+        assert_eq!(pattern.parts[0].actions[0].action, Action::MR(3));
     }
 
     #[test]
     fn test_mr_with_color() {
         let prog = "color(0, 0, 0)\n: MR(3)";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[1].action, Action::MR(3));
+        assert_eq!(pattern.parts[0].actions[1].action, Action::MR(3));
     }
 
     #[test]
     fn test_many_stitches() {
         let prog = ": sc, inc, dec";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[0].action, Action::Sc);
-        assert_eq!(pattern.actions[1].action, Action::Inc);
-        assert_eq!(pattern.actions[2].action, Action::Dec);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::Inc);
+        assert_eq!(pattern.parts[0].actions[2].action, Action::Dec);
     }
 }
 
@@ -54,9 +54,9 @@ mod stitch_repetition {
     fn test_repeated_stitch() {
         let prog = ": 3 sc, 3 sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[0].action, Action::Sc);
-        assert_eq!(pattern.actions[1].action, Action::Sc);
-        assert_eq!(pattern.actions[2].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[2].action, Action::Sc);
     }
 
     #[test]
@@ -103,9 +103,9 @@ mod repetition {
     fn test_repeated_stitches() {
         let prog = ": [3 sc] x 3";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions[0].action, Action::Sc);
-        assert_eq!(pattern.actions[1].action, Action::Sc);
-        assert_eq!(pattern.actions[8].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[8].action, Action::Sc);
     }
 
     #[test]
@@ -149,36 +149,40 @@ mod round_repetition {
     fn test_round_repetition_none() {
         let prog = ": sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions.len(), 1);
-        assert_eq!(pattern.actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts.len(), 1);
+        assert_eq!(pattern.parts[0].actions.len(), 1);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
     }
 
     #[test]
     fn test_round_repetition_description_no_repetition() {
         let prog = "R1: sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions.len(), 1);
-        assert_eq!(pattern.actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts.len(), 1);
+        assert_eq!(pattern.parts[0].actions.len(), 1);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
     }
 
     #[test]
     fn test_round_repetition_range() {
         let prog = "R1-R3: sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions.len(), 3);
-        assert_eq!(pattern.actions[0].action, Action::Sc);
-        assert_eq!(pattern.actions[1].action, Action::Sc);
-        assert_eq!(pattern.actions[2].action, Action::Sc);
+        assert_eq!(pattern.parts.len(), 1);
+        assert_eq!(pattern.parts[0].actions.len(), 3);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[2].action, Action::Sc);
     }
 
     #[test]
     fn test_round_repetition_number() {
         let prog = "3: sc";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.actions.len(), 3);
-        assert_eq!(pattern.actions[0].action, Action::Sc);
-        assert_eq!(pattern.actions[1].action, Action::Sc);
-        assert_eq!(pattern.actions[2].action, Action::Sc);
+        assert_eq!(pattern.parts.len(), 1);
+        assert_eq!(pattern.parts[0].actions.len(), 3);
+        assert_eq!(pattern.parts[0].actions[0].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::Sc);
+        assert_eq!(pattern.parts[0].actions[2].action, Action::Sc);
     }
 }
 
