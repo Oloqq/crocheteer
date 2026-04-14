@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{collections::HashMap, ops::Range};
 
 use pest::Span;
 
@@ -6,8 +6,17 @@ use crate::{ColorRgb, acl::Flow};
 
 #[derive(Debug, Clone)]
 pub struct Pattern {
-    pub actions: Vec<ActionWithOrigin>,
+    pub actions: Vec<ActionWithOrigin>, // TEMP
+    pub parts: Vec<Part>,
     pub cursor: usize,
+}
+
+#[derive(Debug, Clone)]
+pub struct Part {
+    pub name: String,
+    pub instances: usize,
+    pub actions: Vec<ActionWithOrigin>,
+    pub parameters: HashMap<String, String>,
 }
 
 impl Flow for Pattern {

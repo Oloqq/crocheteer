@@ -1,6 +1,10 @@
-program = { SOI ~ (parameter | comment | round | controls_out_of_round | NEWLINE)* ~ EOI}
+program = { SOI ~ (part+ | part_body) ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
+
+part        = { part_header ~ part_body }
+part_header = { "==" ~ IDENT ~ ("(" ~ "make" ~ NUMBER ~ ")")? ~ "=="? }
+part_body   = { (parameter | comment | round | controls_out_of_round | NEWLINE)* }
 
 round       = { round_repetition? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
 round_repetition   = {

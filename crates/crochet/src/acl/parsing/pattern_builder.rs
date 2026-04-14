@@ -1,9 +1,15 @@
+use std::collections::HashMap;
+
 use pest::iterators::{Pair, Pairs};
 
 use super::{CurrentLoop, PatternBuilder, Rule, errors::*};
 use crate::{
     Origin,
-    acl::{ActionWithOrigin, parsing::action_sequence::ActionSequence, pattern::Action},
+    acl::{
+        ActionWithOrigin,
+        parsing::action_sequence::ActionSequence,
+        pattern::{Action, Part},
+    },
 };
 
 impl PatternBuilder {
@@ -11,16 +17,64 @@ impl PatternBuilder {
         for line_pair in pairs {
             for pair in line_pair.into_inner() {
                 match pair.as_rule() {
-                    Rule::round => self.round(pair.into_inner())?,
-                    Rule::comment => (),
-                    Rule::parameter => self.parameter(pair.into_inner())?,
-                    Rule::controls_out_of_round => {
-                        self.controls_out_of_round(pair.into_inner().next().unwrap().into_inner())?
+                    Rule::part_body => {
+                        assert!(self.parts.is_empty());
+                        let mut part = Part {
+                            name: "unnamed_part".into(),
+                            instances: 1,
+                            actions: vec![],
+                            parameters: HashMap::new(),
+                        };
+                        self.part_body(pair.into_inner())?;
+                        part.actions = std::mem::take(&mut self.actions_buffer);
+                        part.parameters = std::mem::take(&mut self.parameters_buffer);
+                        self.parts.push(part);
                     }
+                    Rule::part => self.part(pair.into_inner())?,
                     Rule::EOI => (),
                     _ => unreachable!("{:?}", pair.as_rule()),
                 };
             }
+        }
+        Ok(())
+    }
+
+    pub fn part(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
+        let mut header_pairs = pairs.next().unwrap().into_inner();
+        let body_pair = pairs.next().unwrap();
+
+        let part_name = header_pairs.next().unwrap().as_str().to_owned();
+        let part_instances = if let Some(num_pair) = header_pairs.next() {
+            integer(&num_pair)?
+        } else {
+            1
+        };
+
+        let mut part = Part {
+            name: part_name,
+            instances: part_instances,
+            actions: vec![],
+            parameters: HashMap::new(),
+        };
+        self.part_body(body_pair.into_inner())?;
+        part.actions = std::mem::take(&mut self.actions_buffer);
+        part.parameters = std::mem::take(&mut self.parameters_buffer);
+        self.parts.push(part);
+
+        Ok(())
+    }
+
+    pub fn part_body(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
+        for pair in pairs {
+            match pair.as_rule() {
+                Rule::round => self.round(pair.into_inner())?,
+                Rule::comment => (),
+                Rule::parameter => self.parameter(pair.into_inner())?,
+                Rule::controls_out_of_round => {
+                    self.controls_out_of_round(pair.into_inner().next().unwrap().into_inner())?
+                }
+                _ => unreachable!("{:?}", pair.as_rule()),
+            };
         }
         Ok(())
     }
@@ -63,7 +117,7 @@ impl PatternBuilder {
 
         for _ in 0..repetitions {
             let mut to_append = action_sequence.actions().clone().into_iter().collect();
-            self.actions.append(&mut to_append);
+            self.actions_buffer.append(&mut to_append);
         }
 
         match pairs.next() {
@@ -72,7 +126,7 @@ impl PatternBuilder {
                     let round_end_pair = pair;
                     let count_pair = round_end_pair.into_inner().next().unwrap();
                     let count = integer(&count_pair)?;
-                    self.actions.push(
+                    self.actions_buffer.push(
                         // TODO remove line_col from this? - first make sure hook can report the location
                         Action::EnforceAnchors(count, count_pair.line_col())
                             .with_origin(count_pair.as_span()),
@@ -91,7 +145,7 @@ impl PatternBuilder {
     fn reset_to_both_loops(&mut self) {
         match self.current_loop {
             CurrentLoop::Back | CurrentLoop::Front => {
-                self.actions.push(Action::BL.without_origin());
+                self.actions_buffer.push(Action::BL.without_origin());
                 self.current_loop = CurrentLoop::Both;
             }
             CurrentLoop::Both => (),
@@ -209,7 +263,7 @@ impl PatternBuilder {
                 EnforceAnchors(_, _) => todo!(),
             }
 
-            self.actions.push(action);
+            self.actions_buffer.push(action);
 
             // Rule::KW_ATTACH => {
             //     let args_pair = tokens.next().unwrap();
@@ -246,7 +300,10 @@ impl PatternBuilder {
         let key_pair = pairs.next().unwrap();
         let key = key_pair.as_str();
         let val = pairs.next().unwrap().as_str();
-        match self.parameters.insert(key.to_string(), val.to_string()) {
+        match self
+            .parameters_buffer
+            .insert(key.to_string(), val.to_string())
+        {
             Some(_) => err(DuplicateParameter(key.to_string()), &key_pair),
             None => Ok(()),
         }
