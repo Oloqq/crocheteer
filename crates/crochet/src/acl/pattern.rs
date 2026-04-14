@@ -51,6 +51,13 @@ pub struct Origin {
 }
 
 impl Origin {
+    pub fn from_start_end(start: usize, end: usize) -> Self {
+        Self {
+            byte_start: start,
+            byte_end: end,
+        }
+    }
+
     pub fn from_span(span: Span) -> Self {
         Self {
             byte_start: span.start(),
@@ -117,6 +124,24 @@ impl Action {
         ActionWithOrigin {
             action: self,
             origin: None,
+        }
+    }
+
+    pub(crate) fn is_repeatable(&self) -> bool {
+        use Action::*;
+        match &self {
+            Sc | Inc | Dec | Slst => true,
+            Attach(_, _)
+            | FLO
+            | BLO
+            | BL
+            | Goto(_)
+            | Mark(_)
+            | MR(_)
+            | FO
+            | Color(_)
+            | Sew(_, _)
+            | EnforceAnchors(_, _) => false,
         }
     }
 }

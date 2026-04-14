@@ -194,7 +194,7 @@ fn parse_to_plushie_def(
             // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
             code_highlighter.set(
                 HighlightLayer::RedUnderline,
-                vec![(error.byte_range.0..error.byte_range.1)],
+                vec![(error.origin.as_range())],
             );
             return None;
         }

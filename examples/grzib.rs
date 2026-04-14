@@ -4,7 +4,7 @@ use crocheteer::project::{DisplayMode, Project, SimulationState};
 fn main() {
     let project = Project {
         pattern: indoc::indoc! {"
-            MR(6)
+            : MR(6)
             : 6 inc (12)
             3: 12 sc (12)
             mark(cap_start)

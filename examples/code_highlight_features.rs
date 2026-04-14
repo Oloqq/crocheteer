@@ -6,7 +6,7 @@ fn main() {
         pattern: indoc::indoc! {"
             @param = yes # comment
 
-            MR(6) # trailing comment, no round
+            : MR(6) # trailing comment, no round
             : 6 inc (12) # trailing after anchor count
             # expect an error with cap_start in a repetition
             : 12 sc # trailing without anchor count

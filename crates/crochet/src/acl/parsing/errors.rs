@@ -3,15 +3,19 @@ use std::fmt::Display;
 pub use ErrorCode::*;
 use pest::iterators::Pair;
 
-use crate::acl::parsing::Rule;
+use crate::{
+    Origin,
+    acl::{Action, parsing::Rule},
+};
 
 #[derive(Debug, PartialEq)]
 pub struct Error {
     pub code: ErrorCode,
-    pub line: usize,
-    pub column: usize,
-    pub byte_range: (usize, usize),
+    pub origin: Origin,
 }
+
+type Expected = usize;
+type Got = usize;
 
 /// Some errors are annotated with "Lexer-parser desync".
 /// These mean there is either a bug in the grammar or in the parser.
@@ -19,12 +23,14 @@ pub struct Error {
 /// Other errors suggest the pattern is malformed.
 #[derive(Debug, PartialEq)]
 pub enum ErrorCode {
+    /// Please report and attach pattern.
+    Internal(String),
     /// Not a syntactically valid ACL program.
     Lexer(pest::error::Error<Rule>),
-    // TODO use identifiers in the lexer, recognize them in parser. This both reduces desyncs and improves error messages
-    /// Lexer-parser desync. Stitch was recognized by lexer, but not by parser. This case could be a panic instead, if unit tests could automatically adjust to changes in the grammar.
-    UnknownStitch(String),
-    /// Lexer-parser desync. Lexer accepted token as an integer and Rust can't parse it into an integer.
+    /// Unknown action
+    UnknownAction(String),
+    TooLittleArguments(Expected, Got),
+    TooManyArguments(Expected, Got),
     ExpectedInteger(String),
     /// Color value must be between 0 and 255 inclusive
     ExpectedRgbValue(String),
@@ -38,43 +44,53 @@ pub enum ErrorCode {
     DuplicateLabel(String),
     /// Tried to use a goto or a similar instruction to an undefined mark
     UndefinedLabel(String),
+    /// This action is not allowed outside a round
+    NotAllowedOutsideRound(Action),
+    /// Action does not take arguments, remove parentheses
+    UnexpectedParentheses,
+    /// Action can't be repeated with number prefix or can't be used in a repetition
+    NotRepeatable,
 }
 
 impl Error {
     pub fn lexer(e: pest::error::Error<Rule>) -> Self {
-        let (line, column) = match &e.line_col {
-            pest::error::LineColLocation::Pos((start, end)) => (*start, *end),
-            pest::error::LineColLocation::Span(_, _) => {
-                debug_assert!(false);
-                (0, 0)
-            }
-        };
-
-        let byte_range = match &e.location {
+        let (start, end) = match &e.location {
             pest::error::InputLocation::Pos(start) => (*start, *start),
-            pest::error::InputLocation::Span(_) => {
-                debug_assert!(false);
-                (0, 0)
-            }
+            pest::error::InputLocation::Span(range) => *range,
         };
 
         Self {
             code: ErrorCode::Lexer(e),
-            line,
-            column,
-            byte_range,
+            origin: Origin::from_start_end(start, end),
+        }
+    }
+
+    pub fn internal(message: &str) -> Self {
+        Self {
+            code: ErrorCode::Internal(format!(
+                "Please report this error and attach the problematic pattern: {message}"
+            )),
+            origin: Origin::from_start_end(0, 0),
+        }
+    }
+
+    pub fn with_origin(code: ErrorCode, origin: Origin) -> Self {
+        Self { code, origin }
+    }
+
+    pub fn with_expected_origin(code: ErrorCode, origin: Option<Origin>) -> Self {
+        if let Some(origin) = origin {
+            Self { code, origin }
+        } else {
+            Self::internal("should have extracted origin")
         }
     }
 }
 
 pub fn error(code: ErrorCode, pair: &Pair<Rule>) -> Error {
-    let (line, column) = pair.line_col();
-    let span = pair.as_span().clone();
     Error {
         code,
-        line,
-        column,
-        byte_range: (span.start(), span.end()),
+        origin: Origin::from_span(pair.as_span()),
     }
 }
 
@@ -88,8 +104,10 @@ impl Display for Error {
             Lexer(e) => write!(f, "{e}"),
             _ => write!(
                 f,
-                "{:?} at line: {}, column: {}",
-                self.code, self.line, self.column
+                "{:?} at bytes: [{}..{}]", // to display the actual text, or line pos, formatter need to analyze the input string
+                self.code,
+                self.origin.as_range().start,
+                self.origin.as_range().end
             ),
         }
     }

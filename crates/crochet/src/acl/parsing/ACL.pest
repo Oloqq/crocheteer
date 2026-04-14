@@ -1,23 +1,22 @@
-program = { SOI ~ (round | comment | parameter | control | NEWLINE)* ~ EOI}
+program = { SOI ~ (parameter | comment | round | controls_out_of_round | NEWLINE)* ~ EOI}
 
 parameter   = { "@" ~ IDENT ~ "=" ~ (FLOAT | IDENT) ~ LINEEND }
 
-round       = { roundspec? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
-roundspec   = {
+round       = { round_repetition? ~ ":" ~ stitches ~ round_end? ~ LINEEND }
+round_repetition   = {
     round_range
   | round_index
   | NUMBER
 }
-round_index = @{ R ~ NUMBER }
-round_range = @{ R ~ NUMBER ~ "-" ~ R ~ NUMBER }
+round_index = @{ "R" ~ NUMBER }
+round_range = @{ "R" ~ NUMBER ~ "-" ~ "R" ~ NUMBER }
 round_end   =  { "(" ~ NUMBER ~ ")" }
 
 stitches   = { in_round_action ~ ("," ~ in_round_action)* }
 in_round_action  = {
-    (NUMBER ~ KW_STITCH)
-  | KW_STITCH
-  | interstitchable_action
   | repetition
+  | (NUMBER ~ action)
+  | action_sequence
 }
 
 repetition = {
@@ -25,45 +24,14 @@ repetition = {
 }
 repeated   = { "[" ~ stitches ~ "]" }
 
-control = { action_sequence ~ LINEEND }
+controls_out_of_round = { action_sequence ~ LINEEND }
 action_sequence = { action ~ ("," ~ action)* }
-arg_int   =  { "(" ~ NUMBER ~ ")" }
-arg_int_3 = _{ "(" ~ NUMBER ~ "," ~ NUMBER ~ "," ~ NUMBER ~ ")" }
-arg_ident =  { "(" ~ IDENT ~ ")" }
-arg_ident_int = { "(" ~ IDENT ~ "," ~ NUMBER ~ ")" }
-arg_ident_ident =  { "(" ~ IDENT ~ "," ~ IDENT ~ ")" }
+action = ${action_name ~ args?}
+args      =  !{ "(" ~ (argument ~ ("," ~ argument)*)? ~ ")" }
+action_name = { IDENT }
+argument = { LABEL | NUMBER }
 
-
-action = {
-      interstitchable_action
-    | (KW_MR ~ arg_int)
-    |  KW_FO
-    | (KW_SEW ~ arg_ident_ident)
-}
-interstitchable_action = {
-      KW_BLO
-    | KW_FLO
-    | KW_BL
-    | (KW_MARK ~ arg_ident)
-    | (KW_GOTO ~ arg_ident)
-    | (KW_COLOR ~ arg_int_3)
-    | (KW_ATTACH ~ arg_ident_int)
-}
-
-// TODO use idents instead, so better errors can be produced
-KW_MR     = { "MR" }
-KW_FO     = { "FO" }
-KW_MARK   = { "mark" }
-KW_GOTO   = { "goto" }
-KW_FLO    = { "FLO" }
-KW_BLO    = { "BLO" }
-KW_BL     = { "BL" }
-KW_CH     = { "ch" | "Ch" }
-KW_COLOR  = { "color" }
-KW_ATTACH = { "attach" }
-KW_STITCH = { "sc" | "inc" | "dec" | "slst" | KW_FO }
-KW_TIMES  = { "x" }
-KW_SEW    = { "sew" }
+KW_TIMES  = { "x" | "*" }
 
 comment     = _{ "#" ~ not_newline* ~ (NEWLINE | EOI) }
 not_newline = _{
@@ -71,9 +39,9 @@ not_newline = _{
 }
 
 LINEEND     = _{ NEWLINE | comment | EOI }
-R           =  { "R" }
 ALPHA       =  { 'a'..'z' | 'A'..'Z' }
-IDENT       = @{ (ALPHA | DIGIT | "_")+ }
+IDENT       = @{ (ALPHA | "_") ~ (ALPHA | DIGIT | "_")+ }
+LABEL       = @{ (ALPHA | DIGIT | "_")+ }
 NUMBER      = @{ (NONZERO ~ DIGIT*) | "0" }
 FLOAT       = @{ "-"? ~ (DIGIT)+ ~ ("." ~ (DIGIT)+)? }
 NONZERO     = _{ '1'..'9' }

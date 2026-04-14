@@ -3,8 +3,6 @@ pub mod force_graph;
 mod acl;
 mod errors;
 mod hook;
-#[allow(unused)]
-mod params;
 mod plushie_definition;
 
 pub use crate::hook::hook_result::InitialGraph;
@@ -29,5 +27,3 @@ pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
         nodes: graph.nodes,
     })
 }
-
-// TODO search for allow(unused)
