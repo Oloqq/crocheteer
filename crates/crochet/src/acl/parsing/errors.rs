@@ -50,6 +50,8 @@ pub enum ErrorCode {
     UnexpectedParentheses,
     /// Action can't be repeated with number prefix or can't be used in a repetition
     NotRepeatable,
+    /// Part names must be unique
+    DuplicatePart(String),
 }
 
 impl Error {

@@ -43,12 +43,20 @@ impl PatternBuilder {
         let mut header_pairs = pairs.next().unwrap().into_inner();
         let body_pair = pairs.next().unwrap();
 
-        let part_name = header_pairs.next().unwrap().as_str().to_owned();
+        let part_name_pair = header_pairs.next().unwrap();
+        let part_name = part_name_pair.as_str().to_owned();
         let part_instances = if let Some(num_pair) = header_pairs.next() {
             integer(&num_pair)?
         } else {
             1
         };
+
+        if self.parts.iter().find(|x| x.name == part_name).is_some() {
+            return Err(Error::with_origin(
+                ErrorCode::DuplicatePart(part_name),
+                Origin::from_span(part_name_pair.as_span()),
+            ));
+        }
 
         let mut part = Part {
             name: part_name,

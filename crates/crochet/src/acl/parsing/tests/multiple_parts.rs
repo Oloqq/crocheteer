@@ -1,9 +1,11 @@
 use pretty_assertions::assert_eq;
 
-use crate::{PatternBuilder, acl::Action};
+use crate::{
+    PatternBuilder,
+    acl::{Action, parsing::errors::ErrorCode},
+};
 
 #[test]
-#[ignore = "developing"]
 fn test_full() {
     let source = indoc::indoc! {"
         == Stem (make 2) ==
@@ -42,6 +44,7 @@ fn test_unnamed_single_part_works() {
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
     assert!(pattern.parts[0].actions.len() > 0);
+    assert_eq!(pattern.parts[0].instances, 1);
 }
 
 #[test]
@@ -56,6 +59,7 @@ fn test_named_single_part_works() {
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
     assert!(pattern.parts[0].actions.len() > 0);
+    assert_eq!(pattern.parts[0].instances, 1);
 }
 
 #[test]
@@ -71,6 +75,7 @@ fn test_named_with_instances_works() {
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
     assert!(pattern.parts[0].actions.len() > 0);
+    assert_eq!(pattern.parts[0].instances, 2);
 }
 
 #[test]
@@ -98,19 +103,19 @@ fn test_unnamed_and_named_single_part_produce_same_actions() {
 }
 
 #[test]
-#[ignore = "developing"]
-fn test_unnamed_then_named_not_allowed() {
+fn test_unnamed_then_named_allowed() {
     let source = indoc::indoc! {"
         : MR(6)
 
         == Cap ==
         : MR(6)
     "};
-    let _err = PatternBuilder::parse(source).unwrap_err();
+    let pattern = PatternBuilder::parse(source).unwrap();
+    assert_eq!(pattern.parts[0].name, "unnamed_part".to_string());
+    assert_eq!(pattern.parts[1].name, "Cap".to_string());
 }
 
 #[test]
-#[ignore = "developing"]
 fn test_repeated_name_not_allowed() {
     let source = indoc::indoc! {"
         == Cap ==
@@ -119,11 +124,12 @@ fn test_repeated_name_not_allowed() {
         == Cap ==
         : MR(6)
     "};
-    let _err = PatternBuilder::parse(source).unwrap_err();
+    let err = PatternBuilder::parse(source).unwrap_err();
+    assert_eq!(err.code, ErrorCode::DuplicatePart("Cap".into()));
+    assert_eq!(&source[err.origin.as_range()], "Cap");
 }
 
 #[test]
-#[ignore = "developing"]
 fn test_registers_two_parts() {
     let source = indoc::indoc! {"
         == Stem ==
@@ -134,11 +140,10 @@ fn test_registers_two_parts() {
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
     assert_eq!(pattern.parts[0].actions[0].action, Action::MR(6));
-    assert_eq!(pattern.parts[0].actions[1].action, Action::MR(7));
+    assert_eq!(pattern.parts[1].actions[0].action, Action::MR(7));
 }
 
 #[test]
-#[ignore = "developing"]
 fn test_separate_parameters_for_each_part() {
     let source = indoc::indoc! {"
         == Stem ==
@@ -150,6 +155,6 @@ fn test_separate_parameters_for_each_part() {
         : MR(7)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.parts[0].actions[0].action, Action::MR(6));
-    assert_eq!(pattern.parts[0].actions[1].action, Action::MR(7));
+    assert_eq!(pattern.parts[0].parameters.get("centroids").unwrap(), "2");
+    assert_eq!(pattern.parts[1].parameters.get("centroids").unwrap(), "1");
 }
