@@ -6,7 +6,7 @@ mod hook;
 mod plushie_definition;
 
 pub use crate::hook::hook_result::InitialGraph;
-use crate::{acl::PatternError, errors::Error, hook::HookError};
+use crate::{acl::PatternError, errors::Error};
 pub use acl::{Origin, Pattern, PatternBuilder};
 pub use hook::{
     node::{Node, Peculiarity, PointsOnPushPlane},

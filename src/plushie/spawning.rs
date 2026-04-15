@@ -192,6 +192,7 @@ fn parse_to_plushie_def(
             });
             // TODO errors reported here are useless, need to refactor grammar and parser
             // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
+            // TODO stop displaying error when text changes
             code_highlighter.set(
                 HighlightLayer::RedUnderline,
                 vec![(error.origin.as_range())],
@@ -209,8 +210,14 @@ fn parse_to_plushie_def(
             },
             Err(error) => {
                 let _ = console_pipe.sender.send(ConsoleMessage {
-                    text: format!("Error in the pattern (hook): {:?}", error),
+                    text: format!("Error in the pattern (hook): {:?}", error.code),
                 });
+                if let Some(origin) = error.origin {
+                    code_highlighter.set(
+                    HighlightLayer::RedUnderline,
+                    vec![(origin.as_range())],
+                );
+                }
                 return None;
             }
         };

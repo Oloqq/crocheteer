@@ -1,6 +1,13 @@
 pub use std::collections::VecDeque as Queue;
 
+use crate::Origin;
 pub use crate::acl::Label;
+
+#[derive(Debug)]
+pub struct HookErrorWithOrigin {
+    pub code: HookError,
+    pub origin: Option<Origin>,
+}
 
 // TODO many of those should be unreachable given correct pattern parser (BadStarter, AnonymousMrInTheMiddle, DuplicateLabel, UnknownLabel)
 #[derive(Debug)]

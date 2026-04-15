@@ -1,10 +1,10 @@
-use crate::{HookError, PatternError};
+use crate::{PatternError, hook::HookErrorWithOrigin};
 use std::fmt::Display;
 
 #[derive(Debug)]
 pub enum Error {
     Pattern(PatternError),
-    Hook(HookError),
+    Hook(HookErrorWithOrigin),
 }
 
 impl Display for Error {

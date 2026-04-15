@@ -13,7 +13,7 @@ impl Hook {
     pub fn from_starting_sequence(
         flow: &mut impl Flow,
         params: HookParams,
-    ) -> Result<Self, HookError> {
+    ) -> Result<Self, HookErrorWithOrigin> {
         let mut action_with_origin = flow.next_with_origin().unwrap();
         let mut color = DEFAULT_COLOR;
         if let Color(c) = action_with_origin.action {
@@ -27,7 +27,7 @@ impl Hook {
         action_with_origin: &ActionWithOrigin,
         color: ColorRgb,
         params: HookParams,
-    ) -> Result<Self, HookError> {
+    ) -> Result<Self, HookErrorWithOrigin> {
         match action_with_origin.action {
             MR(x) => {
                 let edges = {
@@ -61,7 +61,10 @@ impl Hook {
                 result.magic_ring(x, action_with_origin.origin);
                 Ok(result)
             }
-            _ => Err(HookError::BadStarter),
+            _ => Err(HookErrorWithOrigin {
+                code: HookError::BadStarter,
+                origin: action_with_origin.origin,
+            }),
         }
     }
 

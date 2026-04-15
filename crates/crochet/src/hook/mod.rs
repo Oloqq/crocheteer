@@ -1,4 +1,4 @@
-pub use errors::HookError;
+pub use errors::HookErrorWithOrigin;
 pub mod hook_result;
 pub mod node;
 
@@ -74,9 +74,15 @@ pub struct Hook {
 }
 
 impl Hook {
-    pub fn parse(mut flow: impl Flow, params: HookParams) -> Result<InitialGraph, HookError> {
+    pub fn parse(
+        mut flow: impl Flow,
+        params: HookParams,
+    ) -> Result<InitialGraph, HookErrorWithOrigin> {
         if flow.peek().is_none() {
-            return Err(Empty);
+            return Err(HookErrorWithOrigin {
+                code: Empty,
+                origin: None,
+            });
         }
         let mut hook = Hook::from_starting_sequence(&mut flow, params)?;
         let mut i: u32 = 0;
@@ -85,7 +91,10 @@ impl Hook {
             let origin = action_with_origin.origin;
             log::trace!("Performing [{i}] {action:?}. Origin: {origin:?}");
             i += 1;
-            hook = hook.perform(&action, origin)?;
+            hook = match hook.perform(&action, origin) {
+                Ok(hook) => hook,
+                Err(err) => return Err(HookErrorWithOrigin { code: err, origin }),
+            };
         }
 
         let result = hook.finish();
