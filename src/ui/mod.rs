@@ -1,3 +1,4 @@
+mod action_item;
 mod charts;
 pub mod code_editor;
 mod console;
@@ -14,6 +15,7 @@ pub use console::{ConsoleMessage, ConsolePipe};
 pub use simulation_state::{SimulationState, simulation_is_running};
 pub use ui_used_input::{UiUsedInput, world_input};
 
+use crate::ui::action_item::complete_action_items;
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
 use crate::ui::{
@@ -46,7 +48,8 @@ impl Plugin for UiPlugin {
                     ui_used_input::reset,
                     top_panel,
                     (control_panel, code_editor_ui),
-                    (console_window),
+                    console_window,
+                    complete_action_items,
                     ui_used_input::adjust_to_egui_wants_input,
                 )
                     .chain(),
