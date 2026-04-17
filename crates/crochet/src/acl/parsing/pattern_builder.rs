@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use pest::iterators::{Pair, Pairs};
 
 use super::{CurrentLoop, PatternBuilder, Rule, errors::*};
@@ -8,9 +6,11 @@ use crate::{
     acl::{
         ActionWithOrigin,
         parsing::action_sequence::ActionSequence,
-        pattern::{Action, Part},
+        pattern::{Action, Part, PartParameters},
     },
 };
+
+pub const ANONYMOUS_PART: &'static str = "anonymous_part";
 
 impl PatternBuilder {
     pub fn program(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
@@ -19,16 +19,8 @@ impl PatternBuilder {
                 match pair.as_rule() {
                     Rule::part_body => {
                         assert!(self.parts.is_empty());
-                        let mut part = Part {
-                            name: "unnamed_part".into(),
-                            instances: 1,
-                            actions: vec![],
-                            parameters: HashMap::new(),
-                        };
                         self.part_body(pair.into_inner())?;
-                        part.actions = std::mem::take(&mut self.actions_buffer);
-                        part.parameters = std::mem::take(&mut self.parameters_buffer);
-                        self.parts.push(part);
+                        self.register_part(ANONYMOUS_PART.into(), 1)?;
                     }
                     Rule::part => self.part(pair.into_inner())?,
                     Rule::EOI => (),
@@ -58,16 +50,8 @@ impl PatternBuilder {
             ));
         }
 
-        let mut part = Part {
-            name: part_name,
-            instances: part_instances,
-            actions: vec![],
-            parameters: HashMap::new(),
-        };
         self.part_body(body_pair.into_inner())?;
-        part.actions = std::mem::take(&mut self.actions_buffer);
-        part.parameters = std::mem::take(&mut self.parameters_buffer);
-        self.parts.push(part);
+        self.register_part(part_name, part_instances)?;
 
         Ok(())
     }
@@ -307,11 +291,12 @@ impl PatternBuilder {
     fn parameter(&mut self, mut pairs: Pairs<Rule>) -> Result<(), Error> {
         let key_pair = pairs.next().unwrap();
         let key = key_pair.as_str();
-        let val = pairs.next().unwrap().as_str();
-        match self
-            .parameters_buffer
-            .insert(key.to_string(), val.to_string())
-        {
+        let val_pair = pairs.next().unwrap();
+        let val = val_pair.as_str();
+        match self.parameters_buffer.insert(
+            key.to_string(),
+            (val.to_string(), Origin::from_span(val_pair.as_span())),
+        ) {
             Some(_) => err(DuplicateParameter(key.to_string()), &key_pair),
             None => Ok(()),
         }
@@ -343,6 +328,28 @@ impl PatternBuilder {
         } else {
             Err(Error::internal("expected goto action here"))
         }
+    }
+
+    fn register_part(&mut self, name: String, instances: usize) -> Result<(), Error> {
+        let mut params_map = std::mem::take(&mut self.parameters_buffer);
+        let mut parameters = PartParameters::default();
+        if let Some((value, origin)) = params_map.remove("centroids") {
+            parameters.centroids = integer_from_str(&value, origin)?;
+        }
+
+        parameters.other = params_map
+            .into_iter()
+            .map(|(key, (value, _))| (key, value))
+            .collect();
+
+        let part = Part {
+            name,
+            instances,
+            actions: std::mem::take(&mut self.actions_buffer),
+            parameters,
+        };
+        self.parts.push(part);
+        Ok(())
     }
 }
 
@@ -418,9 +425,9 @@ fn action(pair: Pair<Rule>) -> Result<ActionWithOrigin, Error> {
     let action = match spec.ident.to_lowercase().as_str() {
         "color" => {
             spec.validate_arg_count(3)?;
-            let r: u8 = color_value(&spec.args[0].0, spec.args[0].1)?;
-            let g: u8 = color_value(&spec.args[1].0, spec.args[1].1)?;
-            let b: u8 = color_value(&spec.args[2].0, spec.args[2].1)?;
+            let r: u8 = color_component_from_str(&spec.args[0].0, spec.args[0].1)?;
+            let g: u8 = color_component_from_str(&spec.args[1].0, spec.args[1].1)?;
+            let b: u8 = color_component_from_str(&spec.args[2].0, spec.args[2].1)?;
             Action::Color([r, g, b])
         }
         "goto" => {
@@ -486,8 +493,14 @@ fn action(pair: Pair<Rule>) -> Result<ActionWithOrigin, Error> {
     })
 }
 
-fn color_value(source: &str, origin: Origin) -> Result<u8, Error> {
+fn color_component_from_str(source: &str, origin: Origin) -> Result<u8, Error> {
     source
         .parse()
         .map_err(|_| Error::with_origin(ErrorCode::ExpectedRgbValue(source.to_string()), origin))
+}
+
+fn integer_from_str(source: &str, origin: Origin) -> Result<usize, Error> {
+    source
+        .parse()
+        .map_err(|_| Error::with_origin(ErrorCode::ExpectedInteger(source.to_string()), origin))
 }

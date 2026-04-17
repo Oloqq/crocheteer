@@ -2,7 +2,10 @@ use pretty_assertions::assert_eq;
 
 use crate::{
     PatternBuilder,
-    acl::{Action, parsing::errors::ErrorCode},
+    acl::{
+        Action,
+        parsing::{errors::ErrorCode, pattern_builder::ANONYMOUS_PART},
+    },
 };
 
 #[test]
@@ -111,7 +114,7 @@ fn test_unnamed_then_named_allowed() {
         : MR(6)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.parts[0].name, "unnamed_part".to_string());
+    assert_eq!(pattern.parts[0].name, ANONYMOUS_PART.to_string());
     assert_eq!(pattern.parts[1].name, "Cap".to_string());
 }
 
@@ -155,6 +158,6 @@ fn test_separate_parameters_for_each_part() {
         : MR(7)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.parts[0].parameters.get("centroids").unwrap(), "2");
-    assert_eq!(pattern.parts[1].parameters.get("centroids").unwrap(), "1");
+    assert_eq!(pattern.parts[0].parameters.centroids, 2);
+    assert_eq!(pattern.parts[1].parameters.centroids, 1);
 }

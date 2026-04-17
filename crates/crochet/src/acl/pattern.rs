@@ -14,7 +14,13 @@ pub struct Part {
     pub name: String,
     pub instances: usize,
     pub actions: Vec<ActionWithOrigin>,
-    pub parameters: HashMap<String, String>,
+    pub parameters: PartParameters,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct PartParameters {
+    pub centroids: usize,
+    pub other: HashMap<String, String>,
 }
 
 pub struct PatternIter<'p> {

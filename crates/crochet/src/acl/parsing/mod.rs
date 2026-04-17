@@ -8,9 +8,12 @@ pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::acl::{
-    PatternAst,
-    pattern::{ActionWithOrigin, Part},
+use crate::{
+    Origin,
+    acl::{
+        PatternAst,
+        pattern::{ActionWithOrigin, Part},
+    },
 };
 
 #[derive(Parser)]
@@ -23,7 +26,7 @@ pub struct PatternBuilder {
     /// Collects actions to be moved into Part
     actions_buffer: Vec<ActionWithOrigin>,
     /// Collects parameters to be moved into Part
-    parameters_buffer: HashMap<String, String>,
+    parameters_buffer: HashMap<String, (String, Origin)>,
     /// Set of encountered labels
     labels: HashSet<String>,
     /// Kept for auto inserting BL at start of round
