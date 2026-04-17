@@ -31,3 +31,6 @@ pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
         nodes: graph.nodes,
     })
 }
+
+#[cfg(test)]
+mod tests;

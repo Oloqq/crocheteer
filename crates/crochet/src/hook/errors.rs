@@ -10,7 +10,7 @@ pub struct HookErrorWithOrigin {
 }
 
 // TODO many of those should be unreachable given correct pattern parser (BadStarter, AnonymousMrInTheMiddle, DuplicateLabel, UnknownLabel)
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum HookError {
     Empty,
     BadStarter,

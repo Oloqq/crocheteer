@@ -1,4 +1,4 @@
-pub use errors::HookErrorWithOrigin;
+pub use errors::{HookError, HookErrorWithOrigin};
 pub mod hook_result;
 pub mod node;
 

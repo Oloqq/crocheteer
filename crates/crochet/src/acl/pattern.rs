@@ -70,9 +70,11 @@ impl<'p> Flow for PatternIter<'p> {
             if self.action_cursor < self.pattern.parts[self.part_cursor].actions.len() {
                 let got = self.pattern.parts[self.part_cursor].actions[self.action_cursor].clone();
                 Some(got)
-            } else {
+            } else if self.part_cursor + 1 < self.pattern.parts.len() {
                 let got = self.pattern.parts[self.part_cursor + 1].actions[0].clone();
                 Some(got)
+            } else {
+                None
             }
         } else {
             None
