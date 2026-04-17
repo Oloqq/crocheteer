@@ -5,7 +5,7 @@ use pest::Span;
 use crate::{ColorRgb, acl::Flow};
 
 #[derive(Debug, Clone)]
-pub struct Pattern {
+pub struct PatternAst {
     pub parts: Vec<Part>,
 }
 
@@ -18,12 +18,12 @@ pub struct Part {
 }
 
 pub struct PatternIter<'p> {
-    pub pattern: &'p Pattern,
+    pub pattern: &'p PatternAst,
     pub action_cursor: usize,
     pub part_cursor: usize,
 }
 
-impl Pattern {
+impl PatternAst {
     pub fn as_iter<'p>(&'p self) -> PatternIter<'p> {
         PatternIter {
             pattern: &self,

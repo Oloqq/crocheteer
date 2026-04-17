@@ -9,7 +9,7 @@ use pest::Parser;
 use pest_derive::Parser;
 
 use crate::acl::{
-    Pattern,
+    PatternAst,
     pattern::{ActionWithOrigin, Part},
 };
 
@@ -38,7 +38,7 @@ enum CurrentLoop {
 }
 
 impl PatternBuilder {
-    pub fn parse(program: &str) -> Result<Pattern, Error> {
+    pub fn parse(program: &str) -> Result<PatternAst, Error> {
         let mut builder = Self {
             parameters_buffer: Default::default(),
             labels: Default::default(),
@@ -50,7 +50,7 @@ impl PatternBuilder {
         builder.program(line_pairs)?;
         assert_eq!(builder.actions_buffer.len(), 0);
 
-        Ok(Pattern {
+        Ok(PatternAst {
             parts: builder.parts,
         })
     }

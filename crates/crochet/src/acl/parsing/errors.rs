@@ -17,10 +17,6 @@ pub struct Error {
 type Expected = usize;
 type Got = usize;
 
-/// Some errors are annotated with "Lexer-parser desync".
-/// These mean there is either a bug in the grammar or in the parser.
-/// These would ideally be covered by unit tests so they could just panic or return a generic Err in the parser, but I haven't figured out how to make unit test adjust automatically to changes in the grammar.
-/// Other errors suggest the pattern is malformed.
 #[derive(Debug, PartialEq)]
 pub enum ErrorCode {
     /// Please report and attach pattern.

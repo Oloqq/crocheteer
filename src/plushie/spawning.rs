@@ -184,40 +184,21 @@ fn parse_to_plushie_def(
     code_highlighter: &mut Highlighter,
     console_pipe: &ConsolePipe,
 ) -> Option<PlushieDef> {
-    let pattern: crochet::Pattern = match crochet::acl_to_pattern(acl_source) {
-        Ok(new_pattern) => new_pattern,
+    let plushie_def = match crochet::parse(acl_source) {
+        Ok(p) => p,
         Err(error) => {
             let _ = console_pipe.sender.send(ConsoleMessage {
-                text: format!("Error in the pattern: {}", error),
+                text: format!("Error in pattern: {}", error),
             });
-            // TODO errors reported here are useless, need to refactor grammar and parser
             // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
             // TODO stop displaying error when text changes
-            code_highlighter.set(
-                HighlightLayer::RedUnderline,
-                vec![(error.origin.as_range())],
-            );
+            if let Some(origin) = error.origin() {
+                code_highlighter.set(HighlightLayer::RedUnderline, vec![(origin.as_range())]);
+            }
             return None;
         }
     };
 
-    let plushie_def: PlushieDef =
-        match crochet::Hook::parse(pattern.as_iter(), crochet::HookParams::default()) {
-            Ok(graph) => PlushieDef {
-                edges: graph.edges.into(),
-                nodes: graph.nodes,
-            },
-            Err(error) => {
-                let _ = console_pipe.sender.send(ConsoleMessage {
-                    text: format!("Error in the pattern (hook): {:?}", error.code),
-                });
-                if let Some(origin) = error.origin {
-                    code_highlighter.set(HighlightLayer::RedUnderline, vec![(origin.as_range())]);
-                }
-                return None;
-            }
-        };
-    assert!(plushie_def.nodes.len() == plushie_def.edges.len());
     if plushie_def.nodes.len() == 0 {
         let _ = console_pipe.sender.send(ConsoleMessage {
             text: format!("Produced 0 nodes"),

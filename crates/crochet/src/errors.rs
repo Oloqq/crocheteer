@@ -1,10 +1,19 @@
-use crate::{PatternError, hook::HookErrorWithOrigin};
+use crate::{Origin, PatternError, hook::HookErrorWithOrigin};
 use std::fmt::Display;
 
 #[derive(Debug)]
 pub enum Error {
     Pattern(PatternError),
     Hook(HookErrorWithOrigin),
+}
+
+impl Error {
+    pub fn origin(&self) -> Option<Origin> {
+        match self {
+            Error::Pattern(error) => Some(error.origin),
+            Error::Hook(hook_error_with_origin) => hook_error_with_origin.origin,
+        }
+    }
 }
 
 impl Display for Error {

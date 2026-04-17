@@ -1,9 +1,9 @@
 use Action::*;
 use pretty_assertions::assert_eq;
 
-use crate::acl::{Action, Pattern, PatternBuilder};
+use crate::acl::{Action, PatternAst, PatternBuilder};
 
-impl Pattern {
+impl PatternAst {
     fn just_actions(self) -> Vec<Action> {
         assert_eq!(self.parts.len(), 1);
         self.parts
