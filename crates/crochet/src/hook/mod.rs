@@ -52,9 +52,6 @@ pub struct Hook {
     nodes: Vec<Node>,
     edges: Edges,
     now: Moment,
-    // TODO remove and use nodes?
-    /// Storage of index -> it's anchor, used for single loop forces
-    parents: Vec<Option<usize>>,
     /// Storage of spots for Mark and Goto
     labels: HashMap<Label, Moment>,
     /// Current color/yarn. Not stored in Moment as typically yarn changes happpen independently of switching positions.

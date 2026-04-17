@@ -386,11 +386,11 @@ fn test_parents_are_registered() {
     let mut h = start_mr(3);
     h = h.test_perform(&FLO).unwrap();
     h = h.test_perform(&Sc).unwrap();
-    q!(h.parents[0], None);
-    q!(h.parents[1], Some(0));
-    q!(h.parents[2], Some(0));
-    q!(h.parents[3], Some(0));
-    q!(h.parents[4], Some(1));
+    q!(h.nodes[0].parent, None);
+    q!(h.nodes[1].parent, Some(0));
+    q!(h.nodes[2].parent, Some(0));
+    q!(h.nodes[3].parent, Some(0));
+    q!(h.nodes[4].parent, Some(1));
 }
 
 #[test]

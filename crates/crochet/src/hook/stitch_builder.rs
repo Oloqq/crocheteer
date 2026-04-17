@@ -55,8 +55,10 @@ impl StitchBuilder {
         };
 
         self.hook.edges.grow();
-        self.hook.add_node(self.origin).peculiarity_opt(peculiarity);
-        self.hook.parents.push(self.anchored);
+        self.hook
+            .add_node(self.origin)
+            .peculiarity_opt(peculiarity)
+            .parent_opt(self.anchored);
         self.hook.now.cursor += 1;
         Ok(self)
     }
@@ -158,7 +160,9 @@ impl StitchBuilder {
     fn points_on_push_plane(&self) -> Result<PointsOnPushPlane, HookError> {
         let mother = self.anchored.ok_or(SingleLoopOnNonAnchored)?;
         let father = mother + 1;
-        let grandparent = self.hook.parents[mother].ok_or(SingleLoopNoGrandparent)?;
+        let grandparent = self.hook.nodes[mother]
+            .parent
+            .ok_or(SingleLoopNoGrandparent)?;
         Ok((father, mother, grandparent))
     }
 }

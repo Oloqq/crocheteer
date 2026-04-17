@@ -48,7 +48,6 @@ impl Hook {
                     nodes: vec![],
                     edges,
                     now: will_be_overwritten_with_magic_ring,
-                    parents: vec![],
                     labels: HashMap::new(),
                     override_previous_node: None,
                     color,
@@ -77,12 +76,10 @@ impl Hook {
         let ring_end = ring_root + size;
 
         // spot for ring root in edges is already created
-        self.parents.push(None); // ring root has no parent
         self.add_node(origin).peculiarity(Peculiarity::Locked);
         for _ in 0..size {
             self.edges.grow();
-            self.parents.push(Some(ring_root));
-            self.add_node(origin);
+            self.add_node(origin).parent(ring_root);
         }
         self.edges.grow(); // prepare place for the next node
 

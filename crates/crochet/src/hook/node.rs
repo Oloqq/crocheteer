@@ -1,11 +1,15 @@
 use crate::{ColorRgb, acl::Origin, hook::Hook};
 
+pub type NodeIndex = usize;
+
 #[derive(Clone, Debug)]
 pub struct Node {
     pub color: ColorRgb,
     pub peculiarity: Option<Peculiarity>,
     /// The location in the pattern that caused creation of this node.
     pub origin: Option<Origin>,
+    /// Anchor of this node. Used for single loop forces.
+    pub parent: Option<NodeIndex>,
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -34,14 +38,25 @@ impl<'n> NodeBuilder<'n> {
         self.node.peculiarity = peculiarity;
         self
     }
+
+    pub fn parent(self, parent: NodeIndex) -> Self {
+        self.node.parent = Some(parent);
+        self
+    }
+
+    pub fn parent_opt(self, parent: Option<NodeIndex>) -> Self {
+        self.node.parent = parent;
+        self
+    }
 }
 
 impl Hook {
     pub fn add_node<'n>(&'n mut self, origin: Option<Origin>) -> NodeBuilder<'n> {
         self.nodes.push(Node {
             color: self.color,
-            peculiarity: None,
             origin,
+            peculiarity: None,
+            parent: None,
         });
         NodeBuilder {
             node: self.nodes.last_mut().unwrap(),
