@@ -1,13 +1,19 @@
+use super::{Edges, Hook, HookParams, Queue};
+
 use pretty_assertions::assert_eq as q;
 
-use crate::{acl::SimpleFlow, hook::node::Peculiarity};
-
-use super::*;
+use crate::{
+    ColorRgb,
+    acl::{Action, Flow, Label, SimpleFlow},
+    data::Peculiarity,
+    graph_construction::ErrorCode,
+};
+use Action::*;
 
 const COLOR: ColorRgb = [255, 0, 0];
 
 impl Hook {
-    pub fn test_perform(self, action: &Action) -> Result<Self, HookError> {
+    pub fn test_perform(self, action: &Action) -> Result<Self, ErrorCode> {
         self.perform(action, None)
     }
 }
@@ -314,20 +320,6 @@ fn test_sc_after_attach() {
 }
 
 #[test]
-fn test_split_moment() {
-    let mut source = Moment {
-        cursor: 20,
-        anchors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].into(),
-        working_on: WorkingLoops::Both,
-        limb_ownerhip: 0,
-    };
-    let (moment_a, moment_b) = split_moment(&mut source, 6, [13, 14, 15, 16].into());
-    println!("{:?} {:?}", moment_a.anchors, moment_b.anchors);
-    q!(moment_a.anchors.len(), 9);
-    q!(moment_b.anchors.len(), 9);
-}
-
-#[test]
 fn test_starting_from_color() {
     let mut flow = SimpleFlow::new(vec![Color(COLOR), MR(3), Sc, Sc, Sc]);
     let mut h = Hook::from_starting_sequence(&mut flow, HookParams::default()).unwrap();
@@ -358,7 +350,7 @@ fn test_next_anchor_in_dec_does_not_panic() {
     q!(h.now.anchors.len(), 1);
     assert!(matches!(
         h.test_perform(&Dec).unwrap_err(),
-        NoAnchorToPullThrough
+        ErrorCode::NoAnchorToPullThrough
     ));
 }
 

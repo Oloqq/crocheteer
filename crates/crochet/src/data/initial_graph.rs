@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
-use crate::hook::{edges::Edges, node::Node};
+use crate::data::{Edges, Node};
 
 #[derive(Debug)]
-pub struct InitialGraph {
+pub(crate) struct InitialGraph {
     pub edges: Edges,
     pub nodes: Vec<Node>,
+    #[allow(dead_code)]
     pub part_limits: Vec<usize>,
+    #[allow(dead_code)]
     pub mark_to_node: HashMap<String, usize>,
 }

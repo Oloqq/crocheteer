@@ -1,14 +1,11 @@
-use HookError::*;
-
+use super::Hook;
 use crate::{
     acl::Origin,
-    hook::{
-        WorkingLoops,
-        node::{Peculiarity, PointsOnPushPlane},
-    },
+    data::{Peculiarity, PointsOnPushPlane},
+    graph_construction::ErrorCode,
+    graph_construction::hook::WorkingLoops,
 };
-
-use super::{Hook, errors::HookError};
+use ErrorCode::*;
 
 pub struct StitchBuilder {
     hook: Hook,
@@ -17,7 +14,7 @@ pub struct StitchBuilder {
     origin: Option<Origin>,
 }
 
-type Progress = Result<StitchBuilder, HookError>;
+type Progress = Result<StitchBuilder, ErrorCode>;
 
 impl StitchBuilder {
     pub fn linger(hook: Hook, origin: Option<Origin>) -> Progress {
@@ -54,7 +51,6 @@ impl StitchBuilder {
             None
         };
 
-        self.hook.edges.grow();
         self.hook
             .add_node(self.origin)
             .peculiarity_opt(peculiarity)
@@ -79,7 +75,7 @@ impl StitchBuilder {
         Ok(self.pull_over_without_registering_anchor(true)?)
     }
 
-    pub fn finish(mut self) -> Result<Hook, HookError> {
+    pub fn finish(mut self) -> Result<Hook, ErrorCode> {
         if self.anchored.is_some() {
             self = self.next_anchor()
         }
@@ -87,7 +83,7 @@ impl StitchBuilder {
     }
 
     #[allow(dead_code)]
-    pub fn chain(mut self, stitches: usize) -> Result<Hook, HookError> {
+    pub fn chain(mut self, stitches: usize) -> Result<Hook, ErrorCode> {
         if stitches == 0 {
             return Err(ChainOfZero);
         }
@@ -108,7 +104,7 @@ impl StitchBuilder {
         mut self,
         stitches: usize,
         attach_to: usize,
-    ) -> Result<(Vec<usize>, Hook), HookError> {
+    ) -> Result<(Vec<usize>, Hook), ErrorCode> {
         if stitches == 0 {
             return Err(ChainOfZero); // TODO
         }
@@ -131,7 +127,7 @@ impl StitchBuilder {
         Ok((new_anchors, self.hook))
     }
 
-    pub fn fasten_off_with_tip(mut hook: Hook, origin: Option<Origin>) -> Result<Hook, HookError> {
+    pub fn fasten_off_with_tip(mut hook: Hook, origin: Option<Origin>) -> Result<Hook, ErrorCode> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");
             return Err(FORequires2Anchors);
@@ -151,13 +147,12 @@ impl StitchBuilder {
             hook.edges.link(anchor, tip);
         }
 
-        hook.edges.grow();
         hook.add_node(origin).peculiarity(Peculiarity::Tip);
         hook.now.cursor += 1;
         Ok(hook)
     }
 
-    fn points_on_push_plane(&self) -> Result<PointsOnPushPlane, HookError> {
+    fn points_on_push_plane(&self) -> Result<PointsOnPushPlane, ErrorCode> {
         let mother = self.anchored.ok_or(SingleLoopOnNonAnchored)?;
         let father = mother + 1;
         let grandparent = self.hook.nodes[mother]
@@ -169,15 +164,11 @@ impl StitchBuilder {
 
 #[cfg(test)]
 mod tests {
+    use super::super::Queue;
+    use super::*;
+    use crate::{ColorRgb, acl::Action::*, data::Edges, graph_construction::hook::HookParams};
     use pretty_assertions::assert_eq as q;
 
-    use crate::{
-        ColorRgb,
-        acl::Action::*,
-        hook::{HookParams, edges::Edges},
-    };
-
-    use super::{super::errors::*, *};
     const COLOR: ColorRgb = [255, 0, 0];
 
     // TODO

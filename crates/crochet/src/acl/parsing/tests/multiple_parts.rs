@@ -11,7 +11,7 @@ use crate::{
 #[test]
 fn test_full() {
     let source = indoc::indoc! {"
-        == Stem (make 2) ==
+        == Stem ==
         @centroids = 1
 
         : MR(6)
@@ -63,22 +63,6 @@ fn test_named_single_part_works() {
     let pattern = PatternBuilder::parse(source).unwrap();
     assert!(pattern.parts[0].actions.len() > 0);
     assert_eq!(pattern.parts[0].instances, 1);
-}
-
-#[test]
-fn test_named_with_instances_works() {
-    // TODO design marks and gotos with instances
-    let source = indoc::indoc! {"
-        == Stem (make 2) ==
-        : MR(6)
-        : 6 inc (12)
-        2: 12 sc (12)
-        : BLO, 6 dec (6)
-        FO
-    "};
-    let pattern = PatternBuilder::parse(source).unwrap();
-    assert!(pattern.parts[0].actions.len() > 0);
-    assert_eq!(pattern.parts[0].instances, 2);
 }
 
 #[test]

@@ -42,6 +42,9 @@ impl PatternBuilder {
         } else {
             1
         };
+        if part_instances > 1 {
+            return Err(Error::internal("== Part (make X) == is not implemented"));
+        }
 
         if self.parts.iter().find(|x| x.name == part_name).is_some() {
             return Err(Error::with_origin(
@@ -57,6 +60,7 @@ impl PatternBuilder {
     }
 
     pub fn part_body(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
+        // self.actions_buffer.push(Action::BeginPart.without_origin());
         for pair in pairs {
             match pair.as_rule() {
                 Rule::round => self.round(pair.into_inner())?,
@@ -68,6 +72,7 @@ impl PatternBuilder {
                 _ => unreachable!("{:?}", pair.as_rule()),
             };
         }
+        // self.actions_buffer.push(Action::EndPart.without_origin());
         Ok(())
     }
 
@@ -211,7 +216,7 @@ impl PatternBuilder {
                             //         }
                             Attach(_, _) => todo!(),
                             Sew(_, _) => todo!(),
-                            EnforceAnchors(_, _) => todo!(),
+                            EnforceAnchors(_, _) | BeginPart | EndPart => unreachable!(),
                         }
                         result.push(action);
                     }
@@ -252,7 +257,7 @@ impl PatternBuilder {
                 }
                 Attach(_, _) => todo!(),
                 Sew(_, _) => todo!(),
-                EnforceAnchors(_, _) => todo!(),
+                EnforceAnchors(_, _) | BeginPart | EndPart => unreachable!(),
             }
 
             self.actions_buffer.push(action);

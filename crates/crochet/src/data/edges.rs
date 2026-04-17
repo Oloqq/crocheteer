@@ -8,7 +8,10 @@ pub struct Edges {
 
 impl Edges {
     pub fn new() -> Self {
-        Self { edges: vec![] }
+        Self {
+            // for graph building, element in edges must exist before its corresponding node is registered
+            edges: vec![Vec::with_capacity(6)],
+        }
     }
 
     pub fn from(mby_unordered: Vec<Vec<usize>>) -> Self {
@@ -44,7 +47,7 @@ impl Edges {
     }
 
     pub fn grow(&mut self) {
-        self.edges.push(Vec::with_capacity(2)); // Sc (the most common stitch) will link itself to 2 nodes
+        self.edges.push(Vec::with_capacity(2)); // 2 because Sc (the most common stitch) will link itself to 2 nodes
     }
 
     pub fn cleanup(&mut self) {

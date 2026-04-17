@@ -1,9 +1,9 @@
-use HookError::*;
-
-use super::{Hook, errors::*};
+use super::Hook;
+use crate::{acl::Label, graph_construction::ErrorCode};
+use ErrorCode::*;
 
 impl Hook {
-    pub fn restore(&mut self, label: &Label) -> Result<(), HookError> {
+    pub(super) fn restore(&mut self, label: &Label) -> Result<(), ErrorCode> {
         let mut moment = self
             .labels
             .get(label)
@@ -15,7 +15,7 @@ impl Hook {
         Ok(())
     }
 
-    pub fn save(&mut self, label: &Label) -> Result<(), HookError> {
+    pub(super) fn save(&mut self, label: &Label) -> Result<(), ErrorCode> {
         let last_created = self.previous_stitch();
         self.mark_to_node.insert(label.clone(), last_created);
 

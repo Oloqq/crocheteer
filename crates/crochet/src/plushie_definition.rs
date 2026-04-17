@@ -1,6 +1,6 @@
 // use std::collections::HashMap;
 
-use crate::{Node, PatternAst};
+use crate::{PatternAst, data::Node};
 
 pub type ColorRgb = [u8; 3];
 pub type Edges = Vec<Vec<usize>>;

@@ -1,19 +1,40 @@
+use super::{Hook, Queue};
 use std::collections::HashMap;
 
-use super::{Edges, Hook, Moment, Queue, errors::*};
 use crate::{
     ColorRgb,
     acl::{Action::*, ActionWithOrigin, Flow, Origin},
-    hook::{HookParams, WorkingLoops, node::Peculiarity},
+    data::Peculiarity,
+    graph_construction::errors::{Error, ErrorCode},
+    graph_construction::hook::{Edges, HookParams, Moment, WorkingLoops},
 };
 
 const DEFAULT_COLOR: ColorRgb = [255, 0, 255];
 
 impl Hook {
-    pub fn from_starting_sequence(
-        flow: &mut impl Flow,
-        params: HookParams,
-    ) -> Result<Self, HookErrorWithOrigin> {
+    // pub fn new(params: HookParams) -> Self {
+    //     Self {
+    //         params,
+    //         nodes: vec![],
+    //         edges: Edges::new(),
+    //         now: Moment {
+    //             cursor: 0,
+    //             anchors: Default::default(),
+    //             working_on: WorkingLoops::Both,
+    //             limb_ownerhip: 0,
+    //         },
+    //         labels: HashMap::new(),
+    //         override_previous_node: None,
+    //         color: DEFAULT_COLOR,
+    //         last_stitch: None,
+    //         last_mark: None,
+    //         mark_to_node: HashMap::new(),
+    //         part_limits: vec![],
+    //         magic_ring_count: 0,
+    //     }
+    // }
+
+    pub fn from_starting_sequence(flow: &mut impl Flow, params: HookParams) -> Result<Self, Error> {
         let mut action_with_origin = flow.next_with_origin().unwrap();
         let mut color = DEFAULT_COLOR;
         if let Color(c) = action_with_origin.action {
@@ -27,14 +48,10 @@ impl Hook {
         action_with_origin: &ActionWithOrigin,
         color: ColorRgb,
         params: HookParams,
-    ) -> Result<Self, HookErrorWithOrigin> {
+    ) -> Result<Self, Error> {
         match action_with_origin.action {
             MR(x) => {
-                let edges = {
-                    let mut tmp = Edges::new();
-                    tmp.grow();
-                    tmp
-                };
+                let edges = Edges::new();
                 // TODO replace with from_magic_ring? need to keep the logic separate enough to allow multipart
                 let will_be_overwritten_with_magic_ring = Moment {
                     anchors: Queue::new(),
@@ -55,13 +72,13 @@ impl Hook {
                     last_mark: None,
                     mark_to_node: HashMap::new(),
                     part_limits: vec![],
-                    mr_count: 0,
+                    magic_ring_count: 0,
                 };
                 result.magic_ring(x, action_with_origin.origin);
                 Ok(result)
             }
-            _ => Err(HookErrorWithOrigin {
-                code: HookError::BadStarter,
+            _ => Err(Error {
+                code: ErrorCode::BadStarter,
                 origin: action_with_origin.origin,
             }),
         }
@@ -78,10 +95,8 @@ impl Hook {
         // spot for ring root in edges is already created
         self.add_node(origin).peculiarity(Peculiarity::Locked);
         for _ in 0..size {
-            self.edges.grow();
             self.add_node(origin).parent(ring_root);
         }
-        self.edges.grow(); // prepare place for the next node
 
         // connect outer nodes to ring root
         for connected_to_root in ring_root + 1..=ring_end {
@@ -96,9 +111,9 @@ impl Hook {
             anchors: Queue::from_iter(ring_root + 1..=ring_end),
             cursor: ring_end + 1,
             working_on: WorkingLoops::Both,
-            limb_ownerhip: self.mr_count,
+            limb_ownerhip: self.magic_ring_count,
         };
-        self.mr_count += 1;
+        self.magic_ring_count += 1;
 
         assert_eq!(self.edges.last().unwrap().len(), 0);
     }

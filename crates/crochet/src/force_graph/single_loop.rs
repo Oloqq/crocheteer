@@ -1,6 +1,6 @@
 use glam::Vec3;
 
-use crate::Peculiarity;
+use crate::data::Peculiarity;
 
 pub fn find_normals(nodes: &[(Vec3, Option<Peculiarity>)]) -> Vec<Vec3> {
     nodes

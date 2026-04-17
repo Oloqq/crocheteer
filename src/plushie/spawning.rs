@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crochet::{ColorRgb, Peculiarity, PlushieDef};
+use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
@@ -19,13 +19,13 @@ use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
 use crate::ui::{ConsoleMessage, ConsolePipe, SimulationState};
 
-fn force_display_node_color(peculiarity: Option<Peculiarity>) -> ColorRgb {
+fn force_display_node_color(peculiarity: Option<crochet::data::Peculiarity>) -> ColorRgb {
     if let Some(peculiarity) = peculiarity {
         match peculiarity {
-            Peculiarity::Locked => [0, 255, 255],
-            Peculiarity::Tip => [0, 127, 255],
-            Peculiarity::BLO(_) => [255, 0, 0],
-            Peculiarity::FLO(_) => [0, 255, 0],
+            crochet::data::Peculiarity::Locked => [0, 255, 255],
+            crochet::data::Peculiarity::Tip => [0, 127, 255],
+            crochet::data::Peculiarity::BLO(_) => [255, 0, 0],
+            crochet::data::Peculiarity::FLO(_) => [0, 255, 0],
         }
     } else {
         [255, 255, 255]

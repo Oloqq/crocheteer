@@ -151,6 +151,8 @@ pub enum Action {
     Sew(Label, Label),
     /// Verify the number of available anchors
     EnforceAnchors(usize, (usize, usize)),
+    BeginPart,
+    EndPart,
 }
 
 impl Action {
@@ -182,7 +184,9 @@ impl Action {
             | FO
             | Color(_)
             | Sew(_, _)
-            | EnforceAnchors(_, _) => false,
+            | EnforceAnchors(_, _)
+            | BeginPart
+            | EndPart => false,
         }
     }
 }
