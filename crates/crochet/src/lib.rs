@@ -18,8 +18,11 @@ use hook::{Hook, HookParams};
 
 pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
     let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;
-    let graph =
-        Hook::parse(pattern.as_iter(), HookParams::default()).or_else(|e| Err(Error::Hook(e)))?;
+    let hook_params = HookParams {
+        tip_from_fo: true,
+        enforce_counts: false,
+    };
+    let graph = Hook::parse(pattern.as_iter(), hook_params).or_else(|e| Err(Error::Hook(e)))?;
     assert!(graph.nodes.len() == graph.edges.len());
 
     Ok(PlushieDef {

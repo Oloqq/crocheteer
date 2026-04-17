@@ -12,18 +12,39 @@ pub struct Node {
 pub enum Peculiarity {
     Locked,
     Tip,
+    /// Back-loop-only
     BLO(PointsOnPushPlane),
+    /// Front-loop-only
     FLO(PointsOnPushPlane),
 }
 
 pub type PointsOnPushPlane = (usize, usize, usize);
 
+pub struct NodeBuilder<'n> {
+    node: &'n mut Node,
+}
+
+impl<'n> NodeBuilder<'n> {
+    pub fn peculiarity(self, peculiarity: Peculiarity) -> Self {
+        self.node.peculiarity = Some(peculiarity);
+        self
+    }
+
+    pub fn peculiarity_opt(self, peculiarity: Option<Peculiarity>) -> Self {
+        self.node.peculiarity = peculiarity;
+        self
+    }
+}
+
 impl Hook {
-    pub fn add_node(&mut self, peculiarity: Option<Peculiarity>, origin: Option<Origin>) {
+    pub fn add_node<'n>(&'n mut self, origin: Option<Origin>) -> NodeBuilder<'n> {
         self.nodes.push(Node {
             color: self.color,
-            peculiarity,
+            peculiarity: None,
             origin,
         });
+        NodeBuilder {
+            node: self.nodes.last_mut().unwrap(),
+        }
     }
 }

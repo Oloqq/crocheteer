@@ -55,7 +55,7 @@ impl StitchBuilder {
         };
 
         self.hook.edges.grow();
-        self.hook.add_node(peculiarity, self.origin);
+        self.hook.add_node(self.origin).peculiarity_opt(peculiarity);
         self.hook.parents.push(self.anchored);
         self.hook.now.cursor += 1;
         Ok(self)
@@ -150,7 +150,7 @@ impl StitchBuilder {
         }
 
         hook.edges.grow();
-        hook.add_node(Some(Peculiarity::Tip), origin);
+        hook.add_node(origin).peculiarity(Peculiarity::Tip);
         hook.now.cursor += 1;
         Ok(hook)
     }

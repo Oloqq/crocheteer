@@ -382,6 +382,18 @@ fn test_mr_root_peculiarity_is_registered() {
 }
 
 #[test]
+fn test_parents_are_registered() {
+    let mut h = start_mr(3);
+    h = h.test_perform(&FLO).unwrap();
+    h = h.test_perform(&Sc).unwrap();
+    q!(h.parents[0], None);
+    q!(h.parents[1], Some(0));
+    q!(h.parents[2], Some(0));
+    q!(h.parents[3], Some(0));
+    q!(h.parents[4], Some(1));
+}
+
+#[test]
 fn test_flo_is_registered() {
     let mut h = start_mr(3);
     h = h.test_perform(&FLO).unwrap();

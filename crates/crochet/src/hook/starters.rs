@@ -78,11 +78,11 @@ impl Hook {
 
         // spot for ring root in edges is already created
         self.parents.push(None); // ring root has no parent
-        self.add_node(Some(Peculiarity::Locked), origin);
+        self.add_node(origin).peculiarity(Peculiarity::Locked);
         for _ in 0..size {
             self.edges.grow();
             self.parents.push(Some(ring_root));
-            self.add_node(None, origin);
+            self.add_node(origin);
         }
         self.edges.grow(); // prepare place for the next node
 
