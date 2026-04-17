@@ -52,8 +52,6 @@ impl PatternBuilder {
 
         Ok(Pattern {
             parts: builder.parts,
-            action_cursor: 0,
-            part_cursor: 0,
         })
     }
 }

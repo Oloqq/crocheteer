@@ -7,8 +7,6 @@ use crate::{ColorRgb, acl::Flow};
 #[derive(Debug, Clone)]
 pub struct Pattern {
     pub parts: Vec<Part>,
-    pub action_cursor: usize,
-    pub part_cursor: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -19,7 +17,23 @@ pub struct Part {
     pub parameters: HashMap<String, String>,
 }
 
-impl Flow for Pattern {
+pub struct PatternIter<'p> {
+    pub pattern: &'p Pattern,
+    pub action_cursor: usize,
+    pub part_cursor: usize,
+}
+
+impl Pattern {
+    pub fn as_iter<'p>(&'p self) -> PatternIter<'p> {
+        PatternIter {
+            pattern: &self,
+            action_cursor: 0,
+            part_cursor: 0,
+        }
+    }
+}
+
+impl<'p> Flow for PatternIter<'p> {
     fn next(&mut self) -> Option<Action> {
         self.next_with_origin()
             .map(|action_with_origin| action_with_origin.action)
@@ -31,9 +45,9 @@ impl Flow for Pattern {
     }
 
     fn next_with_origin(&mut self) -> Option<ActionWithOrigin> {
-        if self.part_cursor < self.parts.len() {
-            if self.action_cursor < self.parts[self.part_cursor].actions.len() {
-                let got = self.parts[self.part_cursor].actions[self.action_cursor].clone();
+        if self.part_cursor < self.pattern.parts.len() {
+            if self.action_cursor < self.pattern.parts[self.part_cursor].actions.len() {
+                let got = self.pattern.parts[self.part_cursor].actions[self.action_cursor].clone();
                 self.action_cursor += 1;
                 Some(got)
             } else {
@@ -46,12 +60,12 @@ impl Flow for Pattern {
     }
 
     fn peek_with_origin(&self) -> Option<ActionWithOrigin> {
-        if self.part_cursor < self.parts.len() {
-            if self.action_cursor < self.parts[self.part_cursor].actions.len() {
-                let got = self.parts[self.part_cursor].actions[self.action_cursor].clone();
+        if self.part_cursor < self.pattern.parts.len() {
+            if self.action_cursor < self.pattern.parts[self.part_cursor].actions.len() {
+                let got = self.pattern.parts[self.part_cursor].actions[self.action_cursor].clone();
                 Some(got)
             } else {
-                let got = self.parts[self.part_cursor + 1].actions[0].clone();
+                let got = self.pattern.parts[self.part_cursor + 1].actions[0].clone();
                 Some(got)
             }
         } else {

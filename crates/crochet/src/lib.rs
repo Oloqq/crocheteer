@@ -20,7 +20,8 @@ pub fn acl_to_pattern(acl_source: &str) -> Result<Pattern, acl::PatternError> {
 
 pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
     let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;
-    let graph = Hook::parse(pattern, HookParams::default()).or_else(|e| Err(Error::Hook(e)))?;
+    let graph =
+        Hook::parse(pattern.as_iter(), HookParams::default()).or_else(|e| Err(Error::Hook(e)))?;
 
     Ok(PlushieDef {
         edges: graph.edges.into(),

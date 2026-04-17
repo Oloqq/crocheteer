@@ -202,8 +202,7 @@ fn parse_to_plushie_def(
     };
 
     let plushie_def: PlushieDef =
-        // TODO use iterator instead of flow, no need to clone
-        match crochet::Hook::parse(pattern.clone(), crochet::HookParams::default()) {
+        match crochet::Hook::parse(pattern.as_iter(), crochet::HookParams::default()) {
             Ok(graph) => PlushieDef {
                 edges: graph.edges.into(),
                 nodes: graph.nodes,
@@ -213,10 +212,7 @@ fn parse_to_plushie_def(
                     text: format!("Error in the pattern (hook): {:?}", error.code),
                 });
                 if let Some(origin) = error.origin {
-                    code_highlighter.set(
-                    HighlightLayer::RedUnderline,
-                    vec![(origin.as_range())],
-                );
+                    code_highlighter.set(HighlightLayer::RedUnderline, vec![(origin.as_range())]);
                 }
                 return None;
             }
