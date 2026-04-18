@@ -60,7 +60,7 @@ impl PatternBuilder {
     }
 
     pub fn part_body(&mut self, pairs: Pairs<Rule>) -> Result<(), Error> {
-        // self.actions_buffer.push(Action::BeginPart.without_origin());
+        self.actions_buffer.push(Action::BeginPart.without_origin());
         for pair in pairs {
             match pair.as_rule() {
                 Rule::round => self.round(pair.into_inner())?,
@@ -72,7 +72,7 @@ impl PatternBuilder {
                 _ => unreachable!("{:?}", pair.as_rule()),
             };
         }
-        // self.actions_buffer.push(Action::EndPart.without_origin());
+        self.actions_buffer.push(Action::EndPart.without_origin());
         Ok(())
     }
 

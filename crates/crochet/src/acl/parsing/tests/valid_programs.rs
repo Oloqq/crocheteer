@@ -4,7 +4,7 @@ use pretty_assertions::assert_eq;
 use crate::acl::{Action, PatternAst, PatternBuilder};
 
 impl PatternAst {
-    fn just_actions(self) -> Vec<Action> {
+    fn just_actions_no_part_borders(self) -> Vec<Action> {
         assert_eq!(self.parts.len(), 1);
         self.parts
             .into_iter()
@@ -12,7 +12,10 @@ impl PatternAst {
             .unwrap()
             .actions
             .into_iter()
-            .map(|action_with_origin| action_with_origin.action)
+            .filter_map(|action_with_origin| match action_with_origin.action {
+                BeginPart | EndPart => None,
+                _ => Some(action_with_origin.action),
+            })
             .collect()
     }
 }
@@ -21,20 +24,20 @@ impl PatternAst {
 fn test_sc() {
     let prog = ": sc\n";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc]);
 }
 
 #[test]
 fn test_round_end_omitted() {
     let prog = ": sc\n: sc";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc, Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc, Sc]);
     let prog = ": sc";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc]);
     let prog = ": sc # bruh\n";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc]);
 }
 
 #[test]
@@ -48,7 +51,7 @@ fn test_round_end_present() {
     let prog = ": sc (1)\n: sc, sc (2)\n";
     let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(
-        pat.just_actions(),
+        pat.just_actions_no_part_borders(),
         vec![
             Sc,
             EnforceAnchors(1, (1, 7)),
@@ -63,52 +66,52 @@ fn test_round_end_present() {
 fn test_numstitch() {
     let prog = ": 2 sc\n";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc, Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc, Sc]);
 }
 
 #[test]
 fn test_round_repeat_with_number() {
     let prog = "3: sc\n";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc, Sc, Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc, Sc, Sc]);
 }
 
 #[test]
 fn test_round_range_with_span() {
     let prog = "R2-R4: sc\n";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc, Sc, Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc, Sc, Sc]);
 }
 
 #[test]
 fn test_mr() {
     let prog = ": MR(6)";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![MR(6)]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![MR(6)]);
     let prog = ": MR(6)\n: sc";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![MR(6), Sc]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![MR(6), Sc]);
 }
 
 #[test]
 fn test_fo() {
     let prog = ": sc\nFO";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc, FO]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc, FO]);
 }
 
 #[test]
 fn test_repetition_simple() {
     let prog = ": [sc, sc] x 2";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc; 4]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc; 4]);
 }
 
 #[test]
 fn test_repetition_nested() {
     let prog = ": [[sc, sc] x 2] x 3";
     let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(pat.just_actions(), vec![Sc; 12]);
+    assert_eq!(pat.just_actions_no_part_borders(), vec![Sc; 12]);
 }
 
 #[test]
@@ -117,7 +120,7 @@ fn test_attach() {
     let prog = "mark(anchor), attach(anchor, 3)";
     let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(
-        pat.just_actions(),
+        pat.just_actions_no_part_borders(),
         vec![Mark("anchor".into()), Attach("anchor".into(), 3)]
     );
 }

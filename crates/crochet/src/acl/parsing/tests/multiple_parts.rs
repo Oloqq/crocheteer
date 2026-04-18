@@ -126,8 +126,8 @@ fn test_registers_two_parts() {
         : MR(7)
     "};
     let pattern = PatternBuilder::parse(source).unwrap();
-    assert_eq!(pattern.parts[0].actions[0].action, Action::MR(6));
-    assert_eq!(pattern.parts[1].actions[0].action, Action::MR(7));
+    assert_eq!(pattern.parts[0].actions[1].action, Action::MR(6));
+    assert_eq!(pattern.parts[1].actions[1].action, Action::MR(7));
 }
 
 #[test]

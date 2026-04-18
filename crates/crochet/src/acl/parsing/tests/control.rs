@@ -42,7 +42,7 @@ mod color {
         let prog = "color(255, 255, 0)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[0].action,
+            pattern.parts[0].actions[1].action,
             Action::Color([255, 255, 0])
         );
     }
@@ -86,21 +86,21 @@ mod mark {
         let prog = "mark(bruh)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[0].action,
+            pattern.parts[0].actions[1].action,
             Action::Mark("bruh".into())
         );
 
         let prog = "mark(bruh7)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[0].action,
+            pattern.parts[0].actions[1].action,
             Action::Mark("bruh7".into())
         );
 
         let prog = "mark(4bruh7)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[0].action,
+            pattern.parts[0].actions[1].action,
             Action::Mark("4bruh7".into())
         );
     }
@@ -151,21 +151,21 @@ mod goto {
         let prog = "mark(bruh), goto(bruh)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[1].action,
+            pattern.parts[0].actions[2].action,
             Action::Goto("bruh".into())
         );
 
         let prog = "mark(bruh7), goto(bruh7)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[1].action,
+            pattern.parts[0].actions[2].action,
             Action::Goto("bruh7".into())
         );
 
         let prog = "mark(4bruh7), goto(4bruh7)";
         let pattern = PatternBuilder::parse(prog).unwrap();
         assert_eq!(
-            pattern.parts[0].actions[1].action,
+            pattern.parts[0].actions[2].action,
             Action::Goto("4bruh7".into())
         );
     }
@@ -203,7 +203,7 @@ mod fo {
     fn test_control_parses_fo() {
         let prog = "FO";
         let pattern = PatternBuilder::parse(prog).unwrap();
-        assert_eq!(pattern.parts[0].actions[0].action, Action::FO);
+        assert_eq!(pattern.parts[0].actions[1].action, Action::FO);
     }
 
     #[test]
