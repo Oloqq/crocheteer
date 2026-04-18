@@ -19,7 +19,10 @@ impl Hook {
 }
 
 fn start_mr(mr_count: usize) -> Hook {
-    Hook::start_with(&MR(mr_count).without_origin(), COLOR, HookParams::default()).unwrap()
+    let mut h = Hook::new(HookParams::default());
+    h = h.perform(&Action::Color(COLOR), None).unwrap();
+    h = h.perform(&MR(mr_count), None).unwrap();
+    h
 }
 
 #[test]
@@ -322,8 +325,10 @@ fn test_sc_after_attach() {
 #[test]
 fn test_starting_from_color() {
     let mut flow = SimpleFlow::new(vec![Color(COLOR), MR(3), Sc, Sc, Sc]);
-    let mut h = Hook::from_starting_sequence(&mut flow, HookParams::default()).unwrap();
-    h = h.test_perform(&flow.next().unwrap()).unwrap();
+    let mut h = Hook::new(HookParams::default());
+    while let Some(a) = flow.next() {
+        h = h.perform(&a, None).unwrap();
+    }
     q!(
         &h.edges.data()[0..4],
         &[vec![], vec![0], vec![0, 1], vec![0, 2]]

@@ -34,6 +34,7 @@ pub enum WorkingLoops {
     Front,
 }
 
+/// Context of hook working at given cursor
 #[derive(Clone, Debug)]
 struct Moment {
     /// Node index to be created
@@ -59,6 +60,7 @@ pub struct Hook {
     override_previous_node: Option<usize>,
     /// Last stitch created (not counting actions like mark, goto)
     last_stitch: Option<Action>,
+    // TODO this potentially would be not needed if mark_ahead was implemented
     /// Was the last action a mark?
     last_mark: Option<Action>,
     /// Map from labels to the index of the node they are on.

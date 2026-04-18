@@ -166,10 +166,8 @@ impl StitchBuilder {
 mod tests {
     use super::super::Queue;
     use super::*;
-    use crate::{ColorRgb, acl::Action::*, data::Edges, graph_construction::hook::HookParams};
+    use crate::{acl::Action::*, data::Edges, graph_construction::hook::HookParams};
     use pretty_assertions::assert_eq as q;
-
-    const COLOR: ColorRgb = [255, 0, 0];
 
     // TODO
     // test magic ring lower and upper limit
@@ -179,7 +177,8 @@ mod tests {
     // test parents and grandparents around single-loop
 
     fn mr3() -> Hook {
-        let h = Hook::start_with(&MR(3).without_origin(), COLOR, HookParams::default()).unwrap();
+        let mut h = Hook::new(HookParams::default());
+        h = h.perform(&MR(3), None).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(

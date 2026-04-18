@@ -63,7 +63,9 @@ impl Hook {
             BL => self.now.working_on = WorkingLoops::Both,
             Goto(label) => self.restore(label)?,
             Mark(label) => self.save(label)?,
-            MR(_) => return Err(AnonymousMrInTheMiddle),
+            MR(count) => {
+                self.magic_ring(*count, origin);
+            }
             BeginPart | EndPart => (),
             FO => {
                 if self.params.tip_from_fo {
@@ -94,10 +96,18 @@ impl Hook {
         };
 
         match action {
-            MR(..) => unreachable!("MR allowed inside the pattern is stored as MRConfigurable"),
-            FLO | BLO | BL | Goto(_) | FO | Action::Color(_) | Sew(..) => self.last_mark = None,
+            FLO
+            | BLO
+            | BL
+            | Goto(_)
+            | FO
+            | Action::Color(_)
+            | Sew(..)
+            | EnforceAnchors(..)
+            | BeginPart
+            | EndPart => self.last_mark = None,
             Mark(_) => self.last_mark = Some(action.clone()),
-            _ => {
+            Sc | Dec | Inc | Slst | Attach(..) | MR(_) => {
                 self.last_stitch = Some(action.clone());
                 self.last_mark = None
             }

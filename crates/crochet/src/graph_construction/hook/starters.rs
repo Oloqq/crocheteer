@@ -3,88 +3,37 @@ use std::collections::HashMap;
 
 use crate::{
     ColorRgb,
-    acl::{Action::*, ActionWithOrigin, Flow, Origin},
+    acl::Origin,
     data::Peculiarity,
-    graph_construction::errors::{Error, ErrorCode},
     graph_construction::hook::{Edges, HookParams, Moment, WorkingLoops},
 };
 
 const DEFAULT_COLOR: ColorRgb = [255, 0, 255];
 
 impl Hook {
-    // pub fn new(params: HookParams) -> Self {
-    //     Self {
-    //         params,
-    //         nodes: vec![],
-    //         edges: Edges::new(),
-    //         now: Moment {
-    //             cursor: 0,
-    //             anchors: Default::default(),
-    //             working_on: WorkingLoops::Both,
-    //             limb_ownerhip: 0,
-    //         },
-    //         labels: HashMap::new(),
-    //         override_previous_node: None,
-    //         color: DEFAULT_COLOR,
-    //         last_stitch: None,
-    //         last_mark: None,
-    //         mark_to_node: HashMap::new(),
-    //         part_limits: vec![],
-    //         magic_ring_count: 0,
-    //     }
-    // }
-
-    pub fn from_starting_sequence(flow: &mut impl Flow, params: HookParams) -> Result<Self, Error> {
-        let mut action_with_origin = flow.next_with_origin().unwrap();
-        let mut color = DEFAULT_COLOR;
-        if let Color(c) = action_with_origin.action {
-            color = c;
-            action_with_origin = flow.next_with_origin().unwrap();
-        }
-        Self::start_with(&action_with_origin, color, params)
-    }
-
-    pub fn start_with(
-        action_with_origin: &ActionWithOrigin,
-        color: ColorRgb,
-        params: HookParams,
-    ) -> Result<Self, Error> {
-        match action_with_origin.action {
-            MR(x) => {
-                let edges = Edges::new();
-                // TODO replace with from_magic_ring? need to keep the logic separate enough to allow multipart
-                let will_be_overwritten_with_magic_ring = Moment {
-                    anchors: Queue::new(),
-                    cursor: 0,
-                    working_on: WorkingLoops::Both,
-                    limb_ownerhip: 0,
-                };
-
-                let mut result = Self {
-                    params,
-                    nodes: vec![],
-                    edges,
-                    now: will_be_overwritten_with_magic_ring,
-                    labels: HashMap::new(),
-                    override_previous_node: None,
-                    color,
-                    last_stitch: None,
-                    last_mark: None,
-                    mark_to_node: HashMap::new(),
-                    part_limits: vec![],
-                    magic_ring_count: 0,
-                };
-                result.magic_ring(x, action_with_origin.origin);
-                Ok(result)
-            }
-            _ => Err(Error {
-                code: ErrorCode::BadStarter,
-                origin: action_with_origin.origin,
-            }),
+    pub fn new(params: HookParams) -> Self {
+        Self {
+            params,
+            nodes: vec![],
+            edges: Edges::new(),
+            now: Moment {
+                cursor: 0,
+                anchors: Default::default(),
+                working_on: WorkingLoops::Both,
+                limb_ownerhip: 0,
+            },
+            labels: HashMap::new(),
+            override_previous_node: None,
+            color: DEFAULT_COLOR,
+            last_stitch: None,
+            last_mark: None,
+            mark_to_node: HashMap::new(),
+            part_limits: vec![],
+            magic_ring_count: 0,
         }
     }
 
-    fn magic_ring(&mut self, size: usize, origin: Option<Origin>) {
+    pub(super) fn magic_ring(&mut self, size: usize, origin: Option<Origin>) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
         self.part_limits.push(self.now.cursor);

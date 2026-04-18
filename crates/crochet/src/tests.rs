@@ -45,6 +45,35 @@ fn test_named_part() {
 }
 
 #[test]
+fn test_first_stitch_must_be_mr() {
+    // let acl = indoc! {"
+    //     == Part ==
+    //     : sc
+    // "};
+    // let err = parse(acl).unwrap_err();
+    // let Error::Hook(err) = err else {
+    //     panic!();
+    // };
+    // assert_eq!(err.code, ErrorCode::BadStarter);
+    // assert_eq!(&acl[err.origin.unwrap().as_range()], "sc");
+
+    let acl = indoc! {"
+        == Part ==
+        : MR(6)
+        : inc
+
+        == Part2 ==
+        : sc
+    "};
+    let err = parse(acl).unwrap_err();
+    let Error::Hook(err) = err else {
+        panic!();
+    };
+    assert_eq!(err.code, ErrorCode::BadStarter);
+    assert_eq!(&acl[err.origin.unwrap().as_range()], "sc");
+}
+
+#[test]
 #[ignore = "developing"]
 fn test_two_parts() {
     let acl = indoc! {"

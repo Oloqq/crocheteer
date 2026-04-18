@@ -4,7 +4,7 @@ use crocheteer::project::{DisplayMode, Project, SimulationState};
 fn main() {
     let project = Project {
         pattern: indoc::indoc! {"
-            == Stem (make 2) ==
+            == Stem ==
             @centroids = 1
 
             : MR(6)

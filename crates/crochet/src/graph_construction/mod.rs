@@ -13,8 +13,7 @@ pub(crate) fn parse(mut flow: impl Flow, params: HookParams) -> Result<InitialGr
             origin: None,
         });
     }
-    // let mut hook = Hook::new(params);
-    let mut hook = hook::Hook::from_starting_sequence(&mut flow, params)?;
+    let mut hook = hook::Hook::new(params);
     let mut i: u32 = 0;
     while let Some(action_with_origin) = flow.next_with_origin() {
         let action = action_with_origin.action;
