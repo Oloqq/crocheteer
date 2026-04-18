@@ -10,7 +10,6 @@ use bevy::prelude::*;
 #[derive(Resource)]
 pub struct EditorSimulationSync {
     pub acl_in_simulation: Option<String>,
-    // pub pattern_in_simulation: Option<crochet::Pattern>,
     pub in_sync: bool,
 }
 
@@ -18,8 +17,7 @@ impl EditorSimulationSync {
     pub fn new() -> Self {
         Self {
             acl_in_simulation: None,
-            // pattern_in_simulation: None,
-            in_sync: true,
+            in_sync: false,
         }
     }
 
@@ -39,7 +37,6 @@ impl EditorSimulationSync {
 
     pub fn plushie_parsed(&mut self, acl: String) {
         self.acl_in_simulation = Some(acl);
-        // self.pattern_in_simulation = Some(pattern);
         self.in_sync = true;
     }
 }

@@ -10,7 +10,7 @@ pub type Edges = Vec<Vec<usize>>;
 //     pub centroids: usize,
 // }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PlushieDef {
     /// Abstract Syntax Tree of the pattern
     pub pattern: PatternAst,

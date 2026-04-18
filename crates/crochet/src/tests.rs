@@ -84,6 +84,7 @@ fn test_two_parts() {
     "};
     let plushie = parse(acl).unwrap();
     assert_eq!(plushie.nodes.len(), 28); // 2*(12 + MR root + FO tip)
-    // assert_eq!(plushie.parts.len(), 1);
-    // assert_eq!(plushie.parts[0].name, );
+    assert_eq!(plushie.pattern.parts.len(), 2);
+    assert_eq!(plushie.pattern.parts[0].name, "Part1");
+    assert_eq!(plushie.pattern.parts[1].name, "Part2");
 }

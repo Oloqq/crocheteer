@@ -14,6 +14,7 @@ use crate::plushie::{
     mouse_interactions::on_click,
 };
 use crate::state::editor_simulation_sync::EditorSimulationSync;
+use crate::state::simulated_plushie::PlushieInSimulation;
 use crate::ui::code_editor::highlighter::{HighlightLayer, Highlighter};
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
@@ -216,7 +217,7 @@ pub fn build_full_plushie_from_pattern(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut sync_state: ResMut<EditorSimulationSync>,
     mut code_editor: ResMut<CodeEditorState>,
-    state: Res<SimulationState>,
+    mut state: ResMut<SimulationState>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
@@ -233,7 +234,6 @@ pub fn build_full_plushie_from_pattern(
     else {
         return Ok(());
     };
-    sync_state.plushie_parsed(msg.acl.clone());
 
     let node_positions = state
         .initializer
@@ -287,6 +287,11 @@ pub fn build_full_plushie_from_pattern(
         add_centroid(&mut commands, &assets);
     }
 
+    sync_state.plushie_parsed(msg.acl.clone());
+    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
+    commands.insert_resource(PlushieInSimulation {
+        plushie: plushie_def,
+    });
     let _ = pipe.sender.send(ConsoleMessage {
         text: "Built a plushie".into(),
     });
@@ -301,7 +306,7 @@ pub fn start_building_plushie_one_by_one(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut sync_state: ResMut<EditorSimulationSync>,
     mut code_editor: ResMut<CodeEditorState>,
-    state: Res<SimulationState>,
+    mut state: ResMut<SimulationState>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
     existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
@@ -319,7 +324,6 @@ pub fn start_building_plushie_one_by_one(
     else {
         return Ok(());
     };
-    sync_state.plushie_parsed(msg.acl.clone());
 
     assert!(plushie_def.nodes.len() == plushie_def.edges.len());
     assert!(plushie_def.nodes.len() > 0);
@@ -368,10 +372,15 @@ pub fn start_building_plushie_one_by_one(
     }
 
     commands.insert_resource(OneByOneProgress {
-        full_plushie: plushie_def,
+        full_plushie: plushie_def.clone(),
         next: node_count,
         node_entities,
     });
+    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
+    commands.insert_resource(PlushieInSimulation {
+        plushie: plushie_def,
+    });
+    sync_state.plushie_parsed(msg.acl.clone());
 
     let _ = pipe.sender.send(ConsoleMessage {
         text: "Started building a plushie one by one".into(),

@@ -13,9 +13,6 @@ pub struct SimulationState {
     pub single_loop_force: f32,
     pub initializer: crochet::force_graph::Initializer,
     pub active_part: Option<String>,
-    pub parts: Vec<String>,
-
-    // move into separate resource?
     pub action_items: Vec<UiActionItem>,
 }
 
@@ -32,9 +29,6 @@ impl Default for SimulationState {
             single_loop_force: 0.2,
             initializer: crochet::force_graph::Initializer::RegularCylinder(12),
             active_part: None,
-            // active_part: Some("bruh".into()),
-            parts: vec!["a".into(), "b".into()],
-
             action_items: vec![],
         }
     }

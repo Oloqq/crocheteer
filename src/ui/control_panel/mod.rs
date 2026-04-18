@@ -3,6 +3,7 @@ mod right_panel;
 
 use crate::FIXED_UPDATE_BASE_HZ;
 use crate::plushie::{DisplayMode, SetDisplayMode};
+use crate::state::simulated_plushie::PlushieInSimulation;
 use crate::ui::SimulationState;
 use crate::ui::control_panel::parts_ui::parts_ui;
 use crate::ui::control_panel::right_panel::RightPanel;
@@ -24,6 +25,7 @@ pub fn control_panel(
     mut display_mode_msg: MessageWriter<SetDisplayMode>,
     mut collapsed: Local<bool>,
     mut timestep: ResMut<Time<Fixed>>,
+    mut current_plushie: Option<ResMut<PlushieInSimulation>>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
 
@@ -72,9 +74,10 @@ pub fn control_panel(
             .on_hover_text(FORCES_SLF_HELP);
         });
         ui.collapsing("Parts", |mut ui| {
-            parts_ui(&mut ui, &mut state);
+            parts_ui(&mut ui, &mut state, &mut current_plushie);
         });
 
+        // TEMP
         ui.add(egui::Slider::new(&mut state.centroids, 0..=20).text("Centroids"))
             .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids");
     });
