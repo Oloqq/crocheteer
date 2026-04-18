@@ -12,6 +12,7 @@ pub struct Error {
 // TODO many of those should be unreachable given correct pattern parser (BadStarter, AnonymousMrInTheMiddle, DuplicateLabel, UnknownLabel)
 #[derive(Debug, PartialEq)]
 pub enum ErrorCode {
+    Internal(String),
     Empty,
     BadStarter,
     AnonymousMrInTheMiddle,
@@ -43,6 +44,7 @@ impl ErrorCode {
     pub fn means_bug_in_crate(&self) -> bool {
         use ErrorCode::*;
         match self {
+            Internal(_) => true,
             BadStarter => true,
             DuplicateLabel(_) => true,
             UnknownLabel(_) => true,

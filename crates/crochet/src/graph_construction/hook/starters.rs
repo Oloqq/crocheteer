@@ -36,8 +36,6 @@ impl Hook {
     pub(super) fn magic_ring(&mut self, size: usize, origin: Option<Origin>) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
-        self.part_limits.push(self.now.cursor);
-
         let ring_root = self.now.cursor; // will be 0 unless using multipart
         let ring_end = ring_root + size;
 

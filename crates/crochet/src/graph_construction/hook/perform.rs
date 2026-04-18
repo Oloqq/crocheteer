@@ -10,6 +10,16 @@ impl Hook {
     ) -> Result<Self, ErrorCode> {
         use Action::*;
         use ErrorCode::*;
+        println!("act {:?}", action);
+
+        let part_start = *self.part_limits.last().unwrap_or(&0);
+        if self.now.cursor == part_start {
+            match action {
+                BeginPart | EndPart | MR(..) | Color(..) => (),
+                _ => return Err(ErrorCode::BadStarter),
+            }
+        }
+
         match action {
             Sc => {
                 self = StitchBuilder::linger(self, origin)?
@@ -66,7 +76,14 @@ impl Hook {
             MR(count) => {
                 self.magic_ring(*count, origin);
             }
-            BeginPart | EndPart => (),
+            BeginPart => {
+                println!("begin aprt");
+                println!("{} {part_start}", self.now.cursor);
+            }
+            EndPart => {
+                println!("end part");
+                self.part_limits.push(self.now.cursor);
+            }
             FO => {
                 if self.params.tip_from_fo {
                     self = StitchBuilder::fasten_off_with_tip(self, origin)?

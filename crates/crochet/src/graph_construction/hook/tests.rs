@@ -21,20 +21,22 @@ impl Hook {
 fn start_mr(mr_count: usize) -> Hook {
     let mut h = Hook::new(HookParams::default());
     h = h.perform(&Action::Color(COLOR), None).unwrap();
+    h = h.perform(&BeginPart, None).unwrap();
     h = h.perform(&MR(mr_count), None).unwrap();
     h
 }
 
 #[test]
 fn test_start_with_magic_ring() {
-    let h = start_mr(3);
+    let mut h = start_mr(3);
+    h = h.perform(&EndPart, None).unwrap();
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
     q!(
         h.edges,
         Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
     );
-    q!(h.part_limits, vec![0]);
+    q!(h.part_limits, vec![4]);
 }
 
 #[test]

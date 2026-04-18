@@ -58,6 +58,7 @@ impl<'p> Flow for PatternIter<'p> {
                 Some(got)
             } else {
                 self.part_cursor += 1;
+                self.action_cursor = 0;
                 self.next_with_origin()
             }
         } else {

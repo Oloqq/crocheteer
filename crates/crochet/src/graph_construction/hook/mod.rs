@@ -74,7 +74,6 @@ pub struct Hook {
 impl Hook {
     pub(crate) fn finish(mut self) -> InitialGraph {
         self.edges.cleanup();
-        self.part_limits.push(self.now.cursor);
         InitialGraph {
             edges: self.edges,
             nodes: self.nodes,
