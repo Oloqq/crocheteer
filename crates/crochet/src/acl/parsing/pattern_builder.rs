@@ -73,6 +73,7 @@ impl PatternBuilder {
             };
         }
         self.actions_buffer.push(Action::EndPart.without_origin());
+        self.current_loop = CurrentLoop::Both;
         Ok(())
     }
 

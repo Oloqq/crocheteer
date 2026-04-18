@@ -145,3 +145,18 @@ fn test_separate_parameters_for_each_part() {
     assert_eq!(pattern.parts[0].parameters.centroids, 2);
     assert_eq!(pattern.parts[1].parameters.centroids, 1);
 }
+
+#[test]
+fn test_working_loop_reset_does_not_happen_between_parts() {
+    let source = indoc::indoc! {"
+        == Stem ==
+        : MR(6)
+        : FLO, sc
+
+        == Cap ==
+        : MR(7)
+    "};
+    let pattern = PatternBuilder::parse(source).unwrap();
+    assert_eq!(pattern.parts[1].actions[0].action, Action::BeginPart);
+    assert_eq!(pattern.parts[1].actions[1].action, Action::MR(7));
+}

@@ -70,7 +70,6 @@ fn test_first_stitch_must_be_mr() {
 }
 
 #[test]
-#[ignore = "developing"]
 fn test_two_parts() {
     let acl = indoc! {"
         == Part1 ==
