@@ -1,6 +1,7 @@
 use indoc::indoc;
 
 use crate::{acl::Action, errors::Error, graph_construction::ErrorCode, parse};
+use pretty_assertions::assert_eq;
 
 #[test]
 fn test_empty_pattern_no_panic() {
@@ -84,6 +85,24 @@ fn test_two_parts() {
     "};
     let plushie = parse(acl).unwrap();
     assert_eq!(plushie.nodes.len(), 28); // 2*(12 + MR root + FO tip)
+    assert_eq!(
+        plushie
+            .nodes
+            .iter()
+            .take(14)
+            .map(|n| n.part_index)
+            .collect::<Vec<_>>(),
+        vec![0; 14]
+    );
+    assert_eq!(
+        plushie
+            .nodes
+            .iter()
+            .skip(14)
+            .map(|n| n.part_index)
+            .collect::<Vec<_>>(),
+        vec![1; 14]
+    );
     assert_eq!(plushie.pattern.parts.len(), 2);
     assert_eq!(plushie.pattern.parts[0].name, "Part1");
     assert_eq!(plushie.pattern.parts[1].name, "Part2");

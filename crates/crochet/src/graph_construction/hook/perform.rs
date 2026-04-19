@@ -1,4 +1,8 @@
-use crate::{Origin, acl::Action, graph_construction::ErrorCode};
+use crate::{
+    Origin,
+    acl::Action,
+    graph_construction::{ErrorCode, hook::Moment},
+};
 
 use super::{Hook, StitchBuilder, WorkingLoops};
 
@@ -10,7 +14,6 @@ impl Hook {
     ) -> Result<Self, ErrorCode> {
         use Action::*;
         use ErrorCode::*;
-        println!("act {:?}", action);
 
         let part_start = *self.part_limits.last().unwrap_or(&0);
         if self.now.cursor == part_start {
@@ -76,13 +79,15 @@ impl Hook {
             MR(count) => {
                 self.magic_ring(*count, origin);
             }
-            BeginPart => {
-                println!("begin aprt");
-                println!("{} {part_start}", self.now.cursor);
-            }
+            BeginPart => {}
             EndPart => {
-                println!("end part");
                 self.part_limits.push(self.now.cursor);
+                self.part_cursor += 1;
+                self.now = Moment {
+                    cursor: self.now.cursor,
+                    part: self.part_cursor,
+                    ..Default::default()
+                };
             }
             FO => {
                 if self.params.tip_from_fo {

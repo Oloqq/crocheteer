@@ -28,15 +28,28 @@ fn start_mr(mr_count: usize) -> Hook {
 
 #[test]
 fn test_start_with_magic_ring() {
-    let mut h = start_mr(3);
-    h = h.perform(&EndPart, None).unwrap();
+    let h = start_mr(3);
     q!(h.now.anchors, Queue::from([1, 2, 3]));
     q!(h.now.cursor, 4);
     q!(
         h.edges,
         Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
     );
+}
+
+#[test]
+fn test_end_part_resets_anchors() {
+    let mut h = start_mr(3);
+    q!(h.now.anchors, Queue::from([1, 2, 3]));
+    q!(h.now.cursor, 4);
+    q!(
+        h.edges,
+        Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
+    );
+    h = h.perform(&EndPart, None).unwrap();
     q!(h.part_limits, vec![4]);
+    q!(h.now.anchors, Queue::new());
+    q!(h.now.cursor, 4);
 }
 
 #[test]

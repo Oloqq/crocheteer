@@ -45,6 +45,17 @@ struct Moment {
     part: usize,
 }
 
+impl Default for Moment {
+    fn default() -> Self {
+        Self {
+            cursor: 0,
+            anchors: Default::default(),
+            working_on: WorkingLoops::Both,
+            part: 0,
+        }
+    }
+}
+
 /// Responsible for building the graph used in the simulation
 #[derive(Clone, Debug)]
 pub struct Hook {
