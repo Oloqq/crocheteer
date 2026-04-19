@@ -43,6 +43,13 @@ impl super::SimulatedPlushie {
         );
 
         for part in &mut self.parts {
+            while part.centroids.len() < part.centroids_wanted {
+                part.centroids.push(Vec3::ZERO);
+            }
+            while part.centroids.len() > part.centroids_wanted {
+                part.centroids.pop();
+            }
+
             centroid_stuffing(
                 &self.nodes[part.start..part.end],
                 &mut part.centroids,
@@ -51,7 +58,6 @@ impl super::SimulatedPlushie {
             );
         }
 
-        // stuffing force
         // single loop force
     }
 }

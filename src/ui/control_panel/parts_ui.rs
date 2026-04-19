@@ -15,7 +15,7 @@ pub fn parts_ui(
     let (using_placeholders, part_name, part, all_part_names): (
         bool,
         &mut String,
-        &mut crochet::acl::Part,
+        &mut crochet::force_graph::simulated_plushie::Part,
         Vec<String>,
     ) = match &mut context {
         PartContext::Placeholder { name, part } => {
@@ -38,7 +38,7 @@ pub fn parts_ui(
                 }
             });
 
-        ui.add(egui::Slider::new(&mut part.parameters.centroids, 0..=20).text("Centroids"))
+        ui.add(egui::Slider::new(&mut part.centroids_wanted, 0..=20).text("Centroids"))
             .on_hover_text(CENTROID_NUMBER_HELP);
 
         if ui.button("Select all nodes").clicked() {
@@ -52,11 +52,11 @@ pub fn parts_ui(
 enum PartContext<'a> {
     Placeholder {
         name: String,
-        part: crochet::acl::Part,
+        part: crochet::force_graph::simulated_plushie::Part,
     },
     Active {
         name: &'a mut String,
-        part: &'a mut crochet::acl::Part,
+        part: &'a mut crochet::force_graph::simulated_plushie::Part,
         all_names: Vec<String>,
     },
 }
@@ -80,8 +80,7 @@ impl<'a> PartContext<'a> {
             .collect();
 
         let part = plushie
-            .definition
-            .pattern
+            .plushie
             .parts
             .iter_mut()
             .find(|p| &p.name == active_part);
@@ -99,12 +98,7 @@ impl<'a> PartContext<'a> {
     fn placeholder() -> Self {
         Self::Placeholder {
             name: "(no parts)".into(),
-            part: crochet::acl::Part {
-                name: "(no parts)".into(),
-                instances: 1,
-                actions: Default::default(),
-                parameters: Default::default(),
-            },
+            part: crochet::force_graph::simulated_plushie::Part::mock("(no parts)".into()),
         }
     }
 }

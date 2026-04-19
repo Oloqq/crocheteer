@@ -68,8 +68,9 @@ pub fn simulation_step(
             }
         }
         assert_eq!(centroids_positions.len(), centroid_entities.len());
-        for (centroid, entity) in positions_iter.zip(centroid_entities.iter().skip(need_to_add)) {
-            match transforms.get_mut(*entity) {
+        // zip trims the newly added centroid entity
+        for (centroid, entity) in positions_iter.zip(centroid_entities) {
+            match transforms.get_mut(entity) {
                 Ok(mut trans) => trans.translation = *centroid,
                 Err(_) => {
                     warn!("missing centroid");

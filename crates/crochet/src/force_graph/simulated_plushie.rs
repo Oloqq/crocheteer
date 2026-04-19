@@ -15,7 +15,7 @@ pub struct SimulatedPlushie {
     /// Nodes of the graph.
     nodes: Vec<Node>,
     /// Part data. Part stores node range, not nodes themselves.
-    parts: Vec<Part>,
+    pub parts: Vec<Part>,
     /// Used with OneByOne initializer.
     one_by_one_state: Option<OneByOneState>,
     /// Basis for calculating forces.
@@ -82,5 +82,18 @@ impl SimulatedPlushie {
 
     pub fn get_tensions(&self) -> &Vec<Vec<f32>> {
         &self.tensions
+    }
+}
+
+// TODO this is just for UI, UI has to manage without it
+impl Part {
+    pub fn mock(name: String) -> Self {
+        Self {
+            name,
+            start: 0,
+            end: 0,
+            centroids_wanted: 0,
+            centroids: vec![],
+        }
     }
 }

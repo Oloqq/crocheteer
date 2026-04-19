@@ -17,6 +17,7 @@ pub fn centroid_stuffing(
     recalculate_centroids2(&nodes, centroids, centroid_to_points, hook_size);
 }
 
+// TEMP cleanup old functions
 fn push_and_map2(
     nodes: &[Node],
     centroids: &[Vec3],
