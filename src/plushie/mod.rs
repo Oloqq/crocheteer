@@ -14,8 +14,7 @@ use crate::{
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
         spawning::{
-            adjust_centroid_number, continue_building_one_by_one, ordered_plushie_build,
-            start_building_plushie_one_by_one,
+            continue_building_one_by_one, ordered_plushie_build, start_building_plushie_one_by_one,
         },
         systems::{highlight_selected_nodes_visually, setup_assets},
     },
@@ -56,7 +55,6 @@ impl Plugin for PlushiePlugin {
                 )
                     .ambiguous_with_all()
                     .run_if(ordered_plushie_build),
-                adjust_centroid_number,
                 highlight_selected_nodes_in_pattern,
             )
                 .chain(),

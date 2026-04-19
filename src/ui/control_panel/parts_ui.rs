@@ -39,7 +39,7 @@ pub fn parts_ui(
             });
 
         ui.add(egui::Slider::new(&mut part.parameters.centroids, 0..=20).text("Centroids"))
-            .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids");
+            .on_hover_text(CENTROID_NUMBER_HELP);
 
         if ui.button("Select all nodes").clicked() {
             state
@@ -108,3 +108,5 @@ impl<'a> PartContext<'a> {
         }
     }
 }
+
+const CENTROID_NUMBER_HELP: &'static str = "Number of stuffing centroids. Bigger plushies need more centroids. Changes will be visible only if simulation is running.";

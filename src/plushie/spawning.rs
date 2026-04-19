@@ -4,9 +4,7 @@ use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
 use crate::plushie::DisplayMode;
-use crate::plushie::animation::{
-    Centroid, LinkForce, NewPosition, OriginNode, SingleLoopForce, StuffingForce,
-};
+use crate::plushie::animation::{Centroid, LinkForce, OriginNode, SingleLoopForce, StuffingForce};
 use crate::plushie::data::{Link, OneByOneProgress};
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{
@@ -137,37 +135,6 @@ fn add_link_between(
         .add_children(&[standard_material_child, shader_material_child]);
 }
 
-fn add_centroid(commands: &mut Commands, assets: &PlushieAssets) {
-    commands.spawn((
-        Centroid,
-        Name::new("Centroid"),
-        NewPosition::default(),
-        Mesh3d(assets.node_mesh.clone()),
-        MeshMaterial3d(assets.centroid_material.clone()),
-        Transform::from_scale(Vec3::splat(HOOK_SIZE)), // does not necessarily have to be equal to hook size
-        Pickable::default(),
-    ));
-}
-
-pub fn adjust_centroid_number(
-    mut commands: Commands,
-    state: Res<SimulationState>,
-    existing_centroids: Query<Entity, With<Centroid>>,
-    assets: Res<PlushieAssets>,
-) {
-    let new_count = state.centroids as usize;
-    let existing = existing_centroids.iter().len();
-    if new_count > existing {
-        for _ in 0..(new_count - existing) {
-            add_centroid(&mut commands, &assets);
-        }
-    } else {
-        for entity in existing_centroids.iter().skip(new_count) {
-            commands.entity(entity).despawn();
-        }
-    }
-}
-
 pub fn ordered_plushie_build(mut msgr: MessageReader<BuildPlushieFromPattern>) -> bool {
     msgr.read().last().is_some()
 }
@@ -283,10 +250,6 @@ pub fn build_full_plushie_from_pattern(
                 &display_presets,
             );
         }
-    }
-
-    for _ in 0..state.centroids {
-        add_centroid(&mut commands, &assets);
     }
 
     sync_state.plushie_parsed(msg.acl.clone());
