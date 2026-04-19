@@ -25,6 +25,7 @@ pub fn simulation_step(
     plushie.plushie.step(
         &crochet::force_graph::simulated_plushie::step::SimulationParams {
             force_multiplier: 0.0003 * params.force_multiplier,
+            single_loop_force: params.single_loop_force,
         },
     );
 
@@ -116,7 +117,7 @@ fn add_centroid(commands: &mut Commands, assets: &PlushieAssets, translation: Ve
     let centroid_visual_radius = HOOK_SIZE;
     commands
         .spawn((
-            Centroid { part: 0 },
+            Centroid,
             Name::new("Centroid"),
             NewPosition::default(),
             Mesh3d(assets.node_mesh.clone()),
@@ -126,28 +127,6 @@ fn add_centroid(commands: &mut Commands, assets: &PlushieAssets, translation: Ve
             Pickable::default(),
         ))
         .id()
-}
-
-pub fn compute_single_loop_force(
-    nodes: Query<(&Transform, &GraphNode, &mut SingleLoopForce)>,
-    state: Res<SimulationState>,
-) {
-    if nodes.iter().len() == 0 {
-        return;
-    }
-
-    let input: Vec<_> = nodes
-        .iter()
-        .map(|node| (node.0.translation, node.1.peculiarity))
-        .collect();
-
-    let normals = crochet::force_graph::single_loop::find_normals(&input);
-
-    for ((_, _, mut received_force), calculated_normal) in
-        nodes.into_iter().zip(normals.into_iter())
-    {
-        received_force.0 = calculated_normal * state.single_loop_force;
-    }
 }
 
 pub fn apply_forces(

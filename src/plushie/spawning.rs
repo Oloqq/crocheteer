@@ -1,7 +1,6 @@
-use bevy::platform::collections::HashMap;
 use bevy::prelude::*;
+use crochet::ColorRgb;
 use crochet::force_graph::simulated_plushie::init::OneByOneResult;
-use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
@@ -18,7 +17,7 @@ use crate::state::simulated_plushie::{NodeLookup, PlushieInSimulation};
 use crate::ui::code_editor::highlighter::{HighlightLayer, Highlighter};
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
-use crate::ui::{ConsoleMessage, ConsolePipe, SimulationState};
+use crate::ui::{ConsolePipe, SimulationState};
 
 fn force_display_node_color(peculiarity: Option<crochet::data::Peculiarity>) -> ColorRgb {
     if let Some(peculiarity) = peculiarity {
@@ -79,7 +78,6 @@ fn add_graph_node(
             GraphNode {
                 child_per_display_mode,
                 child_selection_indicator,
-                peculiarity: msg.peculiarity,
                 origin: msg.origin,
                 part_index: msg.part_index,
             },

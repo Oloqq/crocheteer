@@ -2,10 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     cursor_ray::CursorRay,
-    plushie::{
-        animation::Rooted,
-        data::{Dragging, PressHandled, Selected},
-    },
+    plushie::data::{Dragging, PressHandled, Selected},
     state::simulated_plushie::PlushieInSimulation,
     ui::UiUsedInput,
 };
@@ -24,7 +21,6 @@ pub fn on_click_graph_node(
     cursor_ray: Res<CursorRay>,
     camera: Single<&GlobalTransform, With<Camera3d>>,
     ui_used_input: Res<UiUsedInput>,
-    mut plushie: ResMut<PlushieInSimulation>,
 ) {
     if trigger.button != PointerButton::Primary {
         return;

@@ -1,12 +1,6 @@
 use bevy::prelude::*;
 
-use crate::plushie::{
-    animation::{
-        Centroid, Rooted, StuffingForce,
-        data::{LinkForce, NewPosition},
-    },
-    data::{Dragging, GraphNode, Link},
-};
+use crate::plushie::data::{GraphNode, Link};
 
 pub fn update_connections_visually(
     mut connections: Query<(&Link, &mut Transform)>,
@@ -33,32 +27,5 @@ pub fn update_connections_visually(
         };
 
         *line_transform = new_trans;
-    }
-}
-
-pub fn reset_acceleration(
-    mut link_force: Query<&mut LinkForce>,
-    mut stuffing_force: Query<&mut StuffingForce>,
-    mut displacement: Query<&mut NewPosition>,
-) {
-    for mut acc in &mut link_force {
-        acc.0 = Vec3::ZERO;
-    }
-    for mut acc in &mut stuffing_force {
-        acc.0 = Vec3::ZERO;
-    }
-    for mut acc in &mut displacement {
-        acc.0 = Vec3::ZERO;
-    }
-}
-
-pub fn move_centroids(
-    mut query: Query<
-        (&mut Transform, &NewPosition),
-        (With<Centroid>, Without<Dragging>, Without<Rooted>),
-    >,
-) {
-    for (mut transform, new_position) in &mut query {
-        transform.translation = new_position.0;
     }
 }

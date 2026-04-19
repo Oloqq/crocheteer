@@ -1,17 +1,17 @@
 use glam::Vec3;
 
-use crate::force_graph::{centroid_stuffing::centroid_stuffing, link_force::link_forces};
+use crate::force_graph::{
+    centroid_stuffing::centroid_stuffing, link_force::link_forces, single_loop::single_loop_forces,
+};
 
 pub struct SimulationParams {
     pub force_multiplier: f32,
+    pub single_loop_force: f32,
 }
 
 impl super::SimulatedPlushie {
     pub fn step(&mut self, params: &SimulationParams) {
-        // add new nodes for one by one initializer
-        // adjust centroid number
-
-        self.compute_forces();
+        self.compute_forces(params);
 
         for (node, displacement) in self.nodes.iter_mut().zip(&self.displacement) {
             if !node.rooted {
@@ -20,7 +20,7 @@ impl super::SimulatedPlushie {
         }
     }
 
-    fn compute_forces(&mut self) {
+    fn compute_forces(&mut self, params: &SimulationParams) {
         while self.displacement.len() > self.nodes.len() {
             self.displacement.pop();
         }
@@ -58,6 +58,11 @@ impl super::SimulatedPlushie {
             );
         }
 
-        // single loop force
+        // shouldn't it take hook_size into account?
+        single_loop_forces(
+            &self.nodes,
+            params.single_loop_force,
+            &mut self.displacement,
+        );
     }
 }

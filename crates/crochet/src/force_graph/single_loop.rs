@@ -1,7 +1,23 @@
 use glam::Vec3;
 
-use crate::data::Peculiarity;
+use crate::{data::Peculiarity, force_graph::simulated_plushie::Node};
 
+pub fn single_loop_forces(nodes: &[Node], multiplier: f32, displacement: &mut [Vec3]) {
+    for (i, node) in nodes.iter().enumerate() {
+        let (push_plane_spec, direction) = match node.definition.peculiarity {
+            Some(Peculiarity::BLO(x)) => (x, 1.0),
+            Some(Peculiarity::FLO(x)) => (x, -1.0),
+            _ => continue,
+        };
+        let a: Vec3 = nodes[push_plane_spec.0].position;
+        let b: Vec3 = nodes[push_plane_spec.1].position;
+        let c: Vec3 = nodes[push_plane_spec.2].position;
+        let normal = based_on_push_plane(a, b, c, direction);
+        displacement[i] += normal * multiplier;
+    }
+}
+
+// TEMP
 pub fn find_normals(nodes: &[(Vec3, Option<Peculiarity>)]) -> Vec<Vec3> {
     nodes
         .iter()

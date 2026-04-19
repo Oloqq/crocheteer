@@ -28,6 +28,4 @@ pub struct OriginNode;
 pub struct NewPosition(pub Vec3);
 
 #[derive(Component)]
-pub struct Centroid {
-    pub part: usize, // TEMP?
-}
+pub struct Centroid;
