@@ -11,10 +11,10 @@ use crate::plushie::data::{Link, OneByOneProgress};
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{
     data::{AddGraphNode, GraphNode, PlushieAssets},
-    mouse_interactions::on_click,
+    mouse_interactions::on_click_graph_node,
 };
 use crate::state::editor_simulation_sync::EditorSimulationSync;
-use crate::state::simulated_plushie::PlushieInSimulation;
+use crate::state::simulated_plushie::{NodeLookup, PlushieInSimulation};
 use crate::ui::code_editor::highlighter::{HighlightLayer, Highlighter};
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
@@ -39,7 +39,7 @@ fn add_graph_node(
     assets: &mut PlushieAssets,
     materials: &mut Assets<StandardMaterial>,
     presets: &DisplayPresets,
-    index_to_entity: &mut HashMap<usize, Entity>,
+    node_lookup: &mut NodeLookup,
 ) -> Entity {
     let pattern_child: Entity = commands
         .spawn((
@@ -91,10 +91,11 @@ fn add_graph_node(
             SingleLoopForce(Vec3::ZERO),
         ))
         .add_children(&[child_selection_indicator, pattern_child, force_child])
-        .observe(on_click)
+        .observe(on_click_graph_node)
         .id();
 
-    index_to_entity.insert(msg.node_index, entity);
+    node_lookup.index_to_entity.insert(msg.node_index, entity);
+    node_lookup.entity_to_index.insert(entity, msg.node_index);
     entity
 }
 
@@ -193,7 +194,7 @@ pub fn build_plushie_from_pattern(
             }
         };
 
-    let mut index_to_entity = HashMap::new();
+    let mut node_lookup = NodeLookup::new();
 
     let node_entities: Vec<Entity> = simulated_plushie
         .nodes()
@@ -213,7 +214,7 @@ pub fn build_plushie_from_pattern(
                 &mut assets,
                 &mut materials,
                 &display_presets,
-                &mut index_to_entity,
+                &mut node_lookup,
             )
         })
         .collect();
@@ -243,7 +244,7 @@ pub fn build_plushie_from_pattern(
     commands.insert_resource(PlushieInSimulation {
         definition: plushie_def.clone(),
         plushie: simulated_plushie.clone(),
-        index_to_entity,
+        node_lookup,
     });
     sync_state.plushie_parsed(msg.acl.clone());
     state.active_part = Some(simulated_plushie.parts()[0].name.clone());
@@ -292,13 +293,14 @@ pub fn continue_building_one_by_one(
                 &mut assets,
                 &mut materials,
                 &display_presets,
-                &mut plushie.index_to_entity,
+                &mut plushie.node_lookup,
             );
 
             let new_edges = &plushie.plushie.edges().edges_from_node(new_index);
             for target in new_edges.iter() {
                 let a = new_node_entity;
                 let b = plushie
+                    .node_lookup
                     .index_to_entity
                     .get(target)
                     .expect("index to entity should contain lesser-index node");

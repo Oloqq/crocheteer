@@ -1,24 +1,27 @@
 use glam::Vec3;
 
+use crate::{data::Edges, force_graph::simulated_plushie::Node};
+
 /// O(N) assuming close-to-constant edge count in each node
-pub fn link_forces(nodes: &[Vec3], edges: &Vec<Vec<usize>>) -> Vec<Vec3> {
-    let mut forces = vec![Vec3::ZERO; nodes.len()];
-    let desired_stitch_distance = 1.0;
-    for (i, point) in nodes.iter().enumerate() {
-        for neibi in &edges[i] {
+pub(crate) fn link_forces(
+    nodes: &[Node],
+    edges: &Edges,
+    hook_size: f32,
+    displacement: &mut Vec<Vec3>,
+) {
+    for (i, node) in nodes.iter().enumerate() {
+        for neibi in &edges.data()[i] {
             if *neibi >= nodes.len() {
                 continue; // assert that it doesn't happen?
             }
-            let neib = &nodes[*neibi];
-            let diff = point - neib;
-            let force: Vec3 =
-                -diff.normalize() * link_force_magnitude(diff.length(), desired_stitch_distance);
-            forces[i] += force;
-            forces[*neibi] -= force;
+            let neighbor = &nodes[*neibi];
+            let diff = node.position - neighbor.position;
+            let force: Vec3 = -diff.normalize() * link_force_magnitude(diff.length(), hook_size);
+            displacement[i] += force;
+            displacement[*neibi] -= force;
         }
     }
     // sanity!(self.displacement.assert_no_nan("link forces"));
-    forces
 }
 
 /// Attract nodes far away, repel nodes close to each other

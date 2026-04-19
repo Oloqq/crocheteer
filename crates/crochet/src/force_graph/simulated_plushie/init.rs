@@ -41,11 +41,13 @@ impl super::SimulatedPlushie {
             .map(|(def, pos)| Node {
                 definition: def,
                 position: pos,
+                rooted: false,
             })
             .collect();
         let edges = Edges::from_trimmed(definition.edges, nodes.len());
 
         Self {
+            displacement: vec![Vec3::ZERO; nodes.len()],
             edges,
             nodes,
             parts,
@@ -79,6 +81,7 @@ impl super::SimulatedPlushie {
         self.nodes.push(Node {
             definition: obo.full_definition.nodes[new_index].clone(),
             position,
+            rooted: false,
         });
 
         OneByOneResult::Advanced(new_index)

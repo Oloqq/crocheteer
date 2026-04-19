@@ -13,6 +13,31 @@ use crate::{
     ui::SimulationState,
 };
 
+pub fn simulation_step(
+    mut plushie: ResMut<PlushieInSimulation>,
+    params: Res<SimulationState>,
+    mut nodes: Query<&mut Transform, With<GraphNode>>,
+) {
+    plushie.plushie.step(
+        &crochet::force_graph::simulated_plushie::step::SimulationParams {
+            force_multiplier: 0.0003 * params.force_multiplier,
+        },
+    );
+
+    for (i, node) in plushie.plushie.nodes().iter().enumerate() {
+        let Some(entity) = plushie.node_lookup.index_to_entity.get(&i) else {
+            continue;
+        };
+        match nodes.get_mut(*entity) {
+            Ok(mut trans) => trans.translation = node.position,
+            Err(_) => {
+                warn!("missing node in index to entity");
+                continue;
+            }
+        }
+    }
+}
+
 pub fn compute_stuffing_force(
     nodes: Query<(&Transform, &mut StuffingForce, &GraphNode)>,
     centroids: Query<(&Transform, &mut NewPosition, &Centroid)>,

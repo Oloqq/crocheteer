@@ -6,6 +6,7 @@ use crate::{
         animation::Rooted,
         data::{Dragging, PressHandled, Selected},
     },
+    state::simulated_plushie::PlushieInSimulation,
     ui::UiUsedInput,
 };
 
@@ -13,7 +14,7 @@ pub fn adding_to_selection(keyboard: &ButtonInput<KeyCode>) -> bool {
     keyboard.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight])
 }
 
-pub fn on_click(
+pub fn on_click_graph_node(
     trigger: On<Pointer<Press>>,
     mut commands: Commands,
     mut press_handled: ResMut<PressHandled>,
@@ -23,6 +24,7 @@ pub fn on_click(
     cursor_ray: Res<CursorRay>,
     camera: Single<&GlobalTransform, With<Camera3d>>,
     ui_used_input: Res<UiUsedInput>,
+    mut plushie: ResMut<PlushieInSimulation>,
 ) {
     if trigger.button != PointerButton::Primary {
         return;
@@ -55,7 +57,6 @@ pub fn on_click(
         .translation();
     if let Some(dragging) = init_dragging(ball_world_pos) {
         commands.entity(trigger.entity).insert(dragging);
-        commands.entity(trigger.entity).insert(Rooted);
     }
 
     if adding_to_selection(&keyboard) {
@@ -77,13 +78,18 @@ pub fn on_click(
     }
 }
 
-pub fn update_dragging(dragging: Query<(&mut Transform, &Dragging)>, cursor: Res<CursorRay>) {
+pub fn update_dragging(
+    dragging: Query<(&mut Transform, &Dragging, Entity)>,
+    cursor: Res<CursorRay>,
+    mut plushie: ResMut<PlushieInSimulation>,
+) {
     let ray = cursor.0;
-    for (mut tf, drag) in dragging {
+    for (mut tf, drag, entity) in dragging {
         let Some(dist) = ray.intersect_plane(drag.plane_origin, drag.plane) else {
             continue;
         };
         let cursor_on_plane = ray.get_point(dist);
+        plushie.root_node_at(entity, cursor_on_plane + drag.offset);
         tf.translation = cursor_on_plane + drag.offset;
     }
 }
@@ -92,11 +98,12 @@ pub fn stop_dragging(
     mut commands: Commands,
     mouse: Res<ButtonInput<MouseButton>>,
     dragging: Query<Entity, With<Dragging>>,
+    mut plushie: ResMut<PlushieInSimulation>,
 ) {
     if mouse.just_released(MouseButton::Left) {
         for entity in dragging {
             commands.entity(entity).remove::<Dragging>();
-            commands.entity(entity).remove::<Rooted>(); // assumption: only dragging system applies rooted. TODO what to do with multiple systems?
+            plushie.unroot_node(entity);
         }
     }
 }

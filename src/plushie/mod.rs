@@ -16,7 +16,7 @@ use crate::{
         spawning::{continue_building_one_by_one, ordered_plushie_build},
         systems::{highlight_selected_nodes_visually, setup_assets},
     },
-    state::editor_simulation_sync::EditorSimulationSync,
+    state::{editor_simulation_sync::EditorSimulationSync, simulated_plushie::PlushieInSimulation},
     ui::{
         code_editor::{highlighter::HighlightLayer, state::CodeEditorState},
         simulation_is_running, world_input,
@@ -42,7 +42,9 @@ impl Plugin for PlushiePlugin {
             (
                 (deselect_on_empty_press, update_dragging).run_if(world_input),
                 stop_dragging,
-            ),
+            )
+                .chain()
+                .run_if(resource_exists::<PlushieInSimulation>),
         );
         app.add_systems(
             Update,

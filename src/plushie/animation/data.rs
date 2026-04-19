@@ -12,6 +12,7 @@ pub struct StuffingForce(pub Vec3);
 #[derive(Component, Default)]
 pub struct SingleLoopForce(pub Vec3);
 
+// TEMP
 /// Prevents forces from moving the GraphNode
 #[derive(Component)]
 pub struct Rooted;

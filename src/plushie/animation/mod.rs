@@ -16,6 +16,7 @@ use crate::{
         centroids::adjust_centroid_number,
         forces::{
             apply_forces, compute_link_forces, compute_single_loop_force, compute_stuffing_force,
+            simulation_step,
         },
         systems::move_centroids,
     },
@@ -26,20 +27,22 @@ pub struct PlushieAnimationPlugin;
 
 impl Plugin for PlushieAnimationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            FixedUpdate,
-            (
-                (reset_acceleration, adjust_centroid_number),
-                (
-                    compute_link_forces,
-                    compute_stuffing_force,
-                    compute_single_loop_force,
-                ),
-                (apply_forces, move_centroids.ambiguous_with(apply_forces)),
-            )
-                .chain()
-                .run_if(simulation_is_running),
-        );
+        // app.add_systems(
+        //     FixedUpdate,
+        //     (
+        //         (reset_acceleration, adjust_centroid_number),
+        //         simulation_step,
+        //         (
+        //             compute_link_forces,
+        //             compute_stuffing_force,
+        //             compute_single_loop_force,
+        //         ),
+        //         (apply_forces, move_centroids.ambiguous_with(apply_forces)),
+        //     )
+        //         .chain()
+        //         .run_if(simulation_is_running),
+        // );
+        app.add_systems(FixedUpdate, simulation_step.run_if(simulation_is_running));
         app.add_systems(
             PostUpdate,
             update_connections_visually.after(TransformSystems::Propagate),
