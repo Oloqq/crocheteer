@@ -15,6 +15,7 @@ pub struct GraphNode {
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
     pub peculiarity: Option<crochet::data::Peculiarity>,
     pub origin: Option<crochet::Origin>,
+    pub part_index: usize,
 }
 
 /// Link between two GraphNodes, where the yarn exerts LinkForce
@@ -23,7 +24,6 @@ pub struct Link {
     pub node_a: Entity,
     pub node_b: Entity,
     pub tension: f32,
-    // TODO desired length multiplier for virtual nodes at magic ring
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
 }
 
@@ -79,6 +79,7 @@ pub struct AddGraphNode {
     pub color: ColorRgb,
     pub peculiarity: Option<crochet::data::Peculiarity>,
     pub origin: Option<crochet::Origin>,
+    pub part_index: usize,
 }
 
 #[derive(Resource)]

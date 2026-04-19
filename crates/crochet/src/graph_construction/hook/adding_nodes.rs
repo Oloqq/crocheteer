@@ -38,6 +38,7 @@ impl Hook {
             origin,
             peculiarity: None,
             parent: None,
+            part_index: self.now.part,
         });
         self.edges.grow(); // prepare place for the next node
         NodeBuilder {

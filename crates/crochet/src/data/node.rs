@@ -10,6 +10,7 @@ pub struct Node {
     pub origin: Option<Origin>,
     /// Anchor of this node. Used for single loop forces.
     pub(crate) parent: Option<NodeIndex>,
+    pub part_index: usize,
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]

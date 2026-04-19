@@ -41,8 +41,8 @@ struct Moment {
     cursor: usize,
     anchors: Queue<usize>,
     working_on: WorkingLoops,
-    /// Moments on unconnected graphs shall have different number
-    limb_ownerhip: usize,
+    /// Index of the part it is working on
+    part: usize,
 }
 
 /// Responsible for building the graph used in the simulation
@@ -68,7 +68,7 @@ pub struct Hook {
     /// Indexes where parts begin and end. When Hook finishes, first element should be equal to zero, last element should be equal to colors.len()
     part_limits: Vec<usize>,
     /// Used to track unconnected limbs
-    magic_ring_count: usize,
+    part_cursor: usize,
 }
 
 impl Hook {

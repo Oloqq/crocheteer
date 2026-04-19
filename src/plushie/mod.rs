@@ -1,5 +1,5 @@
 mod animation;
-mod data;
+pub mod data;
 mod display_mode;
 mod mouse_interactions;
 mod shaders;

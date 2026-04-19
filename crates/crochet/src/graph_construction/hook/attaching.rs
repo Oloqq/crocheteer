@@ -46,10 +46,10 @@ impl Hook {
             .labels
             .get(label)
             .ok_or_else(|| ErrorCode::UnknownLabel(label.clone()))?;
-        if self.now.limb_ownerhip != target.limb_ownerhip {
+        if self.now.part != target.part {
             // this action connects previously unconnected graphs
             self.part_limits.push(cursor_at);
-            self.merge_limb_ownership(self.now.limb_ownerhip, target.limb_ownerhip);
+            self.merge_limb_ownership(self.now.part, target.part);
         }
 
         let x = self.previous_stitch();
@@ -65,7 +65,7 @@ impl Hook {
             .get(label)
             .ok_or_else(|| ErrorCode::UnknownLabel(label.clone()))?
             .clone();
-        assert!(self.now.limb_ownerhip == target.limb_ownerhip);
+        assert!(self.now.part == target.part);
 
         self.override_previous_node = Some(self.previous_stitch());
         target.cursor = self.now.cursor;
@@ -78,8 +78,8 @@ impl Hook {
 
     fn merge_limb_ownership(&mut self, main: usize, appendix: usize) {
         for (_, moment) in &mut self.labels {
-            if moment.limb_ownerhip == appendix {
-                moment.limb_ownerhip = main;
+            if moment.part == appendix {
+                moment.part = main;
             }
         }
     }
@@ -113,14 +113,14 @@ fn split_moment(
         cursor: source.cursor,
         anchors: ring_a,
         working_on: WorkingLoops::Both,
-        limb_ownerhip: source.limb_ownerhip,
+        part: source.part,
     };
 
     let moment_b = Moment {
         cursor: source.cursor,
         anchors: ring_b.clone(),
         working_on: WorkingLoops::Both,
-        limb_ownerhip: source.limb_ownerhip,
+        part: source.part,
     };
 
     (moment_a, moment_b)
@@ -136,7 +136,7 @@ mod tests {
             cursor: 20,
             anchors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].into(),
             working_on: WorkingLoops::Both,
-            limb_ownerhip: 0,
+            part: 0,
         };
         let (moment_a, moment_b) = split_moment(&mut source, 6, [13, 14, 15, 16].into());
         println!("{:?} {:?}", moment_a.anchors, moment_b.anchors);

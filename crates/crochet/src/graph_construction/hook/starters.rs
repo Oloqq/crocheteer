@@ -20,7 +20,7 @@ impl Hook {
                 cursor: 0,
                 anchors: Default::default(),
                 working_on: WorkingLoops::Both,
-                limb_ownerhip: 0,
+                part: 0,
             },
             labels: HashMap::new(),
             override_previous_node: None,
@@ -29,7 +29,7 @@ impl Hook {
             last_mark: None,
             mark_to_node: HashMap::new(),
             part_limits: vec![],
-            magic_ring_count: 0,
+            part_cursor: 0,
         }
     }
 
@@ -58,9 +58,9 @@ impl Hook {
             anchors: Queue::from_iter(ring_root + 1..=ring_end),
             cursor: ring_end + 1,
             working_on: WorkingLoops::Both,
-            limb_ownerhip: self.magic_ring_count,
+            part: self.part_cursor,
         };
-        self.magic_ring_count += 1;
+        self.part_cursor += 1;
 
         assert_eq!(self.edges.last().unwrap().len(), 0);
     }
