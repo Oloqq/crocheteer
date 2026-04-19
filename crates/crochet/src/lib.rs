@@ -37,8 +37,26 @@ pub fn parse_to_simulated(
     hook_size: f32,
     initializer: &Initializer,
 ) -> Result<SimulatedPlushie, Error> {
-    let definition = parse(acl_source)?;
-    Ok(SimulatedPlushie::from(definition, initializer, hook_size))
+    let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;
+    let hook_params = HookParams {
+        tip_from_fo: true,
+        enforce_counts: false,
+    };
+    let graph = graph_construction::parse(pattern.as_iter(), hook_params)
+        .or_else(|e| Err(Error::Hook(e)))?;
+    assert!(graph.nodes.len() == graph.edges.len());
+
+    let definition = PlushieDef {
+        pattern,
+        edges: graph.edges,
+        nodes: graph.nodes,
+    };
+    Ok(SimulatedPlushie::from(
+        definition,
+        initializer,
+        hook_size,
+        &graph.part_limits,
+    ))
 }
 
 #[cfg(test)]

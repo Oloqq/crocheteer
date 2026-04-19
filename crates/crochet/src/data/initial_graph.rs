@@ -6,7 +6,6 @@ use crate::data::{Edges, Node};
 pub(crate) struct InitialGraph {
     pub edges: Edges,
     pub nodes: Vec<Node>,
-    #[allow(dead_code)]
     pub part_limits: Vec<usize>,
     #[allow(dead_code)]
     pub mark_to_node: HashMap<String, usize>,

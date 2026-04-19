@@ -34,7 +34,12 @@ pub struct OneByOneState {
 }
 
 impl SimulatedPlushie {
-    pub fn from(definition: PlushieDef, initializer: &Initializer, hook_size: f32) -> Self {
+    pub fn from(
+        definition: PlushieDef,
+        initializer: &Initializer,
+        hook_size: f32,
+        part_limits: &Vec<usize>,
+    ) -> Self {
         assert!(definition.nodes.len() == definition.edges.len());
 
         let node_positions = initializer.apply(definition.nodes.len() as u32, hook_size);
@@ -52,7 +57,7 @@ impl SimulatedPlushie {
             }
         };
 
-        let parts = extract_parts(&definition);
+        let parts = extract_parts(&definition, part_limits);
         let nodes = definition
             .nodes
             .into_iter()
@@ -84,29 +89,26 @@ impl SimulatedPlushie {
     }
 }
 
-fn extract_parts(definition: &PlushieDef) -> Vec<Part> {
-    let mut parts: Vec<Part> = definition
+fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {
+    assert_eq!(part_limits.len(), definition.pattern.parts.len());
+    let mut last_end = 0;
+    let mut limits = part_limits.iter();
+
+    let parts: Vec<Part> = definition
         .pattern
         .parts
         .iter()
-        .map(|part_def| Part {
-            name: part_def.name.clone(),
-            node_start: 0,
-            node_end: 0,
-            centroids: part_def.parameters.centroids,
+        .map(|part_def| {
+            let previous_end = last_end;
+            last_end = *limits.next().unwrap();
+            Part {
+                name: part_def.name.clone(),
+                node_start: previous_end,
+                node_end: last_end,
+                centroids: part_def.parameters.centroids,
+            }
         })
         .collect();
-
-    // TODO use part limits from hook
-    for (i, node) in definition.nodes.iter().enumerate() {
-        assert!(node.part_index <= parts.len());
-        if parts[node.part_index].node_start == 0 {
-            parts[node.part_index].node_start = i;
-        }
-        if parts[node.part_index].node_end < i {
-            parts[node.part_index].node_end = i;
-        }
-    }
 
     assert_eq!(parts.len(), definition.pattern.parts.len());
 

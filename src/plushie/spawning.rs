@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use crochet::simulated_plushie::SimulatedPlushie;
 use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
@@ -206,7 +205,9 @@ pub fn build_full_plushie_from_pattern(
     commands.insert_resource(PlushieInSimulation {
         plushie: plushie_def.clone(),
     });
-    let simulated_plushie = SimulatedPlushie::from(plushie_def, &state.initializer, HOOK_SIZE);
+    // TODO merge this and parse_to_plushie_def
+    let simulated_plushie =
+        crochet::parse_to_simulated(&msg.acl, HOOK_SIZE, &state.initializer).unwrap();
 
     let node_entities: Vec<Entity> = simulated_plushie
         .nodes()
@@ -353,7 +354,6 @@ pub fn start_building_plushie_one_by_one(
 pub fn continue_building_one_by_one(
     mut progress: ResMut<OneByOneProgress>,
     mut commands: Commands,
-    // mut node_adder: MessageWriter<AddGraphNode>,
     mut assets: ResMut<PlushieAssets>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     display_presets: Res<DisplayPresets>,
