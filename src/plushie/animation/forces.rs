@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{platform::collections::HashMap, prelude::*};
 
 use crate::{
     HOOK_SIZE,
@@ -7,16 +7,20 @@ use crate::{
             LinkForce, Rooted, StuffingForce,
             data::{Centroid, NewPosition, OriginNode, SingleLoopForce},
         },
-        data::{GraphNode, Link},
+        data::{GraphNode, Link, PlushieAssets},
     },
     state::simulated_plushie::PlushieInSimulation,
     ui::SimulationState,
 };
 
 pub fn simulation_step(
+    mut commands: Commands,
     mut plushie: ResMut<PlushieInSimulation>,
     params: Res<SimulationState>,
-    mut nodes: Query<&mut Transform, With<GraphNode>>,
+    mut transforms: Query<&mut Transform>,
+    existing_centroids: Query<Entity, With<Centroid>>,
+    assets: Res<PlushieAssets>,
+    links: Query<&mut Link>,
 ) {
     plushie.plushie.step(
         &crochet::force_graph::simulated_plushie::step::SimulationParams {
@@ -24,88 +28,103 @@ pub fn simulation_step(
         },
     );
 
-    for (i, node) in plushie.plushie.nodes().iter().enumerate() {
-        let Some(entity) = plushie.node_lookup.index_to_entity.get(&i) else {
-            continue;
-        };
-        match nodes.get_mut(*entity) {
-            Ok(mut trans) => trans.translation = node.position,
-            Err(_) => {
-                warn!("missing node in index to entity");
+    // these blocks in braces could be their own systems
+
+    {
+        // copy node positions
+        for (i, node) in plushie.plushie.nodes().iter().enumerate() {
+            let Some(entity) = plushie.node_lookup.index_to_entity.get(&i) else {
                 continue;
+            };
+            match transforms.get_mut(*entity) {
+                Ok(mut trans) => trans.translation = node.position,
+                Err(_) => {
+                    warn!("missing node");
+                    continue;
+                }
+            }
+        }
+    }
+
+    {
+        // copy centroids
+        let centroids_positions = plushie.plushie.get_centroids();
+        let mut positions_iter = centroids_positions.iter();
+        let mut centroid_entities: Vec<Entity> = existing_centroids.iter().collect();
+        let need_to_add = centroids_positions
+            .len()
+            .saturating_sub(centroid_entities.len());
+        if centroids_positions.len() > centroid_entities.len() {
+            for _ in 0..need_to_add {
+                centroid_entities.push(add_centroid(
+                    &mut commands,
+                    &assets,
+                    *positions_iter.next().unwrap(),
+                ));
+            }
+        } else {
+            while centroid_entities.len() > centroids_positions.len() {
+                commands.entity(centroid_entities.pop().unwrap()).despawn();
+            }
+        }
+        assert_eq!(centroids_positions.len(), centroid_entities.len());
+        for (centroid, entity) in positions_iter.zip(centroid_entities.iter().skip(need_to_add)) {
+            match transforms.get_mut(*entity) {
+                Ok(mut trans) => trans.translation = *centroid,
+                Err(_) => {
+                    warn!("missing centroid");
+                    continue;
+                }
+            }
+        }
+    }
+
+    {
+        // update link tension
+        let mut lookup: HashMap<(Entity, Entity), f32> = HashMap::new();
+        for (index_larger, values) in plushie.plushie.get_tensions().iter().enumerate() {
+            for (edge_index, tension) in values.iter().enumerate() {
+                let a = plushie.node_lookup.index_to_entity.get(&index_larger);
+                let b = plushie
+                    .node_lookup
+                    .index_to_entity
+                    .get(&plushie.plushie.edges().data()[index_larger][edge_index]);
+                match (a, b) {
+                    (Some(a), Some(b)) => {
+                        lookup.insert((*a, *b), *tension);
+                        lookup.insert((*b, *a), *tension);
+                    }
+                    _ => {
+                        warn!("missing node in link lookup");
+                    }
+                }
+            }
+        }
+        for mut link in links {
+            match lookup.get(&(link.node_a, link.node_b)) {
+                Some(tension) => link.tension = *tension,
+                None => {
+                    warn!("missing entry in lookup table")
+                }
             }
         }
     }
 }
 
-pub fn compute_stuffing_force(
-    nodes: Query<(&Transform, &mut StuffingForce, &GraphNode)>,
-    centroids: Query<(&Transform, &mut NewPosition, &Centroid)>,
-    plushie: Res<PlushieInSimulation>,
-) {
-    if nodes.iter().len() == 0 || centroids.iter().len() == 0 {
-        return;
-    }
-
-    let node_positions: Vec<(Vec3, usize)> = nodes
-        .iter()
-        .map(|(transform, _, node)| (transform.translation, node.part_index))
-        .collect();
-    let centroid_positions: Vec<(Vec3, usize)> = centroids
-        .iter()
-        .map(|(transform, _, centroid)| (transform.translation, centroid.part))
-        .collect();
-
-    let (node_movement, centroid_new_positions) =
-        crochet::force_graph::centroid_stuffing::per_part::stuff(
-            &node_positions,
-            &centroid_positions,
-            HOOK_SIZE,
-            plushie.definition.pattern.parts.len(),
-        );
-
-    for ((_, mut received_force, _), calculated_stuffing) in
-        nodes.into_iter().zip(node_movement.into_iter())
-    {
-        received_force.0 = calculated_stuffing;
-    }
-    for ((_, mut new_pos, _), calculated_new_pos) in centroids
-        .into_iter()
-        .zip(centroid_new_positions.into_iter())
-    {
-        new_pos.0 = calculated_new_pos;
-    }
-}
-
-pub fn compute_link_forces(
-    mut accelerations: Query<&mut LinkForce>,
-    links: Query<&mut Link>,
-    transforms: Query<&Transform, With<GraphNode>>,
-) {
-    let desired_stitch_distance = HOOK_SIZE;
-    for mut link in links {
-        let Ok(src_transform) = transforms.get(link.node_a) else {
-            continue;
-        };
-        let Ok(tgt_transform) = transforms.get(link.node_b) else {
-            continue;
-        };
-
-        let diff = &src_transform.translation - &tgt_transform.translation;
-        let magnitude = crochet::force_graph::link_force::link_force_magnitude(
-            diff.length(),
-            desired_stitch_distance,
-        );
-        link.tension = magnitude;
-        let force: Vec3 = -diff.normalize() * magnitude;
-
-        if let Ok(mut acc) = accelerations.get_mut(link.node_a) {
-            acc.0 += force;
-        }
-        if let Ok(mut acc) = accelerations.get_mut(link.node_b) {
-            acc.0 -= force;
-        }
-    }
+fn add_centroid(commands: &mut Commands, assets: &PlushieAssets, translation: Vec3) -> Entity {
+    let centroid_visual_radius = HOOK_SIZE;
+    commands
+        .spawn((
+            Centroid { part: 0 },
+            Name::new("Centroid"),
+            NewPosition::default(),
+            Mesh3d(assets.node_mesh.clone()),
+            MeshMaterial3d(assets.centroid_material.clone()),
+            Transform::from_scale(Vec3::splat(centroid_visual_radius))
+                .with_translation(translation),
+            Pickable::default(),
+        ))
+        .id()
 }
 
 pub fn compute_single_loop_force(

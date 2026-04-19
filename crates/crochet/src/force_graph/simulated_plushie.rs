@@ -22,14 +22,21 @@ pub struct SimulatedPlushie {
     hook_size: f32,
     /// Displacement buffer to avoid reallocation every step.
     displacement: Vec<Vec3>,
+    /// Edge tension buffer to avoid reallocation every step. Mirrors structure of edges.
+    tensions: Vec<Vec<f32>>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Part {
-    pub name: String,
-    node_start: usize,
-    node_end: usize,
-    centroids: usize,
+    pub name: String, // TODO pub?
+    /// First index in nodes that belongs to this part.
+    start: usize,
+    /// Index after the last node that belongs to this part.
+    end: usize,
+    /// Centroids requested for this part.
+    pub centroids_wanted: usize, // TODO UI updating this
+    /// Centroids positions.
+    centroids: Vec<Vec3>,
 }
 
 #[derive(Debug, Clone)]
@@ -64,5 +71,16 @@ impl SimulatedPlushie {
 
     pub fn unroot_node(&mut self, index: usize) {
         self.nodes[index].rooted = false;
+    }
+
+    pub fn get_centroids(&self) -> Vec<Vec3> {
+        self.parts
+            .iter()
+            .flat_map(|p| p.centroids.clone())
+            .collect()
+    }
+
+    pub fn get_tensions(&self) -> &Vec<Vec<f32>> {
+        &self.tensions
     }
 }

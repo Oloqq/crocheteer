@@ -1,6 +1,6 @@
 use glam::Vec3;
 
-use crate::force_graph::link_force::link_forces;
+use crate::force_graph::{centroid_stuffing::centroid_stuffing, link_force::link_forces};
 
 pub struct SimulationParams {
     pub force_multiplier: f32,
@@ -39,7 +39,17 @@ impl super::SimulatedPlushie {
             &self.edges,
             self.hook_size,
             &mut self.displacement,
+            &mut self.tensions,
         );
+
+        for part in &mut self.parts {
+            centroid_stuffing(
+                &self.nodes[part.start..part.end],
+                &mut part.centroids,
+                self.hook_size,
+                &mut self.displacement[part.start..part.end],
+            );
+        }
 
         // stuffing force
         // single loop force

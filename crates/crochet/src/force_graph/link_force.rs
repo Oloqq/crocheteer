@@ -8,17 +8,20 @@ pub(crate) fn link_forces(
     edges: &Edges,
     hook_size: f32,
     displacement: &mut Vec<Vec3>,
+    tensions: &mut Vec<Vec<f32>>,
 ) {
     for (i, node) in nodes.iter().enumerate() {
-        for neibi in &edges.data()[i] {
-            if *neibi >= nodes.len() {
+        for (edge_index, neighbor_index) in edges.data()[i].iter().enumerate() {
+            if *neighbor_index >= nodes.len() {
                 continue; // assert that it doesn't happen?
             }
-            let neighbor = &nodes[*neibi];
+            let neighbor = &nodes[*neighbor_index];
             let diff = node.position - neighbor.position;
-            let force: Vec3 = -diff.normalize() * link_force_magnitude(diff.length(), hook_size);
+            let tension = link_force_magnitude(diff.length(), hook_size);
+            let force: Vec3 = -diff.normalize() * tension;
             displacement[i] += force;
-            displacement[*neibi] -= force;
+            displacement[*neighbor_index] -= force;
+            tensions[i][edge_index] = tension;
         }
     }
     // sanity!(self.displacement.assert_no_nan("link forces"));

@@ -45,6 +45,11 @@ impl super::SimulatedPlushie {
             })
             .collect();
         let edges = Edges::from_trimmed(definition.edges, nodes.len());
+        let tensions = edges
+            .data()
+            .iter()
+            .map(|edgelist| vec![0.0; edgelist.len()])
+            .collect();
 
         Self {
             displacement: vec![Vec3::ZERO; nodes.len()],
@@ -53,6 +58,7 @@ impl super::SimulatedPlushie {
             parts,
             one_by_one_state,
             hook_size,
+            tensions,
         }
     }
 
@@ -69,6 +75,8 @@ impl super::SimulatedPlushie {
         }
 
         self.edges.clone_next_node(&obo.full_definition.edges);
+        self.tensions
+            .push(vec![0.0; self.edges.last().unwrap().len()]);
         assert_eq!(self.edges.len(), new_index + 1);
         let position_basis: Vec<Vec3> = self
             .edges
@@ -130,9 +138,10 @@ fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part>
             last_end = *limits.next().unwrap();
             Part {
                 name: part_def.name.clone(),
-                node_start: previous_end,
-                node_end: last_end,
-                centroids: part_def.parameters.centroids,
+                start: previous_end,
+                end: last_end,
+                centroids_wanted: part_def.parameters.centroids,
+                centroids: vec![Vec3::ZERO], // TEMP
             }
         })
         .collect();

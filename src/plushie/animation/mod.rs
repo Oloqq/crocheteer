@@ -14,10 +14,7 @@ use systems::{reset_acceleration, update_connections_visually};
 use crate::{
     plushie::animation::{
         centroids::adjust_centroid_number,
-        forces::{
-            apply_forces, compute_link_forces, compute_single_loop_force, compute_stuffing_force,
-            simulation_step,
-        },
+        forces::{apply_forces, compute_single_loop_force, simulation_step},
         systems::move_centroids,
     },
     ui::simulation_is_running,
