@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crochet::simulated_plushie::SimulatedPlushie;
 use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
@@ -202,25 +203,22 @@ pub fn build_full_plushie_from_pattern(
     else {
         return Ok(());
     };
+    commands.insert_resource(PlushieInSimulation {
+        plushie: plushie_def.clone(),
+    });
+    let simulated_plushie = SimulatedPlushie::from(plushie_def, &state.initializer, HOOK_SIZE);
 
-    let node_positions = state
-        .initializer
-        .apply(plushie_def.nodes.len() as u32, HOOK_SIZE);
-    assert!(plushie_def.nodes.len() == node_positions.len());
-    assert!(plushie_def.nodes.len() == plushie_def.edges.len());
-
-    let node_entities: Vec<Entity> = plushie_def
-        .nodes
+    let node_entities: Vec<Entity> = simulated_plushie
+        .nodes()
         .iter()
-        .zip(node_positions)
-        .map(|(node, position)| {
+        .map(|node| {
             add_graph_node(
                 &AddGraphNode {
-                    position: position.clone(),
-                    color: node.color,
-                    peculiarity: node.peculiarity,
-                    origin: node.origin,
-                    part_index: node.part_index,
+                    position: node.position.clone(),
+                    color: node.definition.color,
+                    peculiarity: node.definition.peculiarity,
+                    origin: node.definition.origin,
+                    part_index: node.definition.part_index,
                 },
                 &mut commands,
                 &mut assets,
@@ -236,7 +234,7 @@ pub fn build_full_plushie_from_pattern(
     //     commands.entity(*first).insert(OriginNode);
     // }
 
-    for (source, targets) in plushie_def.edges.iter().enumerate() {
+    for (source, targets) in simulated_plushie.edges().iter().enumerate() {
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
@@ -246,17 +244,14 @@ pub fn build_full_plushie_from_pattern(
                 &mut commands,
                 &mut assets,
                 &mut materials,
-                plushie_def.nodes[source].color,
+                simulated_plushie.nodes()[source].definition.color,
                 &display_presets,
             );
         }
     }
 
     sync_state.plushie_parsed(msg.acl.clone());
-    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
-    commands.insert_resource(PlushieInSimulation {
-        plushie: plushie_def,
-    });
+    state.active_part = Some(simulated_plushie.parts()[0].name.clone());
     let _ = pipe.sender.send(ConsoleMessage {
         text: "Built a plushie".into(),
     });
@@ -374,7 +369,7 @@ pub fn continue_building_one_by_one(
     }
 
     let new_node_definition = &plushie_def.nodes[new_index];
-    let new_edges = &plushie_def.edges[new_index];
+    let new_edges = &plushie_def.edges.edges_from_node(new_index);
     let position_basis_entities: Vec<Entity> = new_edges
         .iter()
         .filter_map(|i| progress.node_entities.get(*i).copied())
@@ -399,7 +394,7 @@ pub fn continue_building_one_by_one(
     );
 
     let source = new_index;
-    for target in new_edges {
+    for target in new_edges.iter() {
         let a = new_node_entity;
         let b = progress.node_entities[*target];
         add_link_between(

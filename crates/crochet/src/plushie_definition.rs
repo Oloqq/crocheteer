@@ -1,7 +1,9 @@
-use crate::{acl::PatternAst, data::Node};
+use crate::{
+    acl::PatternAst,
+    data::{Edges, Node},
+};
 
 pub type ColorRgb = [u8; 3];
-pub type Edges = Vec<Vec<usize>>;
 
 #[derive(Debug, Clone)]
 pub struct PlushieDef {

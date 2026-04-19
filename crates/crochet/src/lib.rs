@@ -5,10 +5,14 @@ pub mod acl;
 mod errors;
 mod graph_construction;
 mod plushie_definition;
+pub mod simulated_plushie;
 
 pub use plushie_definition::*;
 
-use crate::{acl::PatternBuilder, errors::Error};
+use crate::{
+    acl::PatternBuilder, errors::Error, force_graph::Initializer,
+    simulated_plushie::SimulatedPlushie,
+};
 use graph_construction::HookParams;
 
 pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
@@ -23,9 +27,18 @@ pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
 
     Ok(PlushieDef {
         pattern,
-        edges: graph.edges.into(),
+        edges: graph.edges,
         nodes: graph.nodes,
     })
+}
+
+pub fn parse_to_simulated(
+    acl_source: &str,
+    hook_size: f32,
+    initializer: &Initializer,
+) -> Result<SimulatedPlushie, Error> {
+    let definition = parse(acl_source)?;
+    Ok(SimulatedPlushie::from(definition, initializer, hook_size))
 }
 
 #[cfg(test)]

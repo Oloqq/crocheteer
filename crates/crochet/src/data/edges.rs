@@ -62,6 +62,14 @@ impl Edges {
     pub fn data(&self) -> &Vec<Vec<usize>> {
         &self.edges
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Vec<usize>> {
+        self.edges.iter()
+    }
+
+    pub fn edges_from_node(&self, i: usize) -> &Vec<usize> {
+        &self.edges[i]
+    }
 }
 
 impl Into<Vec<Vec<usize>>> for Edges {
