@@ -9,32 +9,51 @@ use crate::{
         },
         data::{Dragging, GraphNode, Link},
     },
+    state::simulated_plushie::PlushieInSimulation,
     ui::SimulationState,
 };
 
 pub fn compute_stuffing_force(
-    nodes: Query<(&Transform, &mut StuffingForce), With<GraphNode>>,
-    centroids: Query<(&Transform, &mut NewPosition), With<Centroid>>,
+    nodes: Query<(&Transform, &mut StuffingForce, &GraphNode)>,
+    centroids: Query<(&Transform, &mut NewPosition, &Centroid)>,
+    plushie: Res<PlushieInSimulation>,
 ) {
     if nodes.iter().len() == 0 || centroids.iter().len() == 0 {
         return;
     }
 
-    let node_positions: Vec<Vec3> = nodes.iter().map(|x| x.0.translation).collect();
-    let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
+    // let node_positions: Vec<Vec3> = nodes.iter().map(|x| x.0.translation).collect();
+    // let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
 
-    let (node_movement, centroid_new_positions) = crochet::force_graph::centroid_stuffing::stuff(
-        &node_positions,
-        &centroid_positions,
-        HOOK_SIZE,
-    );
+    // let (node_movement, centroid_new_positions) = crochet::force_graph::centroid_stuffing::stuff(
+    //     &node_positions,
+    //     &centroid_positions,
+    //     HOOK_SIZE,
+    // );
 
-    for ((_, mut received_force), calculated_stuffing) in
+    let node_positions: Vec<(Vec3, usize)> = nodes
+        .iter()
+        .map(|(transform, _, node)| (transform.translation, node.part_index))
+        .collect();
+    let centroid_positions: Vec<(Vec3, usize)> = centroids
+        .iter()
+        .map(|(transform, _, centroid)| (transform.translation, centroid.part))
+        .collect();
+
+    let (node_movement, centroid_new_positions) =
+        crochet::force_graph::centroid_stuffing::per_part::stuff(
+            &node_positions,
+            &centroid_positions,
+            HOOK_SIZE,
+            plushie.plushie.pattern.parts.len(),
+        );
+
+    for ((_, mut received_force, _), calculated_stuffing) in
         nodes.into_iter().zip(node_movement.into_iter())
     {
         received_force.0 = calculated_stuffing;
     }
-    for ((_, mut new_pos), calculated_new_pos) in centroids
+    for ((_, mut new_pos, _), calculated_new_pos) in centroids
         .into_iter()
         .zip(centroid_new_positions.into_iter())
     {

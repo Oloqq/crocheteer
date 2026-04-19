@@ -1,3 +1,5 @@
+use std::ops::Not;
+
 use glam::Vec3;
 
 pub fn stuff(
@@ -35,6 +37,10 @@ fn push_and_map(
 ) -> Vec<Vec<usize>> {
     assert_eq!(nodes.len(), displacement.len());
     let mut centroid_to_points = vec![vec![]; centroids.len()];
+    if centroids.is_empty() {
+        return centroid_to_points;
+    }
+
     for (i_p, point) in nodes.iter().enumerate() {
         let mut closest_i = 0;
         let mut closest = distance(*point, centroids[closest_i]);
@@ -56,12 +62,14 @@ fn recalculate_centroids(
     centroid2points: Vec<Vec<usize>>,
     desired_node_distance: f32,
 ) {
-    centroids.iter_mut().enumerate().for_each(|(i, centroid)| {
+    let mut orphans: Vec<usize> = vec![];
+
+    for (i, centroid) in centroids.iter_mut().enumerate() {
         let mut new_pos: Vec3 = Vec3::ZERO;
         let mut weight_sum = 0.0;
         if centroid2points[i].len() == 0 {
-            // log::warn!("No points assigned to centroid");
-            return;
+            orphans.push(i);
+            continue;
         }
         for point_index in &centroid2points[i] {
             let point = nodes[*point_index];
@@ -75,7 +83,23 @@ fn recalculate_centroids(
             let new_pos: Vec3 = Vec3::from(new_pos / weight_sum);
             *centroid = new_pos
         }
-    });
+    }
+
+    if orphans.len() > 0 {
+        let arbitrary_non_orphan = centroids
+            .iter()
+            .enumerate()
+            .find_map(|(i, pos)| orphans.contains(&i).not().then_some(*pos));
+
+        if let Some(non_orphan_pos) = arbitrary_non_orphan {
+            for orphan in orphans {
+                centroids[orphan] = non_orphan_pos + Vec3::new(desired_node_distance, 0.0, 0.0);
+            }
+        } else {
+            log::warn!("centroids are orphaned and can't be reunited");
+        }
+    }
+
     // sanity!(centroids.assert_no_nan("after recalculating centroids"));
 }
 
@@ -112,4 +136,73 @@ fn push_away(point: &Vec3, repelant: &Vec3, desired_node_distance: f32) -> Vec3 
 pub fn centroid_push_magnitude(distance: f32, desired_node_distance: f32) -> f32 {
     // cutoff distance?
     (desired_node_distance / (distance.powi(2) + desired_node_distance)).min(1.0)
+}
+
+pub mod per_part {
+    use glam::Vec3;
+    pub type PartId = usize;
+    pub type IndexInInput = usize;
+
+    pub fn stuff(
+        node_positions: &[(Vec3, PartId)],
+        centroid_positions: &[(Vec3, PartId)],
+        desired_node_distance: f32,
+        part_count: usize,
+    ) -> (Vec<Vec3>, Vec<Vec3>) {
+        let mut node_movement: Vec<Vec3> = vec![Vec3::ZERO; node_positions.len()];
+        let mut centroid_new_positions: Vec<Vec3> = vec![Vec3::ZERO; centroid_positions.len()];
+
+        let parts = split_by_part(node_positions, centroid_positions, part_count);
+        for part in parts {
+            let (node_movement_part, centroid_positions_part) =
+                super::stuff(&part.nodes, &part.centroids, desired_node_distance);
+
+            assert_eq!(node_movement_part.len(), part.node_indexes.len());
+            for (movement, index) in node_movement_part.iter().zip(part.node_indexes) {
+                node_movement[index] = *movement;
+            }
+
+            assert_eq!(centroid_positions_part.len(), part.centroids_indexes.len());
+            for (new_pos, index) in centroid_positions_part.iter().zip(part.centroids_indexes) {
+                centroid_new_positions[index] = *new_pos;
+            }
+        }
+
+        (node_movement, centroid_new_positions)
+    }
+
+    #[derive(Clone)]
+    pub struct PartView {
+        centroids: Vec<Vec3>,
+        nodes: Vec<Vec3>,
+        node_indexes: Vec<IndexInInput>,
+        centroids_indexes: Vec<IndexInInput>,
+    }
+
+    fn split_by_part(
+        node_positions: &[(Vec3, PartId)],
+        centroid_positions: &[(Vec3, PartId)],
+        part_count: usize,
+    ) -> Vec<PartView> {
+        let mut result = vec![
+            PartView {
+                centroids: vec![],
+                nodes: vec![],
+                node_indexes: vec![],
+                centroids_indexes: vec![]
+            };
+            part_count
+        ];
+
+        for (i, (node_pos, part)) in node_positions.iter().enumerate() {
+            result[*part].nodes.push(*node_pos);
+            result[*part].node_indexes.push(i);
+        }
+        for (i, (pos, part)) in centroid_positions.iter().enumerate() {
+            result[*part].centroids.push(*pos);
+            result[*part].centroids_indexes.push(i);
+        }
+
+        result
+    }
 }

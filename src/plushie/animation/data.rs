@@ -16,9 +16,10 @@ pub struct SingleLoopForce(pub Vec3);
 #[derive(Component)]
 pub struct Rooted;
 
+// TODO how to integrate this with multipart?
+// FIXME this causes unexpected movement on unconnected parts
 /// Keeps the GraphNode in place by translating the rest of the plushie by its accumulated forces
 /// Do not combine with Rooted
-/// TODO how to integrate this with multipart?
 #[derive(Component)]
 pub struct OriginNode;
 
@@ -26,4 +27,6 @@ pub struct OriginNode;
 pub struct NewPosition(pub Vec3);
 
 #[derive(Component)]
-pub struct Centroid;
+pub struct Centroid {
+    pub part: usize,
+}

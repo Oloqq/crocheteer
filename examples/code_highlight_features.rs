@@ -4,6 +4,7 @@ use crocheteer::project::{DisplayMode, Project, SimulationState};
 fn main() {
     let project = Project {
         pattern: indoc::indoc! {"
+            @centroids = 3,
             @param = yes # comment
 
             : MR(6) # trailing comment, no round
@@ -27,7 +28,6 @@ fn main() {
         // TODO initialize in a way that some nodes are already selected
         simulation_config: SimulationState {
             sim_speed: 1.0,
-            centroids: 3,
             display_mode: DisplayMode::Forces,
             ..default()
         },

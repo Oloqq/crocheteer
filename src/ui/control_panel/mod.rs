@@ -76,10 +76,6 @@ pub fn control_panel(
         ui.collapsing("Parts", |mut ui| {
             parts_ui(&mut ui, &mut state, &mut current_plushie);
         });
-
-        // TEMP
-        ui.add(egui::Slider::new(&mut state.centroids, 0..=20).text("Centroids"))
-            .on_hover_text("Number of stuffing centroids. Bigger plushies need more centroids");
     });
 
     // prevent world events on resizing

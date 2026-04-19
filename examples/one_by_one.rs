@@ -4,6 +4,7 @@ use crocheteer::project::{DisplayMode, Project, SimulationState};
 fn main() {
     let project = Project {
         pattern: indoc::indoc! {"
+            @centroids = 3
             : MR(6)
             : 6 inc (12)
             3: 12 sc (12)
@@ -21,7 +22,6 @@ fn main() {
         .into(),
         simulation_config: SimulationState {
             sim_speed: 1.0,
-            centroids: 3,
             single_loop_force: 0.0,
             display_mode: DisplayMode::Forces,
             initializer: crochet::force_graph::Initializer::OneByOne,

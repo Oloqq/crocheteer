@@ -28,7 +28,6 @@ fn main() {
         .into(),
         simulation_config: SimulationState {
             sim_speed: 1.0,
-            centroids: 0,
             single_loop_force: 0.0,
             display_mode: DisplayMode::Forces,
             ..default()
