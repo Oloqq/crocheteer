@@ -16,6 +16,7 @@ pub struct Node {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Peculiarity {
     Locked,
+    /// Virtual node of Fasten-Off
     Tip,
     /// Back-loop-only
     BLO(PointsOnPushPlane),

@@ -232,9 +232,9 @@ pub fn build_full_plushie_from_pattern(
 
     // assumption: first is the virtual node of magic ring
     // this is required because centroids cause creations to drift away is there isn't any anchor point
-    if let Some(first) = node_entities.first() {
-        commands.entity(*first).insert(OriginNode);
-    }
+    // if let Some(first) = node_entities.first() {
+    //     commands.entity(*first).insert(OriginNode);
+    // }
 
     for (source, targets) in plushie_def.edges.iter().enumerate() {
         for target in targets {

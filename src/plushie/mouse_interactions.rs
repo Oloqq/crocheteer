@@ -2,7 +2,10 @@ use bevy::prelude::*;
 
 use crate::{
     cursor_ray::CursorRay,
-    plushie::data::{Dragging, PressHandled, Selected},
+    plushie::{
+        animation::Rooted,
+        data::{Dragging, PressHandled, Selected},
+    },
     ui::UiUsedInput,
 };
 
@@ -52,6 +55,7 @@ pub fn on_click(
         .translation();
     if let Some(dragging) = init_dragging(ball_world_pos) {
         commands.entity(trigger.entity).insert(dragging);
+        commands.entity(trigger.entity).insert(Rooted);
     }
 
     if adding_to_selection(&keyboard) {
@@ -92,6 +96,7 @@ pub fn stop_dragging(
     if mouse.just_released(MouseButton::Left) {
         for entity in dragging {
             commands.entity(entity).remove::<Dragging>();
+            commands.entity(entity).remove::<Rooted>(); // assumption: only dragging system applies rooted. TODO what to do with multiple systems?
         }
     }
 }

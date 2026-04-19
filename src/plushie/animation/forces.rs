@@ -7,7 +7,7 @@ use crate::{
             LinkForce, Rooted, StuffingForce,
             data::{Centroid, NewPosition, OriginNode, SingleLoopForce},
         },
-        data::{Dragging, GraphNode, Link},
+        data::{GraphNode, Link},
     },
     state::simulated_plushie::PlushieInSimulation,
     ui::SimulationState,
@@ -21,15 +21,6 @@ pub fn compute_stuffing_force(
     if nodes.iter().len() == 0 || centroids.iter().len() == 0 {
         return;
     }
-
-    // let node_positions: Vec<Vec3> = nodes.iter().map(|x| x.0.translation).collect();
-    // let centroid_positions: Vec<Vec3> = centroids.iter().map(|x| x.0.translation).collect();
-
-    // let (node_movement, centroid_new_positions) = crochet::force_graph::centroid_stuffing::stuff(
-    //     &node_positions,
-    //     &centroid_positions,
-    //     HOOK_SIZE,
-    // );
 
     let node_positions: Vec<(Vec3, usize)> = nodes
         .iter()
@@ -117,7 +108,7 @@ pub fn compute_single_loop_force(
 pub fn apply_forces(
     mut query: Query<
         (&mut Transform, &LinkForce, &StuffingForce, &SingleLoopForce),
-        (With<GraphNode>, Without<Dragging>, Without<Rooted>), // maybe the dragging system should be inserting the Rooted component instead of double Without?
+        (With<GraphNode>, Without<Rooted>),
     >,
     params: Res<SimulationState>,
     origin_node: Option<Single<Entity, With<OriginNode>>>, // single can't work with multipart
