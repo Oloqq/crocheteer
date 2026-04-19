@@ -70,6 +70,16 @@ impl Edges {
     pub fn edges_from_node(&self, i: usize) -> &Vec<usize> {
         &self.edges[i]
     }
+
+    pub fn from_trimmed(source: Self, cutoff: usize) -> Self {
+        Self {
+            edges: source.edges.into_iter().take(cutoff).collect(),
+        }
+    }
+
+    pub(crate) fn clone_next_node(&mut self, other: &Self) {
+        self.edges.push(other.edges[self.edges.len()].clone());
+    }
 }
 
 impl Into<Vec<Vec<usize>>> for Edges {

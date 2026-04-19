@@ -36,7 +36,7 @@ pub fn compute_stuffing_force(
             &node_positions,
             &centroid_positions,
             HOOK_SIZE,
-            plushie.plushie.pattern.parts.len(),
+            plushie.definition.pattern.parts.len(),
         );
 
     for ((_, mut received_force, _), calculated_stuffing) in

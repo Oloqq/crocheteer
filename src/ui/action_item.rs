@@ -25,7 +25,7 @@ pub fn complete_action_items(
                     return;
                 };
                 let Some(part_index) = plushie
-                    .plushie
+                    .definition
                     .pattern
                     .parts
                     .iter()

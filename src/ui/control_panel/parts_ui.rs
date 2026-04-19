@@ -72,7 +72,7 @@ impl<'a> PartContext<'a> {
         };
 
         let all_names = plushie
-            .plushie
+            .definition
             .pattern
             .parts
             .iter()
@@ -80,7 +80,7 @@ impl<'a> PartContext<'a> {
             .collect();
 
         let part = plushie
-            .plushie
+            .definition
             .pattern
             .parts
             .iter_mut()

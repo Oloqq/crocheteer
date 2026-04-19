@@ -1,10 +1,11 @@
+use bevy::platform::collections::HashMap;
 use bevy::prelude::*;
 use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
 use crate::plushie::DisplayMode;
-use crate::plushie::animation::{Centroid, LinkForce, OriginNode, SingleLoopForce, StuffingForce};
+use crate::plushie::animation::{Centroid, LinkForce, SingleLoopForce, StuffingForce};
 use crate::plushie::data::{Link, OneByOneProgress};
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{
@@ -37,6 +38,7 @@ fn add_graph_node(
     assets: &mut PlushieAssets,
     materials: &mut Assets<StandardMaterial>,
     presets: &DisplayPresets,
+    index_to_entity: &mut HashMap<usize, Entity>,
 ) -> Entity {
     let pattern_child: Entity = commands
         .spawn((
@@ -71,7 +73,7 @@ fn add_graph_node(
     };
     select_displayed_child(commands, &child_per_display_mode, presets.current_mode);
 
-    commands
+    let entity = commands
         .spawn((
             GraphNode {
                 child_per_display_mode,
@@ -89,7 +91,10 @@ fn add_graph_node(
         ))
         .add_children(&[child_selection_indicator, pattern_child, force_child])
         .observe(on_click)
-        .id()
+        .id();
+
+    index_to_entity.insert(msg.node_index, entity);
+    entity
 }
 
 fn add_link_between(
@@ -202,17 +207,16 @@ pub fn build_full_plushie_from_pattern(
     else {
         return Ok(());
     };
-    commands.insert_resource(PlushieInSimulation {
-        plushie: plushie_def.clone(),
-    });
     // TODO merge this and parse_to_plushie_def
     let simulated_plushie =
         crochet::parse_to_simulated(&msg.acl, HOOK_SIZE, &state.initializer).unwrap();
+    let mut index_to_entity = HashMap::new();
 
     let node_entities: Vec<Entity> = simulated_plushie
         .nodes()
         .iter()
-        .map(|node| {
+        .enumerate()
+        .map(|(node_index, node)| {
             add_graph_node(
                 &AddGraphNode {
                     position: node.position.clone(),
@@ -220,11 +224,13 @@ pub fn build_full_plushie_from_pattern(
                     peculiarity: node.definition.peculiarity,
                     origin: node.definition.origin,
                     part_index: node.definition.part_index,
+                    node_index,
                 },
                 &mut commands,
                 &mut assets,
                 &mut materials,
                 &display_presets,
+                &mut index_to_entity,
             )
         })
         .collect();
@@ -250,6 +256,12 @@ pub fn build_full_plushie_from_pattern(
             );
         }
     }
+
+    commands.insert_resource(PlushieInSimulation {
+        definition: plushie_def.clone(),
+        plushie: simulated_plushie.clone(),
+        index_to_entity,
+    });
 
     sync_state.plushie_parsed(msg.acl.clone());
     state.active_part = Some(simulated_plushie.parts()[0].name.clone());
@@ -285,39 +297,39 @@ pub fn start_building_plushie_one_by_one(
     else {
         return Ok(());
     };
+    // TODO merge this and parse_to_plushie_def, remove clones
+    let simulated_plushie =
+        crochet::parse_to_simulated(&msg.acl, HOOK_SIZE, &state.initializer).unwrap();
+    let mut index_to_entity = HashMap::new();
 
-    assert!(plushie_def.nodes.len() == plushie_def.edges.len());
-    assert!(plushie_def.nodes.len() > 0);
-    let starting_nodes_positions = state
-        .initializer
-        .apply(plushie_def.nodes.len() as u32, HOOK_SIZE);
-    let node_count = starting_nodes_positions.len();
-
-    let node_entities: Vec<Entity> = starting_nodes_positions
+    let node_entities: Vec<Entity> = simulated_plushie
+        .nodes()
         .iter()
-        .zip(plushie_def.nodes.iter())
-        .map(|(position, node)| {
+        .enumerate()
+        .map(|(node_index, node)| {
             add_graph_node(
                 &AddGraphNode {
-                    position: position.clone(),
-                    color: node.color,
-                    peculiarity: node.peculiarity,
-                    origin: node.origin,
-                    part_index: node.part_index,
+                    position: node.position.clone(),
+                    color: node.definition.color,
+                    peculiarity: node.definition.peculiarity,
+                    origin: node.definition.origin,
+                    part_index: node.definition.part_index,
+                    node_index,
                 },
                 &mut commands,
                 &mut assets,
                 &mut materials,
                 &display_presets,
+                &mut index_to_entity,
             )
         })
         .collect();
 
-    if let Some(first) = node_entities.first() {
-        commands.entity(*first).insert(OriginNode);
-    }
+    // if let Some(first) = node_entities.first() {
+    //     commands.entity(*first).insert(OriginNode);
+    // }
 
-    for (source, targets) in plushie_def.edges.iter().take(node_count).enumerate() {
+    for (source, targets) in simulated_plushie.edges().iter().enumerate() {
         for target in targets {
             let a = node_entities[source];
             let b = node_entities[*target];
@@ -333,15 +345,14 @@ pub fn start_building_plushie_one_by_one(
         }
     }
 
-    commands.insert_resource(OneByOneProgress {
-        full_plushie: plushie_def.clone(),
-        next: node_count,
-        node_entities,
-    });
-    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
     commands.insert_resource(PlushieInSimulation {
-        plushie: plushie_def,
+        definition: plushie_def.clone(),
+        plushie: simulated_plushie.clone(),
+        index_to_entity,
     });
+
+    commands.insert_resource(OneByOneProgress {});
+    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
     sync_state.plushie_parsed(msg.acl.clone());
 
     let _ = pipe.sender.send(ConsoleMessage {
@@ -352,82 +363,57 @@ pub fn start_building_plushie_one_by_one(
 }
 
 pub fn continue_building_one_by_one(
-    mut progress: ResMut<OneByOneProgress>,
+    mut plushie: ResMut<PlushieInSimulation>,
+    _: Res<OneByOneProgress>,
     mut commands: Commands,
     mut assets: ResMut<PlushieAssets>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
-    existing: Query<&Transform>,
-) {
-    let plushie_def = &progress.full_plushie;
-    let new_index = progress.next;
-    if new_index >= plushie_def.nodes.len() {
-        pipe.write("finished building a plushie one by one");
-        commands.remove_resource::<OneByOneProgress>();
-        return;
-    }
-
-    let new_node_definition = &plushie_def.nodes[new_index];
-    let new_edges = &plushie_def.edges.edges_from_node(new_index);
-    let position_basis_entities: Vec<Entity> = new_edges
-        .iter()
-        .filter_map(|i| progress.node_entities.get(*i).copied())
-        .collect();
-    let position_basis: Vec<Vec3> = position_basis_entities
-        .iter()
-        .filter_map(|entity| existing.get(*entity).map(|e| e.translation).ok())
-        .collect();
-
-    let new_node_entity = add_graph_node(
-        &AddGraphNode {
-            position: new_node_position(&position_basis),
-            color: new_node_definition.color,
-            peculiarity: new_node_definition.peculiarity,
-            origin: new_node_definition.origin,
-            part_index: new_node_definition.part_index,
-        },
-        &mut commands,
-        &mut assets,
-        &mut materials,
-        &display_presets,
-    );
-
-    let source = new_index;
-    for target in new_edges.iter() {
-        let a = new_node_entity;
-        let b = progress.node_entities[*target];
-        add_link_between(
-            a,
-            b,
-            &mut commands,
-            &mut assets,
-            &mut materials,
-            plushie_def.nodes[source].color,
-            &display_presets,
-        );
-    }
-    progress.node_entities.push(new_node_entity);
-    progress.next += 1;
-}
-
-fn new_node_position(based_on: &Vec<Vec3>) -> Vec3 {
-    if based_on.len() == 0 {
-        unreachable!()
-    } else if based_on.len() == 1 {
-        based_on[0] + Vec3::new(0.0, HOOK_SIZE, 0.0)
-    } else {
-        let mut avg = Vec3::ZERO;
-        for base in based_on {
-            avg += base;
+) -> Result {
+    match plushie.plushie.advance_one_by_one() {
+        crochet::simulated_plushie::OneByOneResult::Finished => {
+            pipe.write("finished building a plushie one by one");
+            commands.remove_resource::<OneByOneProgress>();
+            return Ok(());
         }
-        avg /= based_on.len() as f32;
-        // TODO addition of HOOK_SIZE to Y can behave weird if work transitions from building vertically to horizontally
-        // this is needed for now to introduce variation third dimension, otherwise nodes settle on a plane
-        // ideally, implementation would be completely agnostic to orientation
-        // the "working horizontally" thing could be solved by using vector from parent to current node here
-        // the issue of introducing third dimension still needs to be addressed then
-        avg += Vec3::new(0.0, HOOK_SIZE, 0.0);
-        avg
+        crochet::simulated_plushie::OneByOneResult::Advanced(new_index) => {
+            let new_node = &plushie.plushie.nodes()[new_index];
+            let msg = AddGraphNode {
+                position: new_node.position,
+                color: new_node.definition.color,
+                peculiarity: new_node.definition.peculiarity,
+                origin: new_node.definition.origin,
+                node_index: new_index,
+                part_index: new_node.definition.part_index,
+            };
+            let new_node_entity = add_graph_node(
+                &msg,
+                &mut commands,
+                &mut assets,
+                &mut materials,
+                &display_presets,
+                &mut plushie.index_to_entity,
+            );
+
+            let new_edges = &plushie.plushie.edges().edges_from_node(new_index);
+            for target in new_edges.iter() {
+                let a = new_node_entity;
+                let b = plushie
+                    .index_to_entity
+                    .get(target)
+                    .expect("index to entity should contain lesser-index node");
+                add_link_between(
+                    a,
+                    *b,
+                    &mut commands,
+                    &mut assets,
+                    &mut materials,
+                    plushie.plushie.nodes()[new_index].definition.color,
+                    &display_presets,
+                );
+            }
+        }
     }
+    Ok(())
 }

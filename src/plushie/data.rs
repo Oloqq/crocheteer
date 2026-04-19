@@ -79,12 +79,10 @@ pub struct AddGraphNode {
     pub color: ColorRgb,
     pub peculiarity: Option<crochet::data::Peculiarity>,
     pub origin: Option<crochet::acl::Origin>,
+    pub node_index: usize,
     pub part_index: usize,
 }
 
+// TEMP
 #[derive(Resource)]
-pub struct OneByOneProgress {
-    pub full_plushie: PlushieDef,
-    pub node_entities: Vec<Entity>,
-    pub next: usize,
-}
+pub struct OneByOneProgress {}

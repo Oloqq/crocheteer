@@ -73,12 +73,6 @@ impl Plugin for PlushiePlugin {
                 .run_if(resource_exists::<OneByOneProgress>)
                 .run_if(simulation_is_running),
         );
-
-        // {
-        //     app.add_systems(PreStartup, learning::setup_material);
-        //     app.add_systems(Startup, learning::spawn_entities);
-        //     app.add_systems(FixedUpdate, learning::change_prediodically);
-        // }
     }
 }
 

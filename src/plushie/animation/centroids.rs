@@ -15,7 +15,7 @@ pub fn adjust_centroid_number(
     plushie: Res<PlushieInSimulation>,
     assets: Res<PlushieAssets>,
 ) {
-    for (i, part) in plushie.plushie.pattern.parts.iter().enumerate() {
+    for (i, part) in plushie.definition.pattern.parts.iter().enumerate() {
         let new_count = part.parameters.centroids;
         let centroids_of_this_part = existing_centroids.iter().filter(|(_, c)| c.part == i);
         let existing = centroids_of_this_part.clone().count();
