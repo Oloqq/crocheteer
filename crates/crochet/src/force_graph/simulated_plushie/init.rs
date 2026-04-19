@@ -1,47 +1,15 @@
-// TODO split into files
-
 use glam::Vec3;
 
 use crate::{
     PlushieDef,
-    data::{Edges, Node as NodeDefinition},
-    force_graph::Initializer,
+    data::Edges,
+    force_graph::{
+        Initializer,
+        simulated_plushie::{Node, OneByOneState, Part},
+    },
 };
 
-#[derive(Debug, Clone)]
-pub struct SimulatedPlushie {
-    /// Edges of the graph.
-    edges: Edges,
-    /// Nodes of the graph.
-    nodes: Vec<Node>,
-    /// Part data. Part stores node range, not nodes themselves.
-    parts: Vec<Part>,
-    /// Used with OneByOne initializer.
-    one_by_one_state: Option<OneByOneState>,
-    /// Basis for calculating forces
-    hook_size: f32,
-}
-
-#[derive(Debug, Clone)]
-pub struct Part {
-    pub name: String,
-    node_start: usize,
-    node_end: usize,
-    centroids: usize,
-}
-
-#[derive(Debug, Clone)]
-pub struct Node {
-    pub definition: NodeDefinition,
-    pub position: Vec3,
-}
-
-#[derive(Debug, Clone)]
-pub struct OneByOneState {
-    full_definition: PlushieDef,
-}
-
-impl SimulatedPlushie {
+impl super::SimulatedPlushie {
     pub fn from(
         definition: PlushieDef,
         initializer: &Initializer,
@@ -86,18 +54,6 @@ impl SimulatedPlushie {
         }
     }
 
-    pub fn nodes(&self) -> &Vec<Node> {
-        &self.nodes
-    }
-
-    pub fn edges(&self) -> &Edges {
-        &self.edges
-    }
-
-    pub fn parts(&self) -> &Vec<Part> {
-        &self.parts
-    }
-
     pub fn advance_one_by_one(&mut self) -> OneByOneResult {
         let Some(obo) = &self.one_by_one_state else {
             return OneByOneResult::Finished;
@@ -129,6 +85,12 @@ impl SimulatedPlushie {
     }
 }
 
+pub enum OneByOneResult {
+    Advanced(usize),
+    // Waiting, // TODO wait until previous node is relatively stable (configurable)
+    Finished,
+}
+
 fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
     if based_on.len() == 0 {
         // FIXME fails with unconnected parts
@@ -149,12 +111,6 @@ fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
         avg += Vec3::new(0.0, hook_size, 0.0);
         avg
     }
-}
-
-pub enum OneByOneResult {
-    Advanced(usize),
-    // Waiting, // TODO wait until previous node is relatively stable (configurable)
-    Finished,
 }
 
 fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {

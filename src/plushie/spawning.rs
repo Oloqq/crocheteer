@@ -1,5 +1,6 @@
 use bevy::platform::collections::HashMap;
 use bevy::prelude::*;
+use crochet::force_graph::simulated_plushie::init::OneByOneResult;
 use crochet::{ColorRgb, PlushieDef};
 use enum_map::enum_map;
 
@@ -372,12 +373,12 @@ pub fn continue_building_one_by_one(
     pipe: Res<ConsolePipe>,
 ) -> Result {
     match plushie.plushie.advance_one_by_one() {
-        crochet::simulated_plushie::OneByOneResult::Finished => {
+        OneByOneResult::Finished => {
             pipe.write("finished building a plushie one by one");
             commands.remove_resource::<OneByOneProgress>();
             return Ok(());
         }
-        crochet::simulated_plushie::OneByOneResult::Advanced(new_index) => {
+        OneByOneResult::Advanced(new_index) => {
             let new_node = &plushie.plushie.nodes()[new_index];
             let msg = AddGraphNode {
                 position: new_node.position,
