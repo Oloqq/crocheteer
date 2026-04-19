@@ -1,6 +1,5 @@
 use crate::{
-    Origin,
-    acl::{Action, Label},
+    acl::{Action, Label, Origin},
     graph_construction::hook::{
         ErrorCode, Hook, Moment, WorkingLoops, stitch_builder::StitchBuilder,
     },

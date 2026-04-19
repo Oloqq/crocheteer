@@ -1,4 +1,7 @@
-use crate::{Origin, acl::PatternError, graph_construction::HookError};
+use crate::{
+    acl::{Origin, PatternError},
+    graph_construction::HookError,
+};
 use std::fmt::Display;
 
 #[derive(Debug)]

@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use crate::Origin;
 pub use crate::acl::Label;
+use crate::acl::Origin;
 
 #[derive(Debug)]
 pub struct Error {

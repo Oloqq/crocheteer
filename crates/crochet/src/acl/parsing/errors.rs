@@ -3,10 +3,7 @@ use std::fmt::Display;
 pub use ErrorCode::*;
 use pest::iterators::Pair;
 
-use crate::{
-    Origin,
-    acl::{Action, parsing::Rule},
-};
+use crate::acl::{Action, Origin, parsing::Rule};
 
 #[derive(Debug, PartialEq)]
 pub struct Error {

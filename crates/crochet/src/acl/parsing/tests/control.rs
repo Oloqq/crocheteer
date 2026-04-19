@@ -1,5 +1,5 @@
 use crate::{
-    Origin, PatternBuilder,
+    PatternBuilder,
     acl::{Action, parsing::errors::ErrorCode},
 };
 use pretty_assertions::assert_eq;
@@ -78,6 +78,8 @@ mod color {
 }
 
 mod mark {
+    use crate::acl::Origin;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -143,6 +145,8 @@ mod mark {
 }
 
 mod goto {
+    use crate::acl::Origin;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -196,6 +200,8 @@ mod goto {
 }
 
 mod fo {
+    use crate::acl::Origin;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -216,6 +222,8 @@ mod fo {
 }
 
 mod not_expected_outside_round {
+    use crate::acl::Origin;
+
     use super::*;
     use pretty_assertions::assert_eq;
 

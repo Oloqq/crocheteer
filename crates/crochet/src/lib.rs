@@ -6,7 +6,6 @@ mod errors;
 mod graph_construction;
 mod plushie_definition;
 
-pub use acl::{Origin, PatternAst}; // TEMP acl module is exposed already
 pub use plushie_definition::*;
 
 use crate::{acl::PatternBuilder, errors::Error};

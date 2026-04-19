@@ -8,12 +8,9 @@ pub use errors::Error;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::{
-    Origin,
-    acl::{
-        PatternAst,
-        pattern::{ActionWithOrigin, Part},
-    },
+use crate::acl::{
+    Origin, PatternAst,
+    pattern::{ActionWithOrigin, Part},
 };
 
 #[derive(Parser)]

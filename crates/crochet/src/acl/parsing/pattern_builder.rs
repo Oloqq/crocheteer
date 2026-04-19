@@ -1,13 +1,10 @@
 use pest::iterators::{Pair, Pairs};
 
 use super::{CurrentLoop, PatternBuilder, Rule, errors::*};
-use crate::{
-    Origin,
-    acl::{
-        ActionWithOrigin,
-        parsing::action_sequence::ActionSequence,
-        pattern::{Action, Part, PartParameters},
-    },
+use crate::acl::{
+    ActionWithOrigin, Origin,
+    parsing::action_sequence::ActionSequence,
+    pattern::{Action, Part, PartParameters},
 };
 
 pub const ANONYMOUS_PART: &'static str = "anonymous_part";

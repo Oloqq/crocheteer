@@ -14,7 +14,7 @@ pub struct GraphNode {
     pub child_selection_indicator: Entity,
     pub child_per_display_mode: enum_map::EnumMap<DisplayMode, Entity>,
     pub peculiarity: Option<crochet::data::Peculiarity>,
-    pub origin: Option<crochet::Origin>,
+    pub origin: Option<crochet::acl::Origin>,
     pub part_index: usize,
 }
 
@@ -78,7 +78,7 @@ pub struct AddGraphNode {
     pub position: Vec3,
     pub color: ColorRgb,
     pub peculiarity: Option<crochet::data::Peculiarity>,
-    pub origin: Option<crochet::Origin>,
+    pub origin: Option<crochet::acl::Origin>,
     pub part_index: usize,
 }
 

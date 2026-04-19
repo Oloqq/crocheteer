@@ -1,6 +1,5 @@
 use crate::{
-    Origin,
-    acl::Action,
+    acl::{Action, Origin},
     graph_construction::{ErrorCode, hook::Moment},
 };
 
