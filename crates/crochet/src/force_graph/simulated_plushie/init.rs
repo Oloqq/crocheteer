@@ -64,14 +64,14 @@ impl super::SimulatedPlushie {
 
     pub fn advance_one_by_one(&mut self) -> OneByOneResult {
         let Some(obo) = &self.one_by_one_state else {
-            return OneByOneResult::Finished;
+            return OneByOneResult::Noop;
         };
 
         assert!(self.nodes.len() == self.edges.len());
         let new_index = self.nodes.len();
         if new_index >= obo.full_definition.nodes.len() {
             self.one_by_one_state = None;
-            return OneByOneResult::Finished;
+            return OneByOneResult::JustFinished;
         }
 
         self.edges.clone_next_node(&obo.full_definition.edges);
@@ -99,13 +99,13 @@ impl super::SimulatedPlushie {
 pub enum OneByOneResult {
     Advanced(usize),
     // Waiting, // TODO wait until previous node is relatively stable (configurable)
-    Finished,
+    JustFinished,
+    Noop,
 }
 
 fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
     if based_on.len() == 0 {
-        // FIXME fails with unconnected parts
-        unreachable!()
+        starting_position_for_next_part()
     } else if based_on.len() == 1 {
         based_on[0] + Vec3::new(0.0, hook_size, 0.0)
     } else {
@@ -122,6 +122,11 @@ fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
         avg += Vec3::new(0.0, hook_size, 0.0);
         avg
     }
+}
+
+// TODO configurable, with smart defaults. Use obo state
+fn starting_position_for_next_part() -> Vec3 {
+    Vec3::ZERO
 }
 
 fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {
@@ -141,7 +146,7 @@ fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part>
                 start: previous_end,
                 end: last_end,
                 centroids_wanted: part_def.parameters.centroids,
-                centroids: vec![Vec3::ZERO], // TEMP
+                centroids: vec![],
             }
         })
         .collect();

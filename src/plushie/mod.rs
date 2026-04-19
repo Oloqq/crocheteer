@@ -13,7 +13,7 @@ use crate::{
         display_mode::{set_display_mode, setup_display_modes},
         mouse_interactions::{deselect_on_empty_press, stop_dragging, update_dragging},
         shaders::{LinkMaterial, sync_shader_buffer},
-        spawning::{continue_building_one_by_one, ordered_plushie_build},
+        spawning::ordered_plushie_build,
         systems::{highlight_selected_nodes_visually, setup_assets},
     },
     state::{editor_simulation_sync::EditorSimulationSync, simulated_plushie::PlushieInSimulation},
@@ -61,12 +61,6 @@ impl Plugin for PlushiePlugin {
                 set_display_mode, // could this be handled with a resource_changed? UiState is dereferenced mutably every frame so probably not right?
                 sync_shader_buffer.run_if(simulation_is_running),
             ),
-        );
-        app.add_systems(
-            FixedPreUpdate,
-            continue_building_one_by_one
-                .run_if(resource_exists::<OneByOneProgress>)
-                .run_if(simulation_is_running),
         );
     }
 }

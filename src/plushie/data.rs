@@ -81,7 +81,3 @@ pub struct AddGraphNode {
     pub node_index: usize,
     pub part_index: usize,
 }
-
-// TEMP
-#[derive(Resource)]
-pub struct OneByOneProgress {}

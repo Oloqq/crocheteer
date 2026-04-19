@@ -5,8 +5,8 @@ use enum_map::enum_map;
 
 use crate::HOOK_SIZE;
 use crate::plushie::DisplayMode;
-use crate::plushie::animation::{Centroid, LinkForce, SingleLoopForce, StuffingForce};
-use crate::plushie::data::{Link, OneByOneProgress};
+use crate::plushie::animation::Centroid;
+use crate::plushie::data::Link;
 use crate::plushie::display_mode::{DisplayPresets, select_displayed_child};
 use crate::plushie::{
     data::{AddGraphNode, GraphNode, PlushieAssets},
@@ -84,9 +84,6 @@ fn add_graph_node(
             Name::new("GraphNode"),
             Transform::from_translation(msg.position).with_scale(Vec3::splat(HOOK_SIZE)),
             Pickable::default(),
-            LinkForce(Vec3::ZERO),
-            StuffingForce(Vec3::ZERO),
-            SingleLoopForce(Vec3::ZERO),
         ))
         .add_children(&[child_selection_indicator, pattern_child, force_child])
         .observe(on_click_graph_node)
@@ -217,12 +214,6 @@ pub fn build_plushie_from_pattern(
         })
         .collect();
 
-    // assumption: first is the virtual node of magic ring
-    // this is required because centroids cause creations to drift away is there isn't any anchor point
-    // if let Some(first) = node_entities.first() {
-    //     commands.entity(*first).insert(OriginNode);
-    // }
-
     for (source, targets) in simulated_plushie.edges().iter().enumerate() {
         for target in targets {
             let a = node_entities[source];
@@ -252,7 +243,6 @@ pub fn build_plushie_from_pattern(
             pipe.write("Built a plushie");
         }
         crochet::force_graph::Initializer::OneByOne => {
-            commands.insert_resource(OneByOneProgress {});
             pipe.write("Started building a plushie one by one");
         }
     }
@@ -262,18 +252,16 @@ pub fn build_plushie_from_pattern(
 
 pub fn continue_building_one_by_one(
     mut plushie: ResMut<PlushieInSimulation>,
-    _: Res<OneByOneProgress>,
     mut commands: Commands,
     mut assets: ResMut<PlushieAssets>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     display_presets: Res<DisplayPresets>,
     pipe: Res<ConsolePipe>,
-) -> Result {
+) {
     match plushie.plushie.advance_one_by_one() {
-        OneByOneResult::Finished => {
+        OneByOneResult::Noop => (),
+        OneByOneResult::JustFinished => {
             pipe.write("finished building a plushie one by one");
-            commands.remove_resource::<OneByOneProgress>();
-            return Ok(());
         }
         OneByOneResult::Advanced(new_index) => {
             let new_node = &plushie.plushie.nodes()[new_index];
@@ -314,5 +302,4 @@ pub fn continue_building_one_by_one(
             }
         }
     }
-    Ok(())
 }

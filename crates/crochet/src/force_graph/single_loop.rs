@@ -17,24 +17,6 @@ pub fn single_loop_forces(nodes: &[Node], multiplier: f32, displacement: &mut [V
     }
 }
 
-// TEMP
-pub fn find_normals(nodes: &[(Vec3, Option<Peculiarity>)]) -> Vec<Vec3> {
-    nodes
-        .iter()
-        .map(|(_, peculiarity)| {
-            let (push_plane_spec, direction) = match peculiarity {
-                Some(Peculiarity::BLO(x)) => (x, 1.0),
-                Some(Peculiarity::FLO(x)) => (x, -1.0),
-                _ => return Vec3::ZERO,
-            };
-            let a: Vec3 = nodes[push_plane_spec.0].0;
-            let b: Vec3 = nodes[push_plane_spec.1].0;
-            let c: Vec3 = nodes[push_plane_spec.2].0;
-            based_on_push_plane(a, b, c, direction)
-        })
-        .collect()
-}
-
 fn based_on_push_plane(a: Vec3, b: Vec3, c: Vec3, direction: f32) -> Vec3 {
     let ab = b - a;
     let ac = c - a;

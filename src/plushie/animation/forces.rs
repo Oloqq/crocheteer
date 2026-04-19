@@ -3,11 +3,8 @@ use bevy::{platform::collections::HashMap, prelude::*};
 use crate::{
     HOOK_SIZE,
     plushie::{
-        animation::{
-            LinkForce, Rooted, StuffingForce,
-            data::{Centroid, NewPosition, OriginNode, SingleLoopForce},
-        },
-        data::{GraphNode, Link, PlushieAssets},
+        animation::data::Centroid,
+        data::{Link, PlushieAssets},
     },
     state::simulated_plushie::PlushieInSimulation,
     ui::SimulationState,
@@ -119,7 +116,6 @@ fn add_centroid(commands: &mut Commands, assets: &PlushieAssets, translation: Ve
         .spawn((
             Centroid,
             Name::new("Centroid"),
-            NewPosition::default(),
             Mesh3d(assets.node_mesh.clone()),
             MeshMaterial3d(assets.centroid_material.clone()),
             Transform::from_scale(Vec3::splat(centroid_visual_radius))
@@ -129,37 +125,25 @@ fn add_centroid(commands: &mut Commands, assets: &PlushieAssets, translation: Ve
         .id()
 }
 
-pub fn apply_forces(
-    mut query: Query<
-        (&mut Transform, &LinkForce, &StuffingForce, &SingleLoopForce),
-        (With<GraphNode>, Without<Rooted>),
-    >,
-    params: Res<SimulationState>,
-    origin_node: Option<Single<Entity, With<OriginNode>>>, // single can't work with multipart
-) {
-    let force_multiplier = 0.0003 * params.force_multiplier;
-    let origin_node_displacement = origin_node
-        .and_then(|origin_entity| query.get(*origin_entity).ok())
-        .map(|(_, link_force, stuffing_force, _single_loop)| {
-            displacement(link_force.0, stuffing_force.0, Vec3::ZERO, force_multiplier)
-        })
-        .unwrap_or(Vec3::ZERO);
+// pub fn apply_forces(
+//     mut query: Query<(&mut Transform), (With<GraphNode>, Without<Rooted>)>,
+//     params: Res<SimulationState>,
+//     origin_node: Option<Single<Entity, With<OriginNode>>>, // single can't work with multipart
+// ) {
+//     let force_multiplier = 0.0003 * params.force_multiplier;
+//     let origin_node_displacement = origin_node
+//         .and_then(|origin_entity| query.get(*origin_entity).ok())
+//         .map(|(_, link_force, stuffing_force, _single_loop)| {
+//             displacement(link_force.0, stuffing_force.0, Vec3::ZERO, force_multiplier)
+//         })
+//         .unwrap_or(Vec3::ZERO);
 
-    for (mut transform, link_force, stuffing_force, single_loop_force) in &mut query {
-        transform.translation += displacement(
-            link_force.0,
-            stuffing_force.0,
-            single_loop_force.0,
-            force_multiplier,
-        ) - origin_node_displacement;
-    }
-}
-
-fn displacement(
-    link_force: Vec3,
-    stuffing_force: Vec3,
-    single_loop_force: Vec3,
-    force_multiplier: f32,
-) -> Vec3 {
-    (link_force + stuffing_force + single_loop_force) * force_multiplier
-}
+//     for (mut transform, link_force, stuffing_force, single_loop_force) in &mut query {
+//         transform.translation += displacement(
+//             link_force.0,
+//             stuffing_force.0,
+//             single_loop_force.0,
+//             force_multiplier,
+//         ) - origin_node_displacement;
+//     }
+// }

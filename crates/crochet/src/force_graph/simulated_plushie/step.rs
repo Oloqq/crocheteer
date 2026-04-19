@@ -13,6 +13,7 @@ impl super::SimulatedPlushie {
     pub fn step(&mut self, params: &SimulationParams) {
         self.compute_forces(params);
 
+        // TODO translation by root (per part)
         for (node, displacement) in self.nodes.iter_mut().zip(&self.displacement) {
             if !node.rooted {
                 node.position += displacement * params.force_multiplier;
@@ -43,6 +44,11 @@ impl super::SimulatedPlushie {
         );
 
         for part in &mut self.parts {
+            if part.start >= self.nodes.len() {
+                continue;
+            }
+            let end_with_obo = part.end.min(self.nodes.len());
+
             while part.centroids.len() < part.centroids_wanted {
                 part.centroids.push(Vec3::ZERO);
             }
@@ -51,10 +57,10 @@ impl super::SimulatedPlushie {
             }
 
             centroid_stuffing(
-                &self.nodes[part.start..part.end],
+                &self.nodes[part.start..end_with_obo],
                 &mut part.centroids,
                 self.hook_size,
-                &mut self.displacement[part.start..part.end],
+                &mut self.displacement[part.start..end_with_obo],
             );
         }
 
