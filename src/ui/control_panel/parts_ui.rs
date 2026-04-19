@@ -11,19 +11,29 @@ pub fn parts_ui(
     state: &mut SimulationState,
     current_plushie: &mut Option<ResMut<PlushieInSimulation>>,
 ) {
-    let (mut placeholder_name, mut placeholder_part) = placeholders();
-    let (using_placeholders, part_name, part, part_names) = get_part_to_configure(
-        &mut placeholder_name,
-        &mut placeholder_part,
-        &mut state.active_part,
-        current_plushie,
-    );
+    let mut context = PartContext::from_state(&mut state.active_part, current_plushie);
+    let (using_placeholders, part_name, part, all_part_names): (
+        bool,
+        &mut String,
+        &mut crochet::acl::Part,
+        Vec<String>,
+    ) = match &mut context {
+        PartContext::Placeholder { name, part } => {
+            let all_names = vec![name.clone()];
+            (true, name, part, all_names)
+        }
+        PartContext::Active {
+            name,
+            part,
+            all_names,
+        } => (false, name, part, all_names.clone()),
+    };
 
     ui.add_enabled_ui(!using_placeholders, |ui| {
         egui::ComboBox::new("part_selection", "Part")
             .selected_text(part_name.as_str())
             .show_ui(ui, |ui| {
-                for part_option in &part_names {
+                for part_option in &all_part_names {
                     ui.selectable_value(part_name, part_option.into(), part_option);
                 }
             });
@@ -39,62 +49,62 @@ pub fn parts_ui(
     });
 }
 
-fn get_part_to_configure<'a>(
-    placeholder_name: &'a mut String,
-    placeholder_part: &'a mut crochet::acl::Part,
-    active_part: &'a mut Option<String>,
-    current_plushie: &'a mut Option<ResMut<PlushieInSimulation>>,
-) -> (
-    bool,
-    &'a mut String,
-    &'a mut crochet::acl::Part,
-    Vec<String>,
-) {
-    let using_placeholders = active_part.is_none() || current_plushie.is_none();
+enum PartContext<'a> {
+    Placeholder {
+        name: String,
+        part: crochet::acl::Part,
+    },
+    Active {
+        name: &'a mut String,
+        part: &'a mut crochet::acl::Part,
+        all_names: Vec<String>,
+    },
+}
 
-    let part_names = match current_plushie {
-        Some(plushie) => plushie
+impl<'a> PartContext<'a> {
+    fn from_state(
+        active_part: &'a mut Option<String>,
+        current_plushie: &'a mut Option<ResMut<PlushieInSimulation>>,
+    ) -> Self {
+        let (active_part, plushie) = match (active_part.as_mut(), current_plushie.as_mut()) {
+            (Some(name), Some(p)) => (name, p),
+            _ => return Self::placeholder(),
+        };
+
+        let all_names = plushie
             .plushie
             .pattern
             .parts
             .iter()
             .map(|p| p.name.clone())
-            .collect(),
-        None => vec![placeholder_name.clone()],
-    };
+            .collect();
 
-    let ui_part_name: &mut String = if let Some(active_part) = active_part.as_mut() {
-        active_part
-    } else {
-        placeholder_name
-    };
+        let part = plushie
+            .plushie
+            .pattern
+            .parts
+            .iter_mut()
+            .find(|p| &p.name == active_part);
 
-    let real_parts: Option<&mut Vec<crochet::acl::Part>> = current_plushie
-        .as_mut()
-        .map(|plushie| &mut plushie.plushie.pattern.parts);
-
-    let ui_part = if let Some(r) = real_parts {
-        let it: Option<&mut crochet::acl::Part> = r.iter_mut().find(|p| &p.name == ui_part_name);
-        if let Some(a) = it {
-            a
-        } else {
-            placeholder_part
+        match part {
+            Some(part) => Self::Active {
+                name: active_part,
+                part,
+                all_names,
+            },
+            None => Self::placeholder(),
         }
-    } else {
-        placeholder_part
-    };
+    }
 
-    (using_placeholders, ui_part_name, ui_part, part_names)
-}
-
-fn placeholders() -> (String, crochet::acl::Part) {
-    (
-        "(no parts)".into(),
-        crochet::acl::Part {
+    fn placeholder() -> Self {
+        Self::Placeholder {
             name: "(no parts)".into(),
-            instances: 1,
-            actions: Default::default(),
-            parameters: Default::default(),
-        },
-    )
+            part: crochet::acl::Part {
+                name: "(no parts)".into(),
+                instances: 1,
+                actions: Default::default(),
+                parameters: Default::default(),
+            },
+        }
+    }
 }
