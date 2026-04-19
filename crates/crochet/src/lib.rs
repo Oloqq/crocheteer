@@ -2,7 +2,7 @@ pub mod data;
 pub mod force_graph;
 
 pub mod acl;
-mod errors;
+pub mod errors;
 mod graph_construction;
 mod plushie_definition;
 
@@ -14,28 +14,11 @@ use crate::{
 };
 use graph_construction::HookParams;
 
-pub fn parse(acl_source: &str) -> Result<PlushieDef, Error> {
-    let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;
-    let hook_params = HookParams {
-        tip_from_fo: true,
-        enforce_counts: false,
-    };
-    let graph = graph_construction::parse(pattern.as_iter(), hook_params)
-        .or_else(|e| Err(Error::Hook(e)))?;
-    assert!(graph.nodes.len() == graph.edges.len());
-
-    Ok(PlushieDef {
-        pattern,
-        edges: graph.edges,
-        nodes: graph.nodes,
-    })
-}
-
-pub fn parse_to_simulated(
+pub fn parse(
     acl_source: &str,
     hook_size: f32,
     initializer: &Initializer,
-) -> Result<SimulatedPlushie, Error> {
+) -> Result<(PlushieDef, SimulatedPlushie), Error> {
     let pattern = PatternBuilder::parse(acl_source).or_else(|e| Err(Error::Pattern(e)))?;
     let hook_params = HookParams {
         tip_from_fo: true,
@@ -50,11 +33,9 @@ pub fn parse_to_simulated(
         edges: graph.edges,
         nodes: graph.nodes,
     };
-    Ok(SimulatedPlushie::from(
-        definition,
-        initializer,
-        hook_size,
-        &graph.part_limits,
+    Ok((
+        definition.clone(),
+        SimulatedPlushie::from(definition, initializer, hook_size, &graph.part_limits),
     ))
 }
 

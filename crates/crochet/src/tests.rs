@@ -1,12 +1,28 @@
 use indoc::indoc;
 
-use crate::{acl::Action, errors::Error, graph_construction::ErrorCode, parse};
+use crate::{
+    PlushieDef, acl::Action, errors::Error, force_graph::simulated_plushie::SimulatedPlushie,
+    graph_construction::ErrorCode, parse,
+};
 use pretty_assertions::assert_eq;
+
+fn default_parse(acl: &str) -> Result<(PlushieDef, SimulatedPlushie), Error> {
+    parse(
+        acl,
+        1.0,
+        &crate::force_graph::Initializer::RegularCylinder(12),
+    )
+}
 
 #[test]
 fn test_empty_pattern_no_panic() {
     let acl = "";
-    let _ = parse(acl);
+    let _ = parse(
+        acl,
+        1.0,
+        &crate::force_graph::Initializer::RegularCylinder(12),
+    );
+    let _ = parse(acl, 1.0, &crate::force_graph::Initializer::OneByOne);
 }
 
 #[test]
@@ -16,8 +32,9 @@ fn test_anonymous_part() {
         : FLO, 6 sc
         FO
     "};
-    let plushie = parse(acl).unwrap();
-    assert_eq!(plushie.nodes.len(), 14); // 12 + MR root + FO tip
+    let (plushie_def, plushie) = default_parse(acl).unwrap();
+    assert_eq!(plushie_def.nodes.len(), 14); // 12 + MR root + FO tip
+    assert_eq!(plushie.nodes().len(), 14); // 12 + MR root + FO tip
     // assert_eq!(plushie.parts.len(), 1);
     // assert_eq!(plushie.parts[0].name, ANONYMOUS_PART);
 }
@@ -30,10 +47,11 @@ fn test_named_part() {
         : FLO, 6 sc
         FO
     "};
-    let plushie = parse(acl).unwrap();
-    assert_eq!(plushie.nodes.len(), 14); // 12 + MR root + FO tip
+    let (plushie_def, plushie) = default_parse(acl).unwrap();
+    assert_eq!(plushie_def.nodes.len(), 14); // 12 + MR root + FO tip
+    assert_eq!(plushie.nodes().len(), 14); // 12 + MR root + FO tip
     assert_eq!(
-        plushie.pattern.parts[0].actions.last().unwrap().action,
+        plushie_def.pattern.parts[0].actions.last().unwrap().action,
         Action::EndPart
     );
     // assert_eq!(plushie.parts.len(), 1);
@@ -46,7 +64,7 @@ fn test_first_stitch_must_be_mr() {
         == Part ==
         : sc
     "};
-    let err = parse(acl).unwrap_err();
+    let err = default_parse(acl).unwrap_err();
     let Error::Hook(err) = err else {
         panic!();
     };
@@ -62,7 +80,7 @@ fn test_first_stitch_must_be_mr() {
         == Part2 ==
         : sc
     "};
-    let err = parse(acl).unwrap_err();
+    let err = default_parse(acl).unwrap_err();
     let Error::Hook(err) = err else {
         panic!();
     };
@@ -83,10 +101,11 @@ fn test_two_parts() {
         : FLO, 6 sc
         FO
     "};
-    let plushie = parse(acl).unwrap();
-    assert_eq!(plushie.nodes.len(), 28); // 2*(12 + MR root + FO tip)
+    let (plushie_def, plushie) = default_parse(acl).unwrap();
+    assert_eq!(plushie_def.nodes.len(), 28); // 2*(12 + MR root + FO tip)
+    assert_eq!(plushie.nodes().len(), 28); // 2*(12 + MR root + FO tip)
     assert_eq!(
-        plushie
+        plushie_def
             .nodes
             .iter()
             .take(14)
@@ -95,7 +114,7 @@ fn test_two_parts() {
         vec![0; 14]
     );
     assert_eq!(
-        plushie
+        plushie_def
             .nodes
             .iter()
             .skip(14)
@@ -103,7 +122,7 @@ fn test_two_parts() {
             .collect::<Vec<_>>(),
         vec![1; 14]
     );
-    assert_eq!(plushie.pattern.parts.len(), 2);
-    assert_eq!(plushie.pattern.parts[0].name, "Part1");
-    assert_eq!(plushie.pattern.parts[1].name, "Part2");
+    assert_eq!(plushie_def.pattern.parts.len(), 2);
+    assert_eq!(plushie_def.pattern.parts[0].name, "Part1");
+    assert_eq!(plushie_def.pattern.parts[1].name, "Part2");
 }

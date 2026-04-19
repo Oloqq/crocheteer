@@ -154,37 +154,20 @@ fn despawn_old_plushie(
     }
 }
 
-fn parse_to_plushie_def(
-    acl_source: &str,
+fn report_error(
+    error: crochet::errors::Error,
     code_highlighter: &mut Highlighter,
     console_pipe: &ConsolePipe,
-) -> Option<PlushieDef> {
-    let plushie_def = match crochet::parse(acl_source) {
-        Ok(p) => p,
-        Err(error) => {
-            let _ = console_pipe.sender.send(ConsoleMessage {
-                text: format!("Error in pattern: {}", error),
-            });
-            // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
-            // TODO stop displaying error when text changes
-            if let Some(origin) = error.origin() {
-                code_highlighter.set(HighlightLayer::RedUnderline, vec![(origin.as_range())]);
-            }
-            return None;
-        }
-    };
-
-    if plushie_def.nodes.len() == 0 {
-        let _ = console_pipe.sender.send(ConsoleMessage {
-            text: format!("Produced 0 nodes"),
-        });
-        return None;
+) {
+    console_pipe.write(format!("Error in pattern: {}", error).as_str());
+    // TODO display the error on hover (see poc in code_editor/mod.rs egui::Id::new("token_tooltip"))
+    // TODO stop displaying error when text changes
+    if let Some(origin) = error.origin() {
+        code_highlighter.set(HighlightLayer::RedUnderline, vec![(origin.as_range())]);
     }
-
-    Some(plushie_def)
 }
 
-pub fn build_full_plushie_from_pattern(
+pub fn build_plushie_from_pattern(
     mut msgr: MessageReader<BuildPlushieFromPattern>,
     mut commands: Commands,
     mut assets: ResMut<PlushieAssets>,
@@ -199,18 +182,17 @@ pub fn build_full_plushie_from_pattern(
     let Some(msg) = msgr.read().last() else {
         return Ok(());
     };
-    match state.initializer {
-        crochet::force_graph::Initializer::RegularCylinder(_) => (),
-        crochet::force_graph::Initializer::OneByOne => return Ok(()),
-    }
+
     despawn_old_plushie(&mut commands, existing_plushie_entities);
-    let Some(plushie_def) = parse_to_plushie_def(&msg.acl, &mut code_editor.highlighter, &pipe)
-    else {
-        return Ok(());
-    };
-    // TODO merge this and parse_to_plushie_def
-    let simulated_plushie =
-        crochet::parse_to_simulated(&msg.acl, HOOK_SIZE, &state.initializer).unwrap();
+    let (plushie_def, simulated_plushie) =
+        match crochet::parse(&msg.acl, HOOK_SIZE, &state.initializer) {
+            Ok(x) => x,
+            Err(err) => {
+                report_error(err, &mut code_editor.highlighter, &pipe);
+                return Ok(());
+            }
+        };
+
     let mut index_to_entity = HashMap::new();
 
     let node_entities: Vec<Entity> = simulated_plushie
@@ -263,102 +245,18 @@ pub fn build_full_plushie_from_pattern(
         plushie: simulated_plushie.clone(),
         index_to_entity,
     });
-
     sync_state.plushie_parsed(msg.acl.clone());
     state.active_part = Some(simulated_plushie.parts()[0].name.clone());
-    let _ = pipe.sender.send(ConsoleMessage {
-        text: "Built a plushie".into(),
-    });
 
-    Ok(())
-}
-
-pub fn start_building_plushie_one_by_one(
-    mut msgr: MessageReader<BuildPlushieFromPattern>,
-    mut commands: Commands,
-    mut assets: ResMut<PlushieAssets>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    mut sync_state: ResMut<EditorSimulationSync>,
-    mut code_editor: ResMut<CodeEditorState>,
-    mut state: ResMut<SimulationState>,
-    display_presets: Res<DisplayPresets>,
-    pipe: Res<ConsolePipe>,
-    existing_plushie_entities: Query<Entity, Or<(With<GraphNode>, With<Link>, With<Centroid>)>>,
-) -> Result {
-    let Some(msg) = msgr.read().last() else {
-        return Ok(());
-    };
     match state.initializer {
-        crochet::force_graph::Initializer::OneByOne => (),
-        crochet::force_graph::Initializer::RegularCylinder(_) => return Ok(()),
-    }
-
-    despawn_old_plushie(&mut commands, existing_plushie_entities);
-    let Some(plushie_def) = parse_to_plushie_def(&msg.acl, &mut code_editor.highlighter, &pipe)
-    else {
-        return Ok(());
-    };
-    // TODO merge this and parse_to_plushie_def, remove clones
-    let simulated_plushie =
-        crochet::parse_to_simulated(&msg.acl, HOOK_SIZE, &state.initializer).unwrap();
-    let mut index_to_entity = HashMap::new();
-
-    let node_entities: Vec<Entity> = simulated_plushie
-        .nodes()
-        .iter()
-        .enumerate()
-        .map(|(node_index, node)| {
-            add_graph_node(
-                &AddGraphNode {
-                    position: node.position.clone(),
-                    color: node.definition.color,
-                    peculiarity: node.definition.peculiarity,
-                    origin: node.definition.origin,
-                    part_index: node.definition.part_index,
-                    node_index,
-                },
-                &mut commands,
-                &mut assets,
-                &mut materials,
-                &display_presets,
-                &mut index_to_entity,
-            )
-        })
-        .collect();
-
-    // if let Some(first) = node_entities.first() {
-    //     commands.entity(*first).insert(OriginNode);
-    // }
-
-    for (source, targets) in simulated_plushie.edges().iter().enumerate() {
-        for target in targets {
-            let a = node_entities[source];
-            let b = node_entities[*target];
-            add_link_between(
-                a,
-                b,
-                &mut commands,
-                &mut assets,
-                &mut materials,
-                plushie_def.nodes[source].color,
-                &display_presets,
-            );
+        crochet::force_graph::Initializer::RegularCylinder(_) => {
+            pipe.write("Built a plushie");
+        }
+        crochet::force_graph::Initializer::OneByOne => {
+            commands.insert_resource(OneByOneProgress {});
+            pipe.write("Started building a plushie one by one");
         }
     }
-
-    commands.insert_resource(PlushieInSimulation {
-        definition: plushie_def.clone(),
-        plushie: simulated_plushie.clone(),
-        index_to_entity,
-    });
-
-    commands.insert_resource(OneByOneProgress {});
-    state.active_part = Some(plushie_def.pattern.parts[0].name.clone());
-    sync_state.plushie_parsed(msg.acl.clone());
-
-    let _ = pipe.sender.send(ConsoleMessage {
-        text: "Started building a plushie one by one".into(),
-    });
 
     Ok(())
 }
