@@ -83,7 +83,7 @@ impl<'a> PartContext<'a> {
             .plushie
             .parts
             .iter_mut()
-            .find(|p| &p.name == active_part);
+            .find(|p| p.name() == active_part);
 
         match part {
             Some(part) => Self::Active {

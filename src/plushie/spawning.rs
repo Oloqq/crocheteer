@@ -236,7 +236,7 @@ pub fn build_plushie_from_pattern(
         node_lookup,
     });
     sync_state.plushie_parsed(msg.acl.clone());
-    state.active_part = Some(simulated_plushie.parts()[0].name.clone());
+    state.active_part = Some(simulated_plushie.parts()[0].name().clone());
 
     match state.initializer {
         crochet::force_graph::Initializer::RegularCylinder(_) => {

@@ -28,15 +28,17 @@ pub struct SimulatedPlushie {
 
 #[derive(Debug, Clone)]
 pub struct Part {
-    pub name: String, // TODO pub?
+    name: String,
     /// First index in nodes that belongs to this part.
     start: usize,
     /// Index after the last node that belongs to this part.
     end: usize,
     /// Centroids requested for this part.
-    pub centroids_wanted: usize, // TODO UI updating this
+    pub centroids_wanted: usize,
     /// Centroids positions.
     centroids: Vec<Vec3>,
+    /// Displacement this node will be subtracted from displacement of node members.
+    reflect_on_node: Option<usize>,
 }
 
 #[derive(Debug, Clone)]
@@ -87,6 +89,10 @@ impl SimulatedPlushie {
 
 // TODO this is just for UI, UI has to manage without it
 impl Part {
+    pub fn name(&self) -> &String {
+        &self.name
+    }
+
     pub fn mock(name: String) -> Self {
         Self {
             name,
@@ -94,6 +100,7 @@ impl Part {
             end: 0,
             centroids_wanted: 0,
             centroids: vec![],
+            reflect_on_node: None,
         }
     }
 }

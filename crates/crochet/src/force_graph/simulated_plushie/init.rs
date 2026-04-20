@@ -147,6 +147,7 @@ fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part>
                 end: last_end,
                 centroids_wanted: part_def.parameters.centroids,
                 centroids: vec![],
+                reflect_on_node: Some(previous_end),
             }
         })
         .collect();

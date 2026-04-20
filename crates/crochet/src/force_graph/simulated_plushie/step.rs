@@ -13,11 +13,17 @@ impl super::SimulatedPlushie {
     pub fn step(&mut self, params: &SimulationParams) {
         self.compute_forces(params);
 
-        // TODO translation by root (per part)
         for (node, displacement) in self.nodes.iter_mut().zip(&self.displacement) {
-            if !node.rooted {
-                node.position += displacement * params.force_multiplier;
+            if node.rooted {
+                continue;
             }
+
+            let origin_node_displacement = self.parts[node.definition.part_index]
+                .reflect_on_node
+                .map_or(Vec3::ZERO, |origin_index| {
+                    *self.displacement.get(origin_index).unwrap_or(&Vec3::ZERO)
+                });
+            node.position += (displacement - origin_node_displacement) * params.force_multiplier;
         }
     }
 
