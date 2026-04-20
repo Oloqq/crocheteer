@@ -1,7 +1,7 @@
 use super::Hook;
 
 use crate::{
-    acl::Origin,
+    acl::{Action, Origin},
     data::{Node, NodeIndex, Peculiarity},
 };
 
@@ -32,10 +32,15 @@ impl<'n> NodeBuilder<'n> {
 }
 
 impl Hook {
-    pub(super) fn add_node<'n>(&'n mut self, origin: Option<Origin>) -> NodeBuilder<'n> {
+    pub(super) fn add_node<'n>(
+        &'n mut self,
+        origin: Option<Origin>,
+        action: Action,
+    ) -> NodeBuilder<'n> {
         self.nodes.push(Node {
             color: self.color,
             origin,
+            action,
             peculiarity: None,
             parent: None,
             part_index: self.now.part,

@@ -1,4 +1,7 @@
-use crate::{ColorRgb, acl::Origin};
+use crate::{
+    ColorRgb,
+    acl::{Action, Origin},
+};
 
 pub type NodeIndex = usize;
 
@@ -8,6 +11,7 @@ pub struct Node {
     pub peculiarity: Option<Peculiarity>,
     /// The location in the pattern that caused creation of this node.
     pub origin: Option<Origin>,
+    pub action: Action,
     /// Anchor of this node. Used for single loop forces.
     pub(crate) parent: Option<NodeIndex>,
     pub part_index: usize,

@@ -2,9 +2,11 @@ use glam::Vec3;
 
 use crate::{
     PlushieDef,
+    acl::Action,
     data::Edges,
     force_graph::{
         Initializer,
+        initializers::ring,
         simulated_plushie::{Node, OneByOneState, Part},
     },
 };
@@ -25,12 +27,9 @@ impl super::SimulatedPlushie {
                 assert_eq!(node_positions.len(), definition.nodes.len());
                 None
             }
-            Initializer::OneByOne => {
-                assert!(node_positions.len() >= 3);
-                Some(OneByOneState {
-                    full_definition: definition.clone(),
-                })
-            }
+            Initializer::OneByOne => Some(OneByOneState {
+                full_definition: definition.clone(),
+            }),
         };
 
         let parts = extract_parts(&definition, part_limits);
@@ -66,14 +65,25 @@ impl super::SimulatedPlushie {
         let Some(obo) = &self.one_by_one_state else {
             return OneByOneResult::Noop;
         };
-
-        assert!(self.nodes.len() == self.edges.len());
         let new_index = self.nodes.len();
         if new_index >= obo.full_definition.nodes.len() {
             self.one_by_one_state = None;
             return OneByOneResult::JustFinished;
         }
+        assert!(self.nodes.len() == self.edges.len());
+        let definition = &obo.full_definition.nodes[new_index];
 
+        match definition.action {
+            Action::MR(size) => self.import_magic_ring(new_index, size),
+            _ => self.import_one_node(new_index),
+        }
+    }
+
+    fn import_one_node(&mut self, new_index: usize) -> OneByOneResult {
+        let obo = &self
+            .one_by_one_state
+            .as_ref()
+            .expect("this should be reachable only with obo");
         self.edges.clone_next_node(&obo.full_definition.edges);
         self.tensions
             .push(vec![0.0; self.edges.last().unwrap().len()]);
@@ -84,28 +94,63 @@ impl super::SimulatedPlushie {
             .iter()
             .map(|e| self.nodes[*e].position)
             .collect();
+
         let position = new_node_position(&position_basis, self.hook_size);
+        let definition = obo.full_definition.nodes[new_index].clone();
 
         self.nodes.push(Node {
-            definition: obo.full_definition.nodes[new_index].clone(),
+            definition,
             position,
             rooted: false,
         });
+        OneByOneResult::AdvancedOne(new_index)
+    }
 
-        OneByOneResult::Advanced(new_index)
+    fn import_magic_ring(&mut self, start_index: usize, count: usize) -> OneByOneResult {
+        println!("mr called {start_index} {count}");
+        let obo = &self
+            .one_by_one_state
+            .as_ref()
+            .expect("this should be reachable only with obo");
+
+        let mut positions = vec![Vec3::ZERO];
+        positions.append(&mut ring(count as u32, self.hook_size, self.hook_size));
+        assert_eq!(self.edges.len(), start_index);
+        // + 1 for virtual
+        for i in 0..count + 1 {
+            self.edges.clone_next_node(&obo.full_definition.edges);
+            self.tensions
+                .push(vec![0.0; self.edges.last().unwrap().len()]);
+            self.nodes.push(Node {
+                definition: obo.full_definition.nodes[start_index + i].clone(),
+                position: positions[i],
+                rooted: false,
+            });
+        }
+        assert_eq!(self.edges.len(), start_index + count + 1);
+
+        OneByOneResult::AdvancedMagicRing {
+            start: start_index,
+            count: count + 1, // +1 for virtual
+        }
     }
 }
 
 pub enum OneByOneResult {
-    Advanced(usize),
+    /// Created one node at given index.
+    AdvancedOne(usize),
+    /// Created a magic ring.
+    AdvancedMagicRing { start: usize, count: usize },
     // Waiting, // TODO wait until previous node is relatively stable (configurable)
+    /// The previous call produced the last node. No new node was produced with this call.
     JustFinished,
+    /// One by one initialization is already finished.
     Noop,
 }
 
 fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
     if based_on.len() == 0 {
-        starting_position_for_next_part()
+        unreachable!()
     } else if based_on.len() == 1 {
         based_on[0] + Vec3::new(0.0, hook_size, 0.0)
     } else {
@@ -122,11 +167,6 @@ fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
         avg += Vec3::new(0.0, hook_size, 0.0);
         avg
     }
-}
-
-// TODO configurable, with smart defaults. Use obo state
-fn starting_position_for_next_part() -> Vec3 {
-    Vec3::ZERO
 }
 
 fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {

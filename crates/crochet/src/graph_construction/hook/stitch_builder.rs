@@ -1,9 +1,8 @@
 use super::Hook;
 use crate::{
-    acl::Origin,
+    acl::{Action, Origin},
     data::{Peculiarity, PointsOnPushPlane},
-    graph_construction::ErrorCode,
-    graph_construction::hook::WorkingLoops,
+    graph_construction::{ErrorCode, hook::WorkingLoops},
 };
 use ErrorCode::*;
 
@@ -12,17 +11,19 @@ pub struct StitchBuilder {
     anchored: Option<usize>,
     lingering: bool,
     origin: Option<Origin>,
+    action: Action,
 }
 
 type Progress = Result<StitchBuilder, ErrorCode>;
 
 impl StitchBuilder {
-    pub fn linger(hook: Hook, origin: Option<Origin>) -> Progress {
+    pub fn linger(hook: Hook, origin: Option<Origin>, action: Action) -> Progress {
         Ok(Self {
             hook,
             anchored: None,
             lingering: true,
             origin,
+            action,
         })
     }
 
@@ -52,7 +53,7 @@ impl StitchBuilder {
         };
 
         self.hook
-            .add_node(self.origin)
+            .add_node(self.origin, self.action.clone())
             .peculiarity_opt(peculiarity)
             .parent_opt(self.anchored);
         self.hook.now.cursor += 1;
@@ -147,7 +148,8 @@ impl StitchBuilder {
             hook.edges.link(anchor, tip);
         }
 
-        hook.add_node(origin).peculiarity(Peculiarity::Tip);
+        hook.add_node(origin, Action::FO)
+            .peculiarity(Peculiarity::Tip);
         hook.now.cursor += 1;
         Ok(hook)
     }

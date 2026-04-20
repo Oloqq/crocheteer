@@ -24,13 +24,13 @@ impl Hook {
 
         match action {
             Sc => {
-                self = StitchBuilder::linger(self, origin)?
+                self = StitchBuilder::linger(self, origin, Sc)?
                     .pull_through()?
                     .pull_over()?
                     .finish()?
             }
             Inc => {
-                self = StitchBuilder::linger(self, origin)?
+                self = StitchBuilder::linger(self, origin, Inc)?
                     .pull_through()?
                     .pull_over()?
                     .pull_through()?
@@ -38,7 +38,7 @@ impl Hook {
                     .finish()?;
             }
             Dec => {
-                self = StitchBuilder::linger(self, origin)?
+                self = StitchBuilder::linger(self, origin, Dec)?
                     .pull_through()?
                     .next_anchor()
                     .pull_through()?
@@ -65,7 +65,7 @@ impl Hook {
                 if *chain_size == 997 {
                     self = self.attach_merge_anchors(label)?;
                 } else if *chain_size > 0 {
-                    self = self.attach_with_chain(label, chain_size, origin)?;
+                    self = self.attach_with_chain(label, chain_size, origin, action.clone())?;
                 } else {
                     self = self.attach_directly(label)?;
                 }

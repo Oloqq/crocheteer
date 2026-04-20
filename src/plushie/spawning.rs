@@ -263,43 +263,73 @@ pub fn continue_building_one_by_one(
         OneByOneResult::JustFinished => {
             pipe.write("finished building a plushie one by one");
         }
-        OneByOneResult::Advanced(new_index) => {
-            let new_node = &plushie.plushie.nodes()[new_index];
-            let msg = AddGraphNode {
-                position: new_node.position,
-                color: new_node.definition.color,
-                peculiarity: new_node.definition.peculiarity,
-                origin: new_node.definition.origin,
-                node_index: new_index,
-                part_index: new_node.definition.part_index,
-            };
-            let new_node_entity = add_graph_node(
-                &msg,
+        OneByOneResult::AdvancedOne(new_index) => {
+            add_node_to_world(
+                &mut plushie,
+                new_index,
                 &mut commands,
                 &mut assets,
                 &mut materials,
                 &display_presets,
-                &mut plushie.node_lookup,
             );
-
-            let new_edges = &plushie.plushie.edges().edges_from_node(new_index);
-            for target in new_edges.iter() {
-                let a = new_node_entity;
-                let b = plushie
-                    .node_lookup
-                    .index_to_entity
-                    .get(target)
-                    .expect("index to entity should contain lesser-index node");
-                add_link_between(
-                    a,
-                    *b,
+        }
+        OneByOneResult::AdvancedMagicRing { start, count } => {
+            for new_index in start..start + count {
+                add_node_to_world(
+                    &mut plushie,
+                    new_index,
                     &mut commands,
                     &mut assets,
                     &mut materials,
-                    plushie.plushie.nodes()[new_index].definition.color,
                     &display_presets,
                 );
             }
         }
+    }
+}
+
+fn add_node_to_world(
+    plushie: &mut PlushieInSimulation,
+    new_index: usize,
+    commands: &mut Commands,
+    assets: &mut PlushieAssets,
+    materials: &mut Assets<StandardMaterial>,
+    display_presets: &DisplayPresets,
+) {
+    let new_node = &plushie.plushie.nodes()[new_index];
+    let msg = AddGraphNode {
+        position: new_node.position,
+        color: new_node.definition.color,
+        peculiarity: new_node.definition.peculiarity,
+        origin: new_node.definition.origin,
+        node_index: new_index,
+        part_index: new_node.definition.part_index,
+    };
+    let new_node_entity = add_graph_node(
+        &msg,
+        commands,
+        assets,
+        materials,
+        &display_presets,
+        &mut plushie.node_lookup,
+    );
+
+    let new_edges = &plushie.plushie.edges().edges_from_node(new_index);
+    for target in new_edges.iter() {
+        let a = new_node_entity;
+        let b = plushie
+            .node_lookup
+            .index_to_entity
+            .get(target)
+            .expect("index to entity should contain lesser-index node");
+        add_link_between(
+            a,
+            *b,
+            commands,
+            assets,
+            materials,
+            plushie.plushie.nodes()[new_index].definition.color,
+            &display_presets,
+        );
     }
 }

@@ -17,11 +17,7 @@ impl Initializer {
             Initializer::RegularCylinder(nodes_in_cirumference) => {
                 arrange_cylinder(nodes_num, *nodes_in_cirumference, hook_size)
             }
-            Initializer::OneByOne => vec![
-                Vec3::ZERO,
-                Vec3::new(hook_size, 0.0, 0.0),
-                Vec3::new(0.0, 0.0, hook_size),
-            ],
+            Initializer::OneByOne => vec![],
         }
     }
 }
@@ -42,7 +38,7 @@ fn arrange_cylinder(nodes_num: u32, nodes_in_cirumference: u32, hook_size: f32) 
     nodes
 }
 
-fn ring(members: u32, y: f32, hook_size: f32) -> Vec<Vec3> {
+pub fn ring(members: u32, y: f32, hook_size: f32) -> Vec<Vec3> {
     let circumference = hook_size * members as f32;
     let radius = circumference / (2.0 * PI);
 

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::{
     ColorRgb,
-    acl::Origin,
+    acl::{Action, Origin},
     data::Peculiarity,
     graph_construction::hook::{Edges, HookParams, Moment, WorkingLoops},
 };
@@ -35,9 +35,10 @@ impl Hook {
         let ring_end = ring_root + size;
 
         // spot for ring root in edges is already created
-        self.add_node(origin).peculiarity(Peculiarity::Locked);
+        self.add_node(origin, Action::MR(size))
+            .peculiarity(Peculiarity::Locked);
         for _ in 0..size {
-            self.add_node(origin).parent(ring_root);
+            self.add_node(origin, Action::MR(size)).parent(ring_root);
         }
 
         // connect outer nodes to ring root
