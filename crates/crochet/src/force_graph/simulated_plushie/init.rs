@@ -73,7 +73,7 @@ impl super::SimulatedPlushie {
         assert!(self.nodes.len() == self.edges.len());
         let definition = &obo.full_definition.nodes[new_index];
 
-        match definition.action {
+        match definition.origin.action {
             Action::MR(size) => self.import_magic_ring(new_index, size),
             _ => self.import_one_node(new_index),
         }
@@ -107,7 +107,6 @@ impl super::SimulatedPlushie {
     }
 
     fn import_magic_ring(&mut self, start_index: usize, count: usize) -> OneByOneResult {
-        println!("mr called {start_index} {count}");
         let obo = &self
             .one_by_one_state
             .as_ref()

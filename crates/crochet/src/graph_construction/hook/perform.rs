@@ -1,5 +1,5 @@
 use crate::{
-    acl::{Action, Origin},
+    acl::{Action, ActionWithOrigin},
     graph_construction::{ErrorCode, hook::Moment},
 };
 
@@ -8,29 +8,28 @@ use super::{Hook, StitchBuilder, WorkingLoops};
 impl Hook {
     pub(crate) fn perform(
         mut self,
-        action: &Action,
-        origin: Option<Origin>,
+        action_with_origin: &ActionWithOrigin,
     ) -> Result<Self, ErrorCode> {
         use Action::*;
         use ErrorCode::*;
 
         let part_start = *self.part_limits.last().unwrap_or(&0);
         if self.now.cursor == part_start {
-            match action {
+            match &action_with_origin.action {
                 BeginPart | EndPart | MR(..) | Color(..) => (),
                 _ => return Err(ErrorCode::BadStarter),
             }
         }
 
-        match action {
+        match &action_with_origin.action {
             Sc => {
-                self = StitchBuilder::linger(self, origin, Sc)?
+                self = StitchBuilder::linger(self, action_with_origin)?
                     .pull_through()?
                     .pull_over()?
                     .finish()?
             }
             Inc => {
-                self = StitchBuilder::linger(self, origin, Inc)?
+                self = StitchBuilder::linger(self, action_with_origin)?
                     .pull_through()?
                     .pull_over()?
                     .pull_through()?
@@ -38,7 +37,7 @@ impl Hook {
                     .finish()?;
             }
             Dec => {
-                self = StitchBuilder::linger(self, origin, Dec)?
+                self = StitchBuilder::linger(self, action_with_origin)?
                     .pull_through()?
                     .next_anchor()
                     .pull_through()?
@@ -65,7 +64,7 @@ impl Hook {
                 if *chain_size == 997 {
                     self = self.attach_merge_anchors(label)?;
                 } else if *chain_size > 0 {
-                    self = self.attach_with_chain(label, chain_size, origin, action.clone())?;
+                    self = self.attach_with_chain(label, chain_size, action_with_origin)?;
                 } else {
                     self = self.attach_directly(label)?;
                 }
@@ -76,7 +75,7 @@ impl Hook {
             Goto(label) => self.restore(label)?,
             Mark(label) => self.save(label)?,
             MR(count) => {
-                self.magic_ring(*count, origin);
+                self.magic_ring(*count, action_with_origin);
             }
             BeginPart => {}
             EndPart => {
@@ -90,7 +89,7 @@ impl Hook {
             }
             FO => {
                 if self.params.tip_from_fo {
-                    self = StitchBuilder::fasten_off_with_tip(self, origin)?
+                    self = StitchBuilder::fasten_off_with_tip(self, action_with_origin.clone())?
                 }
             }
             Color(c) => self.color = *c,
@@ -116,7 +115,7 @@ impl Hook {
             }
         };
 
-        match action {
+        match &action_with_origin.action {
             FLO
             | BLO
             | BL
@@ -127,9 +126,9 @@ impl Hook {
             | EnforceAnchors(..)
             | BeginPart
             | EndPart => self.last_mark = None,
-            Mark(_) => self.last_mark = Some(action.clone()),
+            Mark(_) => self.last_mark = Some(action_with_origin.action.clone()),
             Sc | Dec | Inc | Slst | Attach(..) | MR(_) => {
-                self.last_stitch = Some(action.clone());
+                self.last_stitch = Some(action_with_origin.action.clone());
                 self.last_mark = None
             }
         }

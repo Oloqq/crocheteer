@@ -16,13 +16,18 @@ pub(crate) fn parse(mut flow: impl Flow, params: HookParams) -> Result<InitialGr
     let mut hook = hook::Hook::new(params);
     let mut i: u32 = 0;
     while let Some(action_with_origin) = flow.next_with_origin() {
-        let action = action_with_origin.action;
-        let origin = action_with_origin.origin;
+        let action = &action_with_origin.action;
+        let origin = &action_with_origin.origin;
         log::trace!("Performing [{i}] {action:?}. Origin: {origin:?}");
         i += 1;
-        hook = match hook.perform(&action, origin) {
+        hook = match hook.perform(&action_with_origin) {
             Ok(hook) => hook,
-            Err(err) => return Err(HookError { code: err, origin }),
+            Err(err) => {
+                return Err(HookError {
+                    code: err,
+                    origin: *origin,
+                });
+            }
         };
     }
 

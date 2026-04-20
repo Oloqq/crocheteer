@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::{
     ColorRgb,
-    acl::{Action, Origin},
+    acl::ActionWithOrigin,
     data::Peculiarity,
     graph_construction::hook::{Edges, HookParams, Moment, WorkingLoops},
 };
@@ -28,17 +28,17 @@ impl Hook {
         }
     }
 
-    pub(super) fn magic_ring(&mut self, size: usize, origin: Option<Origin>) {
+    pub(super) fn magic_ring(&mut self, size: usize, origin: &ActionWithOrigin) {
         assert_eq!(self.edges.last().unwrap().len(), 0);
 
         let ring_root = self.now.cursor;
         let ring_end = ring_root + size;
 
         // spot for ring root in edges is already created
-        self.add_node(origin, Action::MR(size))
+        self.add_node(origin.clone())
             .peculiarity(Peculiarity::Locked);
         for _ in 0..size {
-            self.add_node(origin, Action::MR(size)).parent(ring_root);
+            self.add_node(origin.clone()).parent(ring_root);
         }
 
         // connect outer nodes to ring root

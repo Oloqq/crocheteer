@@ -14,15 +14,16 @@ const COLOR: ColorRgb = [255, 0, 0];
 
 impl Hook {
     pub fn test_perform(self, action: &Action) -> Result<Self, ErrorCode> {
-        self.perform(action, None)
+        let action = action.clone();
+        self.perform(&action.without_origin())
     }
 }
 
 fn start_mr(mr_count: usize) -> Hook {
     let mut h = Hook::new(HookParams::default());
-    h = h.perform(&Action::Color(COLOR), None).unwrap();
-    h = h.perform(&BeginPart, None).unwrap();
-    h = h.perform(&MR(mr_count), None).unwrap();
+    h = h.perform(&Action::Color(COLOR).without_origin()).unwrap();
+    h = h.perform(&BeginPart.without_origin()).unwrap();
+    h = h.perform(&MR(mr_count).without_origin()).unwrap();
     h
 }
 
@@ -46,7 +47,7 @@ fn test_end_part_resets_anchors() {
         h.edges,
         Edges::from(vec![vec![], vec![0], vec![0, 1], vec![0, 2], vec![]])
     );
-    h = h.perform(&EndPart, None).unwrap();
+    h = h.perform(&EndPart.without_origin()).unwrap();
     q!(h.part_limits, vec![4]);
     q!(h.now.anchors, Queue::new());
     q!(h.now.cursor, 4);
@@ -342,7 +343,7 @@ fn test_starting_from_color() {
     let mut flow = SimpleFlow::new(vec![Color(COLOR), MR(3), Sc, Sc, Sc]);
     let mut h = Hook::new(HookParams::default());
     while let Some(a) = flow.next() {
-        h = h.perform(&a, None).unwrap();
+        h = h.perform(&a.without_origin()).unwrap();
     }
     q!(
         &h.edges.data()[0..4],

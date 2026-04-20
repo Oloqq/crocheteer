@@ -1,33 +1,31 @@
 use super::Hook;
 use crate::{
-    acl::{Action, Origin},
+    acl::ActionWithOrigin,
     data::{Peculiarity, PointsOnPushPlane},
     graph_construction::{ErrorCode, hook::WorkingLoops},
 };
 use ErrorCode::*;
 
-pub struct StitchBuilder {
+pub struct StitchBuilder<'a> {
     hook: Hook,
     anchored: Option<usize>,
     lingering: bool,
-    origin: Option<Origin>,
-    action: Action,
+    origin: &'a ActionWithOrigin,
 }
 
-type Progress = Result<StitchBuilder, ErrorCode>;
+type Progress<'a> = Result<StitchBuilder<'a>, ErrorCode>;
 
-impl StitchBuilder {
-    pub fn linger(hook: Hook, origin: Option<Origin>, action: Action) -> Progress {
+impl<'a> StitchBuilder<'a> {
+    pub fn linger(hook: Hook, origin: &'a ActionWithOrigin) -> Progress<'a> {
         Ok(Self {
             hook,
             anchored: None,
             lingering: true,
             origin,
-            action,
         })
     }
 
-    pub fn pull_through(mut self) -> Progress {
+    pub fn pull_through(mut self) -> Progress<'a> {
         let hook = &mut self.hook;
         let anchor = *hook.now.anchors.front().ok_or(NoAnchorToPullThrough)?;
         hook.edges.link(anchor, hook.now.cursor);
@@ -41,7 +39,7 @@ impl StitchBuilder {
         self
     }
 
-    fn register_stitch(mut self, accept_single_loop: bool) -> Progress {
+    fn register_stitch(mut self, accept_single_loop: bool) -> Progress<'a> {
         let peculiarity = if accept_single_loop {
             match self.hook.now.working_on {
                 WorkingLoops::Both => None,
@@ -53,7 +51,7 @@ impl StitchBuilder {
         };
 
         self.hook
-            .add_node(self.origin, self.action.clone())
+            .add_node(self.origin.clone())
             .peculiarity_opt(peculiarity)
             .parent_opt(self.anchored);
         self.hook.now.cursor += 1;
@@ -61,7 +59,7 @@ impl StitchBuilder {
     }
 
     // NOTE why need this accept_single_loop?
-    fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress {
+    fn pull_over_without_registering_anchor(mut self, accept_single_loop: bool) -> Progress<'a> {
         // NOTE isn't lingering always true?
         if self.lingering {
             let prev = self.hook.previous_stitch();
@@ -71,7 +69,7 @@ impl StitchBuilder {
         self.register_stitch(accept_single_loop)
     }
 
-    pub fn pull_over(mut self) -> Progress {
+    pub fn pull_over(mut self) -> Progress<'a> {
         self.hook.now.anchors.push_back(self.hook.now.cursor);
         Ok(self.pull_over_without_registering_anchor(true)?)
     }
@@ -128,7 +126,10 @@ impl StitchBuilder {
         Ok((new_anchors, self.hook))
     }
 
-    pub fn fasten_off_with_tip(mut hook: Hook, origin: Option<Origin>) -> Result<Hook, ErrorCode> {
+    pub fn fasten_off_with_tip(
+        mut hook: Hook,
+        origin: ActionWithOrigin,
+    ) -> Result<Hook, ErrorCode> {
         if hook.now.anchors.len() < 2 {
             log::debug!("No anchors to fasten off");
             return Err(FORequires2Anchors);
@@ -148,8 +149,7 @@ impl StitchBuilder {
             hook.edges.link(anchor, tip);
         }
 
-        hook.add_node(origin, Action::FO)
-            .peculiarity(Peculiarity::Tip);
+        hook.add_node(origin).peculiarity(Peculiarity::Tip);
         hook.now.cursor += 1;
         Ok(hook)
     }
@@ -180,7 +180,7 @@ mod tests {
 
     fn mr3() -> Hook {
         let mut h = Hook::new(HookParams::default());
-        h = h.perform(&MR(3), None).unwrap();
+        h = h.perform(&MR(3).without_origin()).unwrap();
         q!(h.now.anchors, Queue::from([1, 2, 3]));
         q!(h.now.cursor, 4);
         q!(

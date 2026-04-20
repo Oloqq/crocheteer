@@ -201,7 +201,7 @@ pub fn build_plushie_from_pattern(
                     position: node.position.clone(),
                     color: node.definition.color,
                     peculiarity: node.definition.peculiarity,
-                    origin: node.definition.origin,
+                    origin: node.definition.origin.origin, // TODO use the full ActionWithOrigin, create a display mode for it
                     part_index: node.definition.part_index,
                     node_index,
                 },
@@ -301,7 +301,7 @@ fn add_node_to_world(
         position: new_node.position,
         color: new_node.definition.color,
         peculiarity: new_node.definition.peculiarity,
-        origin: new_node.definition.origin,
+        origin: new_node.definition.origin.origin,
         node_index: new_index,
         part_index: new_node.definition.part_index,
     };

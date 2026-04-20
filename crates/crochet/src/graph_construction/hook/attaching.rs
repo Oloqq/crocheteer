@@ -1,5 +1,5 @@
 use crate::{
-    acl::{Action, Label, Origin},
+    acl::{Action, ActionWithOrigin, Label},
     graph_construction::hook::{
         ErrorCode, Hook, Moment, WorkingLoops, stitch_builder::StitchBuilder,
     },
@@ -10,8 +10,7 @@ impl Hook {
         mut self,
         label: &Label,
         chain_size: &usize,
-        origin: Option<Origin>,
-        action: Action,
+        origin: &ActionWithOrigin,
     ) -> Result<Self, ErrorCode> {
         // FIXME this should probably affect part_limits
         // FIXME part_limits should prolly be limb_limits
@@ -26,8 +25,8 @@ impl Hook {
         // TODO won't this panic?
         let attachment_anchor = self.labels.get(label).unwrap().cursor - 1;
         let new_anchors: Vec<usize>;
-        (new_anchors, self) = StitchBuilder::linger(self, origin, action)?
-            .attaching_chain(*chain_size, attachment_anchor)?;
+        (new_anchors, self) =
+            StitchBuilder::linger(self, origin)?.attaching_chain(*chain_size, attachment_anchor)?;
         let mut moment_b;
         (self, moment_b) = self.split_moment(attachment_anchor, new_anchors);
         // let ring_b = self.split_current_moment(attaching_anchor, new_anchors);
