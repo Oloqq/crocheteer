@@ -37,7 +37,9 @@ pub enum ErrorCode {
     DuplicateLabel(String),
     /// Tried to use a goto or a similar instruction to an undefined mark
     UndefinedLabel(String),
-    /// This action is not allowed outside a round
+    /// This action is not allowed inside a round.
+    NotAllowedInRound(Action),
+    /// This action is not allowed outside a round.
     NotAllowedOutsideRound(Action),
     /// Action does not take arguments, remove parentheses
     UnexpectedParentheses,

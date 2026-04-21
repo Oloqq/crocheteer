@@ -202,7 +202,7 @@ impl PatternBuilder {
                             FLO => self.current_loop = CurrentLoop::Front,
                             BLO => self.current_loop = CurrentLoop::Back,
                             BL => self.current_loop = CurrentLoop::Both,
-                            FO | Color(_) => (),
+                            Color(_) => (),
                             Sc | Inc | Dec | Slst | MR(_) => (),
                             //         Rule::KW_ATTACH => {
                             //             let args_pair = tokens.next().unwrap();
@@ -213,7 +213,12 @@ impl PatternBuilder {
                             //             Action::Attach(label, chain_size)
                             //         }
                             Attach(_, _) => todo!(),
-                            Sew(_, _) => todo!(),
+                            FO | Sew(_, _) => {
+                                return Err(Error::with_expected_origin(
+                                    ErrorCode::NotAllowedInRound(action.action),
+                                    action.origin,
+                                ));
+                            }
                             EnforceAnchors(_, _) | BeginPart | EndPart => unreachable!(),
                         }
                         result.push(action);
@@ -254,7 +259,20 @@ impl PatternBuilder {
                     ));
                 }
                 Attach(_, _) => todo!(),
-                Sew(_, _) => todo!(),
+                Sew(mark_a, mark_b) => {
+                    if !self.labels.contains(mark_a) {
+                        return Err(Error::with_expected_origin(
+                            ErrorCode::UndefinedLabel(mark_a.clone()),
+                            action.origin,
+                        ));
+                    }
+                    if !self.labels.contains(mark_b) {
+                        return Err(Error::with_expected_origin(
+                            ErrorCode::UndefinedLabel(mark_b.clone()),
+                            action.origin,
+                        ));
+                    }
+                }
                 EnforceAnchors(_, _) | BeginPart | EndPart => unreachable!(),
             }
 
@@ -268,24 +286,6 @@ impl PatternBuilder {
             //     let chain_size = integer(&args.next().unwrap())?;
             //     Action::Attach(label, chain_size)
             // }
-            // }
-            // Rule::KW_SEW => {
-            //     let args = tokens.next().unwrap();
-            //     assert!(matches!(args.as_rule(), Rule::arg_ident_ident));
-            //     let mut tokens = args.into_inner();
-            //     let node1pair = tokens.next().unwrap();
-            //     let node1 = node1pair.as_str().to_owned();
-            //     if !self.labels.contains(&node1) {
-            //         return err(UndefinedLabel(node1), &node1pair);
-            //     }
-
-            //     let node2pair = tokens.next().unwrap();
-            //     let node2 = node2pair.as_str().to_owned();
-            //     if !self.labels.contains(&node2) {
-            //         return err(UndefinedLabel(node2), &node1pair);
-            //     }
-            //     self.actions
-            //         .push(Action::Sew(node1, node2).with_origin(span));
             // }
         }
         Ok(())
@@ -481,6 +481,12 @@ fn action(pair: Pair<Rule>) -> Result<ActionWithOrigin, Error> {
                     spec.args[0].1,
                 )
             })?)
+        }
+        "sew" => {
+            spec.validate_arg_count(2)?;
+            let a = spec.args[0].0.clone();
+            let b = spec.args[1].0.clone();
+            Action::Sew(a, b)
         }
         _ => {
             return Err(Error::with_origin(

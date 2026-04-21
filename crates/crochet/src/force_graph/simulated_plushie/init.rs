@@ -170,7 +170,7 @@ fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
 
 fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {
     assert_eq!(part_limits.len(), definition.pattern.parts.len());
-    let mut last_end = 0;
+    let mut end = 0;
     let mut limits = part_limits.iter();
 
     let parts: Vec<Part> = definition
@@ -178,15 +178,15 @@ fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part>
         .parts
         .iter()
         .map(|part_def| {
-            let previous_end = last_end;
-            last_end = *limits.next().unwrap();
+            let start = end;
+            end = *limits.next().unwrap();
             Part {
                 name: part_def.name.clone(),
-                start: previous_end,
-                end: last_end,
+                start,
+                end,
                 centroids_wanted: part_def.parameters.centroids,
                 centroids: vec![],
-                reflect_on_node: Some(previous_end),
+                reflecting_node: Some(start),
             }
         })
         .collect();

@@ -18,12 +18,13 @@ impl super::SimulatedPlushie {
                 continue;
             }
 
-            let origin_node_displacement = self.parts[node.definition.part_index]
-                .reflect_on_node
+            let reflecting_node_displacement = self.parts[node.definition.part_index]
+                .reflecting_node
                 .map_or(Vec3::ZERO, |origin_index| {
                     *self.displacement.get(origin_index).unwrap_or(&Vec3::ZERO)
                 });
-            node.position += (displacement - origin_node_displacement) * params.force_multiplier;
+            node.position +=
+                (displacement - reflecting_node_displacement) * params.force_multiplier;
         }
     }
 

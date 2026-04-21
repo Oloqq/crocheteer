@@ -1,3 +1,4 @@
+use crate::acl::Origin;
 use crate::{
     PatternBuilder,
     acl::{Action, parsing::errors::ErrorCode},
@@ -222,8 +223,6 @@ mod fo {
 }
 
 mod not_expected_outside_round {
-    use crate::acl::Origin;
-
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -268,4 +267,27 @@ mod not_expected_outside_round {
     }
 }
 
-// TODO sew, attach
+mod sew {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn test_control_parses_sew() {
+        let prog = "mark(a), mark(b), sew(a, b)";
+        let pattern = PatternBuilder::parse(prog).unwrap();
+        assert_eq!(
+            pattern.parts[0].actions[3].action,
+            Action::Sew("a".into(), "b".into())
+        );
+    }
+
+    #[test]
+    fn test_control_reports_undefined_label() {
+        let prog = "mark(a), sew(a, b)";
+        let err = PatternBuilder::parse(prog).unwrap_err();
+        assert_eq!(err.code, ErrorCode::UndefinedLabel("b".into()));
+        assert_eq!(&prog[err.origin.as_range()], "sew");
+    }
+}
+
+// TODO attach

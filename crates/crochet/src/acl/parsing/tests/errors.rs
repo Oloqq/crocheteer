@@ -67,14 +67,11 @@ fn test_error_valid_rgb() {
     );
 }
 
-// TODO make this error readable (sew can't be used inside round)
-// #[test]
-// fn test_sew() {
-//     let prog = ": mark(bruh), mark(broh), sew(bruh, broh)";
-//     let pat = PatternBuilder::parse(prog).unwrap();
-//     assert_eq!(
-//         pat.actions[2].action,
-//         Action::Sew("bruh".into(), "broh".into())
-//     );
-//     assert_eq!(pat.actions[2].origin, (27, 41));
-// }
+#[test]
+fn test_sew() {
+    let prog = ": mark(bruh), mark(broh), sew(bruh, broh)";
+    assert_eq!(
+        PatternBuilder::parse(prog).unwrap_err().code,
+        ErrorCode::NotAllowedInRound(crate::acl::Action::Sew("bruh".into(), "broh".into()))
+    );
+}

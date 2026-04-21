@@ -57,16 +57,6 @@ fn test_slst() {
 }
 
 #[test]
-fn test_fo_in_round() {
-    let prog = ": sc, FO";
-    let pat = PatternBuilder::parse(prog).unwrap();
-    assert_eq!(
-        pat.parts[0].actions[2].origin.as_ref().unwrap().as_range(),
-        6..8
-    );
-}
-
-#[test]
 fn test_mark_goto() {
     let prog = ": sc, mark(bruh), goto(bruh)";
     let pat = PatternBuilder::parse(prog).unwrap();
@@ -142,7 +132,6 @@ fn test_attach() {
 }
 
 #[test]
-#[ignore = "TODO restore sew"]
 fn test_sew() {
     let prog = indoc! {"
         : mark(bruh), mark(broh)
@@ -150,20 +139,20 @@ fn test_sew() {
     "};
     let pat = PatternBuilder::parse(prog).unwrap();
     assert_eq!(
-        pat.parts[0].actions[0].origin.as_ref().unwrap().as_range(),
-        2..12
+        &prog[pat.parts[0].actions[1].origin.as_ref().unwrap().as_range()],
+        "mark"
     );
     assert_eq!(
-        pat.parts[0].actions[1].origin.as_ref().unwrap().as_range(),
-        14..24
+        &prog[pat.parts[0].actions[2].origin.as_ref().unwrap().as_range()],
+        "mark"
     );
     assert_eq!(
-        pat.parts[0].actions[2].action,
+        pat.parts[0].actions[3].action,
         Action::Sew("bruh".into(), "broh".into())
     );
     assert_eq!(
-        pat.parts[0].actions[2].origin.as_ref().unwrap().as_range(),
-        25..40
+        &prog[pat.parts[0].actions[3].origin.as_ref().unwrap().as_range()],
+        "sew"
     );
 }
 

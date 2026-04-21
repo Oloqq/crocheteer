@@ -37,8 +37,8 @@ pub struct Part {
     pub centroids_wanted: usize,
     /// Centroids positions.
     centroids: Vec<Vec3>,
-    /// Displacement this node will be subtracted from displacement of node members.
-    reflect_on_node: Option<usize>,
+    /// Displacement this node will be subtracted from displacement of other nodes in this part. This is done to keep that "reflecting node" in place while plushie is getting into shape.
+    reflecting_node: Option<usize>,
 }
 
 #[derive(Debug, Clone)]
@@ -100,7 +100,10 @@ impl Part {
             end: 0,
             centroids_wanted: 0,
             centroids: vec![],
-            reflect_on_node: None,
+            reflecting_node: None,
         }
     }
 }
+
+#[cfg(test)]
+mod tests;

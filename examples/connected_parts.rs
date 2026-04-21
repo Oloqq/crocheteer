@@ -20,15 +20,15 @@ fn main() {
 
             color(255, 255, 0)
             : MR(6)
-            # this line is wrong and crashes the application
-            : sc, mark(s1), dec, mark(s2), dec, mark(s3), dec, mark(s4), dec, mark(s5), dec, mark(s6)
-            #: sc, mark(s1), sc, mark(s2), sc, mark(s3), sc, mark(s4), sc, mark(s5), sc, mark(s6)
+            : sc, mark(s1), sc, mark(s2), sc, mark(s3), sc, mark(s4), sc, mark(s5), sc, mark(s6)
             : 6 inc (12)
             : [sc, inc] x 6 (18)
             : [2 sc, inc] x 6 (24)
             : 12 dec (12)
             : 6 dec (6)
             FO
+
+            sew(d1, s1)
         "}
         .into(),
         simulation_config: SimulationState {
