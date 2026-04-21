@@ -2382,6 +2382,7 @@ dependencies = [
  "pretty_assertions",
  "strum",
  "strum_macros",
+ "tracing",
  "winit",
 ]
 

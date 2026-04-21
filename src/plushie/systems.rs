@@ -23,13 +23,19 @@ pub fn setup_assets(
     centroid_material.thickness = 1.0;
     centroid_material.diffuse_transmission = 0.5;
 
+    let mut initial_link_buffer = ShaderStorageBuffer::default();
+    // wgpu forbids having an empty buffer
+    // without this initial value, the application would panic if the initial pattern was invalid
+    // because there would be no links to fill the buffer
+    initial_link_buffer.set_data(vec![0.0]);
+
     let assets = PlushieAssets {
         node_mesh: meshes.add(Sphere::new(1.0)),
         link_mesh: meshes.add(Cylinder::new(1.0, 1.0)),
         colored_materials: HashMap::new(),
         selected_node_material: materials.add(selected_node_material),
         force_responding_material: link_shader_materials.add(LinkMaterial {
-            instances: buffers.add(ShaderStorageBuffer::default()),
+            instances: buffers.add(initial_link_buffer),
         }),
         centroid_material: materials.add(centroid_material),
     };

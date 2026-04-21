@@ -39,4 +39,9 @@ impl EditorSimulationSync {
         self.acl_in_simulation = Some(acl);
         self.in_sync = true;
     }
+
+    pub fn plushie_removed(&mut self) {
+        self.acl_in_simulation = None;
+        self.in_sync = false;
+    }
 }

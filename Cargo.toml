@@ -32,6 +32,7 @@ image = { version = "=0.25.10", default-features = false, features = ["png"] }
 indoc = "2.0.7"                                                                # multiline strings with indentation matching to code
 strum = "0.28.0"                                                               # enum iter, enum to string etc
 strum_macros = "0.28.0"                                                        # ^
+tracing = "0.1.44"                                                             # logs, version same as bevy
 winit = "0.30.13"                                                              # set window icon
 
 [dev-dependencies]

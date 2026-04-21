@@ -185,6 +185,8 @@ pub fn build_plushie_from_pattern(
             Ok(x) => x,
             Err(err) => {
                 report_error(err, &mut code_editor.highlighter, &pipe);
+                commands.remove_resource::<PlushieInSimulation>();
+                sync_state.plushie_removed();
                 return Ok(());
             }
         };

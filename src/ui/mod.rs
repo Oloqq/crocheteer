@@ -58,7 +58,7 @@ impl Plugin for UiPlugin {
         );
 
         let (tx, rx) = crossbeam_channel::unbounded::<ConsoleMessage>();
-        app.insert_resource(ConsolePipe { sender: tx });
+        app.insert_resource(ConsolePipe::new(tx));
         app.insert_resource(ConsoleReceiver(rx));
 
         app.world_mut().write_message(BuildPlushieFromPattern {

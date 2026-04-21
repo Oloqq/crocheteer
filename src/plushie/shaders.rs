@@ -53,7 +53,13 @@ pub fn sync_shader_buffer(
             }
         })
         .collect();
-    buffer.set_data(instance_data);
+    if instance_data.len() > 0 {
+        buffer.set_data(instance_data);
+    } else {
+        tracing::warn!(
+            "no instance data, the buffer remains unchanged. WGPU forbids empty buffers."
+        );
+    }
 }
 
 #[allow(dead_code)] // to be removed

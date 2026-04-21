@@ -45,11 +45,16 @@ pub fn console_window(
 
 #[derive(Resource)]
 pub struct ConsolePipe {
-    pub sender: Sender<ConsoleMessage>,
+    sender: Sender<ConsoleMessage>,
 }
 
 impl ConsolePipe {
+    pub fn new(sender: Sender<ConsoleMessage>) -> Self {
+        Self { sender }
+    }
+
     pub fn write(&self, msg: &str) {
+        tracing::info!("{}", msg);
         let _ = self.sender.send(ConsoleMessage { text: msg.into() });
     }
 }

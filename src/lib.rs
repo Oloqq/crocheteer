@@ -12,6 +12,7 @@ use bevy::{
         schedule::{LogLevel, ScheduleBuildSettings},
         system::NonSendMarker,
     },
+    log::LogPlugin,
     prelude::*,
     render::RenderPlugin,
     winit::{UpdateMode, WINIT_WINDOWS},
@@ -77,6 +78,11 @@ fn window(app: &mut App) {
             })
             .set(RenderPlugin {
                 synchronous_pipeline_compilation: true, // compile shaders before application starts
+                ..default()
+            })
+            .set(LogPlugin {
+                level: bevy::log::Level::INFO,
+                filter: "wgpu=warn,crocheteer=debug,naga=warn".into(),
                 ..default()
             }),
     );
