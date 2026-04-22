@@ -160,3 +160,60 @@ mod one_by_one {
         .unwrap();
     }
 }
+
+#[test]
+#[ignore = "TODO"]
+fn no_panic_when_node_links_to_itself() {
+    let acl = indoc! {"
+        == Part1 ==
+        : MR(6)
+        : 6 sc, mark(p1), mark(p2)
+        FO
+
+        sew(p1, p2)
+    "};
+    let (_, _) = crate::parse(
+        acl,
+        HOOK_SIZE,
+        &crate::force_graph::Initializer::RegularCylinder(12),
+    )
+    .unwrap();
+}
+
+#[test]
+fn test_part_joins() {
+    let acl = indoc! {"
+        == Part1 ==
+        : MR(6)
+        : 6 sc, mark(p1)
+        FO
+
+        == Part2 ==
+        : MR(6)
+        : 6 sc, mark(p2), mark(p3)
+        FO
+
+        sew(p1, p2)
+
+        == Part3 ==
+        : MR(6)
+        : 6 sc, mark(p4)
+        FO
+
+        sew(p4, p3)
+    "};
+    let (plushie_def, plushie) = crate::parse(
+        acl,
+        HOOK_SIZE,
+        &crate::force_graph::Initializer::RegularCylinder(12),
+    )
+    .unwrap();
+    assert_eq!(plushie_def.pattern.parts.len(), 3);
+    assert_eq!(plushie_def.pattern.parts[0].name, "Part1");
+    assert_eq!(plushie_def.pattern.parts[1].name, "Part2");
+    assert_eq!(plushie_def.pattern.parts[2].name, "Part3");
+
+    assert_eq!(plushie.part_clusters.get_part_cluster(0), 0);
+    assert_eq!(plushie.part_clusters.get_part_cluster(1), 0);
+    assert_eq!(plushie.part_clusters.get_part_cluster(2), 0);
+}

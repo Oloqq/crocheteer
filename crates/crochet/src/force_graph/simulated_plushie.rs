@@ -5,7 +5,7 @@ use glam::Vec3;
 
 use crate::{
     PlushieDef,
-    data::{Edges, Node as NodeDefinition},
+    data::{Edges, Node as NodeDefinition, PartClusters},
 };
 
 #[derive(Debug, Clone)]
@@ -16,6 +16,8 @@ pub struct SimulatedPlushie {
     nodes: Vec<Node>,
     /// Part data. Part stores node range, not nodes themselves.
     pub parts: Vec<Part>,
+    /// Describes how the parts are connected to each other
+    part_clusters: PartClusters,
     /// Used with OneByOne initializer.
     one_by_one_state: Option<OneByOneState>,
     /// Basis for calculating forces.
@@ -87,12 +89,12 @@ impl SimulatedPlushie {
     }
 }
 
-// TODO this is just for UI, UI has to manage without it
 impl Part {
     pub fn name(&self) -> &String {
         &self.name
     }
 
+    // TODO this is just for UI, UI has to manage without it
     pub fn mock(name: String) -> Self {
         Self {
             name,

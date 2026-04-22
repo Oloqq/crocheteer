@@ -3,7 +3,7 @@ use glam::Vec3;
 use crate::{
     PlushieDef,
     acl::Action,
-    data::Edges,
+    data::{Edges, PartClusters},
     force_graph::{
         Initializer,
         initializers::ring,
@@ -32,7 +32,7 @@ impl super::SimulatedPlushie {
             }),
         };
 
-        let parts = extract_parts(&definition, part_limits);
+        let (parts, part_clusters) = extract_parts(&definition, part_limits, initializer);
         let nodes: Vec<Node> = definition
             .nodes
             .into_iter()
@@ -55,6 +55,7 @@ impl super::SimulatedPlushie {
             edges,
             nodes,
             parts,
+            part_clusters,
             one_by_one_state,
             hook_size,
             tensions,
@@ -168,12 +169,16 @@ fn new_node_position(based_on: &Vec<Vec3>, hook_size: f32) -> Vec3 {
     }
 }
 
-fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part> {
+fn extract_parts(
+    definition: &PlushieDef,
+    part_limits: &Vec<usize>,
+    initializer: &Initializer,
+) -> (Vec<Part>, PartClusters) {
     assert_eq!(part_limits.len(), definition.pattern.parts.len());
     let mut end = 0;
     let mut limits = part_limits.iter();
 
-    let parts: Vec<Part> = definition
+    let mut parts: Vec<Part> = definition
         .pattern
         .parts
         .iter()
@@ -193,5 +198,20 @@ fn extract_parts(definition: &PlushieDef, part_limits: &Vec<usize>) -> Vec<Part>
 
     assert_eq!(parts.len(), definition.pattern.parts.len());
 
-    parts
+    let mut clusters = definition.part_clusters.clone();
+    match initializer {
+        Initializer::RegularCylinder(_) => {
+            clusters.perform_all_joins();
+            for i in 0..parts.len() {
+                let cluster = clusters.get_part_cluster(i);
+                let reflecting_node = parts[cluster].start.clone();
+                parts[i].reflecting_node = Some(reflecting_node);
+            }
+        }
+        Initializer::OneByOne => {
+            todo!()
+        }
+    };
+
+    (parts, clusters)
 }

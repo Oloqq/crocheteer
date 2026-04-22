@@ -1,6 +1,7 @@
 mod adding_nodes;
 mod attaching;
 mod mark_and_goto;
+mod part_joiner;
 mod perform;
 mod starters;
 mod stitch_builder;
@@ -11,8 +12,8 @@ use crate::{
         Action::{self},
         Label,
     },
-    data::{Edges, InitialGraph, Node},
-    graph_construction::errors::ErrorCode,
+    data::{Edges, InitialGraph, Node, PartClusters},
+    graph_construction::{errors::ErrorCode, hook::part_joiner::PartJoiner},
 };
 use std::collections::HashMap;
 pub use std::collections::VecDeque as Queue;
@@ -71,25 +72,29 @@ pub struct Hook {
     override_previous_node: Option<usize>,
     /// Last stitch created (not counting actions like mark, goto)
     last_stitch: Option<Action>,
-    // TODO this potentially would be not needed if mark_ahead was implemented
+    // TODO this potentially would be not needed if mark_ahead was implemented (was used for attach)
     /// Was the last action a mark?
     last_mark: Option<Action>,
     /// Map from labels to the index of the node they are on.
     mark_to_node: HashMap<Label, usize>,
-    /// Indexes where parts begin and end. When Hook finishes, first element should be equal to zero, last element should be equal to colors.len()
+    /// Node indexes where parts begin and end. When Hook finishes, first element should be equal to zero, last element should be equal to colors.len()
     part_limits: Vec<usize>,
-    /// Used to track unconnected limbs
+    /// Part currently in construction.
     part_cursor: usize,
+    /// Used to track how parts are joined.
+    part_joins: PartJoiner,
 }
 
 impl Hook {
     pub(crate) fn finish(mut self) -> InitialGraph {
         self.edges.cleanup();
+        let part_count = self.part_limits.len();
         InitialGraph {
             edges: self.edges,
             nodes: self.nodes,
             mark_to_node: self.mark_to_node,
             part_limits: self.part_limits,
+            part_joins: PartClusters::new(part_count, self.part_joins.take()),
         }
     }
 

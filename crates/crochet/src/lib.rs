@@ -32,6 +32,7 @@ pub fn parse(
         pattern,
         edges: graph.edges,
         nodes: graph.nodes,
+        part_clusters: graph.part_joins,
     };
     Ok((
         definition.clone(),

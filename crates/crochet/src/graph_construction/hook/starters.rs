@@ -25,6 +25,7 @@ impl Hook {
             mark_to_node: HashMap::new(),
             part_limits: vec![],
             part_cursor: 0,
+            part_joins: Default::default(),
         }
     }
 

@@ -110,6 +110,13 @@ impl Hook {
                 let Some(right) = self.mark_to_node.get(right) else {
                     return Err(UnknownLabel(right.clone()));
                 };
+                let lpart = part_of_node(&self.part_limits, left);
+                let rpart = part_of_node(&self.part_limits, right);
+                let happens_with_node = self.nodes.len();
+                if lpart != rpart {
+                    self.part_joins
+                        .register_part_join(lpart, rpart, happens_with_node);
+                }
 
                 self.edges.link(*left, *right);
             }
@@ -135,4 +142,13 @@ impl Hook {
 
         Ok(self)
     }
+}
+
+fn part_of_node(part_limits: &Vec<usize>, node: &usize) -> usize {
+    for (i, end) in part_limits.iter().enumerate() {
+        if node < end {
+            return i;
+        }
+    }
+    return part_limits.len();
 }
