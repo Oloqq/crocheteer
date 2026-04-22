@@ -5,7 +5,7 @@ use glam::Vec3;
 
 use crate::{
     PlushieDef,
-    data::{Edges, Node as NodeDefinition, PartClusters},
+    data::{DeferredEdge, Edges, Node as NodeDefinition, PartClusters},
 };
 
 #[derive(Debug, Clone)]
@@ -18,6 +18,8 @@ pub struct SimulatedPlushie {
     pub parts: Vec<Part>,
     /// Describes how the parts are connected to each other
     part_clusters: PartClusters,
+    /// Edges that are yet to be added, with the next edge at the end.
+    deferred_edges: Vec<DeferredEdge>,
     /// Used with OneByOne initializer.
     one_by_one_state: Option<OneByOneState>,
     /// Basis for calculating forces.

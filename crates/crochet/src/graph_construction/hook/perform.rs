@@ -1,6 +1,9 @@
 use crate::{
     acl::{Action, ActionWithOrigin},
-    graph_construction::{ErrorCode, hook::Moment},
+    graph_construction::{
+        ErrorCode,
+        hook::{DeferredEdge, Moment},
+    },
 };
 
 use super::{Hook, StitchBuilder, WorkingLoops};
@@ -118,7 +121,11 @@ impl Hook {
                         .register_part_join(lpart, rpart, happens_with_node);
                 }
 
-                self.edges.link(*left, *right);
+                self.deferred_edges.push(DeferredEdge {
+                    with_node: happens_with_node,
+                    node_a: *left,
+                    node_b: *right,
+                });
             }
         };
 

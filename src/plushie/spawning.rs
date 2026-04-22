@@ -265,7 +265,7 @@ pub fn continue_building_one_by_one(
         OneByOneResult::JustFinished => {
             pipe.write("finished building a plushie one by one");
         }
-        OneByOneResult::AdvancedOne(new_index) => {
+        OneByOneResult::CreatedNode(new_index) => {
             add_node_to_world(
                 &mut plushie,
                 new_index,
@@ -275,7 +275,7 @@ pub fn continue_building_one_by_one(
                 &display_presets,
             );
         }
-        OneByOneResult::AdvancedMagicRing { start, count } => {
+        OneByOneResult::CreatedMagicRing { start, count } => {
             for new_index in start..start + count {
                 add_node_to_world(
                     &mut plushie,
@@ -286,6 +286,28 @@ pub fn continue_building_one_by_one(
                     &display_presets,
                 );
             }
+        }
+        OneByOneResult::CreatedEdge(node_a, node_b) => {
+            let a = plushie
+                .node_lookup
+                .index_to_entity
+                .get(&node_a)
+                .expect("index to entity should contain this node durign OBO");
+            let b = plushie
+                .node_lookup
+                .index_to_entity
+                .get(&node_b)
+                .expect("index to entity should contain this node durign OBO");
+
+            add_link_between(
+                *a,
+                *b,
+                &mut commands,
+                &mut assets,
+                &mut materials,
+                plushie.plushie.nodes()[node_a.max(node_b)].definition.color,
+                &display_presets,
+            );
         }
     }
 }

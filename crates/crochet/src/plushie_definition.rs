@@ -1,6 +1,6 @@
 use crate::{
     acl::PatternAst,
-    data::{Edges, Node, PartClusters},
+    data::{DeferredEdge, Edges, Node, PartClusters},
 };
 
 pub type ColorRgb = [u8; 3];
@@ -14,4 +14,5 @@ pub struct PlushieDef {
     pub edges: Edges,
     pub nodes: Vec<Node>,
     pub part_clusters: PartClusters,
+    pub deferred_edges: Vec<DeferredEdge>,
 }

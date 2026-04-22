@@ -12,7 +12,7 @@ use crate::{
         Action::{self},
         Label,
     },
-    data::{Edges, InitialGraph, Node, PartClusters},
+    data::{DeferredEdge, Edges, InitialGraph, Node, PartClusters},
     graph_construction::{errors::ErrorCode, hook::part_joiner::PartJoiner},
 };
 use std::collections::HashMap;
@@ -83,6 +83,8 @@ pub struct Hook {
     part_cursor: usize,
     /// Used to track how parts are joined.
     part_joins: PartJoiner,
+    /// Edges that for purposes of OneByOne initializer should not be immediately added to the graph.
+    deferred_edges: Vec<DeferredEdge>,
 }
 
 impl Hook {
@@ -95,6 +97,7 @@ impl Hook {
             mark_to_node: self.mark_to_node,
             part_limits: self.part_limits,
             part_joins: PartClusters::new(part_count, self.part_joins.take()),
+            deferred_edges: self.deferred_edges,
         }
     }
 

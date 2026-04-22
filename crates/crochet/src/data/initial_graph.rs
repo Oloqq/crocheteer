@@ -1,4 +1,4 @@
-use crate::data::{Edges, Node};
+use crate::data::{DeferredEdge, Edges, Node};
 use std::{
     collections::{HashMap, HashSet},
     hash::Hash,
@@ -12,6 +12,7 @@ pub(crate) struct InitialGraph {
     #[allow(dead_code)]
     pub mark_to_node: HashMap<String, usize>,
     pub part_joins: PartClusters,
+    pub deferred_edges: Vec<DeferredEdge>,
 }
 
 #[derive(Debug, Clone)]

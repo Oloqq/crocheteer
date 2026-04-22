@@ -33,6 +33,7 @@ pub fn parse(
         edges: graph.edges,
         nodes: graph.nodes,
         part_clusters: graph.part_joins,
+        deferred_edges: graph.deferred_edges,
     };
     Ok((
         definition.clone(),

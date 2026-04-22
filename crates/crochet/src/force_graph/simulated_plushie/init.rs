@@ -43,7 +43,19 @@ impl super::SimulatedPlushie {
                 rooted: false,
             })
             .collect();
-        let edges = Edges::from_trimmed(definition.edges, nodes.len());
+        let (edges, deferred_edges) = match initializer {
+            Initializer::RegularCylinder(_) => {
+                let mut edges = definition.edges;
+                for edge in definition.deferred_edges {
+                    edges.link(edge.node_a, edge.node_b);
+                }
+                (edges, vec![])
+            }
+            Initializer::OneByOne => (
+                Edges::from_trimmed(definition.edges, nodes.len()),
+                definition.deferred_edges.into_iter().rev().collect(),
+            ),
+        };
         let tensions = edges
             .data()
             .iter()
@@ -56,6 +68,7 @@ impl super::SimulatedPlushie {
             nodes,
             parts,
             part_clusters,
+            deferred_edges,
             one_by_one_state,
             hook_size,
             tensions,
@@ -67,6 +80,25 @@ impl super::SimulatedPlushie {
             return OneByOneResult::Noop;
         };
         let new_index = self.nodes.len();
+
+        while let Some(index) = self.part_clusters.index_of_next_join()
+            && new_index >= index
+        {
+            self.part_clusters.perform_next_join();
+            for i in 0..self.parts.len() {
+                let cluster = self.part_clusters.get_part_cluster(i);
+                let reflecting_node = self.parts[cluster].start.clone();
+                self.parts[i].reflecting_node = Some(reflecting_node);
+            }
+        }
+
+        if let Some(deferred_edge) = self.deferred_edges.pop_if(|l| new_index >= l.with_node) {
+            let (a, b) = (deferred_edge.node_a, deferred_edge.node_b);
+            self.edges.link(a, b);
+            self.tensions[a.max(b)].push(0.0);
+            return OneByOneResult::CreatedEdge(a, b);
+        }
+
         if new_index >= obo.full_definition.nodes.len() {
             self.one_by_one_state = None;
             return OneByOneResult::JustFinished;
@@ -104,7 +136,7 @@ impl super::SimulatedPlushie {
             position,
             rooted: false,
         });
-        OneByOneResult::AdvancedOne(new_index)
+        OneByOneResult::CreatedNode(new_index)
     }
 
     fn import_magic_ring(&mut self, start_index: usize, count: usize) -> OneByOneResult {
@@ -129,7 +161,7 @@ impl super::SimulatedPlushie {
         }
         assert_eq!(self.edges.len(), start_index + count + 1);
 
-        OneByOneResult::AdvancedMagicRing {
+        OneByOneResult::CreatedMagicRing {
             start: start_index,
             count: count + 1, // +1 for virtual
         }
@@ -138,9 +170,11 @@ impl super::SimulatedPlushie {
 
 pub enum OneByOneResult {
     /// Created one node at given index.
-    AdvancedOne(usize),
+    CreatedNode(usize),
     /// Created a magic ring.
-    AdvancedMagicRing { start: usize, count: usize },
+    CreatedMagicRing { start: usize, count: usize },
+    /// Created a link (graph edge) between two nodes.
+    CreatedEdge(usize, usize),
     // Waiting, // TODO wait until previous node is relatively stable (configurable)
     /// The previous call produced the last node. No new node was produced with this call.
     JustFinished,
@@ -208,9 +242,7 @@ fn extract_parts(
                 parts[i].reflecting_node = Some(reflecting_node);
             }
         }
-        Initializer::OneByOne => {
-            todo!()
-        }
+        Initializer::OneByOne => (),
     };
 
     (parts, clusters)

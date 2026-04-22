@@ -108,6 +108,13 @@ impl PartialEq for Edges {
     }
 }
 
+#[derive(Clone, Debug)]
+pub struct DeferredEdge {
+    pub with_node: usize,
+    pub node_a: usize,
+    pub node_b: usize,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

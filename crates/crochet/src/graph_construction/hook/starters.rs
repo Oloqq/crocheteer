@@ -26,6 +26,7 @@ impl Hook {
             part_limits: vec![],
             part_cursor: 0,
             part_joins: Default::default(),
+            deferred_edges: vec![],
         }
     }
 
