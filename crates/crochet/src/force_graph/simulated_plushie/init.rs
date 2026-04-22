@@ -29,6 +29,7 @@ impl super::SimulatedPlushie {
             }
             Initializer::OneByOne => Some(OneByOneState {
                 full_definition: definition.clone(),
+                created_rings: 0,
             }),
         };
 
@@ -140,13 +141,22 @@ impl super::SimulatedPlushie {
     }
 
     fn import_magic_ring(&mut self, start_index: usize, count: usize) -> OneByOneResult {
-        let obo = &self
+        let obo = self
             .one_by_one_state
-            .as_ref()
+            .as_mut()
             .expect("this should be reachable only with obo");
 
-        let mut positions = vec![Vec3::ZERO];
-        positions.append(&mut ring(count as u32, self.hook_size, self.hook_size));
+        // TODO design, how to neatly space the parts
+        // probably the pattern would need to include hints like build orientation and position
+        let part_origin = Vec3::new(self.hook_size * obo.created_rings as f32 * 10.0, 0.0, 0.0);
+        obo.created_rings += 1;
+
+        let mut positions = vec![part_origin];
+        let mut ring = ring(count as u32, self.hook_size, self.hook_size);
+        for node in ring.iter_mut() {
+            *node = *node + part_origin;
+        }
+        positions.append(&mut ring);
         assert_eq!(self.edges.len(), start_index);
         // + 1 for virtual
         for i in 0..count + 1 {

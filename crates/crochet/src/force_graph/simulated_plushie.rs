@@ -55,6 +55,7 @@ pub struct Node {
 #[derive(Debug, Clone)]
 pub struct OneByOneState {
     full_definition: PlushieDef,
+    created_rings: usize,
 }
 
 impl SimulatedPlushie {
