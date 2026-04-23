@@ -4,12 +4,20 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::{data::UiState, ui_used_input::UiUsedInput};
+use crate::ui::{
+    SimulationState,
+    data::UiState,
+    file_dialog::{OpenFileLoadDialog, OpenFileSaveDialog},
+    ui_used_input::UiUsedInput,
+};
 
 pub fn top_panel(
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>,
     mut console_state: ResMut<UiState>,
+    mut simulation_state: ResMut<SimulationState>,
+    mut save_dialog: MessageWriter<OpenFileSaveDialog>,
+    mut load_dialog: MessageWriter<OpenFileLoadDialog>,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
 
@@ -20,10 +28,18 @@ pub fn top_panel(
                     ui.close();
                 }
                 if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
+                    simulation_state.paused = true;
+                    load_dialog.write(OpenFileLoadDialog);
                     ui.close();
                 }
                 ui.separator();
                 if shortcut_button(ui, "Save", "Ctrl+S").clicked() {
+                    // TODO
+                    ui.close();
+                }
+                if ui.button("Save As").clicked() {
+                    simulation_state.paused = true;
+                    save_dialog.write(OpenFileSaveDialog);
                     ui.close();
                 }
                 ui.menu_button("Nested", |ui| {

@@ -30,6 +30,7 @@ enum-map = "2.7.3"                                                              
 # read image to set as window icon
 image = { version = "=0.25.10", default-features = false, features = ["png"] }
 indoc = "2.0.7"                                                                # multiline strings with indentation matching to code
+rfd = "0.15"                                                                   # file dialogs
 strum = "0.28.0"                                                               # enum iter, enum to string etc
 strum_macros = "0.28.0"                                                        # ^
 tracing = "0.1.44"                                                             # logs, version same as bevy

@@ -20,7 +20,8 @@ use bevy::{
 use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSettings};
 
 use crate::{
-    cursor_ray::CursorRayPlugin, project::Project,
+    cursor_ray::CursorRayPlugin,
+    project::{Project, ProjectPlugin},
     state::editor_simulation_sync::EditorSimulationSync,
 };
 
@@ -34,6 +35,7 @@ pub fn app(project: Project) -> App {
     unambiguous_schedules(&mut app);
     window(&mut app);
     visible_3d_world(&mut app);
+    app.add_plugins(ProjectPlugin);
     app.add_plugins(ui::UiPlugin {
         initial_pattern: project.pattern.clone(), // TODO initialize through project module
     });

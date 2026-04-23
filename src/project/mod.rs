@@ -1,6 +1,22 @@
+pub mod loading;
+pub mod saving;
+
 pub use crate::plushie::DisplayMode;
+use loading::LoadProjectFromFile;
+use saving::SaveProjectToFile;
 // TODO move out of ui namespace
 pub use crate::ui::SimulationState;
+use bevy::prelude::*;
+
+pub struct ProjectPlugin;
+
+impl Plugin for ProjectPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_message::<SaveProjectToFile>();
+        app.add_message::<LoadProjectFromFile>();
+        // TODO systems that read the messages
+    }
+}
 
 pub struct Project {
     pub pattern: String,
@@ -10,7 +26,7 @@ pub struct Project {
 impl Default for Project {
     fn default() -> Self {
         Self {
-            pattern: "MR(6)".into(),
+            pattern: ": MR(6)".into(),
             simulation_config: Default::default(),
         }
     }
@@ -18,7 +34,6 @@ impl Default for Project {
 
 pub mod startup {
     use super::*;
-    use bevy::prelude::*;
 
     use crate::{FIXED_UPDATE_BASE_HZ, plushie::SetDisplayMode};
 

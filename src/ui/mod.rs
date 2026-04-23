@@ -4,6 +4,7 @@ pub mod code_editor;
 mod console;
 mod control_panel;
 mod data;
+mod file_dialog;
 mod menu_bar;
 mod simulation_state;
 mod ui_used_input;
@@ -18,6 +19,7 @@ pub use ui_used_input::{UiUsedInput, world_input};
 use crate::ui::action_item::complete_action_items;
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
 use crate::ui::code_editor::state::CodeEditorState;
+use crate::ui::file_dialog::FileDialogPlugin;
 use crate::ui::{
     charts::chart_window,
     code_editor::code_editor_ui,
@@ -34,6 +36,7 @@ pub struct UiPlugin {
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
+        app.add_plugins(FileDialogPlugin);
         app.insert_resource(CodeEditorState::with_initial_pattern(
             self.initial_pattern.clone(),
         ));
