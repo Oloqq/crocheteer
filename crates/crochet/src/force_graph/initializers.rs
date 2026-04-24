@@ -2,7 +2,7 @@ use std::f32::consts::PI;
 
 use glam::Vec3;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum Initializer {
     /// Start with nodes arranged into a cylinder shape. Advance height every X nodes.
     /// Magic Ring is placed at origin.

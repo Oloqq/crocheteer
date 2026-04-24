@@ -3,7 +3,7 @@ use bevy::prelude::*;
 pub use crate::plushie::DisplayMode;
 use crate::{state::simulated_plushie::PlushieInSimulation, ui::action_item::UiActionItem};
 
-#[derive(Resource)]
+#[derive(Resource, Clone)]
 pub struct SimulationState {
     pub paused: bool,
     pub sim_speed: f64,

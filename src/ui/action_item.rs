@@ -6,6 +6,8 @@ use crate::{
     ui::SimulationState,
 };
 
+// TODO events
+#[derive(Clone)]
 pub enum UiActionItem {
     SelectNodesOfPart(String),
 }

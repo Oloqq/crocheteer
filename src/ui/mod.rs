@@ -37,6 +37,7 @@ impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
         app.add_plugins(FileDialogPlugin);
+        // TEMP?
         app.insert_resource(CodeEditorState::with_initial_pattern(
             self.initial_pattern.clone(),
         ));

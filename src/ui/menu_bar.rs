@@ -4,11 +4,14 @@ use bevy_egui::{
     egui::{self, KeyboardShortcut, Modifiers},
 };
 
-use crate::ui::{
-    SimulationState,
-    data::UiState,
-    file_dialog::{OpenFileLoadDialog, OpenFileSaveDialog},
-    ui_used_input::UiUsedInput,
+use crate::{
+    project::OpenProject,
+    ui::{
+        SimulationState,
+        data::UiState,
+        file_dialog::{OpenFileLoadDialog, OpenFileSaveDialog},
+        ui_used_input::UiUsedInput,
+    },
 };
 
 pub fn top_panel(
@@ -18,13 +21,17 @@ pub fn top_panel(
     mut simulation_state: ResMut<SimulationState>,
     mut save_dialog: MessageWriter<OpenFileSaveDialog>,
     mut load_dialog: MessageWriter<OpenFileLoadDialog>,
+    mut commands: Commands,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
 
     egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
         egui::MenuBar::new().ui(ui, |ui| {
             ui.menu_button("File", |ui| {
-                if shortcut_button(ui, "New", "Ctrl+N").clicked() {
+                if ui.button("New Project").clicked() {
+                    commands.trigger(OpenProject {
+                        project: Default::default(),
+                    });
                     ui.close();
                 }
                 if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
