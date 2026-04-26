@@ -3,7 +3,7 @@ use crate::{
     ui::SimulationState,
 };
 
-pub fn shroom() -> Project {
+pub fn mushroom() -> Project {
     let project = Project {
         pattern: indoc::indoc! {"
             @centroids = 3

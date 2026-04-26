@@ -31,9 +31,9 @@ pub fn top_panel(
                     ui.close();
                 }
                 ui.menu_button("Open example", |ui| {
-                    if ui.button("Shroom (FLO+BLO)").clicked() {
+                    if ui.button("Mushroom (FLO+BLO)").clicked() {
                         commands.trigger(OpenProject {
-                            project: project::examples::public::shroom(),
+                            project: project::examples::public::mushroom(),
                         });
                         ui.close();
                     }

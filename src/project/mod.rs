@@ -1,6 +1,8 @@
 pub mod examples;
 pub mod file_dialog;
 
+use std::path::PathBuf;
+
 pub use crate::plushie::DisplayMode;
 use crate::{
     FIXED_UPDATE_BASE_HZ,
@@ -59,5 +61,12 @@ impl Default for Project {
             pattern: ": MR(6)".into(),
             simulation_config: Default::default(),
         }
+    }
+}
+
+type Tmp = bool;
+impl Project {
+    pub fn from_file(_path: &PathBuf) -> Result<Self, Tmp> {
+        todo!();
     }
 }
