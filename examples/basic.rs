@@ -1,4 +1,4 @@
-use crocheteer::project::Project;
+use crocheteer::Project;
 
 fn main() {
     let project = Project {

@@ -5,13 +5,11 @@ use bevy_egui::{
 };
 
 use crate::{
-    project::OpenProject,
-    ui::{
-        SimulationState,
-        data::UiState,
-        file_dialog::{OpenFileLoadDialog, OpenFileSaveDialog},
-        ui_used_input::UiUsedInput,
+    project::{
+        self, OpenProject,
+        file_dialog::{FileDialogPurpose, OpenFileDialog},
     },
+    ui::{SimulationState, data::UiState, ui_used_input::UiUsedInput},
 };
 
 pub fn top_panel(
@@ -19,8 +17,6 @@ pub fn top_panel(
     ui_used_input: Res<UiUsedInput>,
     mut console_state: ResMut<UiState>,
     mut simulation_state: ResMut<SimulationState>,
-    mut save_dialog: MessageWriter<OpenFileSaveDialog>,
-    mut load_dialog: MessageWriter<OpenFileLoadDialog>,
     mut commands: Commands,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -34,28 +30,35 @@ pub fn top_panel(
                     });
                     ui.close();
                 }
-                if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
-                    simulation_state.paused = true;
-                    load_dialog.write(OpenFileLoadDialog);
-                    ui.close();
-                }
-                ui.separator();
-                if shortcut_button(ui, "Save", "Ctrl+S").clicked() {
-                    // TODO
-                    ui.close();
-                }
-                if ui.button("Save As").clicked() {
-                    simulation_state.paused = true;
-                    save_dialog.write(OpenFileSaveDialog);
-                    ui.close();
-                }
-                ui.menu_button("Nested", |ui| {
-                    if ui.button("Stuff").clicked() {
+                ui.menu_button("Open example", |ui| {
+                    if ui.button("Shroom (FLO+BLO)").clicked() {
+                        commands.trigger(OpenProject {
+                            project: project::examples::public::shroom(),
+                        });
                         ui.close();
                     }
                 });
+                if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
+                    ui.close();
+                    simulation_state.paused = true;
+                    commands.trigger(OpenFileDialog {
+                        purpose: FileDialogPurpose::LoadProject,
+                    });
+                }
+                ui.separator();
+                if shortcut_button(ui, "Save", "Ctrl+S").clicked() {
+                    println!("todo");
+                    ui.close();
+                }
+                if ui.button("Save As").clicked() {
+                    // simulation_state.paused = true;
+                    // commands.trigger(OpenFileSaveDialog);
+                    ui.close();
+                }
+
                 ui.separator();
                 if ui.button("Exit").clicked() {
+                    commands.write_message(AppExit::Success);
                     ui.close();
                 }
             });

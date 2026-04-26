@@ -1,31 +1,6 @@
-use bevy::utils::default;
-use crocheteer::project::{DisplayMode, Project, SimulationState};
+use crocheteer::examples_dev;
 
 fn main() {
-    let project = Project {
-        pattern: indoc::indoc! {"
-            @centroids = 3
-            : MR(6)
-            : 6 inc (12)
-            3: 12 sc (12)
-            mark(cap_start)
-            : BLO, 6 dec (6)
-            FO
-
-            goto(cap_start), color(255, 255, 0)
-            : FLO, 12 inc (24)
-            2: 24 sc (24)
-            : 12 dec (12)
-            : 6 dec (6)
-            FO
-        "}
-        .into(),
-        simulation_config: SimulationState {
-            sim_speed: 1.0,
-            display_mode: DisplayMode::Forces,
-            single_loop_force: 0.0,
-            ..default()
-        },
-    };
+    let project = examples_dev::shroom_no_slf();
     crocheteer::app(project).run();
 }

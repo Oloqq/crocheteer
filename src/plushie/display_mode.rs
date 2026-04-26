@@ -39,7 +39,7 @@ pub fn set_display_mode(
     nodes: Query<&GraphNode>,
     links: Query<&Link>,
 ) {
-    let Some(message) = msgr.read().into_iter().last() else {
+    let Some(message) = msgr.read().last() else {
         return;
     };
     if presets.current_mode == message.mode {

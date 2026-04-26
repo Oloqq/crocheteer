@@ -4,7 +4,6 @@ pub mod code_editor;
 mod console;
 mod control_panel;
 mod data;
-mod file_dialog;
 mod menu_bar;
 mod simulation_state;
 mod ui_used_input;
@@ -18,8 +17,6 @@ pub use ui_used_input::{UiUsedInput, world_input};
 
 use crate::ui::action_item::complete_action_items;
 use crate::ui::code_editor::messages::BuildPlushieFromPattern;
-use crate::ui::code_editor::state::CodeEditorState;
-use crate::ui::file_dialog::FileDialogPlugin;
 use crate::ui::{
     charts::chart_window,
     code_editor::code_editor_ui,
@@ -29,18 +26,11 @@ use crate::ui::{
     menu_bar::top_panel,
 };
 
-pub struct UiPlugin {
-    pub initial_pattern: String,
-}
+pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
-        app.add_plugins(FileDialogPlugin);
-        // TEMP?
-        app.insert_resource(CodeEditorState::with_initial_pattern(
-            self.initial_pattern.clone(),
-        ));
         app.init_resource::<UiState>();
         app.init_resource::<UiUsedInput>();
         app.add_message::<BuildPlushieFromPattern>();
@@ -64,10 +54,6 @@ impl Plugin for UiPlugin {
         let (tx, rx) = crossbeam_channel::unbounded::<ConsoleMessage>();
         app.insert_resource(ConsolePipe::new(tx));
         app.insert_resource(ConsoleReceiver(rx));
-
-        app.world_mut().write_message(BuildPlushieFromPattern {
-            acl: self.initial_pattern.clone(),
-        });
     }
 }
 

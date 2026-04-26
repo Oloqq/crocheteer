@@ -1,9 +1,13 @@
 mod camera;
 mod cursor_ray;
 mod plushie;
-pub mod project;
+mod project;
 mod state;
 mod ui;
+
+// TEMP
+pub use project::examples::dev as examples_dev;
+pub use project::examples::public as examples;
 
 use std::{io::Cursor, time::Duration};
 
@@ -21,8 +25,7 @@ use bevy_infinite_grid::{InfiniteGridBundle, InfiniteGridPlugin, InfiniteGridSet
 
 use crate::{
     cursor_ray::CursorRayPlugin,
-    project::{Project, ProjectPlugin},
-    state::editor_simulation_sync::EditorSimulationSync,
+    project::{OpenProject, ProjectPlugin},
 };
 
 // a yarn I work with 5mm hook generally yields 5mm big stitches
@@ -30,19 +33,17 @@ use crate::{
 const HOOK_SIZE: f32 = 5e-4;
 const FIXED_UPDATE_BASE_HZ: f64 = 64.0;
 
+pub use project::Project;
+
 pub fn app(project: Project) -> App {
     let mut app = App::new();
     unambiguous_schedules(&mut app);
     window(&mut app);
     visible_3d_world(&mut app);
     app.add_plugins(ProjectPlugin);
-    app.add_plugins(ui::UiPlugin {
-        initial_pattern: project.pattern.clone(), // TODO initialize through project module
-    });
+    app.add_plugins(ui::UiPlugin);
     app.add_plugins(plushie::PlushiePlugin);
-    crate::project::startup::apply_settings(&mut app, &project.simulation_config);
-    app.insert_resource(project.simulation_config);
-    app.insert_resource(EditorSimulationSync::new());
+    app.world_mut().trigger(OpenProject { project });
     app
 }
 
@@ -110,7 +111,7 @@ fn set_window_icon(_: NonSendMarker) {
     WINIT_WINDOWS.with(|winit_windows| {
         let winit_windows = winit_windows.borrow();
         let (icon_rgba, icon_width, icon_height) = {
-            let bytes = include_bytes!("../assets/images/icon.png"); // TODO make a real icon
+            let bytes = include_bytes!("../assets/images/icon.png");
             let img = ::image::ImageReader::new(Cursor::new(bytes))
                 .with_guessed_format()
                 .expect("Failed to guess image format")

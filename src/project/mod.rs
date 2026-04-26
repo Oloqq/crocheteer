@@ -1,13 +1,14 @@
-pub mod loading;
-pub mod saving;
+pub mod examples;
+pub mod file_dialog;
 
 pub use crate::plushie::DisplayMode;
 use crate::{
-    FIXED_UPDATE_BASE_HZ, plushie::SetDisplayMode,
-    state::editor_simulation_sync::EditorSimulationSync, ui::code_editor::state::CodeEditorState,
+    FIXED_UPDATE_BASE_HZ,
+    plushie::SetDisplayMode,
+    project::file_dialog::FileDialogPlugin,
+    state::editor_simulation_sync::EditorSimulationSync,
+    ui::code_editor::{messages::BuildPlushieFromPattern, state::CodeEditorState},
 };
-use loading::LoadProjectFromFile;
-use saving::SaveProjectToFile;
 // TODO move out of ui namespace
 pub use crate::ui::SimulationState;
 use bevy::prelude::*;
@@ -16,10 +17,7 @@ pub struct ProjectPlugin;
 
 impl Plugin for ProjectPlugin {
     fn build(&self, app: &mut App) {
-        // TODO event
-        app.add_message::<SaveProjectToFile>();
-        app.add_message::<LoadProjectFromFile>();
-        // TODO systems that read the messages
+        app.add_plugins(FileDialogPlugin);
 
         app.world_mut().add_observer(open_project);
     }
@@ -45,6 +43,9 @@ pub fn open_project(event: On<OpenProject>, mut commands: Commands) {
     commands.insert_resource(CodeEditorState::with_initial_pattern(
         project.pattern.clone(),
     ));
+    commands.write_message(BuildPlushieFromPattern {
+        acl: project.pattern.clone(),
+    });
 }
 
 pub struct Project {
@@ -58,19 +59,5 @@ impl Default for Project {
             pattern: ": MR(6)".into(),
             simulation_config: Default::default(),
         }
-    }
-}
-
-pub mod startup {
-    use super::*;
-
-    use crate::{FIXED_UPDATE_BASE_HZ, plushie::SetDisplayMode};
-
-    pub fn apply_settings(app: &mut App, state: &SimulationState) {
-        let timestep = Time::<Fixed>::from_hz(FIXED_UPDATE_BASE_HZ * state.sim_speed);
-        app.insert_resource(timestep);
-        app.world_mut().write_message(SetDisplayMode {
-            mode: state.display_mode,
-        });
     }
 }
