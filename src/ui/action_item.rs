@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     plushie::data::{GraphNode, Selected},
@@ -7,7 +8,7 @@ use crate::{
 };
 
 // TODO events
-#[derive(Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum UiActionItem {
     SelectNodesOfPart(String),
 }

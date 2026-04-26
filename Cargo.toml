@@ -13,7 +13,8 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-glam = "0.30.10" # should be same as used by bevy
+glam = "0.30.10"                                       # should be same as used by bevy
+serde = { version = "1.0.228", features = ["derive"] }
 
 [dependencies]
 bevy = { version = "0.17.3", features = ["dynamic_linking"] }
@@ -31,6 +32,8 @@ enum-map = "2.7.3"                                                              
 image = { version = "=0.25.10", default-features = false, features = ["png"] }
 indoc = "2.0.7"                                                                # multiline strings with indentation matching to code
 rfd = "0.15"                                                                   # file dialogs
+serde.workspace = true
+serde_json = "1.0.149"
 strum = "0.28.0"                                                               # enum iter, enum to string etc
 strum_macros = "0.28.0"                                                        # ^
 tracing = "0.1.44"                                                             # logs, version same as bevy

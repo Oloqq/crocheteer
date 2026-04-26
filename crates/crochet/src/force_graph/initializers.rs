@@ -1,8 +1,9 @@
 use std::f32::consts::PI;
 
 use glam::Vec3;
+use serde::{Deserialize, Serialize};
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Serialize, Deserialize)]
 pub enum Initializer {
     /// Start with nodes arranged into a cylinder shape. Advance height every X nodes.
     /// Magic Ring is placed at origin.

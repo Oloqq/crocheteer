@@ -1,9 +1,10 @@
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 pub use crate::plushie::DisplayMode;
 use crate::{state::simulated_plushie::PlushieInSimulation, ui::action_item::UiActionItem};
 
-#[derive(Resource, Clone)]
+#[derive(Resource, Clone, Serialize, Deserialize)]
 pub struct SimulationState {
     pub paused: bool,
     pub sim_speed: f64,
@@ -11,6 +12,7 @@ pub struct SimulationState {
     pub display_mode: DisplayMode,
     pub single_loop_force: f32,
     pub initializer: crochet::force_graph::Initializer,
+    // TODO this isn't simulation state, this is UiState, clean this up
     pub active_part: Option<String>,
     pub action_items: Vec<UiActionItem>,
 }

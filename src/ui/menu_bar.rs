@@ -6,17 +6,16 @@ use bevy_egui::{
 
 use crate::{
     project::{
-        self, OpenProject,
+        self, OpenProject, SaveProject,
         file_dialog::{FileDialogPurpose, OpenFileDialog},
     },
-    ui::{SimulationState, data::UiState, ui_used_input::UiUsedInput},
+    ui::{data::UiState, ui_used_input::UiUsedInput},
 };
 
 pub fn top_panel(
     mut contexts: EguiContexts,
     ui_used_input: Res<UiUsedInput>,
     mut console_state: ResMut<UiState>,
-    mut simulation_state: ResMut<SimulationState>,
     mut commands: Commands,
 ) -> Result {
     let ctx = contexts.ctx_mut()?;
@@ -40,18 +39,16 @@ pub fn top_panel(
                 });
                 if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
                     ui.close();
-                    simulation_state.paused = true;
                     commands.trigger(OpenFileDialog {
                         purpose: FileDialogPurpose::LoadProject,
                     });
                 }
                 ui.separator();
                 if shortcut_button(ui, "Save", "Ctrl+S").clicked() {
-                    println!("todo");
                     ui.close();
+                    commands.trigger(SaveProject);
                 }
                 if ui.button("Save As").clicked() {
-                    // simulation_state.paused = true;
                     // commands.trigger(OpenFileSaveDialog);
                     ui.close();
                 }

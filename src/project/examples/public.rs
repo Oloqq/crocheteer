@@ -27,6 +27,7 @@ pub fn mushroom() -> Project {
             display_mode: DisplayMode::Forces,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }

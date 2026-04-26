@@ -28,6 +28,7 @@ pub fn mushroom_no_slf() -> Project {
             single_loop_force: 0.0,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -144,6 +145,7 @@ pub fn frog() -> Project {
             initializer: crochet::force_graph::Initializer::OneByOne,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -178,6 +180,7 @@ pub fn code_highlights() -> Project {
             display_mode: DisplayMode::Forces,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -208,6 +211,7 @@ pub fn one_by_one() -> Project {
             initializer: crochet::force_graph::Initializer::OneByOne,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -268,6 +272,7 @@ pub fn sewn_parts_one_by_one() -> Project {
             initializer: crochet::force_graph::Initializer::OneByOne,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -329,6 +334,7 @@ pub fn sewn_parts() -> Project {
             display_mode: DisplayMode::Forces,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }
@@ -364,6 +370,7 @@ pub fn unconnected_parts() -> Project {
             display_mode: DisplayMode::Forces,
             ..Default::default()
         },
+        ..Default::default()
     };
     project
 }

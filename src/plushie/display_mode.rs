@@ -1,10 +1,13 @@
 use bevy::prelude::*;
 use enum_map::EnumMap;
+use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
 use crate::plushie::data::{GraphNode, Link};
 
-#[derive(PartialEq, Clone, Copy, enum_map::Enum, strum_macros::EnumIter)]
+#[derive(
+    PartialEq, Clone, Copy, enum_map::Enum, strum_macros::EnumIter, Serialize, Deserialize,
+)]
 pub enum DisplayMode {
     Pattern,
     Forces,

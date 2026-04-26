@@ -2393,6 +2393,7 @@ dependencies = [
  "pest",
  "pest_derive",
  "pretty_assertions",
+ "serde",
 ]
 
 [[package]]
@@ -2414,6 +2415,8 @@ dependencies = [
  "indoc",
  "pretty_assertions",
  "rfd",
+ "serde",
+ "serde_json",
  "strum",
  "strum_macros",
  "tracing",
