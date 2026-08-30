@@ -1,6 +1,7 @@
 use bevy::ecs::system::NonSendMarker;
 use bevy::prelude::*;
 use bevy::winit::WINIT_WINDOWS;
+use std::fs;
 use std::ops::Deref;
 use std::path::PathBuf;
 
@@ -22,6 +23,9 @@ pub enum FileDialogPurpose {
     // export pattern, export image, export pointcloud etc
 }
 use FileDialogPurpose::*;
+
+use crate::project::OpenProject;
+use crate::{Project, project};
 
 impl FileDialogPurpose {
     fn title(&self) -> &'static str {
@@ -65,6 +69,7 @@ fn open_dialog(
             .expect("window should exist");
 
         let mut dialog = rfd::FileDialog::new()
+            .set_directory(projects_dir())
             .set_parent(window.deref())
             .set_title(event.purpose.title());
 
@@ -89,11 +94,55 @@ fn open_dialog(
     });
 }
 
-fn dispatch_after_file_dialog(event: On<FileDialogFinished>, mut _commands: Commands) {
-    tracing::warn!("(TODO) selected file: {:?}", event.path);
+fn projects_dir() -> PathBuf {
+    use directories::UserDirs;
+
+    if let Some(user_dirs) = UserDirs::new() {
+        if let Some(doc_dir) = user_dirs.document_dir() {
+            let target = doc_dir.join("Crochet");
+            if !target.exists() {
+                if fs::create_dir_all(&target).is_ok() {
+                    return target;
+                }
+            } else {
+                return target;
+            }
+        }
+    }
+    tracing::warn!("could not determine Documents directory");
+    return PathBuf::from(".");
+}
+
+fn dispatch_after_file_dialog(event: On<FileDialogFinished>, mut commands: Commands) {
+    tracing::debug!("selected file: {:?}", event.path);
     let _ = event.purpose;
-    // match event.purpose {
-    //     SaveProject => todo!(),
-    //     LoadProject => todo!(),
-    // }
+    match event.purpose {
+        SaveProject => {
+            commands.trigger(project::SaveProject {
+                filename: event.path.clone(),
+            });
+        }
+        LoadProject => {
+            if let Ok(project) = Project::from_file(&event.path) {
+                commands.trigger(OpenProject {
+                    project,
+                    filename: Some(event.path.clone()),
+                });
+            } else {
+                // TODO
+                tracing::error!("couldn't open project. TODO: message in GUI");
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_ne;
+
+    #[test]
+    fn test_finds_documents_dir() {
+        assert_ne!(projects_dir(), PathBuf::from("."));
+    }
 }

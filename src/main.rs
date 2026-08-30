@@ -2,19 +2,25 @@ use crocheteer::Project;
 use std::path::PathBuf;
 
 fn main() {
-    let project = match StartMode::from_args() {
-        StartMode::DefaultProject => Project::default(),
-        StartMode::Example(name) => Project::from_example(&name).unwrap_or_else(|| {
-            eprintln!("Unknown example '{name}'");
-            std::process::exit(1);
-        }),
-        StartMode::Open(path) => Project::from_file(&path).unwrap_or_else(|e| {
-            eprintln!("Failed to open '{}': {e}", path.display());
-            std::process::exit(1);
-        }),
+    let (project, file): (Project, Option<PathBuf>) = match StartMode::from_args() {
+        StartMode::DefaultProject => (Project::default(), None),
+        StartMode::Example(name) => (
+            Project::from_example(&name).unwrap_or_else(|| {
+                eprintln!("Unknown example '{name}'");
+                std::process::exit(1);
+            }),
+            None,
+        ),
+        StartMode::Open(path) => (
+            Project::from_file(&path).unwrap_or_else(|e| {
+                eprintln!("Failed to open '{}': {e}", path.display());
+                std::process::exit(1);
+            }),
+            Some(path),
+        ),
     };
 
-    crocheteer::app(project).run();
+    crocheteer::app(project, file).run();
 }
 
 pub enum StartMode {

@@ -1,15 +1,12 @@
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
-    egui::{self, KeyboardShortcut, Modifiers},
+    egui::{self},
 };
 
 use crate::{
-    project::{
-        self, OpenProject, SaveProject,
-        file_dialog::{FileDialogPurpose, OpenFileDialog},
-    },
-    ui::{data::UiState, ui_used_input::UiUsedInput},
+    project::{self, OpenProject},
+    ui::{data::UiState, shortcuts::ShortcutAction, ui_used_input::UiUsedInput},
 };
 
 pub fn top_panel(
@@ -26,6 +23,7 @@ pub fn top_panel(
                 if ui.button("New Project").clicked() {
                     commands.trigger(OpenProject {
                         project: Default::default(),
+                        filename: None,
                     });
                     ui.close();
                 }
@@ -33,26 +31,15 @@ pub fn top_panel(
                     if ui.button("Mushroom (FLO+BLO)").clicked() {
                         commands.trigger(OpenProject {
                             project: project::examples::public::mushroom(),
+                            filename: None,
                         });
                         ui.close();
                     }
                 });
-                if shortcut_button(ui, "Open", "Ctrl+O").clicked() {
-                    ui.close();
-                    commands.trigger(OpenFileDialog {
-                        purpose: FileDialogPurpose::LoadProject,
-                    });
-                }
+                ShortcutAction::Open.button(ui, &mut commands);
                 ui.separator();
-                if shortcut_button(ui, "Save", "Ctrl+S").clicked() {
-                    ui.close();
-                    commands.trigger(SaveProject);
-                }
-                if ui.button("Save As").clicked() {
-                    // commands.trigger(OpenFileSaveDialog);
-                    ui.close();
-                }
-
+                ShortcutAction::Quicksave.button(ui, &mut commands);
+                ShortcutAction::SaveAs.button(ui, &mut commands);
                 ui.separator();
                 if ui.button("Exit").clicked() {
                     commands.write_message(AppExit::Success);
@@ -94,16 +81,9 @@ pub fn top_panel(
         });
     });
 
-    let ctrls = ctx
-        .input_mut(|i| i.consume_shortcut(&KeyboardShortcut::new(Modifiers::CTRL, egui::Key::S)));
-
-    if ctrls {
+    if ShortcutAction::consume_keybinds(ctx, &mut commands) {
         ui_used_input.set_true();
     }
 
     Ok(())
-}
-
-fn shortcut_button(ui: &mut egui::Ui, label: &str, shortcut: &str) -> egui::Response {
-    ui.add(egui::Button::new(egui::RichText::new(label)).shortcut_text(shortcut))
 }

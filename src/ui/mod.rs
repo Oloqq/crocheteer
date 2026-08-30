@@ -5,6 +5,7 @@ mod console;
 mod control_panel;
 mod data;
 mod menu_bar;
+mod shortcuts;
 mod simulation_state;
 mod ui_used_input;
 mod utils;

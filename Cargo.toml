@@ -24,6 +24,7 @@ bevy_framepace = "0.20"                                                         
 bevy_infinite_grid = "0.17"                                                     # CAD-like grid
 crochet = { path = "crates/crochet" }                                           # Crochet domain algorithms (language parser, forces for the graph)
 crossbeam-channel = "0.5.15"                                                    # non-blocking channels
+directories = "6.0.0"                                                           # locating directories like Documents
 egui_code_editor = { path = "crates/egui_code_editor" }                         # code editor
 egui_console = { path = "crates/egui_console" }                                 # interactive console
 egui_plot = "0.34.0"                                                            # charts in egui

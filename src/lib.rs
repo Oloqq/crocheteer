@@ -9,6 +9,7 @@ mod ui;
 pub use project::examples::dev as examples_dev;
 pub use project::examples::public as examples;
 
+use std::path::PathBuf;
 use std::{io::Cursor, time::Duration};
 
 use bevy::{
@@ -35,7 +36,7 @@ const FIXED_UPDATE_BASE_HZ: f64 = 64.0;
 
 pub use project::Project;
 
-pub fn app(project: Project) -> App {
+pub fn app(project: Project, project_file: Option<PathBuf>) -> App {
     let mut app = App::new();
     unambiguous_schedules(&mut app);
     window(&mut app);
@@ -43,7 +44,10 @@ pub fn app(project: Project) -> App {
     app.add_plugins(ProjectPlugin);
     app.add_plugins(ui::UiPlugin);
     app.add_plugins(plushie::PlushiePlugin);
-    app.world_mut().trigger(OpenProject { project });
+    app.world_mut().trigger(OpenProject {
+        project,
+        filename: project_file,
+    });
     app
 }
 
